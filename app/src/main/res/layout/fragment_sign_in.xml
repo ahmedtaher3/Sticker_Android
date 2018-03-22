@@ -1,13 +1,154 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_sign_up"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sticker_android.controller.fragment.SignInFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    android:fillViewport="true">
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:minHeight="120dp">
 
-</FrameLayout>
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/designer_xhdpi" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:padding="10dp"
+            android:layout_weight="6"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+            <android.support.v7.widget.CardView
+                android:background="@android:color/holo_green_dark"
+                android:layout_margin="5dp"
+                app:contentPadding="10dp"
+                app:cardCornerRadius="@dimen/dp_10"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true" >
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:id="@+id/frag_register_rl"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:paddingLeft="@dimen/activity_horizontal_margin"
+                        android:paddingRight="@dimen/activity_horizontal_margin">
+
+                        <RelativeLayout
+                            android:layout_marginRight="40dp"
+                            android:layout_marginLeft="40dp"
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <ImageView
+                                android:background="@drawable/designer_xhdpi"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp" />
+                            <ImageView
+                                android:clickable="true"
+                                android:layout_centerInParent="true"
+                                android:src="@drawable/fan_selector"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp" />
+                            <ImageView
+
+                                android:layout_alignParentRight="true"
+                                android:src="@drawable/fan_hdpi"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp" />
+
+                        </RelativeLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/frag_register_txt_input_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/frag_register_txt_input_userName"
+                            >
+
+                            <android.support.design.widget.TextInputEditText
+                                android:textSize="15sp"
+                                android:id="@+id/frag_register_edt_email"
+                                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                                android:maxLines="1"
+                                android:maxLength="100"
+                                android:inputType="textEmailAddress|textNoSuggestions"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="8dp"
+                                android:hint="Email"
+                                />
+                        </android.support.design.widget.TextInputLayout>
+
+
+                        <android.support.design.widget.TextInputLayout
+                            app:passwordToggleEnabled="true"
+                            app:passwordToggleTint="@color/colorPrimary"
+                            android:id="@+id/frag_register_txt_input_phone_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/frag_register_txt_input_pssword"
+                            >
+
+                            <android.support.design.widget.TextInputEditText
+                                android:textSize="15sp"
+                                android:id="@+id/frag_register_edt_password"
+                                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                                android:maxLines="1"
+                                android:maxLength="100"
+                                android:inputType="textPassword|textNoSuggestions"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="15dp"
+                                android:hint="Password"
+                                />
+                        </android.support.design.widget.TextInputLayout>
+                        <TextView
+                            android:layout_gravity="end"
+                            android:text="Forgot password ?"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <Button
+                            android:layout_gravity="center"
+                            android:layout_marginTop="30dp"
+                            android:id="@+id/frag_register_btn_register"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/frag_register_txt_confirm_password"
+                            android:gravity="center"
+                            android:text="Login"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/white" />
+                        <TextView
+                            android:layout_marginTop="20dp"
+                            android:text="Don't hava a account? SignUp"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</ScrollView>
