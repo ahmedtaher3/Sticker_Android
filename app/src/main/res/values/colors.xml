@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryDark">#b065fe</color>
+    <color name="colorAccent">#beb9ba</color>
+
+    <!--Common color-->
+<color name="edt_background_tint">#e2e2e2</color>
+    <!--color fan-->
+    <color name="corporateBtnBackground">#f4a63e</color>
+    <color name="colorFanText">#3ccae3</color>
+    <color name="colorCorporateText">#f4a63e</color>
+    <color name="colorDesignerText">#755dea</color>
 </resources>

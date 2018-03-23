@@ -9,14 +9,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".controller.activities.common.main.MainActivity">
+        <activity android:name=".controller.activities.common.main.MainActivity" />
+        <activity
+            android:name=".controller.activities.common.splash.SplashActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" android:name=".controller.activities.common.splash.SplashActivity"></activity>
+        <activity android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" android:name=".controller.activities.common.signin.SigninActivity" />
+        <activity android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" android:name=".controller.activities.common.signup.SignUpActivity"></activity>
     </application>
 
 </manifest>

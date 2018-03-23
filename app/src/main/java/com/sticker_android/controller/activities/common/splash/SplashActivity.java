@@ -6,7 +6,8 @@ import android.os.Handler;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
-import com.sticker_android.controller.activities.common.main.MainActivity;
+import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.common.signup.SignUpActivity;
 
 public class SplashActivity extends AppBaseActivity {
 
@@ -46,7 +47,7 @@ public class SplashActivity extends AppBaseActivity {
     class SplashRunnable implements Runnable {
         @Override
         public void run() {
-            startNewActivity(MainActivity.class);
+            startNewActivity(SigninActivity.class);
             finish();
         }
     }

@@ -5,17 +5,29 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.fragment.SignInFragment;
+import com.sticker_android.controller.fragment.SignUpFragment;
 
-public class MainActivity extends AppBaseActivity {
+/**
+ * Class is used as a landing activity for all the users
+ */
+public class MainActivity extends AppBaseActivity  implements SignInFragment.SignUpCallback{
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar  toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().hide();
+        toolbar.setTitle("");
+        setViewReferences();
         loadFragment(new SignInFragment());
     }
 
@@ -26,12 +38,19 @@ public class MainActivity extends AppBaseActivity {
 
     @Override
     protected void setViewReferences() {
-
     }
 
     @Override
     protected boolean isValidData() {
         return false;
+    }
+
+
+
+    @Override
+    public void isClicked() {
+      loadFragment(new SignUpFragment());
+        getSupportActionBar().show();
     }
 
 

@@ -9,16 +9,19 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/transparent"
         android:minHeight="?attr/actionBarSize">
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
         <TextView
+            android:layout_centerInParent="true"
             android:id="@+id/tvToolbar"
             style="@style/wrapContent"
             android:layout_gravity="center"
             android:gravity="center"
             android:textColor="#222222"
-            android:text="Title"
+            android:text=""
             android:textSize="@dimen/sp_19.2"
             android:textStyle="bold" />
-
+</RelativeLayout>
     </android.support.v7.widget.Toolbar>
 </merge>
