@@ -7,11 +7,14 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.profile.ProfileActivity;
+import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
+import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.model.UserData;
 import com.sticker_android.network.ApiCall;
@@ -29,6 +32,7 @@ public class SignUpActivity extends AppBaseActivity {
     private EditText edtFirstName,edtLastName,edtEmail,edtConfirmPassword,edtPassword;
     private Button btnSignUp;
     private AppPref appPref;
+    private LinearLayout bgSignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,24 @@ public class SignUpActivity extends AppBaseActivity {
                 onBackPressed();
                             }
         });
+        setBackground();
+    }
+
+    private void setBackground() {
+    switch (SigninActivity.selectedOption){
+        case "fan":
+            bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
+            btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.fan_btn_background));
+            break;
+        case "designer":
+            bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
+            btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.designer_btn_background));
+            break;
+        case "corporate":
+            bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
+           btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
+            break;
+    }
     }
 
     private void init() {
@@ -79,7 +101,7 @@ public class SignUpActivity extends AppBaseActivity {
         commonProgressBar.show();
         Call<ApiResponse> apiResponseCall= RestClient.getService().userRegistration(language,edtEmail.getText().toString(),
                 edtPassword.getText().toString(),edtFirstName.getText().toString(),edtLastName.getText().toString(),
-                "fan","android","111",deviceId);
+                SigninActivity.selectedOption,"android","111",deviceId);
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -100,14 +122,7 @@ public class SignUpActivity extends AppBaseActivity {
     }
 
     private void moveToActivity() {
-        UserData userData = appPref.getUserInfo();
-        if (userData.getUserType().equals("corporate")) {
-            startNewActivity(ProfileActivity.class);
-        } else if (userData.getUserType().equals("fan")) {
-            startNewActivity(FanHomeActivity.class);
-        } else if (userData.getUserType().equals("designer")) {
-            startNewActivity(FanHomeActivity.class);
-        }
+       startNewActivity(ProfileActivity.class);
     }
     @Override
     protected void setViewReferences() {
@@ -117,6 +132,7 @@ public class SignUpActivity extends AppBaseActivity {
          edtPassword= findViewById(R.id.act_signup_edt_password);
          edtConfirmPassword=findViewById(R.id.act_signup_edt_confirm_password);
         btnSignUp=findViewById(R.id.act_signup_btn_register);
+        bgSignup=(LinearLayout)findViewById(R.id.bgSignup);
     }
 
     @Override

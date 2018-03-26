@@ -74,7 +74,18 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         setViewReferences(view);
         setViewListeners();
         setUserBackground();
+        setUserData();
     return view;
+    }
+
+    private void setUserData() {
+        edtProfileFirstName.setText(userData.getFirstName());
+        edtProfileLastName.setText(userData.getLastName());
+        edtProfileEmail.setText(userData.getEmail());
+        edtProfileFirstName.setSelection(edtProfileFirstName.getText().length());
+        edtProfileLastName.setSelection(edtProfileLastName.getText().length());
+        edtProfileEmail.setSelection(edtProfileEmail.getText().length());
+
     }
 
     private void setUserBackground() {
@@ -92,6 +103,10 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 case "corporate":
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.corporate_hdpi));
                     llCorporate.setVisibility(View.VISIBLE);
+                     edtCompanyName.setText(userData.getCompanyName());
+                    edtCompanyAddress.setText(userData.getCompanyAddress());
+                    edtCompanyName.setSelection(edtCompanyName.getText().length());
+                    edtCompanyAddress.setSelection(edtCompanyAddress.getText().length());
                     break;
             }
     }
@@ -123,6 +138,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     protected boolean isValidData() {
         String firstName = this.edtProfileFirstName.getText().toString().trim();
         String lastName = this.edtProfileLastName.getText().toString().trim();
+        String email = this.edtProfileEmail.getText().toString().trim();
         if (firstName.isEmpty()) {
             CommonSnackBar.show(edtProfileFirstName,getString(R.string.first_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
             this.edtProfileFirstName.requestFocus();
@@ -131,19 +147,16 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             CommonSnackBar.show(edtProfileLastName,getString(R.string.last_name_cannot_be_empty),Snackbar.LENGTH_SHORT);
             this.edtProfileLastName.requestFocus();
             return false;
-        }
-            String email = this.edtProfileEmail.getText().toString().trim();
-            if (email.isEmpty()) {
+        } else if (email.isEmpty()) {
                 CommonSnackBar.show(edtProfileEmail,getString(R.string.msg_email_cannot_be_empty),Snackbar.LENGTH_SHORT);
                 this.edtProfileEmail.requestFocus();
                 return false;
-            }else if (Patterns.EMAIL_ADDRESS.matcher(email).matches())  {
+            }/*else if (Patterns.EMAIL_ADDRESS.matcher(email).matches())  {
                 CommonSnackBar.show(edtProfileEmail,getString(R.string.msg_email_not_valid),Snackbar.LENGTH_SHORT);
                 this.edtProfileEmail.requestFocus();
                 return false;
-            }
-
-        return true;
+            }*/else
+            return true;
     }
 
 
@@ -164,7 +177,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             commonProgressBar.show();
             Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(userData.getId(), edtCompanyName.getText().toString(),
                    "", edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
-                    userData.getEmail(), userData.getUserType());
+                    edtProfileEmail.getText().toString(), userData.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
@@ -172,6 +185,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     if (apiResponse.status) {
                         appPref.saveUserObject(apiResponse.paylpad.getData());
                         appPref.setLoginFlag(true);
+                        CommonSnackBar.show(edtCompanyAddress, "Data updated successfully", Snackbar.LENGTH_SHORT);
+
                     } else {
                         CommonSnackBar.show(edtCompanyAddress, apiResponse.error.message, Snackbar.LENGTH_SHORT);
                     }

@@ -70,6 +70,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
         init();
         setViewReferences(view);
         setViewListeners();
+        setBackground();
     return view;
     }
 
@@ -91,6 +92,23 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
         newPassword=view.findViewById(R.id.change_password_edt_new_pass);
         confirmPassword=view.findViewById(R.id.change_password_edt_confirm_pass);
         buttonSubmit=view.findViewById(R.id.change_password_submit);
+    }
+
+
+    private void setBackground() {
+        switch (mUserData.getUserType()){
+            case "fan":
+                buttonSubmit.setBackgroundColor(getActivity().getResources().getColor(R.color.colorFanText));
+                break;
+            case "designer":
+                buttonSubmit.setBackgroundColor(getActivity().getResources().getColor(R.color.colorDesignerText));
+
+                break;
+            case "corporate":
+                buttonSubmit.setBackgroundColor(getActivity().getResources().getColor(R.color.colorCorporateText));
+
+                break;
+        }
     }
 
     @Override

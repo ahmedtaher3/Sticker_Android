@@ -46,7 +46,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
     private RadioGroup radioGroup;
     private RadioGroup radioGroupSelect;
     private RadioButton rdbtnDesigner,rdbtnFan,rdbtnCorporate;
-    public static String selectedOption;
+    public static String selectedOption="fan";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,7 +160,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
      String deviceId=   Utils.getDeviceId(this);
         final CommonProgressBar commonProgressBar=new CommonProgressBar(this);
         commonProgressBar.show();
-       Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(edtEmail.getText().toString(),edtPassword.getText().toString(),"android","1233",deviceId,"fan");
+       Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(edtEmail.getText().toString(),edtPassword.getText().toString(),"android","1233",deviceId,selectedOption);
         apiResponseCall.enqueue(new ApiCall(this) {
        @Override
        public void onSuccess(ApiResponse apiResponse) {
@@ -287,12 +287,34 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if(checkedId==R.id.rdbtnCorporate){
+                    selectedOption="corporate";
+                    rdbtnCorporate.setTextColor(getResources().getColor(R.color.corporateBtnBackground));
+                    bgLl.setBackgroundResource(R.drawable.gradient_bg_hdpi);
+                    rdbtnDesigner.setTextColor(getResources().getColor(R.color.edt_background_tint));
+                    rdbtnFan.setTextColor(getResources().getColor(R.color.edt_background_tint));
+                    btnLogin.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
+                    tvSignUp.setTextColor(getResources().getColor(R.color.colorCorporateText));
 
                 }else if(checkedId==R.id.rdbtnDesigner){
+                    selectedOption="designer";
+                    rdbtnDesigner.setTextColor(getResources().getColor(R.color.colorDesignerText));
+                    bgLl.setBackgroundResource(R.drawable.gradient_bg_des_hdpi);
+                    rdbtnCorporate.setTextColor(getResources().getColor(R.color.edt_background_tint));
+                    rdbtnFan.setTextColor(getResources().getColor(R.color.edt_background_tint));
+                    btnLogin.setBackgroundDrawable(getResources().getDrawable(R.drawable.designer_btn_background));
+                    tvSignUp.setTextColor(getResources().getColor(R.color.colorDesignerText));
 
                 }else if(checkedId==R.id.rdbtnFan){
+                    selectedOption="fan";
+                    rdbtnFan.setTextColor(getResources().getColor(R.color.colorFanText));
+                    bgLl.setBackgroundResource(R.drawable.gradient_bg_fan_hdpi);
+                    btnLogin.setBackgroundDrawable(getResources().getDrawable(R.drawable.fan_btn_background));
+                    tvSignUp.setTextColor(getResources().getColor(R.color.colorFanText));
+                    rdbtnCorporate.setTextColor(getResources().getColor(R.color.edt_background_tint));
+                    rdbtnDesigner.setTextColor(getResources().getColor(R.color.edt_background_tint));
 
                 }
+
             }
         });
     }

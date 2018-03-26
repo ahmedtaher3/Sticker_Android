@@ -1,4 +1,4 @@
-package com.sticker_android.controller.activities.fan.home;
+package com.sticker_android.controller.activities.corporate.home;
 
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -20,44 +20,39 @@ import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.fragment.AccountSettingFragment;
 import com.sticker_android.controller.fragment.ProfileFragment;
-import com.sticker_android.controller.fragment.fancustomization.FanCustomizationFragment;
 import com.sticker_android.controller.fragment.fandownloads.FanDownloadFragment;
 import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
 import com.sticker_android.model.UserData;
 import com.sticker_android.utils.sharedpref.AppPref;
 
-public class FanHomeActivity extends AppBaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
-    private  DrawerLayout drawer;
+public class DesignerHomeActivity extends AppBaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
     private AppPref appPref;
     private UserData userData;
-    private MenuItem item;
-    private TextView tvUserName;
-    private TextView tvEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fan_home);
+        setContentView(R.layout.activity_designer_home);
+        setContentView(R.layout.activity_corporate_home);
         init();
-         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setToolBarTitle();
         setToolbarBackground(toolbar);
         setSupportActionBar(toolbar);
         setViewReferences();
         setViewListeners();
         actionBarToggle(toolbar);
-       // setUserdata();
-
-         }
-
-    private void setUserdata() {
-        tvUserName.setText(userData.getFirstName()+" "+userData.getLastName());
-        tvEmail.setText(userData.getEmail());
     }
+
+    @Override
+    protected boolean isValidData() {
+        return false;
+    }
+
+
 
     private void setBackground(Toolbar toolbar) {
         switch (userData.getUserType()){
@@ -76,13 +71,14 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
     private void init() {
-         appPref=new AppPref(this);
+        appPref=new AppPref(this);
         userData=appPref.getUserInfo();
     }
 
+
     private void setToolBarTitle() {
-    TextView  textView=toolbar.findViewById(R.id.tvToolbar);
-    textView.setText(getResources().getString(R.string.txt_account_setting));
+        TextView textView=toolbar.findViewById(R.id.tvToolbar);
+        textView.setText(getResources().getString(R.string.txt_account_setting));
         centerToolbarText(toolbar,textView);
     }
 
@@ -106,7 +102,6 @@ public class FanHomeActivity extends AppBaseActivity
             }
         }, 0);
     }
-
     private void setToolbarBackground(Toolbar toolbar) {
         Drawable drawable=getBaseContext().getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi);
         if (Build.VERSION.SDK_INT >= 16){
@@ -115,7 +110,7 @@ public class FanHomeActivity extends AppBaseActivity
             toolbar.setBackgroundDrawable(drawable);
         }
         if(userData.getUserType()!=null)
-        setBackground(toolbar);
+            setBackground(toolbar);
     }
 
     private void actionBarToggle(Toolbar toolbar) {
@@ -132,11 +127,9 @@ public class FanHomeActivity extends AppBaseActivity
 
     @Override
     protected void setViewReferences() {
-         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-         navigationView = (NavigationView) findViewById(R.id.nav_view);
-         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-     //   tvUserName=(TextView)findViewById(R.id.tvUserName);
-       // tvEmail=(TextView)findViewById(R.id.tvEmail);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
     }
 
@@ -144,7 +137,6 @@ public class FanHomeActivity extends AppBaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.fan_home, menu);
-         item = menu.findItem(R.id.action_settings);
         return true;
     }
 
@@ -155,7 +147,6 @@ public class FanHomeActivity extends AppBaseActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -165,10 +156,6 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
 
     @Override
     public void onBackPressed() {
@@ -188,19 +175,15 @@ public class FanHomeActivity extends AppBaseActivity
         Fragment fragmentClass=null;
         if (id == R.id.nav_home) {
             fragmentClass = new FanHomeFragment();
-               // Handle the camera action
-        } else if (id == R.id.nav_downloads) {
+            // Handle the camera action
+        } else if (id == R.id.nav_content_for_appproval) {
             fragmentClass = new FanDownloadFragment();
-        //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
+            //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.nav_customization) {
-            fragmentClass = new FanCustomizationFragment();
-           // Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_profile) {
             TextView  textView=toolbar.findViewById(R.id.tvToolbar);
             textView.setText(getResources().getString(R.string.txt_profile));
             fragmentClass = ProfileFragment.newInstance("","");
-
         }
         else if (id == R.id.nav_account_setting) {
             fragmentClass = AccountSettingFragment.newInstance("","");
@@ -209,14 +192,14 @@ public class FanHomeActivity extends AppBaseActivity
             appPref.saveUserObject(new UserData());
             appPref.setLoginFlag(false);
             Toast.makeText(getApplicationContext(),"User logout Successfully",Toast.LENGTH_SHORT).show();
-             startNewActivity(SigninActivity.class);
+            startNewActivity(SigninActivity.class);
         }
 
         // Insert the fragment by replacing any existing fragment
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-         if(fragmentClass!=null)
-        fragmentManager.beginTransaction().replace(R.id.container_home, fragmentClass).commit();
+        if(fragmentClass!=null)
+            fragmentManager.beginTransaction().replace(R.id.container_home, fragmentClass).commit();
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

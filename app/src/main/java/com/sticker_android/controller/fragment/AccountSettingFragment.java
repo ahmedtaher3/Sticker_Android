@@ -12,6 +12,8 @@ import com.sticker_android.R;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.listeners.TabListeners;
+import com.sticker_android.model.UserData;
+import com.sticker_android.utils.sharedpref.AppPref;
 
 
 public class AccountSettingFragment extends BaseFragment {
@@ -25,6 +27,9 @@ public class AccountSettingFragment extends BaseFragment {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private ViewPagerAdapter adapter;
+    private AppPref appPref;
+    private UserData userdata;
+
     public AccountSettingFragment() {
         // Required empty public constructor
     }
@@ -52,13 +57,20 @@ public class AccountSettingFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_account_setting, container, false);
+        init();
         setViewReferences(view);
         setViewListeners();
         setupViewPager();
         setSelectedTabColor();
         setupViewPager();
         addFragmentToTab();
+        setBackground();
         return view;
+    }
+
+    private void init() {
+        appPref=new AppPref(getActivity());
+       userdata= appPref.getUserInfo();
     }
 
     private void addFragmentToTab() {
@@ -79,7 +91,21 @@ public class AccountSettingFragment extends BaseFragment {
         tabLayout.setupWithViewPager(viewPager);
     }
 
+    private void setBackground() {
+        switch (userdata.getUserType()){
+            case "fan":
+                tabLayout.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
+                break;
+            case "designer":
+                tabLayout.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
 
+                break;
+            case "corporate":
+                tabLayout.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
+
+                break;
+        }
+    }
     @Override
     public void onDetach() {
         super.onDetach();
@@ -96,6 +122,7 @@ public class AccountSettingFragment extends BaseFragment {
     protected void setViewReferences(View view) {
         viewPager = (ViewPager)view. findViewById(R.id.view_pager);
         tabLayout = (TabLayout)view. findViewById(R.id.act_landing_tab);
+
     }
 
     @Override

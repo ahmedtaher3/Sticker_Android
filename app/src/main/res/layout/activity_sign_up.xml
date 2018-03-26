@@ -17,6 +17,8 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent">
             <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/bgSignup"
                 android:background="@drawable/gradient_bg_fan_hdpi"
                 android:paddingTop="@dimen/dp_10"
                 android:layout_weight="1"

@@ -59,8 +59,8 @@
     <dimen name="margin_top_tv">20dp</dimen>
 
     <!--Profile-->
-<dimen name="profile_padding_start">30dp</dimen>
+    <dimen name="profile_padding_start">30dp</dimen>
     <dimen name="profile_padding_end">30dp</dimen>
-<!--Change Language-->
+    <!--Change Language-->
     <dimen name="logo_margin_top">30dp</dimen>
 </resources>

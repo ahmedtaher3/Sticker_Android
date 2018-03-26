@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">" Sticker_Android"</string>
+    <string name="app_name">" StickerApp"</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -62,7 +62,7 @@
     <string name="txt_btn_update">Update</string>
 
     <!--AboutUs-->
-<string name="txt_about_us">"Contact"</string>
+    <string name="txt_about_us">"Contact"</string>
 
     <!--Forgot password-->
 <string name="txt_reset_link_will_be_sent">A reset link will we sent to the

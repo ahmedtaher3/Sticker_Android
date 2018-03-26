@@ -14,6 +14,9 @@ import android.widget.RelativeLayout;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
+import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
+import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.model.UserData;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -135,6 +138,7 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
                     if (apiResponse.status) {
                         appPref.saveUserObject(apiResponse.paylpad.getData());
                         appPref.setLoginFlag(true);
+                        moveToNext();
                     } else {
                         CommonSnackBar.show(edtCompanyAddress, apiResponse.error.message, Snackbar.LENGTH_SHORT);
                     }
@@ -146,6 +150,17 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
                 }
             });
 
+        }
+    }
+
+    private void moveToNext() {
+        UserData userData = appPref.getUserInfo();
+        if (userData.getUserType().equals("corporate")) {
+            startNewActivity(CorporateHomeActivity.class);
+        } else if (userData.getUserType().equals("fan")) {
+            startNewActivity(FanHomeActivity.class);
+        } else if (userData.getUserType().equals("designer")) {
+            startNewActivity(DesignerHomeActivity.class);
         }
     }
 
