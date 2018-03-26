@@ -52,14 +52,14 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
     @Override
     protected void setViewReferences() {
-        rlBgProfile=findViewById(R.id.bgProfile);
-        llCorporate=findViewById(R.id.llCorporate);
-        edtCompanyName=findViewById(R.id.act_profile_edt_company_name);
-        edtCompanyAddress=findViewById(R.id.act_profile_edt_company_address);
-        edtProfileFirstName=findViewById(R.id.act_profile_edt_first_name);
-        edtProfileLastName=findViewById(R.id.act_profile_edt_last_name);
-        edtProfileEmail=findViewById(R.id.act_profile_edt_email);
-        btnSubmit=findViewById(R.id.act_profile_btn_register);
+        rlBgProfile= (RelativeLayout) findViewById(R.id.bgProfile);
+        llCorporate= (LinearLayout) findViewById(R.id.llCorporate);
+        edtCompanyName= (EditText) findViewById(R.id.act_profile_edt_company_name);
+        edtCompanyAddress= (EditText) findViewById(R.id.act_profile_edt_company_address);
+        edtProfileFirstName= (EditText) findViewById(R.id.act_profile_edt_first_name);
+        edtProfileLastName= (EditText) findViewById(R.id.act_profile_edt_last_name);
+        edtProfileEmail= (EditText) findViewById(R.id.act_profile_edt_email);
+        btnSubmit= (Button) findViewById(R.id.act_profile_btn_register);
     }
 
     @Override
@@ -149,28 +149,4 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
         }
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.logout, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.logout) {
-          appPref.setLoginFlag(false);
-            startNewActivity(SigninActivity.class);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

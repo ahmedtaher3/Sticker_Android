@@ -87,10 +87,10 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
     @Override
     protected void setViewReferences(View view) {
 
-        oldPassword=view.findViewById(R.id.change_password_edt_old_pass);
-        newPassword=view.findViewById(R.id.change_password_edt_new_pass);
-        confirmPassword=view.findViewById(R.id.change_password_edt_confirm_pass);
-        buttonSubmit=view.findViewById(R.id.change_password_submit);
+        oldPassword= (EditText) view.findViewById(R.id.change_password_edt_old_pass);
+        newPassword= (EditText) view.findViewById(R.id.change_password_edt_new_pass);
+        confirmPassword= (EditText) view.findViewById(R.id.change_password_edt_confirm_pass);
+        buttonSubmit= (Button) view.findViewById(R.id.change_password_submit);
     }
 
     @Override

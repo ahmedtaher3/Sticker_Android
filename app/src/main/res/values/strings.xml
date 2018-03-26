@@ -62,9 +62,18 @@
     <string name="txt_btn_update">Update</string>
 
     <!--AboutUs-->
-<string name="txt_about_us">"Contact"</string>
+    <string name="txt_about_us">"Contact"</string>
 
     <!--Forgot password-->
-<string name="txt_reset_link_will_be_sent">A reset link will we sent to the
+    <string name="txt_reset_link_will_be_sent">A reset link will we sent to the
     registered email address.</string>
+    <string name="submit">Submit</string>
+
+    <string name="take_photo">Take a photo</string>
+    <string name="pick_gallery">Choose from gallery</string>
+
+    <string name="open_setting">Open Setting</string>
+    <string name="cancel">Cancel</string>
+    <string name="app_permission">Sport Widget Permission!</string>
+    <string name="external_storage_permission_msg">"Go to app setting to enable external storage access permission."</string>
 </resources>

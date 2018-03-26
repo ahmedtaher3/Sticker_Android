@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sticker_android.R;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -15,6 +16,8 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  */
 
 public abstract class AppBaseActivity extends AppCompatActivity {
+
+    public ImageLoader imageLoader = ImageLoader.getInstance();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

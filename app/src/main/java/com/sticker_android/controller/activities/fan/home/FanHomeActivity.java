@@ -40,7 +40,7 @@ public class FanHomeActivity extends AppBaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fan_home);
         init();
-         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setToolBarTitle();
         setToolbarBackground(toolbar);
         setSupportActionBar(toolbar);
@@ -48,19 +48,19 @@ public class FanHomeActivity extends AppBaseActivity
         setViewListeners();
         actionBarToggle(toolbar);
         setNavigationMenu();
-         }
+    }
 
     private void setNavigationMenu() {
 
     }
 
     private void init() {
-         appPref=new AppPref(this);
+        appPref=new AppPref(this);
     }
 
     private void setToolBarTitle() {
-    TextView  textView=toolbar.findViewById(R.id.tvToolbar);
-    textView.setText(getResources().getString(R.string.txt_account_setting));
+        TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
+        textView.setText(getResources().getString(R.string.txt_account_setting));
         centerToolbarText(toolbar,textView);
     }
 
@@ -109,9 +109,9 @@ public class FanHomeActivity extends AppBaseActivity
 
     @Override
     protected void setViewReferences() {
-         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-         navigationView = (NavigationView) findViewById(R.id.nav_view);
-         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
     }
 
@@ -161,16 +161,16 @@ public class FanHomeActivity extends AppBaseActivity
         Fragment fragmentClass=null;
         if (id == R.id.nav_home) {
             fragmentClass = new FanHomeFragment();
-               // Handle the camera action
+            // Handle the camera action
         } else if (id == R.id.nav_downloads) {
             fragmentClass = new FanDownloadFragment();
-        //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
+            //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_customization) {
             fragmentClass = new FanCustomizationFragment();
-           // Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_profile) {
-            TextView  textView=toolbar.findViewById(R.id.tvToolbar);
+            TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
             textView.setText(getResources().getString(R.string.txt_profile));
             fragmentClass = ProfileFragment.newInstance("","");
         }
@@ -181,14 +181,14 @@ public class FanHomeActivity extends AppBaseActivity
             appPref.saveUserObject(new UserData());
             appPref.setLoginFlag(false);
             Toast.makeText(getApplicationContext(),"User logout Successfully",Toast.LENGTH_SHORT).show();
-             startNewActivity(SignUpActivity.class);
+            startNewActivity(SignUpActivity.class);
         }
 
         // Insert the fragment by replacing any existing fragment
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-         if(fragmentClass!=null)
-        fragmentManager.beginTransaction().replace(R.id.container_home, fragmentClass).commit();
+        if(fragmentClass!=null)
+            fragmentManager.beginTransaction().replace(R.id.container_home, fragmentClass).commit();
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

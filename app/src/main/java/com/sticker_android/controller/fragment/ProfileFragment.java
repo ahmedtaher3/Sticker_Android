@@ -40,14 +40,14 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private AppPref appPref;
     private EditText edtCompanyName,edtCompanyAddress,edtProfileFirstName;
     private EditText edtProfileLastName,edtProfileEmail;
-     private Button btnSubmit;
+    private Button btnSubmit;
     private UserData userData;
 
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-     public static ProfileFragment newInstance(String param1, String param2) {
+    public static ProfileFragment newInstance(String param1, String param2) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -69,12 +69,12 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View view=  inflater.inflate(R.layout.fragment_profile, container, false);
+        View view=  inflater.inflate(R.layout.fragment_profile, container, false);
         init();
         setViewReferences(view);
         setViewListeners();
         setUserBackground();
-    return view;
+        return view;
     }
 
     private void setUserBackground() {
@@ -104,19 +104,19 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     protected void setViewListeners() {
-           btnSubmit.setOnClickListener(this);
+        btnSubmit.setOnClickListener(this);
     }
 
     @Override
     protected void setViewReferences(View view) {
-        rlBgProfile=view.findViewById(R.id.bgProfile);
-        llCorporate=view.findViewById(R.id.llCorporate);
-        edtCompanyName=view.findViewById(R.id.act_profile_edt_company_name);
-        edtCompanyAddress=view.findViewById(R.id.act_profile_edt_company_address);
-        edtProfileFirstName=view.findViewById(R.id.act_profile_edt_first_name);
-        edtProfileLastName=view.findViewById(R.id.act_profile_edt_last_name);
-        edtProfileEmail=view.findViewById(R.id.act_profile_edt_email);
-        btnSubmit=view.findViewById(R.id.act_profile_btn_register);
+        rlBgProfile= (RelativeLayout) view.findViewById(R.id.bgProfile);
+        llCorporate= (LinearLayout) view.findViewById(R.id.llCorporate);
+        edtCompanyName= (EditText) view.findViewById(R.id.act_profile_edt_company_name);
+        edtCompanyAddress= (EditText) view.findViewById(R.id.act_profile_edt_company_address);
+        edtProfileFirstName= (EditText) view.findViewById(R.id.act_profile_edt_first_name);
+        edtProfileLastName= (EditText) view.findViewById(R.id.act_profile_edt_last_name);
+        edtProfileEmail= (EditText) view.findViewById(R.id.act_profile_edt_email);
+        btnSubmit= (Button) view.findViewById(R.id.act_profile_btn_register);
     }
 
     @Override
@@ -132,16 +132,16 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             this.edtProfileLastName.requestFocus();
             return false;
         }
-            String email = this.edtProfileEmail.getText().toString().trim();
-            if (email.isEmpty()) {
-                CommonSnackBar.show(edtProfileEmail,getString(R.string.msg_email_cannot_be_empty),Snackbar.LENGTH_SHORT);
-                this.edtProfileEmail.requestFocus();
-                return false;
-            }else if (Patterns.EMAIL_ADDRESS.matcher(email).matches())  {
-                CommonSnackBar.show(edtProfileEmail,getString(R.string.msg_email_not_valid),Snackbar.LENGTH_SHORT);
-                this.edtProfileEmail.requestFocus();
-                return false;
-            }
+        String email = this.edtProfileEmail.getText().toString().trim();
+        if (email.isEmpty()) {
+            CommonSnackBar.show(edtProfileEmail,getString(R.string.msg_email_cannot_be_empty),Snackbar.LENGTH_SHORT);
+            this.edtProfileEmail.requestFocus();
+            return false;
+        }else if (Patterns.EMAIL_ADDRESS.matcher(email).matches())  {
+            CommonSnackBar.show(edtProfileEmail,getString(R.string.msg_email_not_valid),Snackbar.LENGTH_SHORT);
+            this.edtProfileEmail.requestFocus();
+            return false;
+        }
 
         return true;
     }
@@ -163,7 +163,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             final CommonProgressBar commonProgressBar = new CommonProgressBar(getActivity());
             commonProgressBar.show();
             Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(userData.getId(), edtCompanyName.getText().toString(),
-                   "", edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
+                    "", edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
                     userData.getEmail(), userData.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
