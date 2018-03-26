@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sticker_android">
-
+<uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name=".application.StickerApp"
         android:allowBackup="true"
@@ -20,8 +20,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" android:name=".controller.activities.common.signin.SigninActivity" />
-        <activity android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden" android:name=".controller.activities.common.signup.SignUpActivity"></activity>
+        <activity
+            android:name=".controller.activities.common.signin.SigninActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".controller.activities.common.signup.SignUpActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".controller.activities.fan.home.FanHomeActivity"
+            android:label="@string/title_activity_fan_home"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".controller.activities.common.profile.ProfileActivity" />
+        <activity android:name=".controller.activities.common.changelanguage.ChangeLanguageActivity"></activity>
     </application>
 
 </manifest>

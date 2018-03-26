@@ -11,16 +11,29 @@ import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.common.profile.ProfileActivity;
+import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.model.UserData;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.CommonSnackBar;
+import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
+import com.sticker_android.utils.sharedpref.AppPref;
+
+import retrofit2.Call;
 
 public class SignUpActivity extends AppBaseActivity {
 
     private EditText edtFirstName,edtLastName,edtEmail,edtConfirmPassword,edtPassword;
     private Button btnSignUp;
+    private AppPref appPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        init();
         setContentView(R.layout.activity_sign_up);
         Toolbar toolbar=findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -38,6 +51,10 @@ public class SignUpActivity extends AppBaseActivity {
         });
     }
 
+    private void init() {
+         appPref=new AppPref(this);
+    }
+
     @Override
     protected void setViewListeners() {
 
@@ -45,11 +62,53 @@ public class SignUpActivity extends AppBaseActivity {
     @Override
     public void onClick(View v) {
      if(isValidData())
-         Toast.makeText(getApplicationContext(),"Validated",Toast.LENGTH_SHORT).show();
+      apiSignUp();
     }
      });
     }
 
+    /**
+     * Method is used to register the user
+     */
+    private void apiSignUp() {
+
+        String deviceId=   Utils.getDeviceId(this);
+        int language=getSelectedLanguage();
+
+        final CommonProgressBar commonProgressBar=new CommonProgressBar(this);
+        commonProgressBar.show();
+        Call<ApiResponse> apiResponseCall= RestClient.getService().userRegistration(language,edtEmail.getText().toString(),
+                edtPassword.getText().toString(),edtFirstName.getText().toString(),edtLastName.getText().toString(),
+                "fan","android","111",deviceId);
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                commonProgressBar.hide();
+                if(apiResponse.status) {
+                    appPref.saveUserObject(apiResponse.paylpad.getData());
+                    appPref.setLoginFlag(true);
+                    moveToActivity();
+                }else{
+                    CommonSnackBar.show(edtEmail,apiResponse.error.message,Snackbar.LENGTH_SHORT);
+            }
+            }
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                commonProgressBar.hide();
+            }
+        });
+    }
+
+    private void moveToActivity() {
+        UserData userData = appPref.getUserInfo();
+        if (userData.getUserType().equals("corporate")) {
+            startNewActivity(ProfileActivity.class);
+        } else if (userData.getUserType().equals("fan")) {
+            startNewActivity(FanHomeActivity.class);
+        } else if (userData.getUserType().equals("designer")) {
+            startNewActivity(FanHomeActivity.class);
+        }
+    }
     @Override
     protected void setViewReferences() {
          edtFirstName=findViewById(R.id.act_signup_edt_first_name);
@@ -91,7 +150,7 @@ public class SignUpActivity extends AppBaseActivity {
                     this.edtPassword.requestFocus();
                     return false;
                 } else {
-                    String confirmPassword = this.edtPassword.getText().toString().trim();
+                    String confirmPassword = this.edtConfirmPassword.getText().toString().trim();
                     if (confirmPassword.isEmpty()) {
                         CommonSnackBar.show(edtConfirmPassword,getString(R.string.confirm_password_cannot_be_empty),Snackbar.LENGTH_SHORT);
                         this.edtPassword.requestFocus();
@@ -113,5 +172,11 @@ public class SignUpActivity extends AppBaseActivity {
         }
         return true;
 
+    }
+
+    public int getSelectedLanguage() {
+
+
+        return appPref.getLanguage(0);
     }
 }

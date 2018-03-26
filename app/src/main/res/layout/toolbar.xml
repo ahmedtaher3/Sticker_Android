@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    tools:ignore="MissingPrefix"
     android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
@@ -13,12 +15,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
         <TextView
+            fontPath="fonts/SanFranciscoText-Regular_0.ttf"
             android:layout_centerInParent="true"
             android:id="@+id/tvToolbar"
             style="@style/wrapContent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:textColor="#222222"
+            android:textColor="@android:color/white"
             android:text=""
             android:textSize="@dimen/sp_19.2"
             android:textStyle="bold" />

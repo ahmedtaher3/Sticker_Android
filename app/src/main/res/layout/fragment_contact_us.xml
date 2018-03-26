@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+   android:paddingStart="@dimen/dp_20"
+    android:paddingEnd="@dimen/dp_20"
+    android:gravity="center|top"
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix"
+    tools:context="com.sticker_android.controller.fragment.ContactUsFragment">
+    <com.sticker_android.view.CircularImageView
+        android:layout_marginTop="30dp"
+        android:src="@drawable/fan_hdpi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+<TextView
+    android:layout_marginTop="@dimen/margin_top_tv"
+    android:textColor="@android:color/black"
+    android:text="Contact  "
+    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_marginTop="@dimen/margin_top_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tvEmailHint"
+            android:textColor="@android:color/black"
+            fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+            android:text="@string/contact_us_txt_hint_Email_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_marginLeft="@dimen/dp_2"
+            android:layout_toRightOf="@+id/tvEmailHint"
+            android:textColor="@color/colorFanText"
+            fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+            android:text="@string/contact_us_txt_Email_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_marginTop="@dimen/margin_top_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tvContactHint"
+            android:textColor="@android:color/black"
+            fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+            android:text="@string/contact_us_txt_hint_contact_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_marginLeft="@dimen/dp_2"
+            android:layout_toRightOf="@+id/tvContactHint"
+            android:textColor="@color/colorFanText"
+            fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+            android:text="@string/contact_us_txt_contact_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</LinearLayout>

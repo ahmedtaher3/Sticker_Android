@@ -1,21 +1,43 @@
 package com.sticker_android.controller.activities.common.splash;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.common.changelanguage.ChangeLanguageActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
-import com.sticker_android.controller.activities.common.signup.SignUpActivity;
+import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.model.UserData;
+import com.sticker_android.utils.sharedpref.AppPref;
+
+import java.util.Locale;
 
 public class SplashActivity extends AppBaseActivity {
+
+    private AppPref appPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        init();
         waitForFewSecond();
+
+    }
+
+    private void init() {
+        appPref=new AppPref(this);
+    }
+
+    private void setSelectedLangage() {
+
+       int language= appPref.getLanguage(0);
+        setLocale(String.valueOf(language));
     }
 
     /**
@@ -47,8 +69,35 @@ public class SplashActivity extends AppBaseActivity {
     class SplashRunnable implements Runnable {
         @Override
         public void run() {
-            startNewActivity(SigninActivity.class);
-            finish();
+            if(appPref.getLoginFlag(false))
+            {
+               UserData userData= appPref.getUserInfo();
+            if(userData.getUserType().equals("fan"))
+            startNewActivity(FanHomeActivity.class);
+                finish();
+            }else{
+                startNewActivity(ChangeLanguageActivity.class);
+                finish();
+            }
+
+
         }
     }
+
+    /**
+     * setLocale() set the localization configuration according to your selected language.
+     *
+     * @param lang
+     */
+
+    public void setLocale(String lang) {
+        Locale myLocale = new Locale(lang);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
+        startNewActivity(SigninActivity.class);
+    }
+
 }

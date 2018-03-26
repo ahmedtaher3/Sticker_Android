@@ -4,6 +4,7 @@
     android:fillViewport="true"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingPrefix"
+    android:scrollbarThumbVertical="@android:color/transparent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -71,9 +72,63 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginTop="@dimen/dp_10"
-                            android:paddingLeft="@dimen/signup_rl_padding"
-                            android:paddingRight="@dimen/signup_rl_padding">
+                            android:paddingStart="@dimen/signup_rl_padding"
+                            android:paddingEnd="@dimen/signup_rl_padding">
+
+
                             <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                            </RelativeLayout>
+                            <RadioGroup
+                                android:weightSum="3"
+                                android:id="@+id/RadioGroupSelect"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignParentTop="true"
+                                android:orientation="horizontal" >
+
+                                <RadioButton
+                                    android:layout_weight="1"
+                                    android:id="@+id/rdbtnFan"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@android:color/transparent"
+                                    android:button="@android:color/transparent"
+                                    android:checked="true"
+                                    android:drawablePadding="10dp"
+                                    android:drawableTop="@drawable/fan_hdpi"
+                                    android:gravity="bottom|center"
+                                    android:text="Fan"
+                                    android:textColor="@color/colorFanText" />
+
+                                <RadioButton
+                                    android:layout_weight="1"
+                                    android:id="@+id/rdbtnDesigner"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@android:color/transparent"
+                                    android:button="@android:color/transparent"
+                                    android:drawablePadding="10dp"
+                                    android:drawableTop="@drawable/designer_hdpi"
+                                    android:gravity="center"
+                                    android:text="@string/txt_designer"
+                                    />
+                                <RadioButton
+                                    android:layout_weight="1"
+                                    android:id="@+id/rdbtnCorporate"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:background="@android:color/transparent"
+                                    android:button="@android:color/transparent"
+                                    android:drawablePadding="10dp"
+                                    android:drawableTop="@drawable/corporate_hdpi"
+                                    android:gravity="center"
+                                    android:text="@string/text_corporate" />
+                            </RadioGroup>
+                            <RelativeLayout
+                                android:visibility="gone"
                                 android:layout_marginBottom="@dimen/dp_2"
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
@@ -130,7 +185,7 @@
 
                             <android.support.design.widget.TextInputLayout
                                 app:passwordToggleEnabled="true"
-                                app:passwordToggleTint="@color/corporateBtnBackground"
+                                app:passwordToggleTint="@color/colorFanText"
                                 android:id="@+id/act_signin_txt_input_phone_number"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -152,7 +207,7 @@
                                 android:id="@+id/act_signin_forgot_password"
                                 android:textSize="15sp"
                                 android:textColor="@android:color/black"
-                                fontPath="fonts/SanFranciscoText-SemiBold_0.ttf"
+                                fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
                                 android:layout_gravity="end"
                                 android:text="@string/txt_forgot_password"
                                 android:layout_width="wrap_content"
@@ -181,7 +236,7 @@
                                 <TextView
                                     android:textSize="15sp"
                                     android:textColor="@android:color/black"
-                                    fontPath="fonts/SanFranciscoText-SemiBold_0.ttf"
+                                    fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
                                     android:layout_marginTop="20dp"
                                     android:text="@string/txt_dont_have_a_account"
                                     android:gravity="center"
@@ -189,9 +244,9 @@
                                     android:layout_height="wrap_content" />
                                 <TextView
                                     android:textSize="15sp"
-                                    fontPath="fonts/SanFranciscoText-SemiBold_0.ttf"
+                                    fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
                                     android:textColor="@color/colorFanText"
-                                    android:layout_marginLeft="@dimen/dp_5"
+                                    android:layout_marginStart="@dimen/dp_5"
                                     android:id="@+id/act_signin_tv_signup"
                                     android:layout_marginTop="20dp"
                                     android:text="@string/txt_signup"

@@ -8,18 +8,18 @@
     <string name="text_corporate">Corporate</string>
 
     <!--Sign In-->
-<string name="txt_dont_have_a_account">"Don't have a account ?"</string>
+    <string name="txt_dont_have_a_account">"Don't have a account ?"</string>
     <string name="txt_signup">Signup</string>
     <string name="txt_forgot_password">"Forgot Password ?"</string>
     <string name="txt_login">Login</string>
     <string name="txt_hint_email">Email</string>
-<string name="txt_hint_password">Password</string>
+    <string name="txt_hint_password">Password</string>
     <!--Signin validation message-->
     <string name="msg_email_cannot_be_empty">Email cannot be empty.</string>
     <string name="msg_email_not_valid">Email not valid.</string>
     <string name="msg_password_cannot_be_empty">Password cannot be empty.</string>
 
-<!--Signup validation-->
+    <!--Signup validation-->
     <string name="first_name_cannot_be_empty">First name cannot be empty.</string>
     <string name="last_name_cannot_be_empty">Last name cannot be empty.</string>
     <string name="password_cannot_be_empty">Password cannot be empty.</string>
@@ -30,11 +30,41 @@
 
     <!--SignUp-->
     <string name="txt_hint_first_name">First Name</string>
-    <string name="txt_hint_last_name">First Name</string>
+    <string name="txt_hint_last_name">Last Name</string>
     <string name="txt_hint_conform_password">Confirm password</string>
     <string name="txt_hint_next">Next</string>
     <string name="txt_hint_terms_conditions">"Terms &amp; Conditions"</string>
+    <string name="title_activity_fan_home">FanHomeActivity</string>
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="action_settings">Settings</string>
 
+    <string name="txt_account_setting">Account Settings</string>
+    <string name="txt_profile">Profile</string>
+
+    <!--Change password-->
+    <string name="frag_change_pass_text_hint_new_password">New Password</string>
+
+    <string name="frag_change_pass_text_hint_old_password">Old Password</string>
+
+    <string name="frag_change_pass_text_hint_confirm_password">Confirm Password</string>
+
+    <!--Contact Us-->
+    <string name="contact_us_txt_hint_Email_address">Email Address :</string>
+    <string name="contact_us_txt_Email_address">SportWidget12@gmail.com</string>
+    <string name="contact_us_txt_hint_contact_number">Contact Number :</string>
+    <string name="contact_us_txt_contact_number">"+19874562548845"</string>
+
+    <!--Profile-->
+    <string name="txt_personal_details">Personal Details</string>
+    <string name="txt_btn_update">Update</string>
+
+    <!--AboutUs-->
+<string name="txt_about_us">"Contact"</string>
+
+    <!--Forgot password-->
+<string name="txt_reset_link_will_be_sent">A reset link will we sent to the
+    registered email address.</string>
 </resources>

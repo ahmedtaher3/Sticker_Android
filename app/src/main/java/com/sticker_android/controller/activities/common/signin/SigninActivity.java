@@ -1,21 +1,37 @@
 package com.sticker_android.controller.activities.common.signin;
 
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signup.SignUpActivity;
+import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.CommonSnackBar;
 import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
+import com.sticker_android.utils.sharedpref.AppPref;
+
+import retrofit2.Call;
 
 public class SigninActivity extends AppBaseActivity implements View.OnClickListener {
 
@@ -26,15 +42,23 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
     private TextView tvSignUp;
     private CheckedTextView chtvFan,chtvDesigner,chtvCorporate;
     private LinearLayout bgLl;
-
+    private AppPref appPref;
+    private RadioGroup radioGroup;
+    private RadioGroup radioGroupSelect;
+    private RadioButton rdbtnDesigner,rdbtnFan,rdbtnCorporate;
+    public static String selectedOption;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        init();
         setContentView(R.layout.activity_signin);
         setViewReferences();
         setViewListeners();
+        languageSelection();
     }
-
+    private void init() {
+        appPref=new AppPref(this);
+    }
     @Override
     protected void setViewListeners() {
          btnLogin.setOnClickListener(this);
@@ -42,6 +66,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         chtvFan.setOnClickListener(this);
         chtvCorporate.setOnClickListener(this);
         chtvDesigner.setOnClickListener(this);
+        tvForgotPassword.setOnClickListener(this);
     }
 
     @Override
@@ -55,6 +80,10 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         chtvDesigner=findViewById(R.id.act_signin_chtv_designer);
         chtvCorporate=findViewById(R.id.act_signin_chtv_corporate);
         bgLl=  findViewById(R.id.act_signin_bg_ll);
+         rdbtnFan = (RadioButton) findViewById(R.id.rdbtnFan);
+        rdbtnDesigner = (RadioButton) findViewById(R.id.rdbtnDesigner);
+        rdbtnCorporate = (RadioButton) findViewById(R.id.rdbtnCorporate);
+        radioGroupSelect=findViewById(R.id.RadioGroupSelect);
     }
 
     @Override
@@ -85,7 +114,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.act_signin_btn_login:
                 if(isValidData()){
-                    Toast.makeText(getApplicationContext(),"Validated",Toast.LENGTH_SHORT).show();
+                    loginApiCall();
                 }
                 break;
             case R.id.act_signin_tv_signup:
@@ -115,11 +144,102 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
                     ((CheckedTextView) v).setChecked(true);
                 }
                 break;
+            case R.id.act_signin_forgot_password:
+                openBottomSheet();
+                break;
             default:
 
         }
     }
-      private void fanBackgroundChange(View v){
+
+    /**
+     * Method is used for login api
+     */
+    private void loginApiCall() {
+
+     String deviceId=   Utils.getDeviceId(this);
+        final CommonProgressBar commonProgressBar=new CommonProgressBar(this);
+        commonProgressBar.show();
+       Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(edtEmail.getText().toString(),edtPassword.getText().toString(),"android","1233",deviceId,"fan");
+        apiResponseCall.enqueue(new ApiCall(this) {
+       @Override
+       public void onSuccess(ApiResponse apiResponse) {
+           commonProgressBar.hide();
+          if(apiResponse.status) {
+              appPref.saveUserObject(apiResponse.paylpad.getData());
+              appPref.setLoginFlag(true);
+              startNewActivity(FanHomeActivity.class);
+          }else
+              CommonSnackBar.show(edtEmail,apiResponse.error.message,Snackbar.LENGTH_SHORT);
+       }
+       @Override
+       public void onFail(Call<ApiResponse> call, Throwable t) {
+           commonProgressBar.hide();
+       }
+   });
+    }
+
+    private void openBottomSheet() {
+
+        final BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(getActivity());
+        View sheetView = getActivity().getLayoutInflater().inflate(R.layout.forgot_password, null);
+        mBottomSheetDialog.setContentView(sheetView);
+        mBottomSheetDialog.show();
+      final EditText edtEmail=  sheetView.findViewById(R.id.forgot_password_edt_email);
+        Button sendMail=  sheetView.findViewById(R.id.sendMail);
+        sendMail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBottomSheetDialog.dismiss();
+                if(isForgetEmailValidate(edtEmail)){
+                    apiForgotPassword(edtEmail,mBottomSheetDialog);
+                }
+            }
+        });
+
+    }
+
+    private void apiForgotPassword(EditText edtEmail, final BottomSheetDialog mBottomSheetDialog) {
+
+        final CommonProgressBar commonProgressBar=new CommonProgressBar(this);
+        commonProgressBar.show();
+        Call<ApiResponse> apiResponseCall=RestClient.getService().forgotPassword(edtEmail.getText().toString());
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                commonProgressBar.hide();
+                mBottomSheetDialog.dismiss();
+                if(apiResponse.status) {
+                    CommonSnackBar.show(SigninActivity.this.edtEmail, apiResponse.message.message, Snackbar.LENGTH_SHORT);
+                }else {
+                    CommonSnackBar.show(SigninActivity.this.edtEmail, apiResponse.error.message, Snackbar.LENGTH_SHORT);
+                }
+            }
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                commonProgressBar.hide();
+            }
+        });
+
+    }
+
+    private boolean isForgetEmailValidate(EditText edtEmail) {
+
+        String email = edtEmail.getText().toString().trim();
+        if (email.isEmpty()) {
+            edtEmail.requestFocus();
+            CommonSnackBar.show(edtEmail,getString(R.string.msg_email_cannot_be_empty), Snackbar.LENGTH_SHORT);
+            return false;
+        } else if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+           return  true;
+        }else {
+            CommonSnackBar.show(edtEmail,getString(R.string.msg_email_not_valid), Snackbar.LENGTH_SHORT);
+            return false;
+        }
+
+          }
+
+    private void fanBackgroundChange(View v){
           chtvFan.setTextColor(getResources().getColor(R.color.colorFanText));
           bgLl.setBackgroundResource(R.drawable.gradient_bg_fan_hdpi);
           chtvCorporate.setChecked(false);
@@ -158,6 +278,23 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         tvSignUp.setTextColor(getResources().getColor(R.color.colorCorporateText));
 
 
+    }
+
+
+    private void languageSelection() {
+
+        radioGroupSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId==R.id.rdbtnCorporate){
+
+                }else if(checkedId==R.id.rdbtnDesigner){
+
+                }else if(checkedId==R.id.rdbtnFan){
+
+                }
+            }
+        });
     }
 
 }

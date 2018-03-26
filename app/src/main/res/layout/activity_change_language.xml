@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:id="@+id/activity_change_language"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingPrefix"
+    android:background="@drawable/gradient_bg_fan_hdpi"
+    tools:context="com.sticker_android.controller.activities.common.changelanguage.ChangeLanguageActivity">
+     <ImageView
+         android:id="@+id/imvLogoChangeLanguage"
+         android:layout_marginTop="@dimen/logo_margin_top"
+         android:layout_alignParentTop="true"
+         android:layout_centerInParent="true"
+         android:src="@drawable/fan_hdpi"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content" />
+
+     <TextView
+         android:id="@+id/tvChangeLanguage"
+         android:layout_marginTop="@dimen/logo_margin_top"
+         android:gravity="center"
+         android:layout_below="@+id/imvLogoChangeLanguage"
+         android:text="Change Language"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" />
+     <RadioGroup
+         android:orientation="horizontal"
+         android:layout_marginTop="@dimen/logo_margin_top"
+         android:gravity="center"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/tvChangeLanguage"
+         android:id="@+id/myRadioGroup"
+         android:checkedButton="@+id/rdbEnglish" >
+          <RadioButton
+         style="@style/MyRadioButton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+          android:id="@+id/rdbEnglish"
+         android:text="English" />
+          <RadioButton
+              style="@style/MyRadioButton"
+              android:layout_marginLeft="@dimen/dp_40"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:id="@+id/rdbArabic"
+         android:text="Arabic" />
+
+</RadioGroup>
+<RelativeLayout
+    android:layout_below="@+id/myRadioGroup"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+     <Button
+       android:layout_centerInParent="true"
+         android:textSize="15sp"
+         android:layout_height="wrap_content"
+         android:layout_width="@dimen/signup_btn_next_width"
+         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+         android:elevation="@dimen/dp_5"
+         android:background="@drawable/fan_btn_background"
+         android:layout_gravity="center"
+         android:layout_marginTop="30dp"
+         android:id="@+id/act_change_lang_btn_update"
+         android:gravity="center"
+         android:text="@string/txt_btn_update"
+         android:textAllCaps="false"
+         android:textColor="@android:color/white" />
+
+</RelativeLayout>
+
+</RelativeLayout>

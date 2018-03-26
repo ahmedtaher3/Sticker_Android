@@ -1,24 +1,30 @@
 package com.sticker_android.controller.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.model.UserData;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.CommonSnackBar;
+import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
+import com.sticker_android.utils.sharedpref.AppPref;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ChangePasswordFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ChangePasswordFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ChangePasswordFragment extends Fragment {
+import retrofit2.Call;
+
+public class ChangePasswordFragment extends BaseFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,21 +34,16 @@ public class ChangePasswordFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    EditText oldPassword,newPassword,confirmPassword;
+    private Button buttonSubmit;
+    private AppPref appPref;
+    private UserData userData;
+    private UserData mUserData;
 
     public ChangePasswordFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChangePasswordFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ChangePasswordFragment newInstance(String param1, String param2) {
         ChangePasswordFragment fragment = new ChangePasswordFragment();
         Bundle args = new Bundle();
@@ -65,45 +66,105 @@ public class ChangePasswordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_change_password, container, false);
+      View view=   inflater.inflate(R.layout.fragment_change_password, container, false);
+        init();
+        setViewReferences(view);
+        setViewListeners();
+    return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    private void init() {
+         appPref=new AppPref(getActivity());
+        mUserData=appPref.getUserInfo();
+    }
+
+
+    @Override
+    protected void setViewListeners() {
+           buttonSubmit.setOnClickListener(this);
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    protected void setViewReferences(View view) {
+
+        oldPassword=view.findViewById(R.id.change_password_edt_old_pass);
+        newPassword=view.findViewById(R.id.change_password_edt_new_pass);
+        confirmPassword=view.findViewById(R.id.change_password_edt_confirm_pass);
+        buttonSubmit=view.findViewById(R.id.change_password_submit);
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    protected boolean isValidData() {
+        String oldPass=oldPassword.getText().toString();
+        String newPass=newPassword.getText().toString();
+        String confirmPass=confirmPassword.getText().toString();
+        if(oldPass.isEmpty()){
+           oldPassword.requestFocus();
+            CommonSnackBar.show(oldPassword,"Old password cannot be empty", Snackbar.LENGTH_SHORT);
+            return false;
+        }else if(oldPass.length()<8){
+            oldPassword.requestFocus();
+            CommonSnackBar.show(oldPassword,getActivity().getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
+            return false;
+
+        }else if(newPass.isEmpty()){
+            newPassword.requestFocus();
+            CommonSnackBar.show(oldPassword,"New password cannot be empty", Snackbar.LENGTH_SHORT);
+            return false;
+        }else if(newPass.length()<8){
+            newPassword.requestFocus();
+            CommonSnackBar.show(oldPassword,getActivity().getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
+            return false;
+
+        }else if(confirmPass.isEmpty()){
+            confirmPassword.requestFocus();
+            CommonSnackBar.show(oldPassword,"Confiem password cannot be empty", Snackbar.LENGTH_SHORT);
+            return false;
+        }else if(confirmPass.length()<8){
+            confirmPassword.requestFocus();
+            CommonSnackBar.show(oldPassword,getActivity().getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
+            return false;
+
+        }
+
+        return true;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onClick(View v) {
+     switch (v.getId()){
+   case R.id.change_password_submit:
+       if(isValidData())
+       changePasswordApi();
+          break;
+
+     }
     }
-}
+
+    private void changePasswordApi() {
+
+        final CommonProgressBar commonProgressBar=new CommonProgressBar(getActivity());
+        commonProgressBar.show();
+        Log.d("jhcjdsc",mUserData.getId());
+        Call<ApiResponse> apiResponseCall= RestClient.getService().changePassword(mUserData.getId(),confirmPassword.getText().toString(),"");
+        apiResponseCall.enqueue(new ApiCall(getActivity()) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                commonProgressBar.hide();
+                if(apiResponse.status)
+                    if(apiResponse.status) {
+                       CommonSnackBar.show(oldPassword,"Password updated successfully", Snackbar.LENGTH_SHORT);
+                        oldPassword.setText("");
+                        confirmPassword.setText("");
+                        newPassword.setText("");
+                    }else {
+                        CommonSnackBar.show(oldPassword, apiResponse.error.message, Snackbar.LENGTH_SHORT);
+                    }}
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                commonProgressBar.hide();
+            }
+        });
+    }
+    }
+

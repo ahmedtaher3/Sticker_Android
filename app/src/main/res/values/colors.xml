@@ -11,4 +11,8 @@
     <color name="colorFanText">#3ccae3</color>
     <color name="colorCorporateText">#f4a63e</color>
     <color name="colorDesignerText">#755dea</color>
+
+    <color name="colorWhiteTransparent">#26676767</color>
+    <color name="colorTabUnselected">#F3BFAD</color>
+
 </resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <declare-styleable name="CircularImageView">
+    <attr name="civ_app_border_width" format="dimension" />
+    <attr name="civ_app_border_color" format="color" />
+    <attr name="civ_app_border_overlay" format="boolean" />
+    <attr name="civ_app_fill_color" format="color" />
+    </declare-styleable>
+
+</resources>

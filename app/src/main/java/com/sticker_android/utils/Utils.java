@@ -1,6 +1,8 @@
 package com.sticker_android.utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.provider.Settings;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -23,4 +25,12 @@ public class Utils {
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
+    //to get the device id of current device
+    public static String getDeviceId(Context context) {
+        String android_id = Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        // LogUtils.error("Unique generated id  : " + android_id);
+        return android_id;    }
+
 }
