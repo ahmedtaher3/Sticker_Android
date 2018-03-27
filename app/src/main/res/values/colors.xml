@@ -15,4 +15,9 @@
     <color name="colorWhiteTransparent">#26676767</color>
     <color name="colorTabUnselected">#F3BFAD</color>
 
+    <color name="colorstatusBarCorporate">#bc79f0</color>
+
+    <color name="colorstatusBarFan">#3ccae3</color>
+
+    <color name="colorstatusBarDesigner">#b065fe</color>
 </resources>

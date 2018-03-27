@@ -10,15 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.common.signin.SigninActivity;
-import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.UserData;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.CommonSnackBar;
-import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -88,24 +85,23 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
     @Override
     protected void setViewReferences(View view) {
 
-        oldPassword=view.findViewById(R.id.change_password_edt_old_pass);
-        newPassword=view.findViewById(R.id.change_password_edt_new_pass);
-        confirmPassword=view.findViewById(R.id.change_password_edt_confirm_pass);
-        buttonSubmit=view.findViewById(R.id.change_password_submit);
+        oldPassword= (EditText) view.findViewById(R.id.change_password_edt_old_pass);
+        newPassword= (EditText) view.findViewById(R.id.change_password_edt_new_pass);
+        confirmPassword= (EditText) view.findViewById(R.id.change_password_edt_confirm_pass);
+        buttonSubmit= (Button) view.findViewById(R.id.change_password_submit);
     }
 
 
     private void setBackground() {
         switch (mUserData.getUserType()){
             case "fan":
-                buttonSubmit.setBackgroundColor(getActivity().getResources().getColor(R.color.colorFanText));
+                buttonSubmit.setBackground(getResources().getDrawable(R.drawable.fan_btn_background));
                 break;
             case "designer":
-                buttonSubmit.setBackgroundColor(getActivity().getResources().getColor(R.color.colorDesignerText));
-
+                buttonSubmit.setBackground(getResources().getDrawable(R.drawable.designer_btn_background));
                 break;
             case "corporate":
-                buttonSubmit.setBackgroundColor(getActivity().getResources().getColor(R.color.colorCorporateText));
+                buttonSubmit.setBackground(getResources().getDrawable(R.drawable.corporate_btn_background));
 
                 break;
         }

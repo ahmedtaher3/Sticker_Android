@@ -22,6 +22,7 @@
             android:layout_height="120dp">
         </RelativeLayout>
             <com.sticker_android.view.CircularImageView
+                android:id="@+id/imvProfile"
                 android:layout_alignParentBottom="true"
                 android:src="@drawable/fan_hdpi"
                 android:layout_centerInParent="true"

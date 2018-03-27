@@ -50,6 +50,28 @@ public class UserData {
 
     private String authrizedKey;
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getInfoText() {
+        return infoText;
+    }
+
+    public void setInfoText(String infoText) {
+        this.infoText = infoText;
+    }
+
+    @SerializedName("title")
+    private String title;
+    @SerializedName("info_text")
+    private String infoText;
+
+
     public String getId() {
         return id;
     }

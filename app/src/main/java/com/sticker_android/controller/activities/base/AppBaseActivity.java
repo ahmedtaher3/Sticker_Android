@@ -2,10 +2,15 @@ package com.sticker_android.controller.activities.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
+import android.view.WindowManager;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sticker_android.R;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -16,12 +21,15 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public abstract class AppBaseActivity extends AppCompatActivity {
 
+    public ImageLoader imageLoader = ImageLoader.getInstance();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
       /*  getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);*/
+        changeStatusBarColor(getResources().getColor(R.color.colorDesignerText));
     }
 
     /**
@@ -94,6 +102,23 @@ public abstract class AppBaseActivity extends AppCompatActivity {
 
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+    public void changeStatusBarColor(int color){
+        Window window = this.getWindow();
+
+// clear FLAG_TRANSLUCENT_STATUS flag:
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+// add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+// finally change the color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(color);
+          //  window.setStatusBarColor(getResources().getColor(R.color.colorDesignerText));
+        }
+
     }
 
 }

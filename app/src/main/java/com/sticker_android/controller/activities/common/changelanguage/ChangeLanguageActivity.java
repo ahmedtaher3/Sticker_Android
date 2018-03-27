@@ -33,13 +33,13 @@ private    AppPref appPref;
             public void onClick(View v) {
 
                 getSelectedLanguage();
+                appPref.setLanguageStatus(true);
             }
         });
     }
 
     private void appPref() {
         appPref=new AppPref(this);
-
     }
 
     private void languageSelection() {
@@ -99,6 +99,7 @@ private    AppPref appPref;
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
         startNewActivity(SigninActivity.class);
+        finish();
     }
 
 }

@@ -204,6 +204,7 @@
                                     />
                             </android.support.design.widget.TextInputLayout>
                             <TextView
+                                android:padding="@dimen/dp_2"
                                 android:id="@+id/act_signin_forgot_password"
                                 android:textSize="15sp"
                                 android:textColor="@android:color/black"
@@ -228,7 +229,6 @@
                                 android:textAllCaps="false"
                                 android:textColor="@android:color/white" />
                             <LinearLayout
-                                android:layout_marginTop="@dimen/dp_20"
                                 android:layout_gravity="center"
                                 android:orientation="horizontal"
                                 android:layout_width="wrap_content"
@@ -243,6 +243,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content" />
                                 <TextView
+                                    android:padding="@dimen/dp_2"
                                     android:textSize="15sp"
                                     fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
                                     android:textColor="@color/colorFanText"

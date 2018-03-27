@@ -11,6 +11,9 @@ import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.changelanguage.ChangeLanguageActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.corporate.CorporateProfileActivity;
+import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
+import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.model.UserData;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -27,6 +30,8 @@ public class SplashActivity extends AppBaseActivity {
         setContentView(R.layout.activity_splash);
         init();
         waitForFewSecond();
+        setSelectedLangage();
+        changeStatusBarColor(getResources().getColor(R.color.colorFanText));
 
     }
 
@@ -37,7 +42,7 @@ public class SplashActivity extends AppBaseActivity {
     private void setSelectedLangage() {
 
        int language= appPref.getLanguage(0);
-        setLocale(String.valueOf(language));
+      //  setLocale(String.valueOf(language));
     }
 
     /**
@@ -71,13 +76,15 @@ public class SplashActivity extends AppBaseActivity {
         public void run() {
             if(appPref.getLoginFlag(false))
             {
-               UserData userData= appPref.getUserInfo();
-            if(userData.getUserType().equals("fan"))
-            startNewActivity(FanHomeActivity.class);
+                moveToActivity();
                 finish();
-            }else{
+            }else if(!appPref.getLanguageStatus(false)){
                 startNewActivity(ChangeLanguageActivity.class);
                 finish();
+            }else {
+                startNewActivity(SigninActivity.class);
+                finish();
+
             }
 
 
@@ -99,5 +106,22 @@ public class SplashActivity extends AppBaseActivity {
         res.updateConfiguration(conf, dm);
         startNewActivity(SigninActivity.class);
     }
+
+  public void  moveToActivity() {
+      UserData userData = appPref.getUserInfo();
+      if (userData.getUserType().equals("corporate")) {
+          if (userData.getCompanyName() != null&& !userData.getCompanyName().isEmpty()){
+              startNewActivity(CorporateHomeActivity.class);
+      } else {
+          startNewActivity(CorporateProfileActivity.class);
+      }
+    }
+      else if (userData.getUserType().equals("fan")) {
+          startNewActivity(FanHomeActivity.class);
+      } else if (userData.getUserType().equals("designer")) {
+          startNewActivity(DesignerHomeActivity.class);
+      }
+
+  }
 
 }

@@ -84,6 +84,25 @@ public class AppPref {
         return sp.getInt("language", defVal);
     }
 
+/*
+    * setLoginFlag() method is used to set Login Flag value in SharedPreference.
+     * */
+
+    public void setLanguageStatus( boolean value) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("languageShow", value);
+        editor.commit();
+    }
+
+    /*
+    * getLoginFlag() method is used to get Login Flag value from SharedPreference.
+     * */
+
+    public boolean getLanguageStatus(boolean defVal) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean("languageShow", defVal);
+    }
 
 
 }

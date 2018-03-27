@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:icon="@drawable/ic_menu_camera"
+        android:icon="@drawable/ic_language"
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="language"

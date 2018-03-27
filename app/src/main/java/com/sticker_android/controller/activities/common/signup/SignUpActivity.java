@@ -1,11 +1,14 @@
 package com.sticker_android.controller.activities.common.signup;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -13,6 +16,8 @@ import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.profile.ProfileActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.common.terms.TermsActivity;
+import com.sticker_android.controller.activities.corporate.CorporateProfileActivity;
 import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
@@ -29,17 +34,17 @@ import retrofit2.Call;
 
 public class SignUpActivity extends AppBaseActivity {
 
-    private EditText edtFirstName,edtLastName,edtEmail,edtConfirmPassword,edtPassword;
+    private EditText edtFirstName, edtLastName, edtEmail, edtConfirmPassword, edtPassword;
     private Button btnSignUp;
     private AppPref appPref;
     private LinearLayout bgSignup;
-
+private CheckBox checkBoxTerms;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
         setContentView(R.layout.activity_sign_up);
-        Toolbar toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_arrow_small);
@@ -51,9 +56,20 @@ public class SignUpActivity extends AppBaseActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
-                            }
+            }
         });
+        changeStatusBarColor(getResources().getColor(R.color.colorFanText));
         setBackground();
+        checkboxTermsListener();
+    }
+
+    private void checkboxTermsListener() {
+    checkBoxTerms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if(isChecked)
+startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
+    });
     }
 
     private void setBackground() {
@@ -61,32 +77,35 @@ public class SignUpActivity extends AppBaseActivity {
         case "fan":
             bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
             btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.fan_btn_background));
+            changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
             break;
         case "designer":
             bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
             btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.designer_btn_background));
+            changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
             break;
         case "corporate":
             bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
            btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
+            changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
             break;
     }
     }
 
     private void init() {
-         appPref=new AppPref(this);
+        appPref = new AppPref(this);
     }
 
     @Override
     protected void setViewListeners() {
 
-    btnSignUp.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-     if(isValidData())
-      apiSignUp();
-    }
-     });
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isValidData())
+                    apiSignUp();
+            }
+        });
     }
 
     /**
@@ -94,10 +113,10 @@ public class SignUpActivity extends AppBaseActivity {
      */
     private void apiSignUp() {
 
-        String deviceId=   Utils.getDeviceId(this);
-        int language=getSelectedLanguage();
+        String deviceId = Utils.getDeviceId(this);
+        int language = getSelectedLanguage();
 
-        final CommonProgressBar commonProgressBar=new CommonProgressBar(this);
+        final CommonProgressBar commonProgressBar = new CommonProgressBar(this);
         commonProgressBar.show();
         Call<ApiResponse> apiResponseCall= RestClient.getService().userRegistration(language,edtEmail.getText().toString(),
                 edtPassword.getText().toString(),edtFirstName.getText().toString(),edtLastName.getText().toString(),
@@ -106,14 +125,15 @@ public class SignUpActivity extends AppBaseActivity {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 commonProgressBar.hide();
-                if(apiResponse.status) {
+                if (apiResponse.status) {
                     appPref.saveUserObject(apiResponse.paylpad.getData());
                     appPref.setLoginFlag(true);
                     moveToActivity();
-                }else{
-                    CommonSnackBar.show(edtEmail,apiResponse.error.message,Snackbar.LENGTH_SHORT);
+                } else {
+                    CommonSnackBar.show(edtEmail, apiResponse.error.message, Snackbar.LENGTH_SHORT);
+                }
             }
-            }
+
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
                 commonProgressBar.hide();
@@ -122,17 +142,27 @@ public class SignUpActivity extends AppBaseActivity {
     }
 
     private void moveToActivity() {
-       startNewActivity(ProfileActivity.class);
+        UserData userData = appPref.getUserInfo();
+        if (userData.getUserType().equals("corporate")) {
+            startNewActivity(CorporateProfileActivity.class);
+        } else if (userData.getUserType().equals("fan")) {
+            startNewActivity(FanHomeActivity.class);
+        } else if (userData.getUserType().equals("designer")) {
+            startNewActivity(DesignerHomeActivity.class);
+        }
+        finish();
     }
+
     @Override
     protected void setViewReferences() {
-         edtFirstName=findViewById(R.id.act_signup_edt_first_name);
-         edtLastName=  findViewById(R.id.act_signup_edt_last_name);
-         edtEmail=     findViewById(R.id.act_signup_edt_email);
-         edtPassword= findViewById(R.id.act_signup_edt_password);
-         edtConfirmPassword=findViewById(R.id.act_signup_edt_confirm_password);
-        btnSignUp=findViewById(R.id.act_signup_btn_register);
-        bgSignup=(LinearLayout)findViewById(R.id.bgSignup);
+        edtFirstName = (EditText) findViewById(R.id.act_signup_edt_first_name);
+        edtLastName = (EditText) findViewById(R.id.act_signup_edt_last_name);
+        edtEmail = (EditText) findViewById(R.id.act_signup_edt_email);
+        edtPassword = (EditText) findViewById(R.id.act_signup_edt_password);
+        edtConfirmPassword = (EditText) findViewById(R.id.act_signup_edt_confirm_password);
+        btnSignUp = (Button) findViewById(R.id.act_signup_btn_register);
+        bgSignup = (LinearLayout)findViewById(R.id.bgSignup);
+        checkBoxTerms=(CheckBox)findViewById(R.id.act_signup_terms_conditions);
     }
 
     @Override
@@ -141,47 +171,47 @@ public class SignUpActivity extends AppBaseActivity {
         String firstName = this.edtFirstName.getText().toString().trim();
         String lastName = this.edtLastName.getText().toString().trim();
         if (firstName.isEmpty()) {
-            CommonSnackBar.show(edtFirstName,getString(R.string.first_name_cannot_be_empty),Snackbar.LENGTH_SHORT);
+            CommonSnackBar.show(edtFirstName, getString(R.string.first_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
             this.edtFirstName.requestFocus();
             return false;
         }
         if (lastName.isEmpty()) {
-            CommonSnackBar.show(edtFirstName,getString(R.string.last_name_cannot_be_empty),Snackbar.LENGTH_SHORT);
+            CommonSnackBar.show(edtFirstName, getString(R.string.last_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
             this.edtLastName.requestFocus();
             return false;
         } else {
             String email = this.edtEmail.getText().toString().trim();
             if (email.isEmpty()) {
-                CommonSnackBar.show(edtEmail,getString(R.string.msg_email_cannot_be_empty),Snackbar.LENGTH_SHORT);
+                CommonSnackBar.show(edtEmail, getString(R.string.msg_email_cannot_be_empty), Snackbar.LENGTH_SHORT);
                 this.edtEmail.requestFocus();
                 return false;
             } else if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 String password = this.edtPassword.getText().toString().trim();
                 if (password.isEmpty()) {
-                    CommonSnackBar.show(edtPassword,getString(R.string.password_cannot_be_empty),Snackbar.LENGTH_SHORT);
+                    CommonSnackBar.show(edtPassword, getString(R.string.password_cannot_be_empty), Snackbar.LENGTH_SHORT);
                     this.edtPassword.requestFocus();
                     return false;
                 } else if (password.length() < 8) {
-                    CommonSnackBar.show(edtPassword,getString(R.string.password_cannot_be_less),Snackbar.LENGTH_SHORT);
+                    CommonSnackBar.show(edtPassword, getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
                     this.edtPassword.requestFocus();
                     return false;
                 } else {
                     String confirmPassword = this.edtConfirmPassword.getText().toString().trim();
                     if (confirmPassword.isEmpty()) {
-                        CommonSnackBar.show(edtConfirmPassword,getString(R.string.confirm_password_cannot_be_empty),Snackbar.LENGTH_SHORT);
+                        CommonSnackBar.show(edtConfirmPassword, getString(R.string.confirm_password_cannot_be_empty), Snackbar.LENGTH_SHORT);
                         this.edtPassword.requestFocus();
                         return false;
 
                     } else if (password.equals(confirmPassword)) {
 
                     } else {
-                        CommonSnackBar.show(edtPassword,getString(R.string.confirm_password_not_match),Snackbar.LENGTH_SHORT);
+                        CommonSnackBar.show(edtPassword, getString(R.string.confirm_password_not_match), Snackbar.LENGTH_SHORT);
                         this.edtPassword.requestFocus();
                         return false;
                     }
                 }
             } else {
-                CommonSnackBar.show(edtEmail,getString(R.string.msg_email_not_valid),Snackbar.LENGTH_SHORT);
+                CommonSnackBar.show(edtEmail, getString(R.string.msg_email_not_valid), Snackbar.LENGTH_SHORT);
                 this.edtEmail.requestFocus();
                 return false;
             }
@@ -195,4 +225,5 @@ public class SignUpActivity extends AppBaseActivity {
 
         return appPref.getLanguage(0);
     }
+
 }

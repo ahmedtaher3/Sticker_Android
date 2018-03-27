@@ -3,6 +3,8 @@
     package="com.sticker_android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".application.StickerApp"
@@ -31,19 +33,32 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
             android:name=".controller.activities.fan.home.FanHomeActivity"
             android:label="@string/title_activity_fan_home"
-            android:theme="@style/AppTheme" />
-        <activity   android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" android:name=".controller.activities.common.profile.ProfileActivity" />
-        <activity    android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" android:name=".controller.activities.common.changelanguage.ChangeLanguageActivity" />
-        <activity   android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" android:name=".controller.activities.corporate.home.DesignerHomeActivity" />
-        <activity   android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" android:name=".controller.activities.designer.home.CorporateHomeActivity"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".controller.activities.common.profile.ProfileActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".controller.activities.common.changelanguage.ChangeLanguageActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".controller.activities.corporate.home.DesignerHomeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".controller.activities.designer.home.CorporateHomeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".controller.activities.corporate.CorporateProfileActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".controller.activities.common.terms.TermsActivity"></activity>
     </application>
 
 </manifest>

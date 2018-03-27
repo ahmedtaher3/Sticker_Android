@@ -77,7 +77,7 @@ public class AccountSettingFragment extends BaseFragment {
         adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(new ChangePasswordFragment(), "Change Password");
         adapter.addFragment(new ContactUsFragment(), "Contact Us ");
-        adapter.addFragment(new ContactUsFragment(), "Terms & Conditions");
+        adapter.addFragment(new TermsAndConditionFragment(), "Terms & Conditions");
         adapter.addFragment(new AboutUsFragment(), "About Us ");
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(adapter);

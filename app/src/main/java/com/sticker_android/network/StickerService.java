@@ -1,10 +1,14 @@
 package com.sticker_android.network;
 
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 /**
  * Created by monika on 19/4/17.
@@ -44,5 +48,20 @@ public interface StickerService {
   public Call<ApiResponse> updateProfile(@Field("id") String userId,@Field("company_name")String companyName,@Field("authrized_key")String authKey
   ,@Field("company_address")String companyAddress,@Field("first_name")String firstName,
   @Field("last_name")String lastName,@Field("email")String email,@Field("user_type")String userType);
+
+  @Multipart
+  @POST(ApiConstant.API_PROFILE_IMAGE)
+  public Call<ApiResponse> profileImage(@Part("id") RequestBody requestBody,
+                                         @Part("language_id") RequestBody requestLanguageId,@Part("authrized_key")RequestBody requestAuthKey,
+                                         @Part MultipartBody.Part part);
+  @FormUrlEncoded
+  @POST(ApiConstant.API_CHANGE_LANGUAGE)
+  public Call<ApiResponse> changeLanguage(@Field("id") String userId,@Field("language_id")int languageId,@Field("authrized_key")String authKey);
+
+  @FormUrlEncoded
+  @POST(ApiConstant.API_GET_CONTENT)
+  public Call<ApiResponse> apiGetContent(@Field("id") String userId,@Field("authrized_key")String authKey);
+
+
 
 }

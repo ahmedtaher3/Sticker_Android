@@ -24,7 +24,6 @@ public class CommonProgressBar {
         mProgressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleLarge);
         mProgressBar.setIndeterminate(true);
 
-
         RelativeLayout.LayoutParams params = new
                 RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.MATCH_PARENT);

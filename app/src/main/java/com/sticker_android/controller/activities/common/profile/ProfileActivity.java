@@ -55,14 +55,14 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
     @Override
     protected void setViewReferences() {
-        rlBgProfile=findViewById(R.id.bgProfile);
-        llCorporate=findViewById(R.id.llCorporate);
-        edtCompanyName=findViewById(R.id.act_profile_edt_company_name);
-        edtCompanyAddress=findViewById(R.id.act_profile_edt_company_address);
-        edtProfileFirstName=findViewById(R.id.act_profile_edt_first_name);
-        edtProfileLastName=findViewById(R.id.act_profile_edt_last_name);
-        edtProfileEmail=findViewById(R.id.act_profile_edt_email);
-        btnSubmit=findViewById(R.id.act_profile_btn_register);
+        rlBgProfile= (RelativeLayout) findViewById(R.id.bgProfile);
+        llCorporate= (LinearLayout) findViewById(R.id.llCorporate);
+        edtCompanyName= (EditText) findViewById(R.id.act_profile_edt_company_name);
+        edtCompanyAddress= (EditText) findViewById(R.id.act_profile_edt_company_address);
+        edtProfileFirstName= (EditText) findViewById(R.id.act_profile_edt_first_name);
+        edtProfileLastName= (EditText) findViewById(R.id.act_profile_edt_last_name);
+        edtProfileEmail= (EditText) findViewById(R.id.act_profile_edt_email);
+        btnSubmit= (Button) findViewById(R.id.act_profile_btn_register);
     }
 
     @Override
@@ -95,6 +95,7 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
 
     private void init() {
+        appPref=new AppPref(this);
         userData=appPref.getUserInfo();
         if(userData.getUserType()!=null)
             switch (userData.getUserType()){
@@ -107,7 +108,7 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
                     llCorporate.setVisibility(View.GONE);
                     break;
                 case "corporate":
-                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.corporate_hdpi));
+                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
                     llCorporate.setVisibility(View.VISIBLE);
                     break;
             }
@@ -153,6 +154,7 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
         }
     }
 
+
     private void moveToNext() {
         UserData userData = appPref.getUserInfo();
         if (userData.getUserType().equals("corporate")) {
@@ -188,4 +190,5 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
         return super.onOptionsItemSelected(item);
     }
+
 }

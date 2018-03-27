@@ -15,7 +15,7 @@
     <com.sticker_android.view.CircularImageView
         android:src="@drawable/fan_hdpi"
         android:layout_gravity="center"
-        android:id="@+id/imageView"
+        android:id="@+id/imageViewProfile"
         android:layout_width="@dimen/sidemenu_profile_image_width"
         android:layout_height="@dimen/sidemenu_profile_image_height"
         app:srcCompat="@android:drawable/sym_def_app_icon" />
