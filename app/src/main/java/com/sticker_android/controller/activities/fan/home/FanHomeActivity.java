@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.sharedpref.AppPref;
 
+import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -73,6 +76,7 @@ public class FanHomeActivity extends AppBaseActivity
         actionBarToggle(toolbar);
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
         setUserDataIntoNaviagtion();
+        showFragmentManually();
     }
     private void setUserDataIntoNaviagtion() {
         View header= navigationView.getHeaderView(0);
@@ -82,6 +86,8 @@ public class FanHomeActivity extends AppBaseActivity
         tvEmail.setText(userData.getEmail());
         ImageView imageProfile=header.findViewById(R.id.imageViewProfile);
         imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
+        LinearLayout linearLayout=header.findViewById(R.id.nav_header_common);
+        linearLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_fan));
     }
     private void setBackground(Toolbar toolbar) {
         switch (userData.getUserType()){
@@ -273,6 +279,10 @@ public class FanHomeActivity extends AppBaseActivity
         } else {
             super.onBackPressed();
         }
+        FragmentManager fm = getSupportFragmentManager();
+        if (onBackPressed(fm)) {
+            return;
+        }
     }
 
 
@@ -333,5 +343,35 @@ public class FanHomeActivity extends AppBaseActivity
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
 
+    }
+
+    private boolean onBackPressed(FragmentManager fm) {
+        if (fm != null) {
+            if (fm.getBackStackEntryCount() > 0) {
+                fm.popBackStack();
+                return true;
+            }
+
+            List<Fragment> fragList = fm.getFragments();
+            if (fragList != null && fragList.size() > 0) {
+                for (Fragment frag : fragList) {
+                    if (frag == null) {
+                        continue;
+                    }
+                    if (frag.isVisible()) {
+                        if (onBackPressed(frag.getChildFragmentManager())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    private void showFragmentManually() {
+        //Manually displaying the first fragment - one time only
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container_home, new FanHomeFragment());
+        transaction.commit();
     }
 }

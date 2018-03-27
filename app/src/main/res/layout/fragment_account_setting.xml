@@ -7,5 +7,4 @@
     android:orientation="vertical"
     tools:context="com.sticker_android.controller.fragment.AccountSettingFragment">
     <include layout="@layout/tab_layout"/>
-
 </LinearLayout>

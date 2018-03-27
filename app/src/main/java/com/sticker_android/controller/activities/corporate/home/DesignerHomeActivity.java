@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -65,7 +67,9 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         setViewListeners();
         actionBarToggle(toolbar);
         setUserDataIntoNaviagtion();
-         }
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
+        showFragmentManually();
+    }
     private void setUserDataIntoNaviagtion() {
         View header= navigationView.getHeaderView(0);
         TextView   tvUserName=(TextView)header.findViewById(R.id.tvUserName);
@@ -74,6 +78,8 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         tvEmail.setText(userData.getEmail());
         ImageView imageProfile=header.findViewById(R.id.imageViewProfile);
         imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
+        LinearLayout linearLayout=header.findViewById(R.id.nav_header_common);
+        linearLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_designer));
 
     }
     @Override
@@ -189,11 +195,15 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
+        int count = getFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
             super.onBackPressed();
+            //additional code
+        } else {
+            getFragmentManager().popBackStack();
         }
+
     }
 
 
@@ -322,4 +332,13 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         res.updateConfiguration(conf, dm);
 
     }
+
+    private void showFragmentManually() {
+        //Manually displaying the first fragment - one time only
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container_home, new FanHomeFragment());
+        transaction.commit();
+    }
+
+
 }

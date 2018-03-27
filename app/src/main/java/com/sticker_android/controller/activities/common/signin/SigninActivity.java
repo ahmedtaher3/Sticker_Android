@@ -1,15 +1,11 @@
 package com.sticker_android.controller.activities.common.signin;
 
 import android.app.Dialog;
-import android.graphics.Color;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.Snackbar;
 import android.util.Patterns;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
@@ -26,7 +22,6 @@ import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.CommonSnackBar;
 import com.sticker_android.utils.ShareOneTouchAlertNewBottom;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
@@ -100,17 +95,21 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         String email = this.edtEmail.getText().toString().trim();
         if (email.isEmpty()) {
             this.edtEmail.requestFocus();
-            CommonSnackBar.show(edtEmail, getString(R.string.msg_email_cannot_be_empty), Snackbar.LENGTH_SHORT);
+            Utils.showToast(this,getString(R.string.msg_email_cannot_be_empty));
+          //  CommonSnackBar.show(edtEmail, getString(R.string.msg_email_cannot_be_empty), Snackbar.LENGTH_SHORT);
             return false;
         } else if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             String password = this.edtPassword.getText().toString();
             if (password.isEmpty()) {
                 this.edtPassword.requestFocus();
-                CommonSnackBar.show(edtEmail, getString(R.string.msg_password_cannot_be_empty), Snackbar.LENGTH_SHORT);
+                Utils.showToast(this,getString(R.string.msg_password_cannot_be_empty));
+
+               // CommonSnackBar.show(edtEmail, getString(R.string.msg_password_cannot_be_empty), Snackbar.LENGTH_SHORT);
                 return false;
             }
         } else {
-            CommonSnackBar.show(edtEmail, getString(R.string.msg_email_not_valid), Snackbar.LENGTH_SHORT);
+            Utils.showToast(this,getString(R.string.msg_email_not_valid));
+            //CommonSnackBar.show(edtEmail, getString(R.string.msg_email_not_valid), Snackbar.LENGTH_SHORT);
             return false;
         }
         return true;
@@ -126,7 +125,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
                 }
                 break;
             case R.id.act_signin_tv_signup:
-                startNewActivity(SignUpActivity.class);
+                startActivityWithResult(SignUpActivity.class,new Bundle(),111);
                 break;
             case R.id.act_signin_chtv_fan:
                 if (((CheckedTextView) v).isChecked()) {
@@ -176,9 +175,17 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
                 if (apiResponse.status) {
                     appPref.saveUserObject(apiResponse.paylpad.getData());
                     appPref.setLoginFlag(true);
-                    startNewActivity(FanHomeActivity.class);
+                    Intent intent=new Intent(SigninActivity.this,FanHomeActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.activity_animation_enter,
+                            R.anim.activity_animation_exit);
+                    finish();
                 } else
-                    CommonSnackBar.show(edtEmail, apiResponse.error.message, Snackbar.LENGTH_SHORT);
+                    Utils.showToast(SigninActivity.this,apiResponse.error.message);
+
+                //  CommonSnackBar.show(edtEmail, apiResponse.error.message, Snackbar.LENGTH_SHORT);
+
             }
 
             @Override
@@ -234,9 +241,12 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
                 commonProgressBar.hide();
                 if (apiResponse.status) {
                     mBottomSheetDialog.dismiss();
-                    CommonSnackBar.show(SigninActivity.this.edtEmail, apiResponse.message.message, Snackbar.LENGTH_SHORT);
+                    Utils.showToast(SigninActivity.this,apiResponse.message.message);
+                    //CommonSnackBar.show(SigninActivity.this.edtEmail, apiResponse.message.message, Snackbar.LENGTH_SHORT);
                 } else {
-                    CommonSnackBar.show(SigninActivity.this.edtEmail, apiResponse.error.message, Snackbar.LENGTH_SHORT);
+                    Utils.showToast(SigninActivity.this,apiResponse.error.message);
+
+//                    CommonSnackBar.show(SigninActivity.this.edtEmail, apiResponse.error.message, Snackbar.LENGTH_SHORT);
                 }
             }
 
@@ -347,6 +357,15 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
 
             }
         });
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        if (!hasFocus) {
+            Utils.hideSoftKeyboard(this, null);
+        }
     }
 
 

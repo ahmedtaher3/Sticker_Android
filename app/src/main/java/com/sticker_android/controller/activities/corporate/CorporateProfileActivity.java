@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -34,7 +33,6 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.CommonSnackBar;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -165,14 +163,17 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
     @Override
     protected boolean isValidData()
-    {if(edtCompanyName.getText().toString().isEmpty())
+    {if(edtCompanyName.getText().toString().trim().isEmpty())
     {
-        CommonSnackBar.show(edtCompanyName, "Company name cannot be empty", Snackbar.LENGTH_SHORT);
+        Utils.showToast(CorporateProfileActivity.this,"Company name cannot be empty");
+
+        //   CommonSnackBar.show(edtCompanyName, "Company name cannot be empty", Snackbar.LENGTH_SHORT);
         this.edtCompanyName.requestFocus();
         return false;
-    }else if(edtCompanyAddress.getText().toString().isEmpty()){
+    }else if(edtCompanyAddress.getText().toString().trim().isEmpty()){
+        Utils.showToast(CorporateProfileActivity.this, "Company address cannot be empty");
 
-        CommonSnackBar.show(edtCompanyAddress, "Company address cannot be empty", Snackbar.LENGTH_SHORT);
+     //   CommonSnackBar.show(edtCompanyAddress, "Company address cannot be empty", Snackbar.LENGTH_SHORT);
         this.edtCompanyAddress.requestFocus();
 
         return false;
@@ -255,7 +256,9 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
                         startNewActivity(CorporateHomeActivity.class);
                         finish();
                     } else {
-                        CommonSnackBar.show(edtCompanyAddress, apiResponse.error.message, Snackbar.LENGTH_SHORT);
+                        Utils.showToast(CorporateProfileActivity.this, apiResponse.error.message);
+
+                        //    CommonSnackBar.show(edtCompanyAddress, apiResponse.error.message, Snackbar.LENGTH_SHORT);
                     }
                 }
 
@@ -431,8 +434,13 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
         //noinspection SimplifiableIfStatement
         if (id == R.id.logout) {
             appPref.setLoginFlag(false);
-            startNewActivity(SigninActivity.class);
+            Intent intent=new Intent(this,SigninActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            overridePendingTransition(R.anim.activity_animation_enter,
+                    R.anim.activity_animation_exit);
             finish();
+
             return true;
         }
 

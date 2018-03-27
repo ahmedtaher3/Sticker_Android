@@ -81,6 +81,7 @@ public class AccountSettingFragment extends BaseFragment {
         adapter.addFragment(new AboutUsFragment(), "About Us ");
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(adapter);
+
     }
 
     private void setSelectedTabColor() {
@@ -94,14 +95,14 @@ public class AccountSettingFragment extends BaseFragment {
     private void setBackground() {
         switch (userdata.getUserType()){
             case "fan":
-                tabLayout.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
+                tabLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_fan));
                 break;
             case "designer":
-                tabLayout.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
+                tabLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_designer));
 
                 break;
             case "corporate":
-                tabLayout.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
+                tabLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_corporate));
 
                 break;
         }
@@ -129,4 +130,6 @@ public class AccountSettingFragment extends BaseFragment {
     protected boolean isValidData() {
         return false;
     }
+
+
 }

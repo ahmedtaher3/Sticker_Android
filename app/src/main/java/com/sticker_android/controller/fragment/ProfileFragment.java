@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
@@ -59,7 +60,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private String mCapturedImageUrl;
     private final int PROFILE_CAMERA_IMAGE = 0;
     private final int PROFILE_GALLERY_IMAGE = 1;
-
+private TextView personalProfile;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -114,11 +115,13 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
                     llCorporate.setVisibility(View.GONE);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.fan_btn_background));
+                    personalProfile.setTextColor(getResources().getColor(R.color.colorFanText));
                     break;
                 case "designer":
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
                     llCorporate.setVisibility(View.GONE);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.designer_btn_background));
+                    personalProfile.setTextColor(getResources().getColor(R.color.colorDesignerText));
 
                     break;
                 case "corporate":
@@ -130,7 +133,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     edtCompanyAddress.setSelection(edtCompanyAddress.getText().length());
                     imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imvProfile);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.corporate_btn_background));
-
+                    personalProfile.setTextColor(getResources().getColor(R.color.corporateBtnBackground));
                     break;
             }
     }
@@ -158,6 +161,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         edtProfileEmail= (EditText) view.findViewById(R.id.act_profile_edt_email);
         btnSubmit= (Button) view.findViewById(R.id.act_profile_btn_register);
         imvProfile=view.findViewById(R.id.imvProfile);
+        personalProfile=view.findViewById(R.id.frag_profile_tv_personal);
     }
 
     @Override

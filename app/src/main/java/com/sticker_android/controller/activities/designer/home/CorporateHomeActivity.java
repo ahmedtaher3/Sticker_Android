@@ -1,5 +1,6 @@
 package com.sticker_android.controller.activities.designer.home;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -67,6 +70,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         actionBarToggle(toolbar);
         setUserDataIntoNaviagtion();
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+        showFragmentManually();
     }
 
     private void setUserDataIntoNaviagtion() {
@@ -77,6 +81,9 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         tvEmail.setText(userData.getEmail());
         ImageView imageProfile=header.findViewById(R.id.imageViewProfile);
         imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
+        LinearLayout linearLayout=header.findViewById(R.id.nav_header_common);
+        linearLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_corporate));
+
     }
 
 
@@ -98,8 +105,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
 
                 break;
             case "corporate":
-                toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
-
+                toolbar.setBackground(getResources().getDrawable(R.drawable.corporate_header_hdpi));
                 break;
         }
     }
@@ -227,7 +233,12 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
             appPref.saveUserObject(new UserData());
             appPref.setLoginFlag(false);
             Toast.makeText(getApplicationContext(),"User logout Successfully",Toast.LENGTH_SHORT).show();
-            startNewActivity(SigninActivity.class);
+        Intent intent=new Intent(getActivity(),SigninActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            overridePendingTransition(R.anim.activity_animation_enter,
+                    R.anim.activity_animation_exit);
+
             finish();
         }
 
@@ -327,5 +338,10 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         res.updateConfiguration(conf, dm);
 
     }
-
+    private void showFragmentManually() {
+        //Manually displaying the first fragment - one time only
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container_home, new FanHomeFragment());
+        transaction.commit();
+    }
 }

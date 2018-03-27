@@ -10,9 +10,9 @@
     tools:context="com.sticker_android.controller.fragment.ContactUsFragment">
     <com.sticker_android.view.CircularImageView
         android:layout_marginTop="30dp"
-        android:src="@drawable/fan_hdpi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:src="@drawable/contact"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
 <TextView
     android:layout_marginTop="@dimen/margin_top_tv"
     android:textColor="@android:color/black"

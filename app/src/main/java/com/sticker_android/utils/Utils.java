@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -129,6 +128,36 @@ public class Utils {
             ex.printStackTrace();
         }
         return imagePath;
+    }
+
+    /**
+     * to hide the Keyboard
+     *
+     * @return
+     */
+    public static void hideSoftKeyboard(Activity activity, View view) {
+
+        try{
+            if (view == null) {
+                view = activity.getCurrentFocus();
+            }
+
+            InputMethodManager in = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            in.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+
+    /**
+     * show message In Toast.
+     * @param context
+     * @param string
+     */
+    public static void showToast(Context context, String string) {
+            Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
     }
 
 }

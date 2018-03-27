@@ -1,8 +1,7 @@
 package com.sticker_android.controller.activities.common.signup;
 
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Patterns;
 import android.view.View;
@@ -14,18 +13,15 @@ import android.widget.LinearLayout;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
-import com.sticker_android.controller.activities.common.profile.ProfileActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.common.terms.TermsActivity;
 import com.sticker_android.controller.activities.corporate.CorporateProfileActivity;
 import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
-import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.model.UserData;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.CommonSnackBar;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -61,6 +57,14 @@ private CheckBox checkBoxTerms;
         changeStatusBarColor(getResources().getColor(R.color.colorFanText));
         setBackground();
         checkboxTermsListener();
+        if(SigninActivity.selectedOption.equals("corporate"))
+        {
+            btnSignUp.setText(getString(R.string.txt_hint_proceed));
+        }else
+        {
+            btnSignUp.setText("Submit");
+
+        }
     }
 
     private void checkboxTermsListener() {
@@ -102,8 +106,14 @@ startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isValidData())
-                    apiSignUp();
+                Utils.hideKeyboard(SignUpActivity.this);
+                if (isValidData()) {
+                    if (checkBoxTerms.isChecked()) {
+                        apiSignUp();
+                    } else {
+                        Utils.showToast(SignUpActivity.this, "Please select terms and conditions ");
+                    }
+                }
             }
         });
     }
@@ -130,7 +140,9 @@ startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
                     appPref.setLoginFlag(true);
                     moveToActivity();
                 } else {
-                    CommonSnackBar.show(edtEmail, apiResponse.error.message, Snackbar.LENGTH_SHORT);
+                    Utils.showToast(SignUpActivity.this,apiResponse.error.message);
+
+                    //     CommonSnackBar.show(edtEmail, apiResponse.error.message, Snackbar.LENGTH_SHORT);
                 }
             }
 
@@ -142,14 +154,19 @@ startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
     }
 
     private void moveToActivity() {
+        Intent intent=null;
         UserData userData = appPref.getUserInfo();
         if (userData.getUserType().equals("corporate")) {
-            startNewActivity(CorporateProfileActivity.class);
+             intent=new Intent(SignUpActivity.this,CorporateProfileActivity.class);
         } else if (userData.getUserType().equals("fan")) {
-            startNewActivity(FanHomeActivity.class);
+             intent=new Intent(SignUpActivity.this,FanHomeActivity.class);
         } else if (userData.getUserType().equals("designer")) {
-            startNewActivity(DesignerHomeActivity.class);
+             intent=new Intent(SignUpActivity.this,DesignerHomeActivity.class);
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
         finish();
     }
 
@@ -171,47 +188,72 @@ startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
         String firstName = this.edtFirstName.getText().toString().trim();
         String lastName = this.edtLastName.getText().toString().trim();
         if (firstName.isEmpty()) {
-            CommonSnackBar.show(edtFirstName, getString(R.string.first_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
+            Utils.showToast(SignUpActivity.this,getString(R.string.first_name_cannot_be_empty));
+
+         //   CommonSnackBar.show(edtFirstName, getString(R.string.first_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
             this.edtFirstName.requestFocus();
             return false;
+        }else if(firstName.length()<3){
+            Utils.showToast(SignUpActivity.this,getString(R.string.first_name_cannot_be_less_than));
+
+          //  CommonSnackBar.show(edtFirstName, getString(R.string.first_name_cannot_be_less_than), Snackbar.LENGTH_SHORT);
+            this.edtFirstName.requestFocus();
+            return false;
+
         }
         if (lastName.isEmpty()) {
-            CommonSnackBar.show(edtFirstName, getString(R.string.last_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
+            Utils.showToast(SignUpActivity.this,getString(R.string.last_name_cannot_be_empty));
+          //  CommonSnackBar.show(edtFirstName, getString(R.string.last_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
             this.edtLastName.requestFocus();
             return false;
-        } else {
+        } else if(lastName.length()<3) {
+            Utils.showToast(SignUpActivity.this,getString(R.string.last_name_cannot_be_less_than));
+            //  CommonSnackBar.show(edtFirstName, getString(R.string.last_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
+            this.edtLastName.requestFocus();
+            return false;
+        }else {
             String email = this.edtEmail.getText().toString().trim();
             if (email.isEmpty()) {
-                CommonSnackBar.show(edtEmail, getString(R.string.msg_email_cannot_be_empty), Snackbar.LENGTH_SHORT);
+                Utils.showToast(SignUpActivity.this,getString(R.string.msg_email_cannot_be_empty));
+             //   CommonSnackBar.show(edtEmail, getString(R.string.msg_email_cannot_be_empty), Snackbar.LENGTH_SHORT);
                 this.edtEmail.requestFocus();
                 return false;
             } else if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 String password = this.edtPassword.getText().toString().trim();
                 if (password.isEmpty()) {
-                    CommonSnackBar.show(edtPassword, getString(R.string.password_cannot_be_empty), Snackbar.LENGTH_SHORT);
+                    Utils.showToast(SignUpActivity.this,getString(R.string.password_cannot_be_empty));
+                    //CommonSnackBar.show(edtPassword, getString(R.string.password_cannot_be_empty), Snackbar.LENGTH_SHORT);
                     this.edtPassword.requestFocus();
                     return false;
                 } else if (password.length() < 8) {
-                    CommonSnackBar.show(edtPassword, getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
+                    Utils.showToast(SignUpActivity.this,getString(R.string.password_cannot_be_less));
+
+                  //  CommonSnackBar.show(edtPassword, getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
                     this.edtPassword.requestFocus();
                     return false;
-                } else {
+                } /*else {
                     String confirmPassword = this.edtConfirmPassword.getText().toString().trim();
                     if (confirmPassword.isEmpty()) {
-                        CommonSnackBar.show(edtConfirmPassword, getString(R.string.confirm_password_cannot_be_empty), Snackbar.LENGTH_SHORT);
+                        Utils.showToast(SignUpActivity.this,getString(R.string.confirm_password_cannot_be_empty));
+
+                     //   CommonSnackBar.show(edtConfirmPassword, getString(R.string.confirm_password_cannot_be_empty), Snackbar.LENGTH_SHORT);
                         this.edtPassword.requestFocus();
                         return false;
 
                     } else if (password.equals(confirmPassword)) {
 
                     } else {
-                        CommonSnackBar.show(edtPassword, getString(R.string.confirm_password_not_match), Snackbar.LENGTH_SHORT);
+                        Utils.showToast(SignUpActivity.this,getString(R.string.confirm_password_not_match));
+
+                        //CommonSnackBar.show(edtPassword, getString(R.string.confirm_password_not_match), Snackbar.LENGTH_SHORT);
                         this.edtPassword.requestFocus();
                         return false;
                     }
-                }
+                }*/
             } else {
-                CommonSnackBar.show(edtEmail, getString(R.string.msg_email_not_valid), Snackbar.LENGTH_SHORT);
+                Utils.showToast(SignUpActivity.this,getString(R.string.msg_email_not_valid));
+
+              //  CommonSnackBar.show(edtEmail, getString(R.string.msg_email_not_valid), Snackbar.LENGTH_SHORT);
                 this.edtEmail.requestFocus();
                 return false;
             }
@@ -224,6 +266,15 @@ startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
 
 
         return appPref.getLanguage(0);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        if (!hasFocus) {
+            Utils.hideSoftKeyboard(this, null);
+        }
     }
 
 }

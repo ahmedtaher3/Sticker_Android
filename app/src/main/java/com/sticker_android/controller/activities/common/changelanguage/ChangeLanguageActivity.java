@@ -36,6 +36,7 @@ private    AppPref appPref;
                 appPref.setLanguageStatus(true);
             }
         });
+
     }
 
     private void appPref() {
