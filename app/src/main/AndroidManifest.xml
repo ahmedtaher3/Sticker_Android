@@ -26,7 +26,9 @@
         </activity>
         <activity
             android:name=".controller.activities.common.signin.SigninActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".controller.activities.common.signup.SignUpActivity"
@@ -41,7 +43,8 @@
         <activity
             android:name=".controller.activities.common.profile.ProfileActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".controller.activities.common.changelanguage.ChangeLanguageActivity"
             android:screenOrientation="portrait"
@@ -58,7 +61,14 @@
             android:name=".controller.activities.corporate.CorporateProfileActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".controller.activities.common.terms.TermsActivity"></activity>
+        <activity
+            android:name=".controller.activities.common.terms.TermsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".controller.activities.common.userprofile.ViewProfileActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
     </application>
 
 </manifest>

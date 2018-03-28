@@ -39,7 +39,7 @@
     <dimen name="signup_image_logo_height">100dp</dimen>
     <dimen name="signup_image_logo_width">100dp</dimen>
     <dimen name="signup_rl_padding">10dp</dimen>
-    <dimen name="signup_rl_content_padding">16dp</dimen>
+    <dimen name="signup_rl_content_padding">14dp</dimen>
     <dimen name="signup_rl_content_padding_left">16dp</dimen>
     <dimen name="signup_rl_content_padding_right">16dp</dimen>
     <dimen name="signup_btn_next_width">200dp</dimen>
@@ -59,8 +59,24 @@
     <dimen name="margin_top_tv">20dp</dimen>
 
     <!--Profile-->
+    <dimen name="profile_rlheight_150">170dp</dimen>
+    <dimen name="profile_rl_height">130dp</dimen>
+    <dimen name="profile_image_width">90dp</dimen>
+    <dimen name="profile_image_height">90dp</dimen>
+
     <dimen name="profile_padding_start">30dp</dimen>
     <dimen name="profile_padding_end">30dp</dimen>
     <!--Change Language-->
-    <dimen name="logo_margin_top">30dp</dimen>
+    <dimen name="logo_margin_top">20dp</dimen>
+    <dimen name="btn_margin_top">40dp</dimen>
+    <dimen name="change_lang_logo_height">120dp</dimen>
+    <dimen name="change_lang_logo_width">120dp</dimen>
+
+    <!--change password-->
+    <dimen name="change_password_margin_start">20dp</dimen>
+    <dimen name="change_password_margin_end">20dp</dimen>
+    <dimen name="btn_change_password_width">90dp</dimen>
+    <!--text size-->
+    <dimen name="size_20sp">20sp</dimen>
+
 </resources>

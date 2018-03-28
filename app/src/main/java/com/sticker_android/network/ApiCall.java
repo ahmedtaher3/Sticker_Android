@@ -61,8 +61,9 @@ public abstract class ApiCall implements Callback<ApiResponse> {
 
     @Override
     public void onFailure(Call<ApiResponse> call, Throwable t) {
-
+        new  ApiError(mActivity,t);
         onFail(call,t);
+
         //  LogUtils.error("Request Cancel by user Manually");
     }
 

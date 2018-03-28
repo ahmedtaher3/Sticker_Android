@@ -1,0 +1,83 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_25">25dp</dimen>
+    <dimen name="dp_30">30dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_50">50dp</dimen>
+    <dimen name="dp_60">60dp</dimen>
+    <dimen name="dp_70">70dp</dimen>
+    <dimen name="dp_80">80dp</dimen>
+    <dimen name="dp_120">120dp</dimen>
+    <dimen name="sp_15.8">15.8sp</dimen>
+    <dimen name="sp_13.9">13.9sp</dimen>
+    <dimen name="sp_14.4">14.4sp</dimen>
+    <dimen name="sp_19.2">19.2sp</dimen>
+    <dimen name="dp_22">22dp</dimen>
+    <dimen name="dp_35">35dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_55">55dp</dimen>
+
+    <!--view radius-->
+    <dimen name="corner_radius">10dp</dimen>
+    <dimen name="text_size_edittext">16sp</dimen>
+    <!--SignIn-->
+    <dimen name="signin_image_logo_height">100dp</dimen>
+    <dimen name="signin_image_logo_width">100dp</dimen>
+    <dimen name="corporate_logo_image_height">70dp</dimen>
+    <dimen name="corporate_logo_image_weight">70dp</dimen>
+
+    <!--SignUp-->
+    <dimen name="signup_image_logo_height">150dp</dimen>
+    <dimen name="signup_image_logo_width">150dp</dimen>
+    <dimen name="signup_rl_padding">20dp</dimen>
+    <dimen name="signup_rl_content_padding">26dp</dimen>
+    <dimen name="signup_rl_content_padding_left">26dp</dimen>
+    <dimen name="signup_rl_content_padding_right">26dp</dimen>
+    <dimen name="signup_btn_next_width">300dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">200dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+
+    <!--Profile image-->
+    <dimen name="sidemenu_profile_image_width">80dp</dimen>
+    <dimen name="sidemenu_profile_image_height">80dp</dimen>
+
+    <dimen name="margin_top_text_profile">10dp</dimen>
+
+    <!--Contact us-->
+    <dimen name="margin_top_tv">20dp</dimen>
+
+    <!--Profile-->
+    <dimen name="profile_rlheight_150">250dp</dimen>
+
+    <dimen name="profile_rl_height">200dp</dimen>
+
+    <dimen name="profile_image_width">120dp</dimen>
+    <dimen name="profile_image_height">120dp</dimen>
+
+    <dimen name="profile_padding_start">40dp</dimen>
+    <dimen name="profile_padding_end">40dp</dimen>
+    <!--Change Language-->
+    <dimen name="logo_margin_top">30dp</dimen>
+    <dimen name="btn_margin_top">60dp</dimen>
+    <dimen name="change_lang_logo_height">170dp</dimen>
+    <dimen name="change_lang_logo_width">170dp</dimen>
+
+    <!--change password-->
+    <dimen name="change_password_margin_start">40dp</dimen>
+    <dimen name="change_password_margin_end">40dp</dimen>
+    <dimen name="btn_change_password_width">100dp</dimen>
+
+
+</resources>

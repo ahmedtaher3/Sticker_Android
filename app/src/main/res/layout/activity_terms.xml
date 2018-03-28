@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_terms"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.sticker_android.controller.activities.common.terms.TermsActivity">
-<fragment
+    <include layout="@layout/toolbar"/>
+    <fragment
     android:name="com.sticker_android.controller.fragment.TermsAndConditionFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
-</RelativeLayout>
+</LinearLayout>

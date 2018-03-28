@@ -11,9 +11,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/transparent"
         android:minHeight="?attr/actionBarSize">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+
         <TextView
             fontPath="fonts/SanFranciscoText-Regular_0.ttf"
             android:layout_centerInParent="true"
@@ -25,6 +23,7 @@
             android:text=""
             android:textSize="@dimen/sp_19.2"
             android:textStyle="bold" />
-</RelativeLayout>
+
     </android.support.v7.widget.Toolbar>
+
 </merge>

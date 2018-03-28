@@ -4,7 +4,6 @@
     android:fillViewport="true"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingPrefix"
-    android:scrollbarThumbVertical="@android:color/transparent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -48,7 +47,7 @@
                     android:layout_width="@dimen/signup_image_logo_width"
                     android:layout_height="@dimen/signup_image_logo_height"
                     android:layout_centerInParent="true"
-                    app:srcCompat="@drawable/fan_hdpi" />
+                    app:srcCompat="@drawable/football" />
             </RelativeLayout>
             <RelativeLayout
                 android:padding="@dimen/signup_rl_padding"
@@ -127,41 +126,6 @@
                                     android:gravity="center"
                                     android:text="@string/text_corporate" />
                             </RadioGroup>
-                            <RelativeLayout
-                                android:visibility="gone"
-                                android:layout_marginBottom="@dimen/dp_2"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-                                <CheckedTextView
-                                    android:clickable="true"
-                                    style="@style/checkedTextView"
-                                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                                   android:layout_alignParentStart="true"
-                                    android:layout_centerInParent="true"
-                                    android:id="@+id/act_signin_chtv_fan"
-                                    android:drawableTop="@drawable/fan_hdpi"
-                                    android:text="@string/txt_fan" />
-                                <CheckedTextView
-                                    android:clickable="true"
-                                    style="@style/checkedTextView"
-                                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                                    android:layout_centerInParent="true"
-                                    android:id="@+id/act_signin_chtv_designer"
-                                    android:drawableTop="@drawable/designer_hdpi"
-                                    android:text="@string/txt_designer"
-                                 />
-                                <CheckedTextView
-                                    android:clickable="true"
-                                    style="@style/checkedTextView"
-                                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_centerInParent="true"
-                                    android:id="@+id/act_signin_chtv_corporate"
-                                    android:drawableTop="@drawable/corporate_hdpi"
-                                    android:text="@string/text_corporate"
-                                    />
-                            </RelativeLayout>
 
                             <android.support.design.widget.TextInputLayout
                                 android:layout_marginTop="@dimen/dp_5"
@@ -185,7 +149,7 @@
 
                             <android.support.design.widget.TextInputLayout
                                 app:passwordToggleEnabled="true"
-                                app:passwordToggleTint="@color/colorFanText"
+                                app:passwordToggleTint="@color/edt_background_tint"
                                 android:id="@+id/act_signin_txt_input_phone_number"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -237,7 +201,7 @@
                                     android:textSize="15sp"
                                     android:textColor="@android:color/black"
                                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                                    android:layout_marginTop="20dp"
+                                    android:layout_marginTop="18dp"
                                     android:text="@string/txt_dont_have_a_account"
                                     android:gravity="center"
                                     android:layout_width="match_parent"
@@ -249,7 +213,7 @@
                                     android:textColor="@color/colorFanText"
                                     android:layout_marginStart="@dimen/dp_5"
                                     android:id="@+id/act_signin_tv_signup"
-                                    android:layout_marginTop="20dp"
+                                    android:layout_marginTop="18dp"
                                     android:text="@string/txt_signup"
                                     android:gravity="center"
                                     android:layout_width="match_parent"

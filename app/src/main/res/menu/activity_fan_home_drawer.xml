@@ -4,28 +4,22 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
             android:title="Home" />
         <item
             android:id="@+id/nav_downloads"
-            android:icon="@drawable/ic_menu_gallery"
             android:title="My Downloads" />
         <item
             android:id="@+id/nav_customization"
-            android:icon="@drawable/ic_menu_slideshow"
             android:title="My Customization" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_menu_manage"
             android:title="My Profile" />
         <item
             android:id="@+id/nav_account_setting"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Account Setings" />
+            android:title="Account Settings" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Logout" />
+            android:title="Log Out" />
 
     </group>
 </menu>

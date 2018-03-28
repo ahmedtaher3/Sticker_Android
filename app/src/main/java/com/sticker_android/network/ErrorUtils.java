@@ -1,7 +1,12 @@
 package com.sticker_android.network;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.view.View;
+import android.widget.TextView;
 
+import com.sticker_android.R;
+import com.sticker_android.utils.Utils;
 
 
 public class ErrorUtils {
@@ -13,7 +18,9 @@ public class ErrorUtils {
      * @param msg msg of dialog
      */
     public static void showMessageDialog(Context mContext, String title, String msg) {
-      /*  AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+        Utils.showToast(mContext,msg);
+     /*   AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.layout_dialog, null);
         TextView txtTitle = (TextView) dialogView.findViewById(R.id.dialogTitle);
         TextView txtMsg = (TextView) dialogView.findViewById(R.id.dialogMsg);

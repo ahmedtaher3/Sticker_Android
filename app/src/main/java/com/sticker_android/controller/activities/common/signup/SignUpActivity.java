@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
@@ -22,6 +23,7 @@ import com.sticker_android.model.UserData;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -34,7 +36,9 @@ public class SignUpActivity extends AppBaseActivity {
     private Button btnSignUp;
     private AppPref appPref;
     private LinearLayout bgSignup;
-private CheckBox checkBoxTerms;
+    private CheckBox checkBoxTerms;
+    private TextView tvTermsConditions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +47,7 @@ private CheckBox checkBoxTerms;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_arrow_small);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.back_arrow_small);
         setViewReferences();
         setViewListeners();
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -56,7 +58,10 @@ private CheckBox checkBoxTerms;
         });
         changeStatusBarColor(getResources().getColor(R.color.colorFanText));
         setBackground();
-        checkboxTermsListener();
+        setLoginButtonData();
+    }
+
+    private void setLoginButtonData() {
         if(SigninActivity.selectedOption.equals("corporate"))
         {
             btnSignUp.setText(getString(R.string.txt_hint_proceed));
@@ -67,14 +72,6 @@ private CheckBox checkBoxTerms;
         }
     }
 
-    private void checkboxTermsListener() {
-    checkBoxTerms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if(isChecked)
-startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
-    });
-    }
 
     private void setBackground() {
     switch (SigninActivity.selectedOption){
@@ -102,7 +99,13 @@ startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
 
     @Override
     protected void setViewListeners() {
+        tvTermsConditions.setOnClickListener(new View.OnClickListener() {
+    @Override
+     public void onClick(View v) {
+        startActivityWithResult(TermsActivity.class,new Bundle(),101);
 
+    }
+        });
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,15 +129,16 @@ startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
         String deviceId = Utils.getDeviceId(this);
         int language = getSelectedLanguage();
 
-        final CommonProgressBar commonProgressBar = new CommonProgressBar(this);
-        commonProgressBar.show();
+        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+
         Call<ApiResponse> apiResponseCall= RestClient.getService().userRegistration(language,edtEmail.getText().toString(),
                 edtPassword.getText().toString(),edtFirstName.getText().toString(),edtLastName.getText().toString(),
                 SigninActivity.selectedOption,"android","111",deviceId);
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                commonProgressBar.hide();
+             progressDialogHandler.hide();
                 if (apiResponse.status) {
                     appPref.saveUserObject(apiResponse.paylpad.getData());
                     appPref.setLoginFlag(true);
@@ -148,7 +152,7 @@ startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-                commonProgressBar.hide();
+       progressDialogHandler.hide();
             }
         });
     }
@@ -163,7 +167,7 @@ startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
         } else if (userData.getUserType().equals("designer")) {
              intent=new Intent(SignUpActivity.this,DesignerHomeActivity.class);
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
@@ -180,6 +184,7 @@ startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
         btnSignUp = (Button) findViewById(R.id.act_signup_btn_register);
         bgSignup = (LinearLayout)findViewById(R.id.bgSignup);
         checkBoxTerms=(CheckBox)findViewById(R.id.act_signup_terms_conditions);
+        tvTermsConditions=(TextView)findViewById(R.id.tv_act_signup_terms_conditions);
     }
 
     @Override
@@ -277,4 +282,9 @@ startActivityWithResult(TermsActivity.class,new Bundle(),101);        }
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Utils.hideKeyboard(this);
+        super.onBackPressed();
+    }
 }

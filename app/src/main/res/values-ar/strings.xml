@@ -1,26 +1,29 @@
 <resources>
-    <string name="app_name">" Sticker_Android"</string>
+    <string name="app_name">"Sport Widget"</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="txt_fan">معجب</string>
+    <string name="hello_blank_fragment">Under Development</string>
+    <string name="txt_fan">Fan</string>
     <string name="txt_designer">Designer</string>
     <string name="text_corporate">Corporate</string>
 
     <!--Sign In-->
-    <string name="txt_dont_have_a_account">"Don't have a account ?"</string>
-    <string name="txt_signup">سجل</string>
-    <string name="txt_forgot_password">"Forgot Password ?"</string>
+    <string name="txt_dont_have_a_account">"Don't have a account?"</string>
+    <string name="txt_signup">SignUp</string>
+    <string name="txt_forgot_password">"Forgot Password?"</string>
     <string name="txt_login">Login</string>
-    <string name="txt_hint_email">البريد الإلكتروني</string>
-    <string name="txt_hint_password">كلمه السر</string>
+    <string name="txt_hint_email">Email</string>
+    <string name="txt_hint_password">Password</string>
     <!--Signin validation message-->
-    <string name="msg_email_cannot_be_empty">لا يمكن أن يكون البريد الإلكتروني فارغًا</string>
-    <string name="msg_email_not_valid">البريد الإلكتروني غير صالح.</string>
+    <string name="msg_email_cannot_be_empty">Email cannot be empty.</string>
+    <string name="msg_email_not_valid">Email not valid.</string>
     <string name="msg_password_cannot_be_empty">Password cannot be empty.</string>
 
     <!--Signup validation-->
     <string name="first_name_cannot_be_empty">First name cannot be empty.</string>
+    <string name="first_name_cannot_be_less_than">First name cannot be less than 3 character.</string>
+    <string name="last_name_cannot_be_less_than">Last name cannot be less than 3 character.</string>
+
     <string name="last_name_cannot_be_empty">Last name cannot be empty.</string>
     <string name="password_cannot_be_empty">Password cannot be empty.</string>
     <string name="password_cannot_be_less">Password cannot be less than 8 digit.</string>
@@ -33,6 +36,7 @@
     <string name="txt_hint_last_name">Last Name</string>
     <string name="txt_hint_conform_password">Confirm password</string>
     <string name="txt_hint_next">Next</string>
+    <string name="txt_hint_proceed">Proceed</string>
     <string name="txt_hint_terms_conditions">"Terms &amp; Conditions"</string>
     <string name="title_activity_fan_home">FanHomeActivity</string>
 
@@ -44,6 +48,8 @@
     <string name="txt_account_setting">Account Settings</string>
     <string name="txt_profile">Profile</string>
 
+    <string name="txt_home">Home</string>
+    <string name="txt_myprofile">My Profile</string>
     <!--Change password-->
     <string name="frag_change_pass_text_hint_new_password">New Password</string>
 
@@ -53,15 +59,34 @@
 
     <!--Contact Us-->
     <string name="contact_us_txt_hint_Email_address">Email Address :</string>
-    <string name="contact_us_txt_Email_address">abc@abc.com</string>
+    <string name="contact_us_txt_Email_address">SportWidget12@gmail.com</string>
     <string name="contact_us_txt_hint_contact_number">Contact Number :</string>
-    <string name="contact_us_txt_contact_number">"+1978394911"</string>
+    <string name="contact_us_txt_contact_number">"+19874562548845"</string>
 
     <!--Profile-->
     <string name="txt_personal_details">Personal Details</string>
     <string name="txt_btn_update">Update</string>
+    <string name="txt_btn_continue">Continue</string>
+    <!--AboutUs-->
+    <string name="txt_about_us">"Contact"</string>
 
-<!--AboutUs-->
-<string name="txt_about_us">"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Why do we use it?
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."</string>
+    <!--Forgot password-->
+    <string name="txt_reset_link_will_be_sent">A reset link will we sent to the
+    registered email address.</string>
+    <string name="submit">Submit</string>
+
+    <string name="take_photo">Take a photo</string>
+    <string name="pick_gallery">Choose from gallery</string>
+
+    <string name="open_setting">Open Setting</string>
+    <string name="cancel">Cancel</string>
+    <string name="app_permission">Sport Widget Permission!</string>
+    <string name="external_storage_permission_msg">"Go to app setting to enable external storage access permission."</string>
+
+    <string name="txt_string_english">English</string>
+    <string name="txt_string_arabic">Arabic</string>
+
+    <string name="txt_call">Call</string>
+    <string name="no_contact_available">No contact available</string>
+    <string name="title_activity_demo">DemoActivity</string>
 </resources>

@@ -4,10 +4,13 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Patterns;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -17,14 +20,19 @@ import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.common.changelanguage.ChangeLanguageActivity;
 import com.sticker_android.controller.activities.common.signup.SignUpActivity;
+import com.sticker_android.controller.activities.corporate.CorporateProfileActivity;
+import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
+import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.model.UserData;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.ShareOneTouchAlertNewBottom;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import retrofit2.Call;
@@ -36,7 +44,6 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
     private TextView tvForgotPassword;
     private Button btnLogin;
     private TextView tvSignUp;
-    private CheckedTextView chtvFan, chtvDesigner, chtvCorporate;
     private LinearLayout bgLl;
     private AppPref appPref;
     private RadioGroup radioGroup;
@@ -52,10 +59,23 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         init();
         setContentView(R.layout.activity_signin);
+        setToolbar();
         setViewReferences();
         setViewListeners();
         languageSelection();
         changeStatusBarColor(getResources().getColor(R.color.colorFanText));
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Utils.changeLanguage(String.valueOf(appPref.getLanguage(0)),this,SigninActivity.class);
+    }
+
+    private void setToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
     }
 
     private void init() {
@@ -66,9 +86,6 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
     protected void setViewListeners() {
         btnLogin.setOnClickListener(this);
         tvSignUp.setOnClickListener(this);
-        chtvFan.setOnClickListener(this);
-        chtvCorporate.setOnClickListener(this);
-        chtvDesigner.setOnClickListener(this);
         tvForgotPassword.setOnClickListener(this);
     }
 
@@ -79,9 +96,6 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         tvForgotPassword = (TextView) findViewById(R.id.act_signin_forgot_password);
         btnLogin = (Button) findViewById(R.id.act_signin_btn_login);
         tvSignUp = (TextView) findViewById(R.id.act_signin_tv_signup);
-        chtvFan = (CheckedTextView) findViewById(R.id.act_signin_chtv_fan);
-        chtvDesigner = (CheckedTextView) findViewById(R.id.act_signin_chtv_designer);
-        chtvCorporate = (CheckedTextView) findViewById(R.id.act_signin_chtv_corporate);
         bgLl = (LinearLayout) findViewById(R.id.act_signin_bg_ll);
         rdbtnFan = (RadioButton) findViewById(R.id.rdbtnFan);
         rdbtnDesigner = (RadioButton) findViewById(R.id.rdbtnDesigner);
@@ -125,33 +139,12 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
                 }
                 break;
             case R.id.act_signin_tv_signup:
-                startActivityWithResult(SignUpActivity.class,new Bundle(),111);
-                break;
-            case R.id.act_signin_chtv_fan:
-                if (((CheckedTextView) v).isChecked()) {
-                    fanBackgroundChange(v);
-                } else {
-                    chtvFan.setTextColor(getResources().getColor(R.color.edt_background_tint));
-                    ((CheckedTextView) v).setChecked(true);
-                }
-                break;
-            case R.id.act_signin_chtv_designer:
-                if (((CheckedTextView) v).isChecked()) {
-                    designerBackgroundChange(v);
-                } else {
-                    chtvDesigner.setTextColor(getResources().getColor(R.color.edt_background_tint));
-                    ((CheckedTextView) v).setChecked(true);
-                }
-                break;
-            case R.id.act_signin_chtv_corporate:
-                if (((CheckedTextView) v).isChecked()) {
-                    corporatefanBackgroundChange(v);
-                } else {
-                    chtvCorporate.setTextColor(getResources().getColor(R.color.edt_background_tint));
-                    ((CheckedTextView) v).setChecked(true);
-                }
+                edtEmail.setText("");
+                edtPassword.setText("");
+                startNewActivity(SignUpActivity.class);
                 break;
             case R.id.act_signin_forgot_password:
+                Log.d("Forgot password","cloicked");
                 openBottomSheet();
                 break;
             default:
@@ -165,23 +158,18 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
     private void loginApiCall() {
 
         String deviceId = Utils.getDeviceId(this);
-        final CommonProgressBar commonProgressBar = new CommonProgressBar(this);
-        commonProgressBar.show();
+        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+        progressDialogHandler.show();
        Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(edtEmail.getText().toString(),edtPassword.getText().toString(),"android","1233",deviceId,selectedOption);
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                commonProgressBar.hide();
+                progressDialogHandler.hide();
                 if (apiResponse.status) {
                     appPref.saveUserObject(apiResponse.paylpad.getData());
                     appPref.setLoginFlag(true);
-                    Intent intent=new Intent(SigninActivity.this,FanHomeActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.activity_animation_enter,
-                            R.anim.activity_animation_exit);
-                    finish();
-                } else
+                    moveToActivity();
+                       } else
                     Utils.showToast(SigninActivity.this,apiResponse.error.message);
 
                 //  CommonSnackBar.show(edtEmail, apiResponse.error.message, Snackbar.LENGTH_SHORT);
@@ -190,29 +178,36 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-                commonProgressBar.hide();
+                progressDialogHandler.hide();
             }
         });
     }
 
-    private void openBottomSheet() {
+        private void moveToActivity() {
+            Intent intent=null;
+            UserData userData = appPref.getUserInfo();
+            if (userData.getUserType().equals("corporate")) {
+                if(userData.getCompanyName()!=null&&!userData.getCompanyName().isEmpty())
+                {
+                    intent=new Intent(SigninActivity.this,CorporateHomeActivity.class);
 
-        /*final BottomSheetDialogFragment mBottomSheetDialog = new BottomSheetDialogFragment(getActivity());
-        View sheetView = getActivity().getLayoutInflater().inflate(R.layout.forgot_password, null);
-        mBottomSheetDialog.setContentView(sheetView);
-        mBottomSheetDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        mBottomSheetDialog.show();
-        final EditText edtEmail = (EditText) sheetView.findViewById(R.id.forgot_password_edt_email);
-        Button sendMail = (Button) sheetView.findViewById(R.id.sendMail);
-        sendMail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mBottomSheetDialog.dismiss();
-                if (isForgetEmailValidate(edtEmail)) {
-                    apiForgotPassword(edtEmail, mBottomSheetDialog);
+                }else{
+                    intent=new Intent(SigninActivity.this,CorporateProfileActivity.class);
                 }
+             } else if (userData.getUserType().equals("fan")) {
+                intent=new Intent(SigninActivity.this,FanHomeActivity.class);
+            } else if (userData.getUserType().equals("designer")) {
+                intent=new Intent(SigninActivity.this,DesignerHomeActivity.class);
             }
-        });*/
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            overridePendingTransition(R.anim.activity_animation_enter,
+                    R.anim.activity_animation_exit);
+            finish();
+        }
+
+
+    private void openBottomSheet() {
 
         ShareOneTouchAlertNewBottom dialogFragment = new  ShareOneTouchAlertNewBottom(new ShareOneTouchAlertNewBottom.DialogListener() {
             @Override
@@ -231,14 +226,13 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
     }
 
     private void apiForgotPassword(EditText edtEmail, final BottomSheetDialog mBottomSheetDialog) {
-
-        final CommonProgressBar commonProgressBar = new CommonProgressBar(this);
-        commonProgressBar.show();
+        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+        progressDialogHandler.show();
         Call<ApiResponse> apiResponseCall = RestClient.getService().forgotPassword(edtEmail.getText().toString());
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                commonProgressBar.hide();
+              progressDialogHandler.hide();
                 if (apiResponse.status) {
                     mBottomSheetDialog.dismiss();
                     Utils.showToast(SigninActivity.this,apiResponse.message.message);
@@ -252,7 +246,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-                commonProgressBar.hide();
+          progressDialogHandler.hide();
             }
         });
 
@@ -275,49 +269,6 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         }
 
     }
-
-    private void fanBackgroundChange(View v) {
-        chtvFan.setTextColor(getResources().getColor(R.color.colorFanText));
-        bgLl.setBackgroundResource(R.drawable.gradient_bg_fan_hdpi);
-        chtvCorporate.setChecked(false);
-        chtvDesigner.setChecked(false);
-        chtvCorporate.setTextColor(getResources().getColor(R.color.edt_background_tint));
-        chtvDesigner.setTextColor(getResources().getColor(R.color.edt_background_tint));
-        //  btnLogin.setTextAppearance(this, R.style.btnstyleFan);
-        btnLogin.setBackgroundDrawable(getResources().getDrawable(R.drawable.fan_btn_background));
-        tvSignUp.setTextColor(getResources().getColor(R.color.colorFanText));
-
-
-    }
-
-    private void designerBackgroundChange(View v) {
-        chtvDesigner.setTextColor(getResources().getColor(R.color.colorDesignerText));
-        bgLl.setBackgroundResource(R.drawable.gradient_bg_des_hdpi);
-        chtvCorporate.setChecked(false);
-        chtvFan.setChecked(false);
-        chtvFan.setTextColor(getResources().getColor(R.color.edt_background_tint));
-        chtvCorporate.setTextColor(getResources().getColor(R.color.edt_background_tint));
-        btnLogin.setBackgroundDrawable(getResources().getDrawable(R.drawable.designer_btn_background));
-        tvSignUp.setTextColor(getResources().getColor(R.color.colorDesignerText));
-
-
-    }
-
-    private void corporatefanBackgroundChange(View v) {
-        chtvCorporate.setTextColor(getResources().getColor(R.color.corporateBtnBackground));
-        bgLl.setBackgroundResource(R.drawable.gradient_bg_hdpi);
-        chtvFan.setChecked(false);
-        chtvDesigner.setChecked(false);
-        chtvDesigner.setTextColor(getResources().getColor(R.color.edt_background_tint));
-        chtvFan.setTextColor(getResources().getColor(R.color.edt_background_tint));
-        btnLogin.setTextAppearance(this, R.style.btnstyleCorporate);
-        btnLogin.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
-        tvSignUp.setTextColor(getResources().getColor(R.color.colorCorporateText));
-
-
-    }
-
-
     private void languageSelection() {
 
         radioGroupSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -359,6 +310,28 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.fan_home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            startNewActivity(ChangeLanguageActivity.class);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);

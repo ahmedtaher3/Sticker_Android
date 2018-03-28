@@ -1,11 +1,5 @@
 package com.sticker_android.controller.activities.fan.home;
 
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -16,38 +10,26 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.common.userprofile.ViewProfileActivity;
 import com.sticker_android.controller.fragment.AccountSettingFragment;
-import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.controller.fragment.fancustomization.FanCustomizationFragment;
 import com.sticker_android.controller.fragment.fandownloads.FanDownloadFragment;
 import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
 import com.sticker_android.model.UserData;
-import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
-import com.sticker_android.network.ApiResponse;
-import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.List;
-import java.util.Locale;
-
-import retrofit2.Call;
 
 public class FanHomeActivity extends AppBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -92,7 +74,7 @@ public class FanHomeActivity extends AppBaseActivity
     private void setBackground(Toolbar toolbar) {
         switch (userData.getUserType()){
             case "fan":
-                toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
+                toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_xhdpi));
                 break;
             case "designer":
                 toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
@@ -110,9 +92,17 @@ public class FanHomeActivity extends AppBaseActivity
         userData=appPref.getUserInfo();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        init();
+        setUserDataIntoNaviagtion();
+    }
+
     private void setToolBarTitle() {
         TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(getResources().getString(R.string.txt_account_setting));
+        textView.setText(getResources().getString(R.string.txt_home));
+        toolbar.setTitle("");
         centerToolbarText(toolbar,textView);
     }
 
@@ -138,13 +128,6 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
     private void setToolbarBackground(Toolbar toolbar) {
-        Drawable drawable=getBaseContext().getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi);
-        if (Build.VERSION.SDK_INT >= 16){
-            toolbar.setBackground(drawable);
-        }else{
-            toolbar.setBackgroundDrawable(drawable);
-        }
-        if(userData.getUserType()!=null)
         setBackground(toolbar);
     }
 
@@ -171,103 +154,6 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.fan_home, menu);
-         item = menu.findItem(R.id.action_settings);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            openLanguageDialog();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void openLanguageDialog() {
-
-        LayoutInflater factory = LayoutInflater.from(getActivity());
-        final View languageDialogview = factory.inflate(R.layout.language_change_popup, null);
-        if (languageDialog != null && languageDialog.isShowing()) {
-            return;
-        }
-
-        languageDialog = new AlertDialog.Builder(getActivity()).create();
-        languageDialog.setCancelable(false);
-        languageDialog.setView(languageDialogview);
-        languageDialog.show();
-       /* languageDialog.getWindow()
-                .findViewById(R.id.pop_up_language)
-                .setBackgroundResource(android.R.color.transparent);*/
-        languageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        ImageView imvLogoChangeLanguage=languageDialogview.findViewById(R.id.imvLogoChangeLanguage);
-     final RadioGroup   radioGroup = (RadioGroup)languageDialogview. findViewById(R.id.myRadioGroup);
-      final RadioButton  rdbEnglish = (RadioButton) languageDialogview.findViewById(R.id.rdbEnglish);
-        final RadioButton rdbArabic = (RadioButton)languageDialogview. findViewById(R.id.rdbArabic);
-        Button dialogButton = (Button) languageDialogview.findViewById(R.id.btn_update);
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateLanguage(radioGroup,rdbEnglish,rdbArabic);
-                updatelanguageApi();
-                languageDialog.dismiss();
-            }
-        });
-
-        languageDialogview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(languageDialog!=null)
-                languageDialog.dismiss();
-            }
-        });
-    }
-
-    private void updatelanguageApi() {
-
-       final int language= appPref.getLanguage(0);
-        Call<ApiResponse> apiResponseCall=  RestClient.getService().changeLanguage(userData.getId(),language,"");
-        apiResponseCall.enqueue(new ApiCall(this) {
-            @Override
-            public void onSuccess(ApiResponse apiResponse) {
-                if(apiResponse.status){
-                appPref.setLanguage(language);
-                }
-
-            }
-
-            @Override
-            public void onFail(Call<ApiResponse> call, Throwable t) {
-
-            }
-        });
-    }
-
-    private void updateLanguage(final RadioGroup radioGroup, final RadioButton rdbEnglish, final RadioButton rdbArabic) {
-        int selectedId = radioGroup.getCheckedRadioButtonId();
-        if (selectedId == rdbEnglish.getId()) {
-            setLocale("en");
-            appPref.setLanguage(0);
-        } else if (selectedId == rdbArabic.getId()) {
-            setLocale("ar");
-            appPref.setLanguage(1);
-        }
-
-    }
-
-
-    @Override
     protected boolean isValidData() {
         return false;
     }
@@ -289,33 +175,36 @@ public class FanHomeActivity extends AppBaseActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragmentClass=null;
         if (id == R.id.nav_home) {
+            textView.setText("Home");
             fragmentClass = new FanHomeFragment();
-            // Handle the camera action
         } else if (id == R.id.nav_downloads) {
+            textView.setText("Downloads");
             fragmentClass = new FanDownloadFragment();
-            //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
-
         } else if (id == R.id.nav_customization) {
+            textView.setText("Customization");
             fragmentClass = new FanCustomizationFragment();
-            // Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_profile) {
-            TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
-            textView.setText(getResources().getString(R.string.txt_profile));
-            fragmentClass = ProfileFragment.newInstance("","");
 
-        }
+        } else if (id == R.id.nav_profile) {
+            textView.setText("Home");
+            startNewActivity(ViewProfileActivity.class);
+            fragmentClass = new FanHomeFragment();
+             }
         else if (id == R.id.nav_account_setting) {
+            textView.setText("Account Setting");
             fragmentClass = AccountSettingFragment.newInstance("","");
         }
         else if (id == R.id.nav_logout) {
             appPref.saveUserObject(new UserData());
             appPref.setLoginFlag(false);
+
             Toast.makeText(getApplicationContext(),"User logout Successfully",Toast.LENGTH_SHORT).show();
              startNewActivity(SigninActivity.class);
+            SigninActivity.selectedOption="fan";
             finish();
         }
 
@@ -328,22 +217,6 @@ public class FanHomeActivity extends AppBaseActivity
         return true;
     }
 
-
-    /**
-     * setLocale() set the localization configuration according to your selected language.
-     *
-     * @param lang
-     */
-
-    public void setLocale(String lang) {
-        Locale myLocale = new Locale(lang);
-        Resources res = getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-        Configuration conf = res.getConfiguration();
-        conf.locale = myLocale;
-        res.updateConfiguration(conf, dm);
-
-    }
 
     private boolean onBackPressed(FragmentManager fm) {
         if (fm != null) {

@@ -1,10 +1,12 @@
 package com.sticker_android.controller.activities.common.changelanguage;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -15,27 +17,20 @@ import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.Locale;
 
-public class ChangeLanguageActivity extends AppBaseActivity {
+public class ChangeLanguageActivity extends AppBaseActivity implements View.OnClickListener{
 
     private RadioGroup radioGroup;
     private RadioButton rdbEnglish,rdbArabic;
-private    AppPref appPref;
+    private    AppPref appPref;
+    private Button btnEnglish,btnArabic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_language);
         setViewReferences();
         setViewListeners();
-        languageSelection();
         appPref();
-        findViewById(R.id.act_change_lang_btn_update).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                getSelectedLanguage();
-                appPref.setLanguageStatus(true);
-            }
-        });
 
     }
 
@@ -43,42 +38,18 @@ private    AppPref appPref;
         appPref=new AppPref(this);
     }
 
-    private void languageSelection() {
 
-   radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-       @Override
-       public void onCheckedChanged(RadioGroup group, int checkedId) {
-           if(checkedId==R.id.rdbEnglish){
-
-           }else if(checkedId==R.id.rdbArabic){
-
-           }
-       }
-   });
-    }
-
-    private void getSelectedLanguage() {
-
-        int selectedId = radioGroup.getCheckedRadioButtonId();
-        if (selectedId == rdbEnglish.getId()) {
-            setLocale("en");
-            appPref.setLanguage(0);
-        } else if (selectedId == rdbArabic.getId()) {
-            setLocale("ar");
-            appPref.setLanguage(1);
-        }
-
-    }
     @Override
     protected void setViewListeners() {
 
+      btnArabic.setOnClickListener(this);
+        btnEnglish.setOnClickListener(this);
     }
 
     @Override
     protected void setViewReferences() {
-        radioGroup = (RadioGroup) findViewById(R.id.myRadioGroup);
-        rdbEnglish = (RadioButton) findViewById(R.id.rdbEnglish);
-        rdbArabic = (RadioButton) findViewById(R.id.rdbArabic);
+       btnEnglish   =  (Button) findViewById(R.id.act_change_lang_btn_english);
+        btnArabic   =  (Button) findViewById(R.id.act_change_lang_btn_arabic);
     }
 
     @Override
@@ -99,8 +70,25 @@ private    AppPref appPref;
         Configuration conf = res.getConfiguration();
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
-        startNewActivity(SigninActivity.class);
+        Intent intent = new Intent(this, SigninActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
         finish();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.act_change_lang_btn_english:
+               setLocale("en");
+                appPref.setLanguage(0);
+                appPref.setLanguageStatus(true);
+                break;
+            case R.id.act_change_lang_btn_arabic:
+                setLocale("ar");
+                appPref.setLanguage(1);
+                appPref.setLanguageStatus(true);
+                break;
+        }
+    }
 }

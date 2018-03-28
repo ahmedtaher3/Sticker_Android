@@ -58,6 +58,15 @@ public class PermissionManager {
         return true;
     }
 
+    public static boolean checkCallPermissionInFragment(Activity activity, Fragment fragment, int reqcode){
+
+        if(ContextCompat.checkSelfPermission(activity,Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+            fragment.requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, reqcode);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * check write external storage permission
      */

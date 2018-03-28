@@ -5,6 +5,6 @@
         android:icon="@drawable/ic_language"
         android:id="@+id/logout"
         android:orderInCategory="100"
-        android:title="Logout"
+        android:title="Log Out"
         app:showAsAction="never" />
 </menu>

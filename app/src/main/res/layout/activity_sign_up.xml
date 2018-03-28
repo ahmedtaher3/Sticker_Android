@@ -48,7 +48,7 @@
             android:layout_width="@dimen/signup_image_logo_width"
             android:layout_height="@dimen/signup_image_logo_height"
             android:layout_centerInParent="true"
-            app:srcCompat="@drawable/fan_hdpi" />
+            app:srcCompat="@drawable/football" />
     </RelativeLayout>
         <RelativeLayout
             android:padding="@dimen/signup_rl_padding"
@@ -130,7 +130,7 @@
 
                         <android.support.design.widget.TextInputLayout
                             app:passwordToggleEnabled="true"
-                            app:passwordToggleTint="@color/colorFanText"
+                            app:passwordToggleTint="@color/edt_background_tint"
                             android:id="@+id/act_signup_txt_input_phone_number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -181,19 +181,28 @@
                             android:text="@string/txt_hint_proceed"
                             android:textAllCaps="false"
                             android:textColor="@android:color/white" />
+                    <LinearLayout
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
                         <CheckBox
+                            android:gravity="center"
                             android:id="@+id/act_signup_terms_conditions"
-                            android:textSize="15sp"
-                            android:textColor="@android:color/black"
-                            fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
                             android:theme="@style/CheckBoxTerms"
-                            android:layout_marginTop="@dimen/dp_20"
                             android:layout_gravity="center"
-                            android:text="@string/txt_hint_terms_conditions"
-                            android:layout_centerInParent="true"
-                            android:layout_alignParentBottom="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/tv_act_signup_terms_conditions"
+                            android:textColor="@android:color/black"
+                            android:textSize="15sp"
+                            fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                            android:layout_gravity="center"
+                            android:layout_toRightOf="@+id/act_signup_terms_conditions"
+                            android:text="@string/txt_hint_terms_conditions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" /></LinearLayout>
                         </LinearLayout>
                     </RelativeLayout>
 

@@ -1,19 +1,39 @@
 package com.sticker_android.controller.fragment;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.controller.listeners.TabListeners;
 import com.sticker_android.model.UserData;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
+
+import java.util.Locale;
+
+import retrofit2.Call;
 
 
 public class AccountSettingFragment extends BaseFragment {
@@ -29,6 +49,7 @@ public class AccountSettingFragment extends BaseFragment {
     private ViewPagerAdapter adapter;
     private AppPref appPref;
     private UserData userdata;
+    private AlertDialog languageDialog;
 
     public AccountSettingFragment() {
         // Required empty public constructor
@@ -50,6 +71,7 @@ public class AccountSettingFragment extends BaseFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -129,6 +151,145 @@ public class AccountSettingFragment extends BaseFragment {
     @Override
     protected boolean isValidData() {
         return false;
+    }
+
+
+
+    public class TabListeners implements TabLayout.OnTabSelectedListener {
+
+        private ViewPager viewPager;
+
+        public TabListeners(ViewPager viewPager) {
+            this.viewPager = viewPager;
+        }
+
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            Utils.hideKeyboard(getActivity());
+            viewPager.setCurrentItem(tab.getPosition());
+            Fragment fragment = adapter.getItem(tab.getPosition());
+            if (fragment instanceof ChangePasswordFragment) {
+                ((ChangePasswordFragment) fragment).clearField();
+            }
+        }
+
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
+
+        }
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.fan_home, menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+          openLanguageDialog();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    private void openLanguageDialog() {
+
+        LayoutInflater factory = LayoutInflater.from(getActivity());
+        final View languageDialogview = factory.inflate(R.layout.language_change_popup, null);
+        if (languageDialog != null && languageDialog.isShowing()) {
+            return;
+        }
+
+        languageDialog = new AlertDialog.Builder(getActivity()).create();
+        languageDialog.setCancelable(false);
+        languageDialog.setView(languageDialogview);
+        languageDialog.show();
+       /* languageDialog.getWindow()
+                .findViewById(R.id.pop_up_language)
+                .setBackgroundResource(android.R.color.transparent);*/
+        languageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        ImageView imvLogoChangeLanguage=languageDialogview.findViewById(R.id.imvLogoChangeLanguage);
+        final RadioGroup radioGroup = (RadioGroup)languageDialogview. findViewById(R.id.myRadioGroup);
+        final RadioButton rdbEnglish = (RadioButton) languageDialogview.findViewById(R.id.rdbEnglish);
+        final RadioButton rdbArabic = (RadioButton)languageDialogview. findViewById(R.id.rdbArabic);
+        Button dialogButton = (Button) languageDialogview.findViewById(R.id.btn_update);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateLanguage(radioGroup,rdbEnglish,rdbArabic);
+                updatelanguageApi();
+                languageDialog.dismiss();
+            }
+        });
+
+        languageDialogview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(languageDialog!=null)
+                    languageDialog.dismiss();
+            }
+        });
+    }
+
+    private void updatelanguageApi() {
+
+        final int language= appPref.getLanguage(0);
+        Call<ApiResponse> apiResponseCall=  RestClient.getService().changeLanguage(userdata.getId(),language,"");
+        apiResponseCall.enqueue(new ApiCall(getActivity()) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if(apiResponse.status){
+                    appPref.setLanguage(language);
+                }
+
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+    }
+    /**
+     * setLocale() set the localization configuration according to your selected language.
+     *
+     * @param lang
+     */
+
+    public void setLocale(String lang) {
+        Locale myLocale = new Locale(lang);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
+
+    }
+
+    private void updateLanguage(final RadioGroup radioGroup, final RadioButton rdbEnglish, final RadioButton rdbArabic) {
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        if (selectedId == rdbEnglish.getId()) {
+            setLocale("en");
+            appPref.setLanguage(0);
+        } else if (selectedId == rdbArabic.getId()) {
+            setLocale("ar");
+            appPref.setLanguage(1);
+        }
+
     }
 
 

@@ -21,12 +21,12 @@
 
     <!--Signup validation-->
     <string name="first_name_cannot_be_empty">First name cannot be empty.</string>
-    <string name="first_name_cannot_be_less_than">First name cannot be less than 3 digit.</string>
-    <string name="last_name_cannot_be_less_than">Last name cannot be less than 3 digit.</string>
+    <string name="first_name_cannot_be_less_than">First name cannot be less than 3 character.</string>
+    <string name="last_name_cannot_be_less_than">Last name cannot be less than 3 character.</string>
 
     <string name="last_name_cannot_be_empty">Last name cannot be empty.</string>
     <string name="password_cannot_be_empty">Password cannot be empty.</string>
-    <string name="password_cannot_be_less">Password cannot be less than 8 digit.</string>
+    <string name="password_cannot_be_less">Password cannot be less than 8 digits.</string>
     <string name="confirm_password_cannot_be_empty">Confirm Password cannot be empty.</string>
     <string name="confirm_password_not_match">Confirm Password not match.</string>
 
@@ -48,6 +48,8 @@
     <string name="txt_account_setting">Account Settings</string>
     <string name="txt_profile">Profile</string>
 
+    <string name="txt_home">Home</string>
+    <string name="txt_myprofile">My Profile</string>
     <!--Change password-->
     <string name="frag_change_pass_text_hint_new_password">New Password</string>
 
@@ -80,4 +82,12 @@
     <string name="cancel">Cancel</string>
     <string name="app_permission">Sport Widget Permission!</string>
     <string name="external_storage_permission_msg">"Go to app setting to enable external storage access permission."</string>
+
+    <string name="txt_string_english">English</string>
+    <string name="txt_string_arabic">Arabic</string>
+
+    <string name="txt_call">Call</string>
+    <string name="no_contact_available">No contact available</string>
+    <string name="title_activity_demo">DemoActivity</string>
+    <string name="phone_call_permission">Please allow phone call permission.</string>
 </resources>

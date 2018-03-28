@@ -30,11 +30,10 @@ import com.sticker_android.controller.activities.designer.home.CorporateHomeActi
 import com.sticker_android.model.UserData;
 import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;
-import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -83,8 +82,12 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
         setViewReferences();
         setViewListeners();
          backgroundChange();
-        changeStatusBarColor(getResources().getColor(R.color.colorCorporateText));
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+        changeBtnBackground();
+    }
 
+    private void changeBtnBackground() {
+        btnSubmit.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
     }
 
     private void init() {
@@ -95,43 +98,10 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
     private void setToolBarTitle() {
         TextView textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
         textView.setText("Profile");
-        centerToolbarText(toolbar,textView);
+        toolbar.setTitle("");
     }
-    private void centerToolbarText(final Toolbar toolbar, final TextView textView) {
-        toolbar.postDelayed(new Runnable()
-        {
-            @Override
-            public void run ()
-            {
-                int maxWidth = toolbar.getWidth();
-                int titleWidth = textView.getWidth();
-                int iconWidth = maxWidth - titleWidth;
-
-                if (iconWidth > 0)
-                {
-                    //icons (drawer, menu) are on left and right side
-                    int width = maxWidth - iconWidth * 2;
-                    textView.setMinimumWidth(width);
-                    textView.getLayoutParams().width = width;
-                }
-            }
-        }, 0);
-    }
-
     private void setBackground(Toolbar toolbar) {
-        switch (userData.getUserType()){
-            case "fan":
-                toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
-                break;
-            case "designer":
-                toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
-
-                break;
-            case "corporate":
-                toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
-
-                break;
-        }
+        toolbar.setBackground(getResources().getDrawable(R.drawable.profile_hdpi));
     }
     private void setToolbarBackground(Toolbar toolbar) {
         Drawable drawable=getBaseContext().getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi);
@@ -163,7 +133,8 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
     @Override
     protected boolean isValidData()
-    {if(edtCompanyName.getText().toString().trim().isEmpty())
+    {
+        if(edtCompanyName.getText().toString().trim().isEmpty())
     {
         Utils.showToast(CorporateProfileActivity.this,"Company name cannot be empty");
 
@@ -204,6 +175,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
     @Override
     public void onClick(View v) {
+        Utils.hideKeyboard(this);
         switch (v.getId()){
             case R.id.act_corporate_profile_btn_register:
                 if(isValidData()){
@@ -241,15 +213,15 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
     private void updateProfileApi() {
         if (userData.getId() != null) {
-            final CommonProgressBar commonProgressBar = new CommonProgressBar(getActivity());
-            commonProgressBar.show();
+            final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+            progressDialogHandler.show();
             Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(userData.getId(), edtCompanyName.getText().toString(),
                     "", edtCompanyAddress.getText().toString(), userData.getFirstName(), userData.getLastName(),
                     userData.getEmail(), userData.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
-                    commonProgressBar.hide();
+                  progressDialogHandler.hide();
                     if (apiResponse.status) {
                         appPref.saveUserObject(apiResponse.paylpad.getData());
                         appPref.setLoginFlag(true);
@@ -264,7 +236,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
                 @Override
                 public void onFail(Call<ApiResponse> call, Throwable t) {
-                    commonProgressBar.hide();
+                   progressDialogHandler.hide();
                 }
             });
 
@@ -389,8 +361,8 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
 
     public void uploadImage(){
-   final CommonProgressBar commonProgressBar=new CommonProgressBar(this);
-        commonProgressBar.show();
+        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+        progressDialogHandler.show();
         File file = new File(mCapturedImageUrl);
         MultipartBody.Part body = MultipartBody.Part.createFormData("company_logo", file.getName(),
                 RequestBody.create(MediaType.parse("multipart/form-data"), file));
@@ -403,16 +375,22 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
         apiResponseCall.enqueue(new ApiCall(this) {
     @Override
     public void onSuccess(ApiResponse apiResponse) {
-        commonProgressBar.hide();
+     progressDialogHandler.hide();
         if(apiResponse.status){
          userData.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
-            imageLoader.displayImage(ApiConstant.IMAGE_URl+apiResponse.paylpad.getData().getCompanyLogo(),imgCompanyLogo);
+            imageLoader.displayImage("file://" + mCapturedImageUrl,imgCompanyLogo);
+            UserData userDataNew=new UserData();
+            userDataNew=userData;
+            userDataNew.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
+            userData.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
+            appPref.saveUserObject(userDataNew);
+
         }
     }
 
     @Override
     public void onFail(Call<ApiResponse> call, Throwable t) {
-
+        progressDialogHandler.hide();
     }
      });
     }
@@ -446,4 +424,14 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
+    }
+
+
+    public void updateData(){}
 }

@@ -1,75 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_gravity="center"
     android:id="@+id/activity_change_language"
     android:layout_width="match_parent"
+    android:background="@drawable/choose_language_hdpi"
     android:layout_height="match_parent"
     tools:ignore="MissingPrefix"
-    android:background="@drawable/gradient_bg_fan_hdpi"
     tools:context="com.sticker_android.controller.activities.common.changelanguage.ChangeLanguageActivity">
-     <ImageView
-         android:id="@+id/imvLogoChangeLanguage"
-         android:layout_marginTop="@dimen/logo_margin_top"
-         android:layout_alignParentTop="true"
-         android:layout_centerInParent="true"
-         android:src="@drawable/fan_hdpi"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content" />
+   <LinearLayout
+       android:gravity="center"
+       android:layout_weight="1"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+       <ImageView
+           android:layout_gravity="center"
+           android:id="@+id/imvLogoChangeLanguage"
+           android:layout_marginTop="@dimen/logo_margin_top"
+           android:src="@drawable/football"
+           android:layout_width="@dimen/change_lang_logo_width"
+           android:layout_height="@dimen/change_lang_logo_height" />
 
-     <TextView
-         android:id="@+id/tvChangeLanguage"
-         android:layout_marginTop="@dimen/logo_margin_top"
-         android:gravity="center"
-         android:layout_below="@+id/imvLogoChangeLanguage"
-         android:text="Change Language"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content" />
-     <RadioGroup
-         android:orientation="horizontal"
-         android:layout_marginTop="@dimen/logo_margin_top"
-         android:gravity="center"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/tvChangeLanguage"
-         android:id="@+id/myRadioGroup"
-         android:checkedButton="@+id/rdbEnglish" >
-          <RadioButton
-         style="@style/MyRadioButton"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-          android:id="@+id/rdbEnglish"
-         android:text="English" />
-          <RadioButton
-              style="@style/MyRadioButton"
-              android:layout_marginLeft="@dimen/dp_40"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:id="@+id/rdbArabic"
-         android:text="Arabic" />
+   </LinearLayout>
 
-</RadioGroup>
-<RelativeLayout
+    <LinearLayout
+        android:gravity="bottom"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:textColor="@color/colorCorporateText"
+                android:textSize="@dimen/size_20sp"
+                android:id="@+id/tvChangeLanguage"
+                android:layout_marginTop="@dimen/logo_margin_top"
+                android:gravity="center"
+                android:layout_below="@+id/imvLogoChangeLanguage"
+                android:text="Choose Language"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Button
+                android:layout_centerInParent="true"
+                android:textSize="15sp"
+                android:layout_height="wrap_content"
+                android:layout_width="@dimen/signup_btn_next_width"
+                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                android:elevation="@dimen/dp_5"
+                android:background="@drawable/corporate_btn_background"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_30"
+                android:id="@+id/act_change_lang_btn_english"
+                android:gravity="center"
+                android:text="@string/txt_string_english"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:layout_centerInParent="true"
+                android:textSize="15sp"
+                android:layout_height="wrap_content"
+                android:layout_width="@dimen/signup_btn_next_width"
+                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                android:elevation="@dimen/dp_5"
+                android:background="@drawable/corporate_btn_background"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/btn_margin_top"
+                android:id="@+id/act_change_lang_btn_arabic"
+                android:gravity="center"
+                android:text="@string/txt_string_arabic"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
     android:layout_below="@+id/myRadioGroup"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-     <Button
-       android:layout_centerInParent="true"
-         android:textSize="15sp"
-         android:layout_height="wrap_content"
-         android:layout_width="@dimen/signup_btn_next_width"
-         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-         android:elevation="@dimen/dp_5"
-         android:background="@drawable/fan_btn_background"
-         android:layout_gravity="center"
-         android:layout_marginTop="30dp"
-         android:id="@+id/act_change_lang_btn_update"
-         android:gravity="center"
-         android:text="@string/txt_btn_continue"
-         android:textAllCaps="false"
-         android:textColor="@android:color/white" />
 
-</RelativeLayout>
+</LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

@@ -18,9 +18,6 @@ public class TabListeners implements TabLayout.OnTabSelectedListener {
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         viewPager.setCurrentItem(tab.getPosition());
-        if(tab.getPosition()==1){
-
-        }
     }
 
     @Override

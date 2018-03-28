@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.common.userprofile.ViewProfileActivity;
 import com.sticker_android.controller.fragment.AccountSettingFragment;
 import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.controller.fragment.fandownloads.FanDownloadFragment;
@@ -60,15 +61,16 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         setContentView(R.layout.activity_designer_home);
         init();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setToolBarTitle();
         setToolbarBackground(toolbar);
         setSupportActionBar(toolbar);
         setViewReferences();
         setViewListeners();
         actionBarToggle(toolbar);
-        setUserDataIntoNaviagtion();
-        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
         showFragmentManually();
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
+        setUserDataIntoNaviagtion();
     }
     private void setUserDataIntoNaviagtion() {
         View header= navigationView.getHeaderView(0);
@@ -77,9 +79,9 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         tvUserName.setText(userData.getFirstName()+" "+userData.getLastName());
         tvEmail.setText(userData.getEmail());
         ImageView imageProfile=header.findViewById(R.id.imageViewProfile);
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
         LinearLayout linearLayout=header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_designer));
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
 
     }
     @Override
@@ -95,7 +97,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
                 toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
                 break;
             case "designer":
-                toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
+                toolbar.setBackground(getResources().getDrawable(R.drawable.designer_header_hdpi));
                 changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
                 break;
             case "corporate":
@@ -113,32 +115,12 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
 
     private void setToolBarTitle() {
         TextView textView=toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(getResources().getString(R.string.txt_account_setting));
-        centerToolbarText(toolbar,textView);
-    }
+        textView.setText(getResources().getString(R.string.txt_home));
+       }
 
-    private void centerToolbarText(final Toolbar toolbar, final TextView textView) {
-        toolbar.postDelayed(new Runnable()
-        {
-            @Override
-            public void run ()
-            {
-                int maxWidth = toolbar.getWidth();
-                int titleWidth = textView.getWidth();
-                int iconWidth = maxWidth - titleWidth;
 
-                if (iconWidth > 0)
-                {
-                    //icons (drawer, menu) are on left and right side
-                    int width = maxWidth - iconWidth * 2;
-                    textView.setMinimumWidth(width);
-                    textView.getLayoutParams().width = width;
-                }
-            }
-        }, 0);
-    }
     private void setToolbarBackground(Toolbar toolbar) {
-        Drawable drawable=getBaseContext().getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi);
+        Drawable drawable=getBaseContext().getResources().getDrawable(R.drawable.designer_header_hdpi);
         if (Build.VERSION.SDK_INT >= 16){
             toolbar.setBackground(drawable);
         }else{
@@ -153,6 +135,13 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        init();
+        setUserDataIntoNaviagtion();
     }
 
     @Override
@@ -210,32 +199,40 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        TextView textView=(TextView) toolbar.findViewById(R.id.tvToolbar);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragmentClass=null;
         if (id == R.id.nav_home) {
             fragmentClass = new FanHomeFragment();
+            textView.setText(getResources().getString(R.string.txt_home));
             // Handle the camera action
         } else if (id == R.id.nav_content_for_appproval) {
             fragmentClass = new FanDownloadFragment();
+            textView.setText("Content Approval");
             //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_profile) {
-            TextView  textView=toolbar.findViewById(R.id.tvToolbar);
+            startNewActivity(ViewProfileActivity.class);
+            fragmentClass = new FanHomeFragment();
+            textView.setText(getResources().getString(R.string.txt_home));
+         /*   TextView  textView=toolbar.findViewById(R.id.tvToolbar);
             textView.setText(getResources().getString(R.string.txt_profile));
             fragmentClass = ProfileFragment.newInstance("","");
-        }
+      */  }
         else if (id == R.id.nav_account_setting) {
             fragmentClass = AccountSettingFragment.newInstance("","");
+            textView.setText(getResources().getString(R.string.txt_account_setting));
         }
         else if (id == R.id.nav_logout) {
             appPref.saveUserObject(new UserData());
             appPref.setLoginFlag(false);
             Toast.makeText(getApplicationContext(),"User logout Successfully",Toast.LENGTH_SHORT).show();
             startNewActivity(SigninActivity.class);
+            SigninActivity.selectedOption="fan";
             finish();
         }
-
+        setUserDataIntoNaviagtion();
         // Insert the fragment by replacing any existing fragment
 
         FragmentManager fragmentManager = getSupportFragmentManager();

@@ -33,8 +33,8 @@ import android.widget.Toast;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.common.userprofile.ViewProfileActivity;
 import com.sticker_android.controller.fragment.AccountSettingFragment;
-import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.controller.fragment.fandownloads.FanDownloadFragment;
 import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
 import com.sticker_android.model.UserData;
@@ -68,9 +68,10 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         setViewReferences();
         setViewListeners();
         actionBarToggle(toolbar);
-        setUserDataIntoNaviagtion();
+        toolbar.setTitle("");
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
         showFragmentManually();
+        setUserDataIntoNaviagtion();
     }
 
     private void setUserDataIntoNaviagtion() {
@@ -80,14 +81,17 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         tvUserName.setText(userData.getFirstName()+" "+userData.getLastName());
         tvEmail.setText(userData.getEmail());
         ImageView imageProfile=header.findViewById(R.id.imageViewProfile);
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
         LinearLayout linearLayout=header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_corporate));
-
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
     }
 
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        init();
+        setUserDataIntoNaviagtion();
+    }
 
     @Override
     protected boolean isValidData() {
@@ -98,10 +102,10 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
     private void setBackground(Toolbar toolbar) {
         switch (userData.getUserType()){
             case "fan":
-                toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
+                toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_hdpi));
                 break;
             case "designer":
-                toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
+                toolbar.setBackground(getResources().getDrawable(R.drawable.designer_header_hdpi));
 
                 break;
             case "corporate":
@@ -118,32 +122,13 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
 
     private void setToolBarTitle() {
         TextView textView=(TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(getResources().getString(R.string.txt_account_setting));
-        centerToolbarText(toolbar,textView);
+        textView.setText(getResources().getString(R.string.txt_home));
+        toolbar.setTitle(" ");
     }
 
-    private void centerToolbarText(final Toolbar toolbar, final TextView textView) {
-        toolbar.postDelayed(new Runnable()
-        {
-            @Override
-            public void run ()
-            {
-                int maxWidth = toolbar.getWidth();
-                int titleWidth = textView.getWidth();
-                int iconWidth = maxWidth - titleWidth;
 
-                if (iconWidth > 0)
-                {
-                    //icons (drawer, menu) are on left and right side
-                    int width = maxWidth - iconWidth * 2;
-                    textView.setMinimumWidth(width);
-                    textView.getLayoutParams().width = width;
-                }
-            }
-        }, 0);
-    }
     private void setToolbarBackground(Toolbar toolbar) {
-        Drawable drawable=getBaseContext().getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi);
+        Drawable drawable=getBaseContext().getResources().getDrawable(R.drawable.corporate_header_xhdpi);
         if (Build.VERSION.SDK_INT >= 16){
             toolbar.setBackground(drawable);
         }else{
@@ -211,44 +196,51 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        TextView textView=(TextView) toolbar.findViewById(R.id.tvToolbar);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragmentClass=null;
         if (id == R.id.nav_home) {
             fragmentClass = new FanHomeFragment();
+            textView.setText(getResources().getString(R.string.txt_home));
             // Handle the camera action
         } else if (id == R.id.nav_report) {
             fragmentClass = new FanDownloadFragment();
             //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_profile) {
-            TextView  textView=toolbar.findViewById(R.id.tvToolbar);
-            textView.setText(getResources().getString(R.string.txt_profile));
-            fragmentClass = ProfileFragment.newInstance("","");
-        }
+            startNewActivity(ViewProfileActivity.class);
+            fragmentClass = new FanHomeFragment();
+            textView.setText(getResources().getString(R.string.txt_home));
+           }
         else if (id == R.id.nav_account_setting) {
             fragmentClass = AccountSettingFragment.newInstance("","");
+            textView.setText(getResources().getString(R.string.txt_account_setting));
         }
         else if (id == R.id.nav_logout) {
-            appPref.saveUserObject(new UserData());
-            appPref.setLoginFlag(false);
-            Toast.makeText(getApplicationContext(),"User logout Successfully",Toast.LENGTH_SHORT).show();
-        Intent intent=new Intent(getActivity(),SigninActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            overridePendingTransition(R.anim.activity_animation_enter,
-                    R.anim.activity_animation_exit);
-
-            finish();
+            userLogout();
         }
 
         // Insert the fragment by replacing any existing fragment
-
+        setUserDataIntoNaviagtion();
         FragmentManager fragmentManager = getSupportFragmentManager();
         if(fragmentClass!=null)
             fragmentManager.beginTransaction().replace(R.id.container_home, fragmentClass).commit();
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void userLogout() {
+        appPref.saveUserObject(new UserData());
+        appPref.setLoginFlag(false);
+        Toast.makeText(getApplicationContext(),"User logout Successfully",Toast.LENGTH_SHORT).show();
+        Intent intent=new Intent(getActivity(),SigninActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
+        SigninActivity.selectedOption="fan";
+        finish();
     }
 
 

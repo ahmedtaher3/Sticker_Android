@@ -69,7 +69,11 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
         setViewReferences(view);
         setViewListeners();
         setBackground();
-    return view;
+        oldPassword.setText("");
+        confirmPassword.setText("");
+        newPassword.setText("");
+
+        return view;
     }
 
     private void init() {
@@ -192,5 +196,17 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
             }
         });
     }
+
+    public void clearField(){
+
+             if(oldPassword!=null&&confirmPassword!=null&&newPassword!=null) {
+
+    oldPassword.setText("");
+    confirmPassword.setText("");
+    newPassword.setText("");
+      Utils.hideKeyboard(getActivity());
+}
+    }
+
     }
 

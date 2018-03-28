@@ -1,14 +1,21 @@
 package com.sticker_android.utils;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -19,6 +26,7 @@ import com.sticker_android.utils.helper.PermissionManager;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Locale;
 
 import static com.sticker_android.utils.helper.PermissionManager.Constant.READ_STORAGE_ACCESS_RQ;
 import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_STORAGE_ACCESS_RQ;
@@ -158,6 +166,60 @@ public class Utils {
      */
     public static void showToast(Context context, String string) {
             Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
+    }
+
+
+    public  static void changeLanguage(String lang,Activity activity,Class<?>cls){
+        Locale myLocale = new Locale(lang);
+        Resources res = activity.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
+        Intent intent = new Intent(activity, cls);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(intent);
+        activity.finish();
+    }
+
+    /**
+     * will show the alert for the phone call
+     *
+     * @param context
+     * @param phoneNo
+     */
+    public static void showPhoneCallPopup(final Context context, final String phoneNo) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(phoneNo);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.txt_call, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNo));
+                if (ActivityCompat.checkSelfPermission(((Activity) context), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                context.startActivity(intent);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
 }

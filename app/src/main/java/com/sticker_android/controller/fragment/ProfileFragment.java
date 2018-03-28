@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.UserData;
 import com.sticker_android.model.interfaces.ImagePickerListener;
@@ -27,8 +27,8 @@ import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.CommonSnackBar;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.io.File;
@@ -60,7 +60,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private String mCapturedImageUrl;
     private final int PROFILE_CAMERA_IMAGE = 0;
     private final int PROFILE_GALLERY_IMAGE = 1;
-private TextView personalProfile;
+       private TextView personalProfile;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -82,6 +82,7 @@ private TextView personalProfile;
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -104,6 +105,7 @@ private TextView personalProfile;
         edtProfileFirstName.setSelection(edtProfileFirstName.getText().length());
         edtProfileLastName.setSelection(edtProfileLastName.getText().length());
         edtProfileEmail.setSelection(edtProfileEmail.getText().length());
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imvProfile);
 
     }
 
@@ -112,20 +114,20 @@ private TextView personalProfile;
         if(userData.getUserType()!=null)
             switch (userData.getUserType()){
                 case "fan":
-                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
+                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.fan_profile_bg_xhdpi));
                     llCorporate.setVisibility(View.GONE);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.fan_btn_background));
                     personalProfile.setTextColor(getResources().getColor(R.color.colorFanText));
                     break;
                 case "designer":
-                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
+                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.designer_profile_bg_hdpi));
                     llCorporate.setVisibility(View.GONE);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.designer_btn_background));
                     personalProfile.setTextColor(getResources().getColor(R.color.colorDesignerText));
 
                     break;
                 case "corporate":
-                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
+                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.profile_bg_hdpi));
                     llCorporate.setVisibility(View.VISIBLE);
                      edtCompanyName.setText(userData.getCompanyName());
                     edtCompanyAddress.setText(userData.getCompanyAddress());
@@ -142,7 +144,6 @@ private TextView personalProfile;
         appPref=new AppPref(getActivity());
 
     }
-
 
     @Override
     protected void setViewListeners() {
@@ -166,33 +167,61 @@ private TextView personalProfile;
 
     @Override
     protected boolean isValidData() {
+        if(userData.getUserType().equals("corporate")){
+            if(edtCompanyName.getText().toString().trim().isEmpty())
+            {
+                Utils.showToast(getActivity(),"Company name cannot be empty");
+
+                //   CommonSnackBar.show(edtCompanyName, "Company name cannot be empty", Snackbar.LENGTH_SHORT);
+                this.edtCompanyName.requestFocus();
+                return false;
+            }else if(edtCompanyAddress.getText().toString().trim().isEmpty()){
+                Utils.showToast(getActivity(), "Company address cannot be empty");
+
+                //   CommonSnackBar.show(edtCompanyAddress, "Company address cannot be empty", Snackbar.LENGTH_SHORT);
+                this.edtCompanyAddress.requestFocus();
+                return false;
+            }
+        }
+
         String firstName = this.edtProfileFirstName.getText().toString().trim();
         String lastName = this.edtProfileLastName.getText().toString().trim();
         String email = this.edtProfileEmail.getText().toString().trim();
         if (firstName.isEmpty()) {
-            CommonSnackBar.show(edtProfileFirstName,getString(R.string.first_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
+            Utils.showToast(getActivity(),getString(R.string.first_name_cannot_be_empty));
             this.edtProfileFirstName.requestFocus();
             return false;
-        }else if (lastName.isEmpty()) {
-            CommonSnackBar.show(edtProfileLastName,getString(R.string.last_name_cannot_be_empty),Snackbar.LENGTH_SHORT);
+        }else if(firstName.length()<3){
+            Utils.showToast(getActivity(),getString(R.string.first_name_cannot_be_less_than));
+
+            //  CommonSnackBar.show(edtFirstName, getString(R.string.first_name_cannot_be_less_than), Snackbar.LENGTH_SHORT);
+            this.edtProfileFirstName.requestFocus();
+            return false;
+
+        }
+        else if (lastName.isEmpty()) {
+            Utils.showToast(getActivity(),getString(R.string.last_name_cannot_be_empty));
             this.edtProfileLastName.requestFocus();
             return false;
 
-        } else if (email.isEmpty()) {
-                CommonSnackBar.show(edtProfileEmail,getString(R.string.msg_email_cannot_be_empty),Snackbar.LENGTH_SHORT);
+        }
+        else if (email.isEmpty()) {
+            Utils.showToast(getActivity(),getString(R.string.msg_email_cannot_be_empty));
                 this.edtProfileEmail.requestFocus();
                 return false;
-            }/*else if (Patterns.EMAIL_ADDRESS.matcher(email).matches())  {
-                CommonSnackBar.show(edtProfileEmail,getString(R.string.msg_email_not_valid),Snackbar.LENGTH_SHORT);
-                this.edtProfileEmail.requestFocus();
-                return false;
-            }*/else
+            }
+        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Utils.showToast(getActivity(), getString(R.string.msg_email_not_valid));
+            this.edtProfileEmail.requestFocus();
+            return false;
+        }else
             return true;
     }
 
 
     @Override
     public void onClick(View v) {
+        Utils.hideKeyboard(getActivity());
         switch (v.getId()){
             case R.id.act_profile_btn_register:
                 if(isValidData()){
@@ -220,38 +249,43 @@ private TextView personalProfile;
         File file = Utils.getCustomImagePath(getActivity(), System.currentTimeMillis() + "");
         mCapturedImageUrl = file.getAbsolutePath();
         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-      getActivity(). startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
+      startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
     }
 
     private void pickGalleryImage() {
         Intent openGallery = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        getActivity().startActivityForResult(openGallery, PROFILE_GALLERY_IMAGE);
+        startActivityForResult(openGallery, PROFILE_GALLERY_IMAGE);
     }
 
     private void updateProfileApi() {
         if (userData.getId() != null) {
-            final CommonProgressBar commonProgressBar = new CommonProgressBar(getActivity());
-            commonProgressBar.show();
+            final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
+            progressDialogHandler.show();
             Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(userData.getId(), edtCompanyName.getText().toString(),
                    "", edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
                     edtProfileEmail.getText().toString(), userData.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
-                    commonProgressBar.hide();
+                    progressDialogHandler.hide();
                     if (apiResponse.status) {
+                        appPref.saveUserObject(null);
                         appPref.saveUserObject(apiResponse.paylpad.getData());
                         appPref.setLoginFlag(true);
-                        CommonSnackBar.show(edtCompanyAddress, "Data updated successfully", Snackbar.LENGTH_SHORT);
+                        if(getActivity()!=null)
+                        getActivity().onBackPressed();
+                        Utils.showToast(getActivity(),"Data updated successfully");
+                      //  CommonSnackBar.show(edtCompanyAddress, "Data updated successfully", Snackbar.LENGTH_SHORT);
 
                     } else {
-                        CommonSnackBar.show(edtCompanyAddress, apiResponse.error.message, Snackbar.LENGTH_SHORT);
+                        Utils.showToast(getActivity(),apiResponse.error.message);
+                       // CommonSnackBar.show(edtCompanyAddress, apiResponse.error.message, Snackbar.LENGTH_SHORT);
                     }
                 }
 
                 @Override
                 public void onFail(Call<ApiResponse> call, Throwable t) {
-                    commonProgressBar.hide();
+                   progressDialogHandler.hide();
                 }
             });
 
@@ -263,7 +297,7 @@ private TextView personalProfile;
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Log.d("Profile fragment","on activity");
         switch (requestCode) {
 
             case PROFILE_CAMERA_IMAGE:
@@ -310,8 +344,8 @@ private TextView personalProfile;
                 .start(this);
     }*/
    public void uploadImage(){
-       final CommonProgressBar commonProgressBar=new CommonProgressBar(getActivity());
-       commonProgressBar.show();
+       final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
+       progressDialogHandler.show();
        File file = new File(mCapturedImageUrl);
        MultipartBody.Part body = MultipartBody.Part.createFormData("company_logo", file.getName(),
                RequestBody.create(MediaType.parse("multipart/form-data"), file));
@@ -324,16 +358,22 @@ private TextView personalProfile;
        apiResponseCall.enqueue(new ApiCall(getActivity()) {
            @Override
            public void onSuccess(ApiResponse apiResponse) {
-               commonProgressBar.hide();
+              progressDialogHandler.hide();
                if(apiResponse.status){
+                   Utils.showToast(getActivity(),"Data save sucessfully.");
                    userData.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
-                   imageLoader.displayImage(ApiConstant.IMAGE_URl+apiResponse.paylpad.getData().getCompanyLogo(),imvProfile);
-               }
+                   UserData userDataNew=new UserData();
+                   userDataNew=userData;
+                   userDataNew.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
+                   appPref.saveUserObject(null);
+                   appPref.saveUserObject(userDataNew);
+                   imageLoader.displayImage("file://" + mCapturedImageUrl,imvProfile);
+                   }
            }
 
            @Override
            public void onFail(Call<ApiResponse> call, Throwable t) {
-
+            progressDialogHandler.hide();
            }
        });
    }
