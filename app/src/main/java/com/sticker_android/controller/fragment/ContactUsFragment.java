@@ -63,13 +63,10 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
 
 
     private void getContactApi() {
-        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
-        progressDialogHandler.show();
         Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent(userData.getId(),"1");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                progressDialogHandler.hide();
                 if(apiResponse.success){
                tvContactUsContactNum.setText(apiResponse.paylpad.getData().getMobile());
                     tvEmailContactUs.setText(apiResponse.paylpad.getData().getEmail());
@@ -80,8 +77,7 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-                progressDialogHandler.hide();
-            }
+                 }
         });
     }
     private void setBackground() {

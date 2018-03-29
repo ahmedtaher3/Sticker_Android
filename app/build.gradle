@@ -38,4 +38,5 @@ dependencies {
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
     compile 'com.android.support:support-core-ui:27.0.2'
     compile 'com.android.support:appcompat-v7:27.0.2'
+
 }

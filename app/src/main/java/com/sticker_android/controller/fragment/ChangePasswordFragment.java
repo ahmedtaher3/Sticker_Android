@@ -16,8 +16,8 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.CommonSnackBar;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import retrofit2.Call;
@@ -119,40 +119,45 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
         String confirmPass=confirmPassword.getText().toString();
         if(oldPass.isEmpty()){
            oldPassword.requestFocus();
-            Utils.showToast(getActivity(),"Old password cannot be empty");
+            Utils.showToast(getActivity(),"Please enter old password.");
 
             //  CommonSnackBar.show(oldPassword,"Old password cannot be empty", Snackbar.LENGTH_SHORT);
             return false;
         }else if(oldPass.length()<8){
             oldPassword.requestFocus();
-            Utils.showToast(getActivity(),getActivity().getString(R.string.password_cannot_be_less));
+            Utils.showToast(getActivity(),getActivity().getString(R.string.old_password_cannot_be_less));
             //  CommonSnackBar.show(oldPassword,getActivity().getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
             return false;
 
         }else if(newPass.isEmpty()){
             newPassword.requestFocus();
-            Utils.showToast(getActivity(),"New password cannot be empty");
+            Utils.showToast(getActivity(),getActivity().getString(R.string.please_enter_new_password));
          //   CommonSnackBar.show(oldPassword,"New password cannot be empty", Snackbar.LENGTH_SHORT);
             return false;
         }else if(newPass.length()<8){
             newPassword.requestFocus();
-            Utils.showToast(getActivity(),getActivity().getString(R.string.password_cannot_be_less));
+            Utils.showToast(getActivity(),getActivity().getString(R.string.new_password_cannot_be_less));
 
             //  CommonSnackBar.show(oldPassword,getActivity().getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
             return false;
 
         }else if(confirmPass.isEmpty()){
             confirmPassword.requestFocus();
-            Utils.showToast(getActivity(),"Confiem password cannot be empty");
+            Utils.showToast(getActivity(),"Please enter confirm password.");
 
            // CommonSnackBar.show(oldPassword,"Confiem password cannot be empty", Snackbar.LENGTH_SHORT);
             return false;
         }else if(confirmPass.length()<8){
             confirmPassword.requestFocus();
-            Utils.showToast(getActivity(),getActivity().getString(R.string.password_cannot_be_less));
+            Utils.showToast(getActivity(),getActivity().getString(R.string.confirm_password_cannot_be_less));
 
           //  CommonSnackBar.show(oldPassword,getActivity().getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
             return false;
+
+        }else if(!newPass.equals(confirmPass)){
+            Utils.showToast(getActivity(),getActivity().getString(R.string.old_password_not_match));
+            return false;
+        }else if(!userData.getPasssword().equals(oldPassword)){
 
         }
 
@@ -171,15 +176,14 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
     }
 
     private void changePasswordApi() {
-
-        final CommonProgressBar commonProgressBar=new CommonProgressBar(getActivity());
-        commonProgressBar.show();
+        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
+        progressDialogHandler.show();
         Log.d("jhcjdsc",mUserData.getId());
         Call<ApiResponse> apiResponseCall= RestClient.getService().changePassword(mUserData.getId(),confirmPassword.getText().toString(),"");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                commonProgressBar.hide();
+                progressDialogHandler.hide();
                 if(apiResponse.status)
                     if(apiResponse.status) {
                        CommonSnackBar.show(oldPassword,"Password updated successfully", Snackbar.LENGTH_SHORT);
@@ -192,7 +196,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
                     }}
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-                commonProgressBar.hide();
+                progressDialogHandler.hide();
             }
         });
     }

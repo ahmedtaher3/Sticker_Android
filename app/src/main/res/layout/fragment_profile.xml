@@ -6,12 +6,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:ignore="MissingPrefix"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <LinearLayout
         android:layout_marginBottom="@dimen/dp_10"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/profile_rlheight_150">
@@ -20,8 +23,20 @@
             android:background="@drawable/gradient_bg_fan_hdpi"
             android:layout_width="match_parent"
             android:layout_height="@dimen/profile_rl_height">
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tvCompanyDetails"
+                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                android:layout_marginTop="@dimen/dp_10"
+                android:textSize="15sp"
+                android:textColor="@android:color/white"
+                android:text="Company Details"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
          </RelativeLayout>
             <com.sticker_android.view.CircularImageView
+                android:background="@drawable/image_shadow"
                 app:civ_app_border_color="@android:color/white"
                 app:civ_app_border_width="3dp"
                 android:id="@+id/imvProfile"

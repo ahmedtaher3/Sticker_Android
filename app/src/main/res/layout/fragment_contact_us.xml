@@ -26,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
+            android:gravity="center"
             android:id="@+id/tvEmailHint"
             android:textColor="@android:color/black"
             fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
@@ -33,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
+            android:gravity="center"
             android:id="@+id/tvEmailContactUs"
             android:layout_marginLeft="@dimen/dp_2"
             android:layout_toRightOf="@+id/tvEmailHint"

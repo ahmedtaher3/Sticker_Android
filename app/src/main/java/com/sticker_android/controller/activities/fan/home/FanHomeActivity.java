@@ -201,9 +201,7 @@ public class FanHomeActivity extends AppBaseActivity
         else if (id == R.id.nav_logout) {
             appPref.saveUserObject(new UserData());
             appPref.setLoginFlag(false);
-
-            Toast.makeText(getApplicationContext(),"User logout Successfully",Toast.LENGTH_SHORT).show();
-             startNewActivity(SigninActivity.class);
+            startNewActivity(SigninActivity.class);
             SigninActivity.selectedOption="fan";
             finish();
         }
@@ -247,4 +245,5 @@ public class FanHomeActivity extends AppBaseActivity
         transaction.replace(R.id.container_home, new FanHomeFragment());
         transaction.commit();
     }
+
 }

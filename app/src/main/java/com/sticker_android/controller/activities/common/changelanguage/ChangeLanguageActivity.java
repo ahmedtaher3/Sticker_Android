@@ -73,6 +73,8 @@ public class ChangeLanguageActivity extends AppBaseActivity implements View.OnCl
         Intent intent = new Intent(this, SigninActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
         finish();
     }
 

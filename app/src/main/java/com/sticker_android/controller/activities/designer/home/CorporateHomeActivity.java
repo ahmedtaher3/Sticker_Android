@@ -35,7 +35,8 @@ import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.common.userprofile.ViewProfileActivity;
 import com.sticker_android.controller.fragment.AccountSettingFragment;
-import com.sticker_android.controller.fragment.fandownloads.FanDownloadFragment;
+import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
+import com.sticker_android.controller.fragment.corporate.CorporateReportFragment;
 import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
 import com.sticker_android.model.UserData;
 import com.sticker_android.network.ApiCall;
@@ -156,29 +157,8 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.fan_home, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            openLanguageDialog();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -201,16 +181,17 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         int id = item.getItemId();
         Fragment fragmentClass=null;
         if (id == R.id.nav_home) {
-            fragmentClass = new FanHomeFragment();
+            fragmentClass = new CorporateHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
             // Handle the camera action
         } else if (id == R.id.nav_report) {
-            fragmentClass = new FanDownloadFragment();
+            fragmentClass = new CorporateReportFragment();
+            textView.setText("Report");
             //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_profile) {
             startNewActivity(ViewProfileActivity.class);
-            fragmentClass = new FanHomeFragment();
+            fragmentClass = new CorporateHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
            }
         else if (id == R.id.nav_account_setting) {
@@ -233,7 +214,6 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
     private void userLogout() {
         appPref.saveUserObject(new UserData());
         appPref.setLoginFlag(false);
-        Toast.makeText(getApplicationContext(),"User logout Successfully",Toast.LENGTH_SHORT).show();
         Intent intent=new Intent(getActivity(),SigninActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

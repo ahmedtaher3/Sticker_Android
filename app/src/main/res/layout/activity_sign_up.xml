@@ -181,6 +181,10 @@
                             android:text="@string/txt_hint_proceed"
                             android:textAllCaps="false"
                             android:textColor="@android:color/white" />
+                <View
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
                     <LinearLayout
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/dp_20"

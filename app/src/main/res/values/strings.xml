@@ -15,21 +15,27 @@
     <string name="txt_hint_email">Email</string>
     <string name="txt_hint_password">Password</string>
     <!--Signin validation message-->
-    <string name="msg_email_cannot_be_empty">Email cannot be empty.</string>
-    <string name="msg_email_not_valid">Email not valid.</string>
-    <string name="msg_password_cannot_be_empty">Password cannot be empty.</string>
+    <string name="msg_email_cannot_be_empty">Please enter email.</string>
+    <string name="msg_email_not_valid">Please enter valid email.</string>
+    <string name="msg_password_cannot_be_empty">Please enter password.</string>
 
     <!--Signup validation-->
-    <string name="first_name_cannot_be_empty">First name cannot be empty.</string>
-    <string name="first_name_cannot_be_less_than">First name cannot be less than 3 character.</string>
-    <string name="last_name_cannot_be_less_than">Last name cannot be less than 3 character.</string>
+    <string name="first_name_cannot_be_empty">Please enter first name.</string>
+    <string name="first_name_cannot_be_less_than">Please enter first name equal or more than 3 characters.</string>
+    <string name="last_name_cannot_be_less_than">Please enter last name equal or more than 3 characters.</string>
+    <string name="last_name_cannot_be_empty">Please enter last name.</string>
+    <string name="password_cannot_be_empty">Please enter password.</string>
+    <string name="password_cannot_be_less">Please enter password equal or more than 8 characters.</string>
+    <string name="confirm_password_cannot_be_less">Please enter confirm password equal or more than 8 characters.</string>
 
-    <string name="last_name_cannot_be_empty">Last name cannot be empty.</string>
-    <string name="password_cannot_be_empty">Password cannot be empty.</string>
-    <string name="password_cannot_be_less">Password cannot be less than 8 digits.</string>
+    <string name="new_password_cannot_be_less">Please enter new password equal or more than 8 characters.</string>
+<string name="please_enter_new_password">"Please enter new password."</string>
+    <string name="old_password_cannot_be_less">Please enter old password equal or more than 8 characters.</string>
+
     <string name="confirm_password_cannot_be_empty">Confirm Password cannot be empty.</string>
-    <string name="confirm_password_not_match">Confirm Password not match.</string>
+    <string name="confirm_password_not_match">New and confirm Password do not match.</string>
 
+    <string name="old_password_not_match">Old Password is wrong.</string>
 
     <!--SignUp-->
     <string name="txt_hint_first_name">First Name</string>
@@ -68,7 +74,7 @@
     <string name="txt_btn_update">Update</string>
     <string name="txt_btn_continue">Continue</string>
     <!--AboutUs-->
-    <string name="txt_about_us">"Contact"</string>
+    <string name="txt_about_us">"About Us"</string>
 
     <!--Forgot password-->
     <string name="txt_reset_link_will_be_sent">A reset link will we sent to the

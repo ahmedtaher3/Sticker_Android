@@ -22,19 +22,21 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.CommonSnackBar;
+import com.sticker_android.utils.ProgressDialogHandler;
+import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import retrofit2.Call;
 
-public class ProfileActivity extends AppBaseActivity implements View.OnClickListener{
+public class ProfileActivity extends AppBaseActivity implements View.OnClickListener {
 
-    private EditText firstName,lastName;
+    private EditText firstName, lastName;
     private RelativeLayout rlBgProfile;
     private LinearLayout llCorporate;
     private AppPref appPref;
-    private EditText edtCompanyName,edtCompanyAddress,edtProfileFirstName;
-    private EditText edtProfileLastName,edtProfileEmail;
+    private EditText edtCompanyName, edtCompanyAddress, edtProfileFirstName;
+    private EditText edtProfileLastName, edtProfileEmail;
     private Button btnSubmit;
     private UserData userData;
 
@@ -55,37 +57,36 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
     @Override
     protected void setViewReferences() {
-        rlBgProfile= (RelativeLayout) findViewById(R.id.bgProfile);
-        llCorporate= (LinearLayout) findViewById(R.id.llCorporate);
-        edtCompanyName= (EditText) findViewById(R.id.act_profile_edt_company_name);
-        edtCompanyAddress= (EditText) findViewById(R.id.act_profile_edt_company_address);
-        edtProfileFirstName= (EditText) findViewById(R.id.act_profile_edt_first_name);
-        edtProfileLastName= (EditText) findViewById(R.id.act_profile_edt_last_name);
-        edtProfileEmail= (EditText) findViewById(R.id.act_profile_edt_email);
-        btnSubmit= (Button) findViewById(R.id.act_profile_btn_register);
+        rlBgProfile = (RelativeLayout) findViewById(R.id.bgProfile);
+        llCorporate = (LinearLayout) findViewById(R.id.llCorporate);
+        edtCompanyName = (EditText) findViewById(R.id.act_profile_edt_company_name);
+        edtCompanyAddress = (EditText) findViewById(R.id.act_profile_edt_company_address);
+        edtProfileFirstName = (EditText) findViewById(R.id.act_profile_edt_first_name);
+        edtProfileLastName = (EditText) findViewById(R.id.act_profile_edt_last_name);
+        edtProfileEmail = (EditText) findViewById(R.id.act_profile_edt_email);
+        btnSubmit = (Button) findViewById(R.id.act_profile_btn_register);
     }
 
     @Override
-    protected boolean isValidData()
-    {
+    protected boolean isValidData() {
         String firstName = this.edtProfileFirstName.getText().toString().trim();
         String lastName = this.edtProfileLastName.getText().toString().trim();
         if (firstName.isEmpty()) {
-            CommonSnackBar.show(edtProfileFirstName,getString(R.string.first_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
+            CommonSnackBar.show(edtProfileFirstName, getString(R.string.first_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
             this.edtProfileFirstName.requestFocus();
             return false;
-        }else if (lastName.isEmpty()) {
-            CommonSnackBar.show(edtProfileLastName,getString(R.string.last_name_cannot_be_empty),Snackbar.LENGTH_SHORT);
+        } else if (lastName.isEmpty()) {
+            CommonSnackBar.show(edtProfileLastName, getString(R.string.last_name_cannot_be_empty), Snackbar.LENGTH_SHORT);
             this.edtProfileLastName.requestFocus();
             return false;
         }
         String email = this.edtProfileEmail.getText().toString().trim();
         if (email.isEmpty()) {
-            CommonSnackBar.show(edtProfileEmail,getString(R.string.msg_email_cannot_be_empty),Snackbar.LENGTH_SHORT);
+            CommonSnackBar.show(edtProfileEmail, getString(R.string.msg_email_cannot_be_empty), Snackbar.LENGTH_SHORT);
             this.edtProfileEmail.requestFocus();
             return false;
-        }else if (Patterns.EMAIL_ADDRESS.matcher(email).matches())  {
-            CommonSnackBar.show(edtProfileEmail,getString(R.string.msg_email_not_valid),Snackbar.LENGTH_SHORT);
+        } else if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            CommonSnackBar.show(edtProfileEmail, getString(R.string.msg_email_not_valid), Snackbar.LENGTH_SHORT);
             this.edtProfileEmail.requestFocus();
             return false;
         }
@@ -95,10 +96,10 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
 
     private void init() {
-        appPref=new AppPref(this);
-        userData=appPref.getUserInfo();
-        if(userData.getUserType()!=null)
-            switch (userData.getUserType()){
+        appPref = new AppPref(this);
+        userData = appPref.getUserInfo();
+        if (userData.getUserType() != null)
+            switch (userData.getUserType()) {
                 case "fan":
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
                     llCorporate.setVisibility(View.GONE);
@@ -116,9 +117,9 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.act_profile_btn_register:
-                if(isValidData()){
+                if (isValidData()) {
                     updateProfileApi();
                 }
                 break;
@@ -127,15 +128,15 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
     private void updateProfileApi() {
         if (userData.getId() != null) {
-            final CommonProgressBar commonProgressBar = new CommonProgressBar(getActivity());
-            commonProgressBar.show();
+            final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
+            progressDialogHandler.show();
             Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(userData.getId(), edtCompanyName.getText().toString(),
                     "", edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
                     userData.getEmail(), userData.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
-                    commonProgressBar.hide();
+                    progressDialogHandler.hide();
                     if (apiResponse.status) {
                         appPref.saveUserObject(apiResponse.paylpad.getData());
                         appPref.setLoginFlag(true);
@@ -147,7 +148,7 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
                 @Override
                 public void onFail(Call<ApiResponse> call, Throwable t) {
-                    commonProgressBar.hide();
+                    progressDialogHandler.hide();
                 }
             });
 
@@ -183,7 +184,7 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.logout) {
-          appPref.setLoginFlag(false);
+            appPref.setLoginFlag(false);
             startNewActivity(SigninActivity.class);
             return true;
         }
@@ -191,4 +192,11 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (!hasFocus) {
+            Utils.hideSoftKeyboard(this, null);
+        }
+    }
 }

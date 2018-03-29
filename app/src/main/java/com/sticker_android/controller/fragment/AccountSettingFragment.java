@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
@@ -227,6 +229,13 @@ public class AccountSettingFragment extends BaseFragment {
         final RadioButton rdbEnglish = (RadioButton) languageDialogview.findViewById(R.id.rdbEnglish);
         final RadioButton rdbArabic = (RadioButton)languageDialogview. findViewById(R.id.rdbArabic);
         Button dialogButton = (Button) languageDialogview.findViewById(R.id.btn_update);
+        TextView tvtxtChangeLanguage= (TextView)languageDialogview.findViewById(R.id.tvtxtChangeLanguage);
+        int language=  appPref.getLanguage(0);
+        rdbEnglish.setChecked(true);
+        if(language>0){
+            rdbArabic.setChecked(true);
+        }
+        setButtonBackground(dialogButton,tvtxtChangeLanguage);
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,6 +252,26 @@ public class AccountSettingFragment extends BaseFragment {
                     languageDialog.dismiss();
             }
         });
+    }
+
+    private void setButtonBackground(Button dialogButton, TextView tvtxtChangeLanguage) {
+
+        switch (userdata.getUserType()){
+                case "fan":
+                    tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorFanText));
+                    dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.fan_btn_background));
+                    break;
+                case "designer":
+                    tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorDesignerText));
+                    dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.designer_btn_background));
+
+                    break;
+                case "corporate":
+                    tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorCorporateText));
+                    dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
+                    break;
+            }
+
     }
 
     private void updatelanguageApi() {

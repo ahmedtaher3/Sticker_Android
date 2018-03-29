@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -26,7 +25,6 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.CommonSnackBar;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -61,6 +59,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private final int PROFILE_CAMERA_IMAGE = 0;
     private final int PROFILE_GALLERY_IMAGE = 1;
        private TextView personalProfile;
+    private TextView tvCompanyDetails;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -118,13 +117,16 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     llCorporate.setVisibility(View.GONE);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.fan_btn_background));
                     personalProfile.setTextColor(getResources().getColor(R.color.colorFanText));
+                    tvCompanyDetails.setVisibility(View.GONE);
+                    imvProfile.setImageResource(R.drawable.fan_hdpi);
                     break;
                 case "designer":
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.designer_profile_bg_hdpi));
                     llCorporate.setVisibility(View.GONE);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.designer_btn_background));
                     personalProfile.setTextColor(getResources().getColor(R.color.colorDesignerText));
-
+                    tvCompanyDetails.setVisibility(View.GONE);
+                    imvProfile.setImageResource(R.drawable.corporate_hdpi);
                     break;
                 case "corporate":
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.profile_bg_hdpi));
@@ -136,6 +138,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imvProfile);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.corporate_btn_background));
                     personalProfile.setTextColor(getResources().getColor(R.color.corporateBtnBackground));
+                    tvCompanyDetails.setVisibility(View.VISIBLE);
+                    imvProfile.setImageResource(R.drawable.designer_hdpi);
                     break;
             }
     }
@@ -163,6 +167,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         btnSubmit= (Button) view.findViewById(R.id.act_profile_btn_register);
         imvProfile=view.findViewById(R.id.imvProfile);
         personalProfile=view.findViewById(R.id.frag_profile_tv_personal);
+        tvCompanyDetails=view.findViewById(R.id.tvCompanyDetails);
     }
 
     @Override
@@ -204,8 +209,14 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             this.edtProfileLastName.requestFocus();
             return false;
 
-        }
-        else if (email.isEmpty()) {
+        }else if(lastName.length()<3){
+            Utils.showToast(getActivity(),getString(R.string.last_name_cannot_be_less_than));
+
+            //  CommonSnackBar.show(edtFirstName, getString(R.string.first_name_cannot_be_less_than), Snackbar.LENGTH_SHORT);
+            this.edtProfileLastName.requestFocus();
+            return false;
+
+        } else if (email.isEmpty()) {
             Utils.showToast(getActivity(),getString(R.string.msg_email_cannot_be_empty));
                 this.edtProfileEmail.requestFocus();
                 return false;
@@ -274,7 +285,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         appPref.setLoginFlag(true);
                         if(getActivity()!=null)
                         getActivity().onBackPressed();
-                        Utils.showToast(getActivity(),"Data updated successfully");
+                        Utils.showToast(getActivity(),"Profile updated successfully");
                       //  CommonSnackBar.show(edtCompanyAddress, "Data updated successfully", Snackbar.LENGTH_SHORT);
 
                     } else {

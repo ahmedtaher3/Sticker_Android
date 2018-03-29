@@ -5,9 +5,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -30,6 +28,7 @@ import com.sticker_android.controller.activities.designer.home.CorporateHomeActi
 import com.sticker_android.model.UserData;
 import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.ProgressDialogHandler;
@@ -77,13 +76,17 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
         toolbar = (Toolbar) findViewById(R.id.toolbar);
        init();
         setToolBarTitle();
-        setToolbarBackground(toolbar);
         setSupportActionBar(toolbar);
         setViewReferences();
         setViewListeners();
-         backgroundChange();
+       //  backgroundChange();
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
         changeBtnBackground();
+    setImageData();
+    }
+
+    private void setImageData() {
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imgCompanyLogo);
     }
 
     private void changeBtnBackground() {
@@ -97,22 +100,10 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
     private void setToolBarTitle() {
         TextView textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText("Profile");
+        textView.setText("My Profile");
         toolbar.setTitle("");
     }
-    private void setBackground(Toolbar toolbar) {
-        toolbar.setBackground(getResources().getDrawable(R.drawable.profile_hdpi));
-    }
-    private void setToolbarBackground(Toolbar toolbar) {
-        Drawable drawable=getBaseContext().getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi);
-        if (Build.VERSION.SDK_INT >= 16){
-            toolbar.setBackground(drawable);
-        }else{
-            toolbar.setBackgroundDrawable(drawable);
-        }
-        if(userData.getUserType()!=null)
-            setBackground(toolbar);
-    }
+
 
     @Override
     protected void setViewListeners() {
@@ -136,13 +127,13 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
     {
         if(edtCompanyName.getText().toString().trim().isEmpty())
     {
-        Utils.showToast(CorporateProfileActivity.this,"Company name cannot be empty");
+        Utils.showToast(CorporateProfileActivity.this,"Please enter company name.");
 
         //   CommonSnackBar.show(edtCompanyName, "Company name cannot be empty", Snackbar.LENGTH_SHORT);
         this.edtCompanyName.requestFocus();
         return false;
     }else if(edtCompanyAddress.getText().toString().trim().isEmpty()){
-        Utils.showToast(CorporateProfileActivity.this, "Company address cannot be empty");
+        Utils.showToast(CorporateProfileActivity.this, "Please enter company address.");
 
      //   CommonSnackBar.show(edtCompanyAddress, "Company address cannot be empty", Snackbar.LENGTH_SHORT);
         this.edtCompanyAddress.requestFocus();
@@ -154,7 +145,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
     }
 
 
-    private void backgroundChange() {
+   /* private void backgroundChange() {
 
         if(userData.getUserType()!=null)
             switch (userData.getUserType()){
@@ -167,11 +158,11 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
                     llCorporate.setVisibility(View.GONE);
                     break;
                 case "corporate":
-                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
+                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.profile_hdpi));
                     llCorporate.setVisibility(View.VISIBLE);
                     break;
             }
-    }
+    }*/
 
     @Override
     public void onClick(View v) {

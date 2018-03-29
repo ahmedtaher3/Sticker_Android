@@ -35,6 +35,10 @@ import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.common.userprofile.ViewProfileActivity;
 import com.sticker_android.controller.fragment.AccountSettingFragment;
 import com.sticker_android.controller.fragment.ProfileFragment;
+import com.sticker_android.controller.fragment.designer.DesignerContentFragment;
+import com.sticker_android.controller.fragment.designer.DesignerContestFragment;
+import com.sticker_android.controller.fragment.designer.DesignerHomeFragment;
+import com.sticker_android.controller.fragment.designer.DesignerReportFragment;
 import com.sticker_android.controller.fragment.fandownloads.FanDownloadFragment;
 import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
 import com.sticker_android.model.UserData;
@@ -156,32 +160,6 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.fan_home, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            openLanguageDialog();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
     @Override
     public void onBackPressed() {
         int count = getFragmentManager().getBackStackEntryCount();
@@ -204,17 +182,24 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         int id = item.getItemId();
         Fragment fragmentClass=null;
         if (id == R.id.nav_home) {
-            fragmentClass = new FanHomeFragment();
+            fragmentClass = new DesignerHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
             // Handle the camera action
         } else if (id == R.id.nav_content_for_appproval) {
-            fragmentClass = new FanDownloadFragment();
+            fragmentClass = new DesignerContentFragment();
             textView.setText("Content Approval");
             //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.nav_profile) {
+        }else if(id==R.id.nav_report){
+            fragmentClass = new DesignerReportFragment();
+            textView.setText("Report");
+
+        } else if(id==R.id.nav_contest){
+            fragmentClass = new DesignerContestFragment();
+            textView.setText("Contest");
+        }else if (id == R.id.nav_profile) {
             startNewActivity(ViewProfileActivity.class);
-            fragmentClass = new FanHomeFragment();
+            fragmentClass = new DesignerHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
          /*   TextView  textView=toolbar.findViewById(R.id.tvToolbar);
             textView.setText(getResources().getString(R.string.txt_profile));

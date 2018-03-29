@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.common.signin.SigninActivity;
 
 /**
  * Created by user on 27/3/18.
@@ -35,6 +36,7 @@ public  class ShareOneTouchAlertNewBottom extends BottomSheetDialogFragment {
 
         final EditText edtEmail = (EditText) contentView.findViewById(R.id.forgot_password_edt_email);
         Button sendMail = (Button) contentView.findViewById(R.id.sendMail);
+        setBackground( sendMail);
         sendMail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,7 +45,17 @@ public  class ShareOneTouchAlertNewBottom extends BottomSheetDialogFragment {
         });
     }
 
-   public interface DialogListener{
+    private void setBackground(Button sendMail) {
+        if(SigninActivity.selectedOption.equals("fan"))
+        sendMail.setBackground(getResources().getDrawable(R.drawable.fan_btn_background));
+          else if(SigninActivity.selectedOption.equals("designer")){
+            sendMail.setBackground(getResources().getDrawable(R.drawable.designer_btn_background));
+        }else {
+            sendMail.setBackground(getResources().getDrawable(R.drawable.corporate_btn_background));
+        }
+    }
+
+    public interface DialogListener{
         public void listener(Dialog  dialog,EditText editText);
     }
 

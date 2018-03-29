@@ -23,6 +23,7 @@
                 android:layout_height="@dimen/profile_rl_height">
             </RelativeLayout>
             <com.sticker_android.view.CircularImageView
+                android:background="@drawable/image_shadow"
                 app:civ_app_border_color="@android:color/white"
                 app:civ_app_border_width="3dp"
                 android:layout_alignParentBottom="true"

@@ -50,6 +50,16 @@ public class UserData {
 
     private String authrizedKey;
 
+    public String getPasssword() {
+        return passsword;
+    }
+
+    public void setPasssword(String passsword) {
+        this.passsword = passsword;
+    }
+
+    @SerializedName("password")
+         private String passsword;
     public String getTitle() {
         return title;
     }
