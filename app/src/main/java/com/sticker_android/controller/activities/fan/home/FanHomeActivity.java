@@ -66,9 +66,9 @@ public class FanHomeActivity extends AppBaseActivity
         TextView   tvEmail=(TextView)header.findViewById(R.id.tvEmail);
         tvUserName.setText(userData.getFirstName()+" "+userData.getLastName());
         tvEmail.setText(userData.getEmail());
-        ImageView imageProfile=header.findViewById(R.id.imageViewProfile);
+        ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
         imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
-        LinearLayout linearLayout=header.findViewById(R.id.nav_header_common);
+        LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_fan));
     }
     private void setBackground(Toolbar toolbar) {
@@ -195,7 +195,7 @@ public class FanHomeActivity extends AppBaseActivity
             fragmentClass = new FanHomeFragment();
              }
         else if (id == R.id.nav_account_setting) {
-            textView.setText("Account Setting");
+            textView.setText(getString(R.string.txt_account_setting));
             fragmentClass = AccountSettingFragment.newInstance("","");
         }
         else if (id == R.id.nav_logout) {

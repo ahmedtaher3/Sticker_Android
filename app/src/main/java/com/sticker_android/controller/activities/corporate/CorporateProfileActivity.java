@@ -119,7 +119,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
         edtCompanyName= (EditText) findViewById(R.id.act_profile_edt_company_name);
         edtCompanyAddress= (EditText) findViewById(R.id.act_profile_edt_company_address);
         btnSubmit= (Button) findViewById(R.id.act_corporate_profile_btn_register);
-        imgCompanyLogo=findViewById(R.id.imgCompanyLogo);
+        imgCompanyLogo= (ImageView) findViewById(R.id.imgCompanyLogo);
     }
 
     @Override

@@ -81,5 +81,6 @@
     <dimen name="login_cardview_left_right_margin">10dp</dimen>
     <dimen name="login_cardview_width">400dp</dimen>
     <dimen name="activit_margin_top_edit">10dp</dimen>
+    <dimen name="navigation_view_width">250dp</dimen>
 
 </resources>

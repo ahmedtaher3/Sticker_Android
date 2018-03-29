@@ -5,7 +5,7 @@
     <color name="colorAccent">#beb9ba</color>
 
     <!--Common color-->
-<color name="edt_background_tint">#e2e2e2</color>
+    <color name="edt_background_tint">#e2e2e2</color>
     <!--color fan-->
     <color name="corporateBtnBackground">#f4a63e</color>
     <color name="colorFanText">#3ccae3</color>

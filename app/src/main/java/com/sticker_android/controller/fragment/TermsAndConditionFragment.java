@@ -111,7 +111,7 @@ private AppPref appPref;
 
     @Override
     protected void setViewReferences(View view) {
-       tvTerms=view.findViewById(R.id.tv_terms_conditions);
+       tvTerms= (TextView) view.findViewById(R.id.tv_terms_conditions);
     }
 
     @Override

@@ -42,14 +42,14 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View view=  inflater.inflate(R.layout.fragment_contact_us, container, false);
+        View view=  inflater.inflate(R.layout.fragment_contact_us, container, false);
         init();
         setViewReferences(view);
         setViewListeners();
         setBackground();
         getuserData();
         getContactApi();
-    return view;
+        return view;
     }
 
     private void getuserData() {
@@ -68,16 +68,16 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if(apiResponse.success){
-               tvContactUsContactNum.setText(apiResponse.paylpad.getData().getMobile());
+                    tvContactUsContactNum.setText(apiResponse.paylpad.getData().getMobile());
                     tvEmailContactUs.setText(apiResponse.paylpad.getData().getEmail());
-                  mMobileNumber=apiResponse.paylpad.getData().getMobile();
+                    mMobileNumber=apiResponse.paylpad.getData().getMobile();
                     mEmail=apiResponse.paylpad.getData().getEmail();
                 }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-                 }
+            }
         });
     }
     private void setBackground() {

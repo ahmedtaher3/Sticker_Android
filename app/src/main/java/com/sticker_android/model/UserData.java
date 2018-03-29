@@ -59,7 +59,7 @@ public class UserData {
     }
 
     @SerializedName("password")
-         private String passsword;
+    private String passsword;
     public String getTitle() {
         return title;
     }

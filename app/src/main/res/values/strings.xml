@@ -6,6 +6,7 @@
     <string name="txt_fan">Fan</string>
     <string name="txt_designer">Designer</string>
     <string name="text_corporate">Corporate</string>
+    <integer name="running_device_config">5</integer>
 
     <!--Sign In-->
     <string name="txt_dont_have_a_account">"Don't have a account?"</string>

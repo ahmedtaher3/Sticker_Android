@@ -22,7 +22,7 @@ public class ViewProfileActivity extends AppBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
-         init();
+        init();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setToolbarData();
         setBackground(toolbar);
@@ -62,9 +62,9 @@ public class ViewProfileActivity extends AppBaseActivity {
     }
 
     private void setToolBarTitle() {
-        TextView textView=toolbar.findViewById(R.id.tvToolbar);
+        TextView textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
         textView.setText(getResources().getString(R.string.txt_myprofile));
-       // centerToolbarText(toolbar,textView);
+        // centerToolbarText(toolbar,textView);
     }
 
     private void centerToolbarText(final Toolbar toolbar, final TextView textView) {

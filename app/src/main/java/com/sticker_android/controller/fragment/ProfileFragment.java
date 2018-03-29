@@ -165,9 +165,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         edtProfileLastName= (EditText) view.findViewById(R.id.act_profile_edt_last_name);
         edtProfileEmail= (EditText) view.findViewById(R.id.act_profile_edt_email);
         btnSubmit= (Button) view.findViewById(R.id.act_profile_btn_register);
-        imvProfile=view.findViewById(R.id.imvProfile);
-        personalProfile=view.findViewById(R.id.frag_profile_tv_personal);
-        tvCompanyDetails=view.findViewById(R.id.tvCompanyDetails);
+        imvProfile= (ImageView) view.findViewById(R.id.imvProfile);
+        personalProfile= (TextView) view.findViewById(R.id.frag_profile_tv_personal);
+        tvCompanyDetails= (TextView) view.findViewById(R.id.tvCompanyDetails);
     }
 
     @Override

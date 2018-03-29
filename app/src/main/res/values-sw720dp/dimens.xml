@@ -62,8 +62,8 @@
     <dimen name="profile_rlheight_150">200dp</dimen>
 
     <dimen name="profile_rl_height">160dp</dimen>
-    <dimen name="profile_image_width">200dp</dimen>
-    <dimen name="profile_image_height">200dp</dimen>
+    <dimen name="profile_image_width">160dp</dimen>
+    <dimen name="profile_image_height">160dp</dimen>
 
     <dimen name="profile_padding_start">50dp</dimen>
     <dimen name="profile_padding_end">50dp</dimen>
@@ -74,7 +74,7 @@
     <dimen name="change_lang_logo_width">190dp</dimen>
 
     <!--change password-->
-    <dimen name="change_password_margin_start">50dp</dimen>
+    <dimen name="change_password_margin_start">100dp</dimen>
     <dimen name="change_password_margin_end">50dp</dimen>
 
     <dimen name="btn_change_password_width">1200dp</dimen>
@@ -388,4 +388,5 @@
     <dimen name="login_cardview_left_right_margin">100dp</dimen>
     <dimen name="login_cardview_width">650dp</dimen>
     <dimen name="activit_margin_top_edit">30dp</dimen>
+    <dimen name="navigation_view_width">500dp</dimen>
 </resources>

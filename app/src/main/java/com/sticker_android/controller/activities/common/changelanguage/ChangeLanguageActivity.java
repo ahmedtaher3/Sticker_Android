@@ -3,6 +3,7 @@ package com.sticker_android.controller.activities.common.changelanguage;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -28,6 +29,8 @@ public class ChangeLanguageActivity extends AppBaseActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_language);
+
+        changeStatusBarColor(Color.parseColor("#38525f"));
         setViewReferences();
         setViewListeners();
         appPref();

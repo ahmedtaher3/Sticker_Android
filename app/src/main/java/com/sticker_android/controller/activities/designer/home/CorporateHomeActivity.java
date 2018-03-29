@@ -81,8 +81,8 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         TextView   tvEmail=(TextView)header.findViewById(R.id.tvEmail);
         tvUserName.setText(userData.getFirstName()+" "+userData.getLastName());
         tvEmail.setText(userData.getEmail());
-        ImageView imageProfile=header.findViewById(R.id.imageViewProfile);
-        LinearLayout linearLayout=header.findViewById(R.id.nav_header_common);
+        ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
+        LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_corporate));
         imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
     }
@@ -240,7 +240,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
                 .findViewById(R.id.pop_up_language)
                 .setBackgroundResource(android.R.color.transparent);*/
         languageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        ImageView imvLogoChangeLanguage=languageDialogview.findViewById(R.id.imvLogoChangeLanguage);
+        ImageView imvLogoChangeLanguage= (ImageView) languageDialogview.findViewById(R.id.imvLogoChangeLanguage);
         final RadioGroup radioGroup = (RadioGroup)languageDialogview. findViewById(R.id.myRadioGroup);
         final RadioButton rdbEnglish = (RadioButton) languageDialogview.findViewById(R.id.rdbEnglish);
         final RadioButton rdbArabic = (RadioButton)languageDialogview. findViewById(R.id.rdbArabic);

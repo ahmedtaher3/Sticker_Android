@@ -64,7 +64,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-      View view=   inflater.inflate(R.layout.fragment_change_password, container, false);
+        View view=   inflater.inflate(R.layout.fragment_change_password, container, false);
         init();
         setViewReferences(view);
         setViewListeners();
@@ -77,14 +77,14 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
     }
 
     private void init() {
-         appPref=new AppPref(getActivity());
+        appPref=new AppPref(getActivity());
         mUserData=appPref.getUserInfo();
     }
 
 
     @Override
     protected void setViewListeners() {
-           buttonSubmit.setOnClickListener(this);
+        buttonSubmit.setOnClickListener(this);
     }
 
     @Override
@@ -118,21 +118,21 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
         String newPass=newPassword.getText().toString();
         String confirmPass=confirmPassword.getText().toString();
         if(oldPass.isEmpty()){
-           oldPassword.requestFocus();
+            oldPassword.requestFocus();
             Utils.showToast(getActivity(),"Please enter old password.");
 
             //  CommonSnackBar.show(oldPassword,"Old password cannot be empty", Snackbar.LENGTH_SHORT);
             return false;
-        }else if(oldPass.length()<8){
+        }/*else if(oldPass.length()<8){
             oldPassword.requestFocus();
             Utils.showToast(getActivity(),getActivity().getString(R.string.old_password_cannot_be_less));
             //  CommonSnackBar.show(oldPassword,getActivity().getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
             return false;
 
-        }else if(newPass.isEmpty()){
+        }*/else if(newPass.isEmpty()){
             newPassword.requestFocus();
             Utils.showToast(getActivity(),getActivity().getString(R.string.please_enter_new_password));
-         //   CommonSnackBar.show(oldPassword,"New password cannot be empty", Snackbar.LENGTH_SHORT);
+            //   CommonSnackBar.show(oldPassword,"New password cannot be empty", Snackbar.LENGTH_SHORT);
             return false;
         }else if(newPass.length()<8){
             newPassword.requestFocus();
@@ -145,19 +145,19 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
             confirmPassword.requestFocus();
             Utils.showToast(getActivity(),"Please enter confirm password.");
 
-           // CommonSnackBar.show(oldPassword,"Confiem password cannot be empty", Snackbar.LENGTH_SHORT);
+            // CommonSnackBar.show(oldPassword,"Confiem password cannot be empty", Snackbar.LENGTH_SHORT);
             return false;
-        }else if(confirmPass.length()<8){
+        }/*else if(confirmPass.length()<8){
             confirmPassword.requestFocus();
             Utils.showToast(getActivity(),getActivity().getString(R.string.confirm_password_cannot_be_less));
 
-          //  CommonSnackBar.show(oldPassword,getActivity().getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
+            //  CommonSnackBar.show(oldPassword,getActivity().getString(R.string.password_cannot_be_less), Snackbar.LENGTH_SHORT);
             return false;
 
-        }else if(!newPass.equals(confirmPass)){
+        }*/else if(!newPass.equals(confirmPass)){
             Utils.showToast(getActivity(),getActivity().getString(R.string.old_password_not_match));
             return false;
-        }else if(!userData.getPasssword().equals(oldPassword)){
+        }else if(!userData.getPasssword().equals(oldPass)){
 
         }
 
@@ -166,13 +166,13 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
 
     @Override
     public void onClick(View v) {
-     switch (v.getId()){
-   case R.id.change_password_submit:
-       if(isValidData())
-       changePasswordApi();
-          break;
+        switch (v.getId()){
+            case R.id.change_password_submit:
+                if(isValidData())
+                    changePasswordApi();
+                break;
 
-     }
+        }
     }
 
     private void changePasswordApi() {
@@ -186,7 +186,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
                 progressDialogHandler.hide();
                 if(apiResponse.status)
                     if(apiResponse.status) {
-                       CommonSnackBar.show(oldPassword,"Password updated successfully", Snackbar.LENGTH_SHORT);
+                        CommonSnackBar.show(oldPassword,"Password updated successfully", Snackbar.LENGTH_SHORT);
                         oldPassword.setText("");
                         confirmPassword.setText("");
                         newPassword.setText("");
@@ -203,14 +203,14 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
 
     public void clearField(){
 
-             if(oldPassword!=null&&confirmPassword!=null&&newPassword!=null) {
+        if(oldPassword!=null&&confirmPassword!=null&&newPassword!=null) {
 
-    oldPassword.setText("");
-    confirmPassword.setText("");
-    newPassword.setText("");
-      Utils.hideKeyboard(getActivity());
+            oldPassword.setText("");
+            confirmPassword.setText("");
+            newPassword.setText("");
+            Utils.hideKeyboard(getActivity());
+        }
+    }
+
 }
-    }
-
-    }
 

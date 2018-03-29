@@ -75,12 +75,13 @@
     <dimen name="change_lang_logo_width">170dp</dimen>
 
     <!--change password-->
-    <dimen name="change_password_margin_start">40dp</dimen>
+    <dimen name="change_password_margin_start">50dp</dimen>
     <dimen name="change_password_margin_end">40dp</dimen>
     <dimen name="btn_change_password_width">100dp</dimen>
     <dimen name="login_cardview_left_right_margin">30dp</dimen>
     <dimen name="login_cardview_width">500dp</dimen>
     <dimen name="activit_margin_top_edit">20dp</dimen>
+    <dimen name="navigation_view_width">350dp</dimen>
 
 
 </resources>

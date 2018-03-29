@@ -10,6 +10,8 @@
         android:id="@+id/act_landing_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabMaxWidth="0dp"
+        app:tabGravity="fill"
         android:background="@drawable/tab_layout_background"
         app:tabIndicatorColor="@android:color/white"
         app:tabSelectedTextColor="@android:color/white"

@@ -57,7 +57,7 @@ public class AccountSettingFragment extends BaseFragment {
         // Required empty public constructor
     }
 
-      public static AccountSettingFragment newInstance(String param1, String param2) {
+    public static AccountSettingFragment newInstance(String param1, String param2) {
         AccountSettingFragment fragment = new AccountSettingFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -89,12 +89,24 @@ public class AccountSettingFragment extends BaseFragment {
         setupViewPager();
         addFragmentToTab();
         setBackground();
+
+        int runningDeviceConfig = getResources().getInteger(R.integer.running_device_config);
+
+        if(runningDeviceConfig == 7){
+            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        }
+        else if(runningDeviceConfig == 10){
+            tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        }
+        else{
+            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        }
         return view;
     }
 
     private void init() {
         appPref=new AppPref(getActivity());
-       userdata= appPref.getUserInfo();
+        userdata= appPref.getUserInfo();
     }
 
     private void addFragmentToTab() {
@@ -202,7 +214,7 @@ public class AccountSettingFragment extends BaseFragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-          openLanguageDialog();
+            openLanguageDialog();
             return true;
         }
 
@@ -224,7 +236,7 @@ public class AccountSettingFragment extends BaseFragment {
                 .findViewById(R.id.pop_up_language)
                 .setBackgroundResource(android.R.color.transparent);*/
         languageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        ImageView imvLogoChangeLanguage=languageDialogview.findViewById(R.id.imvLogoChangeLanguage);
+        ImageView imvLogoChangeLanguage= (ImageView) languageDialogview.findViewById(R.id.imvLogoChangeLanguage);
         final RadioGroup radioGroup = (RadioGroup)languageDialogview. findViewById(R.id.myRadioGroup);
         final RadioButton rdbEnglish = (RadioButton) languageDialogview.findViewById(R.id.rdbEnglish);
         final RadioButton rdbArabic = (RadioButton)languageDialogview. findViewById(R.id.rdbArabic);
@@ -257,20 +269,20 @@ public class AccountSettingFragment extends BaseFragment {
     private void setButtonBackground(Button dialogButton, TextView tvtxtChangeLanguage) {
 
         switch (userdata.getUserType()){
-                case "fan":
-                    tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorFanText));
-                    dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.fan_btn_background));
-                    break;
-                case "designer":
-                    tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorDesignerText));
-                    dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.designer_btn_background));
+            case "fan":
+                tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorFanText));
+                dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.fan_btn_background));
+                break;
+            case "designer":
+                tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorDesignerText));
+                dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.designer_btn_background));
 
-                    break;
-                case "corporate":
-                    tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorCorporateText));
-                    dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
-                    break;
-            }
+                break;
+            case "corporate":
+                tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorCorporateText));
+                dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
+                break;
+        }
 
     }
 

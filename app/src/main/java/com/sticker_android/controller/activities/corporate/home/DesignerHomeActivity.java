@@ -82,8 +82,8 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         TextView   tvEmail=(TextView)header.findViewById(R.id.tvEmail);
         tvUserName.setText(userData.getFirstName()+" "+userData.getLastName());
         tvEmail.setText(userData.getEmail());
-        ImageView imageProfile=header.findViewById(R.id.imageViewProfile);
-        LinearLayout linearLayout=header.findViewById(R.id.nav_header_common);
+        ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
+        LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_designer));
         imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
 
@@ -118,7 +118,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
 
 
     private void setToolBarTitle() {
-        TextView textView=toolbar.findViewById(R.id.tvToolbar);
+        TextView textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
         textView.setText(getResources().getString(R.string.txt_home));
        }
 
@@ -244,7 +244,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
                 .findViewById(R.id.pop_up_language)
                 .setBackgroundResource(android.R.color.transparent);*/
         languageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        ImageView imvLogoChangeLanguage=languageDialogview.findViewById(R.id.imvLogoChangeLanguage);
+        ImageView imvLogoChangeLanguage= (ImageView) languageDialogview.findViewById(R.id.imvLogoChangeLanguage);
         final RadioGroup radioGroup = (RadioGroup)languageDialogview. findViewById(R.id.myRadioGroup);
         final RadioButton rdbEnglish = (RadioButton) languageDialogview.findViewById(R.id.rdbEnglish);
         final RadioButton rdbArabic = (RadioButton)languageDialogview. findViewById(R.id.rdbArabic);

@@ -2,6 +2,7 @@ package com.sticker_android.controller.activities.common.profile;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ import retrofit2.Call;
 
 public class ProfileActivity extends AppBaseActivity implements View.OnClickListener {
 
+    private final String TAG = ProfileActivity.class.getSimpleName();
     private EditText firstName, lastName;
     private RelativeLayout rlBgProfile;
     private LinearLayout llCorporate;
@@ -96,23 +98,28 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
 
     private void init() {
+        Log.e(TAG, "Inside init() method");
         appPref = new AppPref(this);
         userData = appPref.getUserInfo();
         if (userData.getUserType() != null)
-            switch (userData.getUserType()) {
-                case "fan":
-                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
-                    llCorporate.setVisibility(View.GONE);
-                    break;
-                case "designer":
-                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
-                    llCorporate.setVisibility(View.GONE);
-                    break;
-                case "corporate":
-                    rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
-                    llCorporate.setVisibility(View.VISIBLE);
-                    break;
-            }
+            Log.e(TAG, "User type => " + userData.getUserType());
+        switch (userData.getUserType()) {
+            case "fan":
+                rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
+                llCorporate.setVisibility(View.GONE);
+                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
+                break;
+            case "designer":
+                rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
+                llCorporate.setVisibility(View.GONE);
+                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
+                break;
+            case "corporate":
+                rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
+                llCorporate.setVisibility(View.VISIBLE);
+                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+                break;
+        }
     }
 
     @Override
