@@ -69,7 +69,8 @@ public class FanHomeActivity extends AppBaseActivity
         ImageView imageProfile=header.findViewById(R.id.imageViewProfile);
         imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
         LinearLayout linearLayout=header.findViewById(R.id.nav_header_common);
-        linearLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_fan));
+        linearLayout.setBackground(getResources().getDrawable(R.drawable.fan_profile_bg_hdpi));
+        imageProfile.setImageResource(R.drawable.fan_xhdpi);
     }
     private void setBackground(Toolbar toolbar) {
         switch (userData.getUserType()){

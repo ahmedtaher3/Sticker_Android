@@ -1,5 +1,6 @@
 package com.sticker_android.controller.activities.common.profile;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Patterns;

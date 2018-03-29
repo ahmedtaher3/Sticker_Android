@@ -83,8 +83,9 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         tvEmail.setText(userData.getEmail());
         ImageView imageProfile=header.findViewById(R.id.imageViewProfile);
         LinearLayout linearLayout=header.findViewById(R.id.nav_header_common);
-        linearLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_corporate));
+        linearLayout.setBackground(getResources().getDrawable(R.drawable.profile_bg_hdpi));
         imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
+        imageProfile.setImageResource(R.drawable.corporate_hdpi);
     }
 
     @Override
