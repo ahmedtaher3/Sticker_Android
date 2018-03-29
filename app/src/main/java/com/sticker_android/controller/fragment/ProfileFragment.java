@@ -1,6 +1,7 @@
 package com.sticker_android.controller.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.common.userprofile.ViewProfileActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.UserData;
 import com.sticker_android.model.interfaces.ImagePickerListener;
@@ -28,6 +31,8 @@ import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 
@@ -35,6 +40,8 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+
+import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends BaseFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
@@ -58,8 +65,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private String mCapturedImageUrl;
     private final int PROFILE_CAMERA_IMAGE = 0;
     private final int PROFILE_GALLERY_IMAGE = 1;
-       private TextView personalProfile;
+    private TextView personalProfile;
     private TextView tvCompanyDetails;
+    private DisplayImageOptions mDisplayImageOptions;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -72,6 +80,20 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        ViewProfileActivity profileActivity = (ViewProfileActivity) context;
+        profileActivity.setProfileFragmentReference(this);
+
+        mDisplayImageOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .resetViewBeforeLoading(true)
+                .considerExifParams(true)
+                .build();
     }
 
     @Override
@@ -94,7 +116,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         setViewListeners();
         setUserBackground();
         setUserData();
-    return view;
+        return view;
     }
 
     private void setUserData() {
@@ -104,7 +126,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         edtProfileFirstName.setSelection(edtProfileFirstName.getText().length());
         edtProfileLastName.setSelection(edtProfileLastName.getText().length());
         edtProfileEmail.setSelection(edtProfileEmail.getText().length());
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imvProfile);
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(), imvProfile, mDisplayImageOptions);
 
     }
 
@@ -131,11 +153,11 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 case "corporate":
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.profile_bg_hdpi));
                     llCorporate.setVisibility(View.VISIBLE);
-                     edtCompanyName.setText(userData.getCompanyName());
+                    edtCompanyName.setText(userData.getCompanyName());
                     edtCompanyAddress.setText(userData.getCompanyAddress());
                     edtCompanyName.setSelection(edtCompanyName.getText().length());
                     edtCompanyAddress.setSelection(edtCompanyAddress.getText().length());
-                    imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imvProfile);
+                    imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(), imvProfile, mDisplayImageOptions);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.corporate_btn_background));
                     personalProfile.setTextColor(getResources().getColor(R.color.corporateBtnBackground));
                     tvCompanyDetails.setVisibility(View.VISIBLE);
@@ -218,9 +240,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
         } else if (email.isEmpty()) {
             Utils.showToast(getActivity(),getString(R.string.msg_email_cannot_be_empty));
-                this.edtProfileEmail.requestFocus();
-                return false;
-            }
+            this.edtProfileEmail.requestFocus();
+            return false;
+        }
         else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Utils.showToast(getActivity(), getString(R.string.msg_email_not_valid));
             this.edtProfileEmail.requestFocus();
@@ -260,7 +282,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         File file = Utils.getCustomImagePath(getActivity(), System.currentTimeMillis() + "");
         mCapturedImageUrl = file.getAbsolutePath();
         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-      startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
+        startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
     }
 
     private void pickGalleryImage() {
@@ -273,7 +295,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
             progressDialogHandler.show();
             Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(userData.getId(), edtCompanyName.getText().toString(),
-                   "", edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
+                    "", edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
                     edtProfileEmail.getText().toString(), userData.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
@@ -284,19 +306,19 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         appPref.saveUserObject(apiResponse.paylpad.getData());
                         appPref.setLoginFlag(true);
                         if(getActivity()!=null)
-                        getActivity().onBackPressed();
+                            getActivity().onBackPressed();
                         Utils.showToast(getActivity(),"Profile updated successfully");
-                      //  CommonSnackBar.show(edtCompanyAddress, "Data updated successfully", Snackbar.LENGTH_SHORT);
+                        //  CommonSnackBar.show(edtCompanyAddress, "Data updated successfully", Snackbar.LENGTH_SHORT);
 
                     } else {
                         Utils.showToast(getActivity(),apiResponse.error.message);
-                       // CommonSnackBar.show(edtCompanyAddress, apiResponse.error.message, Snackbar.LENGTH_SHORT);
+                        // CommonSnackBar.show(edtCompanyAddress, apiResponse.error.message, Snackbar.LENGTH_SHORT);
                     }
                 }
 
                 @Override
                 public void onFail(Call<ApiResponse> call, Throwable t) {
-                   progressDialogHandler.hide();
+                    progressDialogHandler.hide();
                 }
             });
 
@@ -312,82 +334,82 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         switch (requestCode) {
 
             case PROFILE_CAMERA_IMAGE:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     if (mCapturedImageUrl != null) {
-                        // openCropActivity(mCapturedImageUrl);
-                        uploadImage();
+                        openCropActivity(mCapturedImageUrl);
+                        //uploadImage();
                     }
                 }
                 break;
 
             case PROFILE_GALLERY_IMAGE:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Uri selectedImage = data.getData();
                     String sourceUrl = Utils.getGalleryImagePath(getActivity(), selectedImage);
                     File file = Utils.getCustomImagePath(getActivity(), "temp");
                     mCapturedImageUrl = file.getAbsolutePath();
                     mCapturedImageUrl=sourceUrl;
-                    // openCropActivity(sourceUrl);
-                    uploadImage();
+                    openCropActivity(sourceUrl);
+                    //uploadImage();
                 }
                 break;
-           /*
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
-                    imageLoader.displayImage(resultUri.toString(), imgCompanyLogo);
+                    imageLoader.displayImage(resultUri.toString(), imvProfile, mDisplayImageOptions);
                     mCapturedImageUrl = resultUri.getPath();
                     uploadImage();
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
                     error.printStackTrace();
-                }*/
+                }
         }
     }
 
-   /* private void openCropActivity(String url) {
-        CropImage.activity(Uri.fromFile(new File(url)))
-                .setGuidelines(CropImageView.Guidelines.OFF)
-                .setFixAspectRatio(true)
-                .setAspectRatio(1, 1)
-                .setAutoZoomEnabled(true)
-                .start(this);
-    }*/
-   public void uploadImage(){
-       final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
-       progressDialogHandler.show();
-       File file = new File(mCapturedImageUrl);
-       MultipartBody.Part body = MultipartBody.Part.createFormData("company_logo", file.getName(),
-               RequestBody.create(MediaType.parse("multipart/form-data"), file));
+     private void openCropActivity(String url) {
+         CropImage.activity(Uri.fromFile(new File(url)))
+                 .setGuidelines(CropImageView.Guidelines.OFF)
+                 .setFixAspectRatio(true)
+                 .setAspectRatio(1, 1)
+                 .setAutoZoomEnabled(true)
+                 .start(getActivity());
+     }
 
-       RequestBody userId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(userData.getId()));
-       RequestBody languageId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(userData.getLanguageId()));
-       RequestBody authKey = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(""));
+    public void uploadImage(){
+        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
+        progressDialogHandler.show();
+        File file = new File(mCapturedImageUrl);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("company_logo", file.getName(),
+                RequestBody.create(MediaType.parse("multipart/form-data"), file));
 
-       Call<ApiResponse> apiResponseCall=  RestClient.getService().profileImage(userId,languageId,authKey,body);
-       apiResponseCall.enqueue(new ApiCall(getActivity()) {
-           @Override
-           public void onSuccess(ApiResponse apiResponse) {
-              progressDialogHandler.hide();
-               if(apiResponse.status){
-                   Utils.showToast(getActivity(),"Data save sucessfully.");
-                   userData.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
-                   UserData userDataNew=new UserData();
-                   userDataNew=userData;
-                   userDataNew.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
-                   appPref.saveUserObject(null);
-                   appPref.saveUserObject(userDataNew);
-                   imageLoader.displayImage("file://" + mCapturedImageUrl,imvProfile);
-                   }
-           }
+        RequestBody userId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(userData.getId()));
+        RequestBody languageId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(userData.getLanguageId()));
+        RequestBody authKey = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(""));
 
-           @Override
-           public void onFail(Call<ApiResponse> call, Throwable t) {
-            progressDialogHandler.hide();
-           }
-       });
-   }
+        Call<ApiResponse> apiResponseCall=  RestClient.getService().profileImage(userId,languageId,authKey,body);
+        apiResponseCall.enqueue(new ApiCall(getActivity()) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+                if(apiResponse.status){
+                    Utils.showToast(getActivity(),"Data save sucessfully.");
+                    userData.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
+                    UserData userDataNew=new UserData();
+                    userDataNew=userData;
+                    userDataNew.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
+                    appPref.saveUserObject(null);
+                    appPref.saveUserObject(userDataNew);
+                    imageLoader.displayImage("file://" + mCapturedImageUrl, imvProfile, mDisplayImageOptions);
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
+    }
 
 
 }

@@ -97,4 +97,5 @@
     <string name="no_contact_available">No contact available</string>
     <string name="title_activity_demo">DemoActivity</string>
     <string name="phone_call_permission">Please allow phone call permission.</string>
+    <string name="company">Company</string>
 </resources>

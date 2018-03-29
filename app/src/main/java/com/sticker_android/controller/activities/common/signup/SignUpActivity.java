@@ -23,6 +23,7 @@ import com.sticker_android.model.UserData;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
@@ -78,17 +79,20 @@ public class SignUpActivity extends AppBaseActivity {
         case "fan":
             bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
             btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.fan_btn_background));
-            changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
+            /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));*/
+            setStatusBarGradiant(SignUpActivity.this, AppConstants.FAN);
             break;
         case "designer":
             bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
             btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.designer_btn_background));
-            changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
+            /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));*/
+            setStatusBarGradiant(SignUpActivity.this, AppConstants.DESIGNER);
             break;
         case "corporate":
             bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
            btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
-            changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+            /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));*/
+            setStatusBarGradiant(SignUpActivity.this, AppConstants.CORPORATE);
             break;
     }
     }

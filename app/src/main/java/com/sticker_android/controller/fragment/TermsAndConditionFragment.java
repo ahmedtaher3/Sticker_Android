@@ -30,7 +30,7 @@ public class TermsAndConditionFragment extends BaseFragment {
     private String mParam1;
     private String mParam2;
     private TextView tvTerms;
-private AppPref appPref;
+    private AppPref appPref;
     private UserData userData;
 
     public TermsAndConditionFragment() {
@@ -74,33 +74,33 @@ private AppPref appPref;
         getuserData();
         getTermsConditionData();
 
-         return view;
+        return view;
     }
 
     private void getuserData() {
-    userData=appPref.getUserInfo();
+        userData=appPref.getUserInfo();
     }
 
     private void init() {
-    appPref=new AppPref(getActivity());
+        appPref=new AppPref(getActivity());
 
     }
 
     private void getTermsConditionData() {
-      Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent(userData.getId(),"2");
-    apiResponseCall.enqueue(new ApiCall(getActivity()) {
-        @Override
-        public void onSuccess(ApiResponse apiResponse) {
-            if(apiResponse.success){
-                tvTerms.setText(apiResponse.paylpad.getData().getInfoText());
+        Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent(userData.getId(),"2");
+        apiResponseCall.enqueue(new ApiCall(getActivity()) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if(apiResponse.success){
+                    tvTerms.setText(apiResponse.paylpad.getData().getInfoText());
+                }
             }
-        }
 
-        @Override
-        public void onFail(Call<ApiResponse> call, Throwable t) {
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
 
-        }
-    });
+            }
+        });
     }
 
 
@@ -111,7 +111,7 @@ private AppPref appPref;
 
     @Override
     protected void setViewReferences(View view) {
-       tvTerms= (TextView) view.findViewById(R.id.tv_terms_conditions);
+        tvTerms= (TextView) view.findViewById(R.id.tv_terms_conditions);
     }
 
     @Override

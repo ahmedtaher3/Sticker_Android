@@ -7,7 +7,9 @@ import android.widget.TextView;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.common.signup.SignUpActivity;
 import com.sticker_android.model.UserData;
+import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 public class TermsActivity extends AppBaseActivity {
@@ -45,15 +47,18 @@ public class TermsActivity extends AppBaseActivity {
         switch (SigninActivity.selectedOption){
             case "fan":
                 toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_hdpi));
-                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
+                /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));*/
+                setStatusBarGradiant(this, AppConstants.FAN);
                 break;
             case "designer":
                 toolbar.setBackground(getResources().getDrawable(R.drawable.designer_header_hdpi));
-                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
+                /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));*/
+                setStatusBarGradiant(this, AppConstants.DESIGNER);
                 break;
             case "corporate":
                 toolbar.setBackground(getResources().getDrawable(R.drawable.corporate_header_hdpi));
-                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+                /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));*/
+                setStatusBarGradiant(this, AppConstants.CORPORATE);
                 break;
         }
     }

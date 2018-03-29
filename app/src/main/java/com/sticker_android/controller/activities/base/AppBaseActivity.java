@@ -1,8 +1,11 @@
 package com.sticker_android.controller.activities.base;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,8 +14,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sticker_android.R;
+import com.sticker_android.utils.AppConstants;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -23,6 +28,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public abstract class AppBaseActivity extends AppCompatActivity {
 
     public ImageLoader imageLoader = ImageLoader.getInstance();
+    public DisplayImageOptions displayImageOptions;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,6 +37,12 @@ public abstract class AppBaseActivity extends AppCompatActivity {
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);*/
         /*changeStatusBarColor(getResources().getColor(R.color.colorDesignerText));*/
+
+        displayImageOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                .build();
     }
 
     /**
@@ -160,5 +172,24 @@ public abstract class AppBaseActivity extends AppCompatActivity {
         }
     }
 
-
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void setStatusBarGradiant(Activity activity, int userType) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = activity.getWindow();
+            Drawable background = null;
+            if(userType == AppConstants.FAN){
+                background = activity.getResources().getDrawable(R.drawable.fan_status_bar_gradient);
+            }
+            else if(userType == AppConstants.DESIGNER){
+                background = activity.getResources().getDrawable(R.drawable.designer_status_bar_gradient);
+            }
+            else{
+                background = activity.getResources().getDrawable(R.drawable.corporate_status_bar_gradient);
+            }
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(activity.getResources().getColor(android.R.color.transparent));
+            window.setNavigationBarColor(activity.getResources().getColor(android.R.color.transparent));
+            window.setBackgroundDrawable(background);
+        }
+    }
 }

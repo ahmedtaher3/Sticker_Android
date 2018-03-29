@@ -1,5 +1,6 @@
 package com.sticker_android.controller.activities.common.profile;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
@@ -23,6 +25,7 @@ import com.sticker_android.model.UserData;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.CommonSnackBar;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
@@ -30,6 +33,8 @@ import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import retrofit2.Call;
+
+import static com.theartofdev.edmodo.cropper.CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE;
 
 public class ProfileActivity extends AppBaseActivity implements View.OnClickListener {
 
@@ -108,17 +113,20 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
             case "fan":
                 rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
                 llCorporate.setVisibility(View.GONE);
-                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
+                /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));*/
+                setStatusBarGradiant(this, AppConstants.FAN);
                 break;
             case "designer":
                 rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
                 llCorporate.setVisibility(View.GONE);
-                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
+                /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));*/
+                setStatusBarGradiant(this, AppConstants.DESIGNER);
                 break;
             case "corporate":
                 rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
                 llCorporate.setVisibility(View.VISIBLE);
-                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+                /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));*/
+                setStatusBarGradiant(this, AppConstants.CORPORATE);
                 break;
         }
     }
@@ -131,6 +139,14 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
                     updateProfileApi();
                 }
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+
         }
     }
 

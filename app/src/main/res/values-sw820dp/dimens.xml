@@ -60,6 +60,7 @@
 
     <!--Profile-->
     <dimen name="profile_rlheight_150">180dp</dimen>
+    <dimen name="company_profile_rlheight_150">150dp</dimen>
 
     <dimen name="profile_padding_start">70dp</dimen>
     <dimen name="profile_padding_end">70dp</dimen>

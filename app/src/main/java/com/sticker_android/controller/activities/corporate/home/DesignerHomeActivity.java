@@ -46,6 +46,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.Locale;
@@ -62,6 +63,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBarGradiant(this, AppConstants.DESIGNER);
         setContentView(R.layout.activity_designer_home);
         init();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -86,7 +88,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
         LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.designer_profile_bg_hdpi));
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile, displayImageOptions);
         imageProfile.setImageResource(R.drawable.designer_hdpi);
     }
     @Override

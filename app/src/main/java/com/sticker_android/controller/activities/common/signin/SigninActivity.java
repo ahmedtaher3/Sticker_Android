@@ -30,6 +30,7 @@ import com.sticker_android.model.UserData;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.ShareOneTouchAlertNewBottom;
 import com.sticker_android.utils.Utils;
@@ -57,13 +58,14 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBarGradiant(SigninActivity.this, AppConstants.FAN);
         init();
         setContentView(R.layout.activity_signin);
         setToolbar();
         setViewReferences();
         setViewListeners();
         languageSelection();
-        changeStatusBarColor(getResources().getColor(R.color.colorFanText));
+        /*changeStatusBarColor(getResources().getColor(R.color.colorFanText));*/
     }
 
     @Override
@@ -110,7 +112,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         if (email.isEmpty()) {
             this.edtEmail.requestFocus();
             Utils.showToast(this,getString(R.string.msg_email_cannot_be_empty));
-          //  CommonSnackBar.show(edtEmail, getString(R.string.msg_email_cannot_be_empty), Snackbar.LENGTH_SHORT);
+            //  CommonSnackBar.show(edtEmail, getString(R.string.msg_email_cannot_be_empty), Snackbar.LENGTH_SHORT);
             return false;
         } else if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             String password = this.edtPassword.getText().toString();
@@ -118,7 +120,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
                 this.edtPassword.requestFocus();
                 Utils.showToast(this,getString(R.string.msg_password_cannot_be_empty));
 
-               // CommonSnackBar.show(edtEmail, getString(R.string.msg_password_cannot_be_empty), Snackbar.LENGTH_SHORT);
+                // CommonSnackBar.show(edtEmail, getString(R.string.msg_password_cannot_be_empty), Snackbar.LENGTH_SHORT);
                 return false;
             }
         } else {
@@ -160,7 +162,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         String deviceId = Utils.getDeviceId(this);
         final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
         progressDialogHandler.show();
-       Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(edtEmail.getText().toString(),edtPassword.getText().toString(),"android","1233",deviceId,selectedOption);
+        Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(edtEmail.getText().toString(),edtPassword.getText().toString(),"android","1233",deviceId,selectedOption);
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -169,7 +171,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
                     appPref.saveUserObject(apiResponse.paylpad.getData());
                     appPref.setLoginFlag(true);
                     moveToActivity();
-                       } else
+                } else
                     Utils.showToast(SigninActivity.this,apiResponse.error.message);
 
                 //  CommonSnackBar.show(edtEmail, apiResponse.error.message, Snackbar.LENGTH_SHORT);
@@ -183,28 +185,28 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         });
     }
 
-        private void moveToActivity() {
-            Intent intent=null;
-            UserData userData = appPref.getUserInfo();
-            if (userData.getUserType().equals("corporate")) {
-                if(userData.getCompanyName()!=null&&!userData.getCompanyName().isEmpty())
-                {
-                    intent=new Intent(SigninActivity.this,CorporateHomeActivity.class);
+    private void moveToActivity() {
+        Intent intent=null;
+        UserData userData = appPref.getUserInfo();
+        if (userData.getUserType().equals("corporate")) {
+            if(userData.getCompanyName()!=null&&!userData.getCompanyName().isEmpty())
+            {
+                intent=new Intent(SigninActivity.this,CorporateHomeActivity.class);
 
-                }else{
-                    intent=new Intent(SigninActivity.this,CorporateProfileActivity.class);
-                }
-             } else if (userData.getUserType().equals("fan")) {
-                intent=new Intent(SigninActivity.this,FanHomeActivity.class);
-            } else if (userData.getUserType().equals("designer")) {
-                intent=new Intent(SigninActivity.this,DesignerHomeActivity.class);
+            }else{
+                intent=new Intent(SigninActivity.this,CorporateProfileActivity.class);
             }
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            overridePendingTransition(R.anim.activity_animation_enter,
-                    R.anim.activity_animation_exit);
-            finish();
+        } else if (userData.getUserType().equals("fan")) {
+            intent=new Intent(SigninActivity.this,FanHomeActivity.class);
+        } else if (userData.getUserType().equals("designer")) {
+            intent=new Intent(SigninActivity.this,DesignerHomeActivity.class);
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
+        finish();
+    }
 
 
     private void openBottomSheet() {
@@ -232,7 +234,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-              progressDialogHandler.hide();
+                progressDialogHandler.hide();
                 if (apiResponse.status) {
                     mBottomSheetDialog.dismiss();
                     Utils.showToast(SigninActivity.this,apiResponse.message.message);
@@ -246,7 +248,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-          progressDialogHandler.hide();
+                progressDialogHandler.hide();
             }
         });
 
@@ -283,7 +285,8 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
                     rdbtnFan.setTextColor(getResources().getColor(R.color.edt_background_tint));
                     btnLogin.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
                     tvSignUp.setTextColor(getResources().getColor(R.color.colorCorporateText));
-                        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+                    /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));*/
+                    setStatusBarGradiant(SigninActivity.this, AppConstants.CORPORATE);
                 }else if(checkedId==R.id.rdbtnDesigner){
                     selectedOption="designer";
                     rdbtnDesigner.setTextColor(getResources().getColor(R.color.colorDesignerText));
@@ -292,7 +295,8 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
                     rdbtnFan.setTextColor(getResources().getColor(R.color.edt_background_tint));
                     btnLogin.setBackgroundDrawable(getResources().getDrawable(R.drawable.designer_btn_background));
                     tvSignUp.setTextColor(getResources().getColor(R.color.colorDesignerText));
-                    changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
+                    /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));*/
+                    setStatusBarGradiant(SigninActivity.this, AppConstants.DESIGNER);
 
                 }else if(checkedId==R.id.rdbtnFan){
                     selectedOption="fan";
@@ -302,8 +306,8 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
                     tvSignUp.setTextColor(getResources().getColor(R.color.colorFanText));
                     rdbtnCorporate.setTextColor(getResources().getColor(R.color.edt_background_tint));
                     rdbtnDesigner.setTextColor(getResources().getColor(R.color.edt_background_tint));
-                    changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
-
+                    /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));*/
+                    setStatusBarGradiant(SigninActivity.this, AppConstants.FAN);
                 }
 
             }

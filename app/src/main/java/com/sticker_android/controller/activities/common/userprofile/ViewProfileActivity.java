@@ -1,7 +1,6 @@
 package com.sticker_android.controller.activities.common.userprofile;
 
-import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -9,14 +8,17 @@ import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.model.UserData;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 public class ViewProfileActivity extends AppBaseActivity {
 
     private Toolbar toolbar;
     private AppPref appPref;
     private UserData userData;
+    private ProfileFragment mProfileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class ViewProfileActivity extends AppBaseActivity {
         appPref=new AppPref(this);
         userData=appPref.getUserInfo();
     }
+
     private void setBackground(Toolbar toolbar) {
         switch (userData.getUserType()){
             case "fan":
@@ -63,10 +66,22 @@ public class ViewProfileActivity extends AppBaseActivity {
         }
     }
 
+    public void setProfileFragmentReference(ProfileFragment profileFragmentReference){
+        this.mProfileFragment = profileFragmentReference;
+    }
+
     private void setToolBarTitle() {
         TextView textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
         textView.setText(getResources().getString(R.string.txt_myprofile));
         // centerToolbarText(toolbar,textView);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            mProfileFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void centerToolbarText(final Toolbar toolbar, final TextView textView) {

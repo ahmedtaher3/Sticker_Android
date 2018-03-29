@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
@@ -27,6 +26,7 @@ import com.sticker_android.controller.fragment.fandownloads.FanDownloadFragment;
 import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
 import com.sticker_android.model.UserData;
 import com.sticker_android.network.ApiConstant;
+import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.List;
@@ -47,6 +47,7 @@ public class FanHomeActivity extends AppBaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBarGradiant(this, AppConstants.FAN);
         setContentView(R.layout.activity_fan_home);
         init();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -56,7 +57,7 @@ public class FanHomeActivity extends AppBaseActivity
         setViewReferences();
         setViewListeners();
         actionBarToggle(toolbar);
-        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
+        /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));*/
         setUserDataIntoNaviagtion();
         showFragmentManually();
     }
@@ -67,7 +68,7 @@ public class FanHomeActivity extends AppBaseActivity
         tvUserName.setText(userData.getFirstName()+" "+userData.getLastName());
         tvEmail.setText(userData.getEmail());
         ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile, displayImageOptions);
 
         LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.fan_profile_bg_hdpi));

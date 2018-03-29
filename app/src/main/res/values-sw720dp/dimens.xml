@@ -60,6 +60,7 @@
 
     <!--Profile-->
     <dimen name="profile_rlheight_150">200dp</dimen>
+    <dimen name="company_profile_rlheight_150">200dp</dimen>
 
     <dimen name="profile_rl_height">160dp</dimen>
     <dimen name="profile_image_width">160dp</dimen>

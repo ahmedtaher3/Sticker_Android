@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.common.userprofile.ViewProfileActivity;
@@ -43,6 +44,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.Locale;
@@ -60,6 +62,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBarGradiant(this, AppConstants.CORPORATE);
         setContentView(R.layout.activity_corporate_home);
         init();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -70,7 +73,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         setViewListeners();
         actionBarToggle(toolbar);
         toolbar.setTitle("");
-        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+        /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));*/
         showFragmentManually();
         setUserDataIntoNaviagtion();
     }
@@ -85,7 +88,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
         LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.profile_bg_hdpi));
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(), imageProfile, displayImageOptions);
         imageProfile.setImageResource(R.drawable.corporate_hdpi);
     }
 

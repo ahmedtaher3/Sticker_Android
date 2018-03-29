@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
@@ -31,10 +32,13 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 
@@ -72,21 +76,22 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBarGradiant(this, AppConstants.CORPORATE);
         setContentView(R.layout.activity_company_profile);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-       init();
+        init();
         setToolBarTitle();
         setSupportActionBar(toolbar);
         setViewReferences();
         setViewListeners();
-       //  backgroundChange();
-        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+        //  backgroundChange();
+        //changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
         changeBtnBackground();
-    setImageData();
+        setImageData();
     }
 
     private void setImageData() {
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imgCompanyLogo);
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imgCompanyLogo, displayImageOptions);
     }
 
     private void changeBtnBackground() {
@@ -100,7 +105,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
     private void setToolBarTitle() {
         TextView textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText("My Profile");
+        textView.setText(R.string.company);
         toolbar.setTitle("");
     }
 
@@ -126,20 +131,20 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
     protected boolean isValidData()
     {
         if(edtCompanyName.getText().toString().trim().isEmpty())
-    {
-        Utils.showToast(CorporateProfileActivity.this,"Please enter company name.");
+        {
+            Utils.showToast(CorporateProfileActivity.this,"Please enter company name.");
 
-        //   CommonSnackBar.show(edtCompanyName, "Company name cannot be empty", Snackbar.LENGTH_SHORT);
-        this.edtCompanyName.requestFocus();
-        return false;
-    }else if(edtCompanyAddress.getText().toString().trim().isEmpty()){
-        Utils.showToast(CorporateProfileActivity.this, "Please enter company address.");
+            //   CommonSnackBar.show(edtCompanyName, "Company name cannot be empty", Snackbar.LENGTH_SHORT);
+            this.edtCompanyName.requestFocus();
+            return false;
+        }else if(edtCompanyAddress.getText().toString().trim().isEmpty()){
+            Utils.showToast(CorporateProfileActivity.this, "Please enter company address.");
 
-     //   CommonSnackBar.show(edtCompanyAddress, "Company address cannot be empty", Snackbar.LENGTH_SHORT);
-        this.edtCompanyAddress.requestFocus();
+            //   CommonSnackBar.show(edtCompanyAddress, "Company address cannot be empty", Snackbar.LENGTH_SHORT);
+            this.edtCompanyAddress.requestFocus();
 
-        return false;
-    }
+            return false;
+        }
 
         return true;
     }
@@ -212,7 +217,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
-                  progressDialogHandler.hide();
+                    progressDialogHandler.hide();
                     if (apiResponse.status) {
                         appPref.saveUserObject(apiResponse.paylpad.getData());
                         appPref.setLoginFlag(true);
@@ -227,7 +232,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
                 @Override
                 public void onFail(Call<ApiResponse> call, Throwable t) {
-                   progressDialogHandler.hide();
+                    progressDialogHandler.hide();
                 }
             });
 
@@ -243,46 +248,45 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
             case PROFILE_CAMERA_IMAGE:
                 if (resultCode == Activity.RESULT_OK) {
                     if (mCapturedImageUrl != null) {
-                       // openCropActivity(mCapturedImageUrl);
-                        uploadImage();
+                        openCropActivity(mCapturedImageUrl);
+                        //uploadImage();
                     }
                 }
                 break;
 
-           case PROFILE_GALLERY_IMAGE:
+            case PROFILE_GALLERY_IMAGE:
                 if (resultCode == Activity.RESULT_OK) {
                     Uri selectedImage = data.getData();
                     String sourceUrl = Utils.getGalleryImagePath(this, selectedImage);
                     File file = Utils.getCustomImagePath(this, "temp");
                     mCapturedImageUrl = file.getAbsolutePath();
                     mCapturedImageUrl=sourceUrl;
-                   // openCropActivity(sourceUrl);
-                    uploadImage();
+                    openCropActivity(sourceUrl);
+                    //uploadImage();
                 }
                 break;
-           /*
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
-                    imageLoader.displayImage(resultUri.toString(), imgCompanyLogo);
+                    imageLoader.displayImage(resultUri.toString(), imgCompanyLogo, displayImageOptions);
                     mCapturedImageUrl = resultUri.getPath();
                     uploadImage();
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
                     error.printStackTrace();
-                }*/
+                }
         }
     }
 
-   /* private void openCropActivity(String url) {
+    private void openCropActivity(String url) {
         CropImage.activity(Uri.fromFile(new File(url)))
                 .setGuidelines(CropImageView.Guidelines.OFF)
                 .setFixAspectRatio(true)
                 .setAspectRatio(1, 1)
                 .setAutoZoomEnabled(true)
                 .start(this);
-    }*/
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -362,28 +366,28 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
         RequestBody languageId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(userData.getLanguageId()));
         RequestBody authKey = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(""));
 
-         Call<ApiResponse> apiResponseCall=  RestClient.getService().profileImage(userId,languageId,authKey,body);
+        Call<ApiResponse> apiResponseCall=  RestClient.getService().profileImage(userId,languageId,authKey,body);
         apiResponseCall.enqueue(new ApiCall(this) {
-    @Override
-    public void onSuccess(ApiResponse apiResponse) {
-     progressDialogHandler.hide();
-        if(apiResponse.status){
-         userData.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
-            imageLoader.displayImage("file://" + mCapturedImageUrl,imgCompanyLogo);
-            UserData userDataNew=new UserData();
-            userDataNew=userData;
-            userDataNew.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
-            userData.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
-            appPref.saveUserObject(userDataNew);
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+                if(apiResponse.status){
+                    userData.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
+                    imageLoader.displayImage("file://" + mCapturedImageUrl, imgCompanyLogo, displayImageOptions);
+                    UserData userDataNew=new UserData();
+                    userDataNew=userData;
+                    userDataNew.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
+                    userData.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
+                    appPref.saveUserObject(userDataNew);
 
-        }
-    }
+                }
+            }
 
-    @Override
-    public void onFail(Call<ApiResponse> call, Throwable t) {
-        progressDialogHandler.hide();
-    }
-     });
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
     }
 
     @Override
