@@ -13,15 +13,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <RelativeLayout
+            android:paddingBottom="3dp"
+            android:clipToPadding="false"
             android:layout_marginBottom="@dimen/dp_2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/profile_rlheight_150">
+            android:layout_height="@dimen/corporate_profile_rlheight_150">
             <RelativeLayout
                 android:orientation="vertical"
                 android:id="@+id/bgProfile"
                 android:background="@drawable/profile_hdpi"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/profile_rl_height">
+                android:layout_height="@dimen/corporate_profile_rl_height">
                 <include android:id="@+id/toolbar" layout="@layout/toolbar"/>
             </RelativeLayout>
             <com.sticker_android.view.CircularImageView
@@ -52,6 +54,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <LinearLayout
+                android:layout_marginEnd="@dimen/act_signin_edit_margin_start"
+                android:layout_marginStart="@dimen/act_signin_edit_margin_end"
                 android:id="@+id/llCorporate"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -74,12 +78,11 @@
                         />
                 </android.support.design.widget.TextInputLayout>
                 <android.support.design.widget.TextInputLayout
-
+                    android:layout_marginTop="@dimen/act_corporate_profile_margin_top"
                     android:id="@+id/act_profile_txt_input_company_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     >
-
                     <android.support.design.widget.TextInputEditText
                         android:backgroundTint="@color/edt_background_tint"
                         android:id="@+id/act_profile_edt_company_address"
@@ -96,7 +99,7 @@
                 android:elevation="@dimen/dp_5"
                 android:background="@drawable/fan_btn_background"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="@dimen/act_company_profile_margin_top_30"
                 android:id="@+id/act_corporate_profile_btn_register"
                 android:layout_width="@dimen/signup_btn_next_width"
                 android:layout_height="wrap_content"

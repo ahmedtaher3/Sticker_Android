@@ -74,4 +74,18 @@
     <dimen name="change_password_margin_end">70dp</dimen>
     <dimen name="btn_change_password_width">140dp</dimen>
 
+    <!--corporate profile-->
+    <dimen name="corporate_profile_rlheight_150">150dp</dimen>
+    <dimen name="corporate_profile_rl_height">110dp</dimen>
+    <dimen name="activit_margin_top_edit_password">20dp</dimen>
+    <dimen name="act_signin_edit_margin_start">30dp</dimen>
+    <dimen name="act_signin_edit_margin_end">30dp</dimen>
+    <dimen name="width_my_profile_image">90dp</dimen>
+    <dimen name="act_company_profile_margin_top_30">70dp</dimen>
+    <dimen name="margin_top_contact_us">70dp</dimen>
+    <dimen name="change_password_margin_top_5dp">20dp</dimen>
+    <dimen name="margin_top_30dp_password">30dp</dimen>
+    <dimen name="text_size_18sp">26sp</dimen>
+
+
 </resources>

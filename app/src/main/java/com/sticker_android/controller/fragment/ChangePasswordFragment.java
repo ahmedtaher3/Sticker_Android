@@ -167,6 +167,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
 
     @Override
     public void onClick(View v) {
+        Utils.hideKeyboard(getActivity());
         switch (v.getId()){
             case R.id.change_password_submit:
                 if(isValidData())

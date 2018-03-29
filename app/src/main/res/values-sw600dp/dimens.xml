@@ -57,6 +57,9 @@
 
     <!--Contact us-->
     <dimen name="margin_top_tv">20dp</dimen>
+<!--corporate profile-->
+    <dimen name="corporate_profile_rlheight_150">250dp</dimen>
+    <dimen name="corporate_profile_rl_height">200dp</dimen>
 
     <!--Profile-->
     <dimen name="profile_rlheight_150">250dp</dimen>
@@ -82,6 +85,19 @@
     <dimen name="login_cardview_width">500dp</dimen>
     <dimen name="activit_margin_top_edit">20dp</dimen>
     <dimen name="navigation_view_width">350dp</dimen>
+    <dimen name="activit_margin_top_edit_password">5dp</dimen>
+    <dimen name="act_signin_edit_margin_start">10dp</dimen>
+    <dimen name="act_signin_edit_margin_end">10dp</dimen>
+    <dimen name="act_corporate_profile_margin_top">20dp</dimen>
+    <dimen name="change_pass_margin_top">10dp</dimen>
+    <dimen name="width_my_profile_image">100dp</dimen>
+    <dimen name="width_my_profile_imag">250dp</dimen>
+    <dimen name="act_company_profile_margin_top_30">50dp</dimen>
+    <dimen name="margin_top_contact_us">30dp</dimen>
+    <dimen name="text_size_contact_us">17sp</dimen>
+    <dimen name="change_password_margin_top_5dp">10dp</dimen>
+    <dimen name="margin_top_30dp_password">40dp</dimen>
+    <dimen name="text_size_18sp">21sp</dimen>
 
 
 </resources>

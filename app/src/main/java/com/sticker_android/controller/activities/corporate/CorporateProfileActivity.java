@@ -100,7 +100,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
     private void setToolBarTitle() {
         TextView textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText("My Profile");
+        textView.setText("Company Profile");
         toolbar.setTitle("");
     }
 

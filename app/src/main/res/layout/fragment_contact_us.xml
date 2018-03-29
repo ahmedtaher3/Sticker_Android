@@ -11,8 +11,8 @@
     <com.sticker_android.view.CircularImageView
         android:layout_marginTop="30dp"
         android:src="@drawable/contact"
-        android:layout_width="100dp"
-        android:layout_height="100dp" />
+        android:layout_width="@dimen/profile_image_width"
+        android:layout_height="@dimen/profile_image_width" />
     <TextView
         android:layout_marginTop="@dimen/margin_top_tv"
         android:textColor="@android:color/black"
@@ -24,10 +24,12 @@
 
     <RelativeLayout
         android:id="@+id/rlEmailHolder"
-        android:layout_marginTop="@dimen/margin_top_tv"
+        android:layout_marginTop="@dimen/margin_top_contact_us"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
+            android:textSize="@dimen/text_size_contact_us"
+            android:layout_marginTop="@dimen/margin_top_contact_us"
             android:gravity="center"
             android:id="@+id/tvEmailHint"
             android:textColor="@android:color/black"
@@ -36,6 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
+            android:textSize="@dimen/text_size_contact_us"
+            android:layout_marginTop="@dimen/margin_top_contact_us"
             android:gravity="center"
             android:id="@+id/tvEmailContactUs"
             android:layout_marginLeft="@dimen/dp_2"
@@ -47,10 +51,11 @@
             android:layout_height="wrap_content" />
     </RelativeLayout>
     <RelativeLayout
-        android:layout_marginTop="@dimen/margin_top_tv"
+        android:layout_marginTop="@dimen/margin_top_contact_us"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
+            android:textSize="@dimen/text_size_contact_us"
             android:id="@+id/tvContactHint"
             android:textColor="@android:color/black"
             fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
@@ -58,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
+            android:textSize="@dimen/text_size_contact_us"
             android:id="@+id/tvContactUsContactNum"
             android:layout_marginLeft="@dimen/dp_2"
             android:layout_toRightOf="@+id/tvContactHint"
