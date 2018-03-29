@@ -50,6 +50,7 @@ public class ViewProfileActivity extends AppBaseActivity {
         switch (userData.getUserType()){
             case "fan":
                 toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_hdpi));
+                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
                 break;
             case "designer":
                 toolbar.setBackground(getResources().getDrawable(R.drawable.designer_header_hdpi));
@@ -57,6 +58,7 @@ public class ViewProfileActivity extends AppBaseActivity {
                 break;
             case "corporate":
                 toolbar.setBackground(getResources().getDrawable(R.drawable.corporate_header_hdpi));
+                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
                 break;
         }
     }

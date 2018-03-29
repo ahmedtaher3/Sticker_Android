@@ -82,11 +82,12 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         TextView   tvEmail=(TextView)header.findViewById(R.id.tvEmail);
         tvUserName.setText(userData.getFirstName()+" "+userData.getLastName());
         tvEmail.setText(userData.getEmail());
+
         ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
         LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
-        linearLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_designer));
+        linearLayout.setBackground(getResources().getDrawable(R.drawable.designer_profile_bg_hdpi));
         imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile);
-
+        imageProfile.setImageResource(R.drawable.designer_hdpi);
     }
     @Override
     protected boolean isValidData() {

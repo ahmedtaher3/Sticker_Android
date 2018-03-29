@@ -158,7 +158,8 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
             Utils.showToast(getActivity(),getActivity().getString(R.string.old_password_not_match));
             return false;
         }else if(!userData.getPasssword().equals(oldPass)){
-
+            Utils.showToast(getActivity(),"Old Password Not match");
+            return false;
         }
 
         return true;
