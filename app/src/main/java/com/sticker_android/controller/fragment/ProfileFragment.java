@@ -1,6 +1,5 @@
 package com.sticker_android.controller.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,9 +19,11 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.common.userprofile.ViewProfileActivity;
+import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
+import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
+import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
@@ -60,7 +61,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private EditText edtCompanyName,edtCompanyAddress,edtProfileFirstName;
     private EditText edtProfileLastName,edtProfileEmail;
     private Button btnSubmit;
-    private UserData userData;
+    private User user;
     private ImageView imvProfile;
     private String mCapturedImageUrl;
     private final int PROFILE_CAMERA_IMAGE = 0;
@@ -68,6 +69,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private TextView personalProfile;
     private TextView tvCompanyDetails;
     private DisplayImageOptions mDisplayImageOptions;
+    private OnFragmentProfileListener mListener;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -85,8 +87,17 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        ViewProfileActivity profileActivity = (ViewProfileActivity) context;
-        profileActivity.setProfileFragmentReference(this);
+   if(context instanceof FanHomeActivity) {
+    FanHomeActivity profileActivity = (FanHomeActivity) context;
+       profileActivity.setProfileFragmentReference(this);
+   }else if(context instanceof CorporateHomeActivity){
+       CorporateHomeActivity profileActivity = (CorporateHomeActivity) context;
+       profileActivity.setProfileFragmentReference(this);
+
+   }else {
+       DesignerHomeActivity profileActivity = (DesignerHomeActivity) context;
+       profileActivity.setProfileFragmentReference(this);
+   }
 
         mDisplayImageOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
@@ -94,6 +105,12 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 .resetViewBeforeLoading(true)
                 .considerExifParams(true)
                 .build();
+        if (context instanceof OnFragmentProfileListener) {
+            mListener = (OnFragmentProfileListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -114,26 +131,25 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         init();
         setViewReferences(view);
         setViewListeners();
-        setUserBackground();
         setUserData();
+        setUserBackground();
         return view;
     }
 
     private void setUserData() {
-        edtProfileFirstName.setText(userData.getFirstName());
-        edtProfileLastName.setText(userData.getLastName());
-        edtProfileEmail.setText(userData.getEmail());
+        edtProfileFirstName.setText(user.getFirstName());
+        edtProfileLastName.setText(user.getLastName());
+        edtProfileEmail.setText(user.getEmail());
         edtProfileFirstName.setSelection(edtProfileFirstName.getText().length());
         edtProfileLastName.setSelection(edtProfileLastName.getText().length());
         edtProfileEmail.setSelection(edtProfileEmail.getText().length());
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(), imvProfile, mDisplayImageOptions);
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+ user.getCompanyLogo(), imvProfile, mDisplayImageOptions);
 
     }
 
     private void setUserBackground() {
-        userData=appPref.getUserInfo();
-        if(userData.getUserType()!=null)
-            switch (userData.getUserType()){
+        if(user.getUserType()!=null)
+            switch (user.getUserType()){
                 case "fan":
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.fan_profile_bg_xhdpi));
                     llCorporate.setVisibility(View.GONE);
@@ -153,11 +169,11 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 case "corporate":
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.profile_bg_hdpi));
                     llCorporate.setVisibility(View.VISIBLE);
-                    edtCompanyName.setText(userData.getCompanyName());
-                    edtCompanyAddress.setText(userData.getCompanyAddress());
+                    edtCompanyName.setText(user.getCompanyName());
+                    edtCompanyAddress.setText(user.getCompanyAddress());
                     edtCompanyName.setSelection(edtCompanyName.getText().length());
                     edtCompanyAddress.setSelection(edtCompanyAddress.getText().length());
-                    imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(), imvProfile, mDisplayImageOptions);
+                    imageLoader.displayImage(ApiConstant.IMAGE_URl+ user.getCompanyLogo(), imvProfile, mDisplayImageOptions);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.corporate_btn_background));
                     personalProfile.setTextColor(getResources().getColor(R.color.corporateBtnBackground));
                     tvCompanyDetails.setVisibility(View.VISIBLE);
@@ -168,6 +184,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     private void init() {
         appPref=new AppPref(getActivity());
+        user =appPref.getUserInfo();
 
     }
 
@@ -194,7 +211,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     protected boolean isValidData() {
-        if(userData.getUserType().equals("corporate")){
+        if(user.getUserType().equals("corporate")){
             if(edtCompanyName.getText().toString().trim().isEmpty())
             {
                 Utils.showToast(getActivity(),"Company name cannot be empty");
@@ -291,12 +308,12 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void updateProfileApi() {
-        if (userData.getId() != null) {
+        if (user.getId() != null) {
             final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
             progressDialogHandler.show();
-            Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(userData.getId(), edtCompanyName.getText().toString(),
+            Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(user.getId(), edtCompanyName.getText().toString(),
                     "", edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
-                    edtProfileEmail.getText().toString(), userData.getUserType());
+                    edtProfileEmail.getText().toString(), user.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
@@ -305,9 +322,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         appPref.saveUserObject(null);
                         appPref.saveUserObject(apiResponse.paylpad.getData());
                         appPref.setLoginFlag(true);
-                        if(getActivity()!=null)
-                            getActivity().onBackPressed();
                         Utils.showToast(getActivity(),"Profile updated successfully");
+                        getActivity().onBackPressed();
                         //  CommonSnackBar.show(edtCompanyAddress, "Data updated successfully", Snackbar.LENGTH_SHORT);
 
                     } else {
@@ -383,8 +399,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         MultipartBody.Part body = MultipartBody.Part.createFormData("company_logo", file.getName(),
                 RequestBody.create(MediaType.parse("multipart/form-data"), file));
 
-        RequestBody userId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(userData.getId()));
-        RequestBody languageId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(userData.getLanguageId()));
+        RequestBody userId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(user.getId()));
+        RequestBody languageId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(user.getLanguageId()));
         RequestBody authKey = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(""));
 
         Call<ApiResponse> apiResponseCall=  RestClient.getService().profileImage(userId,languageId,authKey,body);
@@ -394,13 +410,16 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 progressDialogHandler.hide();
                 if(apiResponse.status){
                     Utils.showToast(getActivity(),"Data save sucessfully.");
-                    userData.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
-                    UserData userDataNew=new UserData();
-                    userDataNew=userData;
-                    userDataNew.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
+                    user.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
+                    User userNew =new User();
+                    userNew = user;
+                    userNew.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
                     appPref.saveUserObject(null);
-                    appPref.saveUserObject(userDataNew);
+                    appPref.saveUserObject(userNew);
                     imageLoader.displayImage("file://" + mCapturedImageUrl, imvProfile, mDisplayImageOptions);
+                    if(mListener!=null)
+                    mListener.updatedata();
+
                 }
             }
 
@@ -409,6 +428,15 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 progressDialogHandler.hide();
             }
         });
+    }
+   public interface  OnFragmentProfileListener{
+    public void updatedata();
+}
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
 

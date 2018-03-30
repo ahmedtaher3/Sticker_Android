@@ -10,7 +10,7 @@
 
     <!--Sign In-->
     <string name="txt_dont_have_a_account">"Don't have a account?"</string>
-    <string name="txt_signup">SignUp</string>
+    <string name="txt_signup">Signup</string>
     <string name="txt_forgot_password">"Forgot Password?"</string>
     <string name="txt_login">Login</string>
     <string name="txt_hint_email">Email</string>
@@ -30,7 +30,7 @@
     <string name="confirm_password_cannot_be_less">Please enter confirm password equal or more than 8 characters.</string>
 
     <string name="new_password_cannot_be_less">Please enter new password equal or more than 8 characters.</string>
-<string name="please_enter_new_password">"Please enter new password."</string>
+    <string name="please_enter_new_password">"Please enter new password."</string>
     <string name="old_password_cannot_be_less">Please enter old password equal or more than 8 characters.</string>
 
     <string name="confirm_password_cannot_be_empty">Confirm Password cannot be empty.</string>

@@ -88,6 +88,7 @@
                                 android:layout_height="wrap_content">
                             </RelativeLayout>
                             <RadioGroup
+                                android:layout_marginTop="@dimen/act_signin_margin_top_radio"
                                 android:weightSum="3"
                                 android:id="@+id/RadioGroupSelect"
                                 android:layout_width="match_parent"
@@ -112,6 +113,7 @@
                                     android:textColor="@color/colorFanText" />
 
                                 <RadioButton
+                                    android:textColor="@color/edt_background_tint"
                                     android:textSize="@dimen/text_size_contact_us"
                                     android:layout_weight="1"
                                     android:id="@+id/rdbtnDesigner"
@@ -125,6 +127,7 @@
                                     android:text="@string/txt_designer"
                                     />
                                 <RadioButton
+                                    android:textColor="@color/edt_background_tint"
                                     android:textSize="@dimen/text_size_contact_us"
                                     android:layout_weight="1"
                                     android:id="@+id/rdbtnCorporate"
@@ -198,7 +201,7 @@
                                 android:elevation="@dimen/dp_5"
                                 android:background="@drawable/fan_btn_background"
                                 android:layout_gravity="center"
-                                android:layout_marginTop="30dp"
+                                android:layout_marginTop="@dimen/margin_top_login_btn"
                                 android:id="@+id/act_signin_btn_login"
                                 android:gravity="center"
                                 android:text="@string/txt_login"

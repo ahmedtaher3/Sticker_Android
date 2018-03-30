@@ -1,7 +1,6 @@
 package com.sticker_android.controller.activities.common.profile;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -15,13 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.sticker_android.R;
-import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -29,12 +27,12 @@ import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.CommonSnackBar;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import retrofit2.Call;
 
 import static com.theartofdev.edmodo.cropper.CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE;
+
 
 public class ProfileActivity extends AppBaseActivity implements View.OnClickListener {
 
@@ -46,7 +44,7 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
     private EditText edtCompanyName, edtCompanyAddress, edtProfileFirstName;
     private EditText edtProfileLastName, edtProfileEmail;
     private Button btnSubmit;
-    private UserData userData;
+    private User user;
 
 
     @Override
@@ -106,10 +104,10 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
     private void init() {
         Log.e(TAG, "Inside init() method");
         appPref = new AppPref(this);
-        userData = appPref.getUserInfo();
-        if (userData.getUserType() != null)
-            Log.e(TAG, "User type => " + userData.getUserType());
-        switch (userData.getUserType()) {
+        user = appPref.getUserInfo();
+        if (user.getUserType() != null)
+            Log.e(TAG, "User type => " + user.getUserType());
+        switch (user.getUserType()) {
             case "fan":
                 rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
                 llCorporate.setVisibility(View.GONE);
@@ -151,12 +149,12 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
     }
 
     private void updateProfileApi() {
-        if (userData.getId() != null) {
+        if (user.getId() != null) {
             final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
             progressDialogHandler.show();
-            Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(userData.getId(), edtCompanyName.getText().toString(),
+            Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(user.getId(), edtCompanyName.getText().toString(),
                     "", edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
-                    userData.getEmail(), userData.getUserType());
+                    user.getEmail(), user.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
@@ -181,12 +179,12 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
 
 
     private void moveToNext() {
-        UserData userData = appPref.getUserInfo();
-        if (userData.getUserType().equals("corporate")) {
+        User user = appPref.getUserInfo();
+        if (user.getUserType().equals("corporate")) {
             startNewActivity(CorporateHomeActivity.class);
-        } else if (userData.getUserType().equals("fan")) {
+        } else if (user.getUserType().equals("fan")) {
             startNewActivity(FanHomeActivity.class);
-        } else if (userData.getUserType().equals("designer")) {
+        } else if (user.getUserType().equals("designer")) {
             startNewActivity(DesignerHomeActivity.class);
         }
     }

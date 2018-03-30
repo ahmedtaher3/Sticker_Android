@@ -22,17 +22,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
-import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -65,7 +63,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
     private EditText edtCompanyName,edtCompanyAddress,edtProfileFirstName;
     private EditText edtProfileLastName,edtProfileEmail;
     private Button btnSubmit;
-    private UserData userData;
+    private User user;
     private String mCapturedImageUrl;
     private android.app.AlertDialog mPermissionDialog;
 
@@ -76,7 +74,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusBarGradiant(this, AppConstants.CORPORATE);
+     //   setStatusBarGradiant(this, AppConstants.CORPORATE);
         setContentView(R.layout.activity_company_profile);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         init();
@@ -84,14 +82,14 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
         setSupportActionBar(toolbar);
         setViewReferences();
         setViewListeners();
-        //  backgroundChange();
-        //changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+          //backgroundChange();
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
         changeBtnBackground();
         setImageData();
     }
 
     private void setImageData() {
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imgCompanyLogo, displayImageOptions);
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+ user.getCompanyLogo(),imgCompanyLogo, displayImageOptions);
     }
 
     private void changeBtnBackground() {
@@ -100,7 +98,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
     private void init() {
         appPref=new AppPref(this);
-        userData=appPref.getUserInfo();
+        user =appPref.getUserInfo();
     }
 
     private void setToolBarTitle() {
@@ -152,8 +150,8 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
    /* private void backgroundChange() {
 
-        if(userData.getUserType()!=null)
-            switch (userData.getUserType()){
+        if(user.getUserType()!=null)
+            switch (user.getUserType()){
                 case "fan":
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
                     llCorporate.setVisibility(View.GONE);
@@ -208,12 +206,12 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
 
     private void updateProfileApi() {
-        if (userData.getId() != null) {
+        if (user.getId() != null) {
             final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
             progressDialogHandler.show();
-            Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(userData.getId(), edtCompanyName.getText().toString(),
-                    "", edtCompanyAddress.getText().toString(), userData.getFirstName(), userData.getLastName(),
-                    userData.getEmail(), userData.getUserType());
+            Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(user.getId(), edtCompanyName.getText().toString(),
+                    "", edtCompanyAddress.getText().toString(), user.getFirstName(), user.getLastName(),
+                    user.getEmail(), user.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
@@ -362,8 +360,8 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
         MultipartBody.Part body = MultipartBody.Part.createFormData("company_logo", file.getName(),
                 RequestBody.create(MediaType.parse("multipart/form-data"), file));
 
-        RequestBody userId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(userData.getId()));
-        RequestBody languageId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(userData.getLanguageId()));
+        RequestBody userId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(user.getId()));
+        RequestBody languageId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(user.getLanguageId()));
         RequestBody authKey = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(""));
 
         Call<ApiResponse> apiResponseCall=  RestClient.getService().profileImage(userId,languageId,authKey,body);
@@ -372,13 +370,13 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
                 if(apiResponse.status){
-                    userData.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
+                    user.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
                     imageLoader.displayImage("file://" + mCapturedImageUrl, imgCompanyLogo, displayImageOptions);
-                    UserData userDataNew=new UserData();
-                    userDataNew=userData;
-                    userDataNew.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
-                    userData.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
-                    appPref.saveUserObject(userDataNew);
+                    User userNew =new User();
+                    userNew = user;
+                    userNew.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
+                    user.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
+                    appPref.saveUserObject(userNew);
 
                 }
             }

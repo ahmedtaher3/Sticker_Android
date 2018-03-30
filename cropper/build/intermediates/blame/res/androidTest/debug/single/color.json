@@ -1,11 +1,11 @@
 [
     {
-        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/androidTest/debug/color/abc_secondary_text_material_dark.xml",
-        "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/color/abc_secondary_text_material_dark.xml"
-    },
-    {
         "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/androidTest/debug/color/abc_primary_text_disable_only_material_light.xml",
         "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/color/abc_primary_text_disable_only_material_light.xml"
+    },
+    {
+        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/androidTest/debug/color/abc_secondary_text_material_dark.xml",
+        "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/color/abc_secondary_text_material_dark.xml"
     },
     {
         "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/androidTest/debug/color/abc_btn_colored_borderless_text_material.xml",

@@ -84,7 +84,7 @@
     <dimen name="activit_margin_top_edit">0dp</dimen>
     <dimen name="navigation_view_width">250dp</dimen>
     <!--corporate profile-->
-    <dimen name="corporate_profile_rlheight_150">190dp</dimen>
+    <dimen name="corporate_profile_rlheight_150">200dp</dimen>
     <dimen name="corporate_profile_rl_height">150dp</dimen>
     <dimen name="activit_margin_top_edit_password">2dp</dimen>
     <dimen name="act_signin_edit_margin_start">10dp</dimen>
@@ -100,5 +100,7 @@
     <dimen name="margin_top_30dp_password">30dp</dimen>
     <dimen name="text_size_18sp">18sp</dimen>
     <dimen name="margin_top_profile">20dp</dimen>
+    <dimen name="margin_top_login_btn">30dp</dimen>
+    <dimen name="act_signin_margin_top_radio">0dp</dimen>
 
 </resources>

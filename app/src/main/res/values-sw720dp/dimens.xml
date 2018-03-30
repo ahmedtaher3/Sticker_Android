@@ -42,7 +42,7 @@
     <dimen name="signup_rl_content_padding">30dp</dimen>
     <dimen name="signup_rl_content_padding_left">16dp</dimen>
     <dimen name="signup_rl_content_padding_right">16dp</dimen>
-    <dimen name="signup_btn_next_width">400dp</dimen>
+    <dimen name="signup_btn_next_width">320dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">200dp</dimen>
@@ -66,9 +66,9 @@
     <dimen name="profile_rlheight_150">200dp</dimen>
     <dimen name="company_profile_rlheight_150">200dp</dimen>
 
-    <dimen name="profile_rl_height">170dp</dimen>
-    <dimen name="profile_image_width">160dp</dimen>
-    <dimen name="profile_image_height">160dp</dimen>
+    <dimen name="profile_rl_height">235dp</dimen>
+    <dimen name="profile_image_width">150dp</dimen>
+    <dimen name="profile_image_height">150dp</dimen>
 
     <dimen name="profile_padding_start">50dp</dimen>
     <dimen name="profile_padding_end">50dp</dimen>
@@ -82,7 +82,7 @@
     <dimen name="change_password_margin_start">100dp</dimen>
     <dimen name="change_password_margin_end">50dp</dimen>
 
-    <dimen name="btn_change_password_width">1200dp</dimen>
+    <dimen name="btn_change_password_width">300dp</dimen>
 
     <dimen name="dim_1">2.5dp</dimen>
     <dimen name="dim_2">4.5dp</dimen>
@@ -392,7 +392,7 @@
     <dimen name="dim_304">684dp</dimen>
     <dimen name="login_cardview_left_right_margin">100dp</dimen>
     <dimen name="login_cardview_width">650dp</dimen>
-    <dimen name="activit_margin_top_edit">30dp</dimen>
+    <dimen name="activit_margin_top_edit">40dp</dimen>
     <dimen name="navigation_view_width">500dp</dimen>
     <dimen name="activit_margin_top_edit_password">10dp</dimen>
     <dimen name="act_signin_edit_margin_start">20dp</dimen>
@@ -400,12 +400,14 @@
     <dimen name="act_corporate_profile_margin_top">30dp</dimen>
     <dimen name="change_pass_margin_top">10dp</dimen>
     <dimen name="width_my_profile_image">90dp</dimen>
-    <dimen name="width_my_profile_imag">258dp</dimen>
+    <dimen name="width_my_profile_imag">310dp</dimen>
     <dimen name="act_company_profile_margin_top_30">60dp</dimen>
     <dimen name="margin_top_contact_us">50dp</dimen>
     <dimen name="text_size_contact_us">19sp</dimen>
     <dimen name="change_password_margin_top_5dp">15dp</dimen>
     <dimen name="margin_top_30dp_password">60dp</dimen>
     <dimen name="text_size_18sp">24sp</dimen>
-    <dimen name="margin_top_profile">30dp</dimen>
+    <dimen name="margin_top_profile">50dp</dimen>
+    <dimen name="margin_top_login_btn">70dp</dimen>
+    <dimen name="act_signin_margin_top_radio">20dp</dimen>
 </resources>

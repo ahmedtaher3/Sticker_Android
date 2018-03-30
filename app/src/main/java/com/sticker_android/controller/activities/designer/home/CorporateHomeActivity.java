@@ -19,7 +19,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -28,41 +27,39 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
-import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
-import com.sticker_android.controller.activities.common.userprofile.ViewProfileActivity;
 import com.sticker_android.controller.fragment.AccountSettingFragment;
+import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateReportFragment;
 import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.Locale;
 
 import retrofit2.Call;
 
-public class CorporateHomeActivity extends AppBaseActivity  implements NavigationView.OnNavigationItemSelectedListener{
+public class CorporateHomeActivity extends AppBaseActivity  implements NavigationView.OnNavigationItemSelectedListener,ProfileFragment.OnFragmentProfileListener{
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
     private AppPref appPref;
-    private UserData userData;
+    private User user;
     private AlertDialog languageDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusBarGradiant(this, AppConstants.CORPORATE);
+        /*setStatusBarGradiant(this, AppConstants.CORPORATE);*/
         setContentView(R.layout.activity_corporate_home);
         init();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -73,7 +70,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         setViewListeners();
         actionBarToggle(toolbar);
         toolbar.setTitle("");
-        /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));*/
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
         showFragmentManually();
         setUserDataIntoNaviagtion();
     }
@@ -82,14 +79,14 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         View header= navigationView.getHeaderView(0);
         TextView   tvUserName=(TextView)header.findViewById(R.id.tvUserName);
         TextView   tvEmail=(TextView)header.findViewById(R.id.tvEmail);
-        tvUserName.setText(userData.getFirstName()+" "+userData.getLastName());
-        tvEmail.setText(userData.getEmail());
+        tvUserName.setText(user.getFirstName()+" "+ user.getLastName());
+        tvEmail.setText(user.getEmail());
 
         ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
         LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.profile_bg_hdpi));
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(), imageProfile, displayImageOptions);
         imageProfile.setImageResource(R.drawable.corporate_hdpi);
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+ user.getCompanyLogo(), imageProfile, displayImageOptions);
     }
 
     @Override
@@ -106,7 +103,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
 
 
     private void setBackground(Toolbar toolbar) {
-        switch (userData.getUserType()){
+        switch (user.getUserType()){
             case "fan":
                 toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_hdpi));
                 break;
@@ -122,7 +119,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
 
     private void init() {
         appPref=new AppPref(this);
-        userData=appPref.getUserInfo();
+        user =appPref.getUserInfo();
     }
 
 
@@ -140,7 +137,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         }else{
             toolbar.setBackgroundDrawable(drawable);
         }
-        if(userData.getUserType()!=null)
+        if(user.getUserType()!=null)
             setBackground(toolbar);
     }
 
@@ -170,9 +167,14 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
 
     @Override
     public void onBackPressed() {
+        TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
+        textView.setText(getResources().getString(R.string.txt_home));
+        toolbar.setTitle("");
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if(getFragmentManager().getBackStackEntryCount()>0){
+            getFragmentManager().popBackStack();
+        }else{
             super.onBackPressed();
         }
     }
@@ -195,9 +197,9 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
             //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_profile) {
-            startNewActivity(ViewProfileActivity.class);
-            fragmentClass = new CorporateHomeFragment();
-            textView.setText(getResources().getString(R.string.txt_home));
+          //  startNewActivity(ViewProfileActivity.class);
+            fragmentClass = new ProfileFragment();
+            textView.setText(getResources().getString(R.string.txt_myprofile));
             overridePendingTransition(R.anim.activity_animation_enter,
                     R.anim.activity_animation_exit);
         }
@@ -225,12 +227,15 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         fragmentTransaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
                 R.anim.activity_animation_enter, R.anim.activity_animation_exit);
         fragmentTransaction.replace(R.id.container_home,
-                fragmentClass).commit();
+                fragmentClass);
+        int count=getFragmentManager().getBackStackEntryCount();
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
 
     private void userLogout() {
-        appPref.saveUserObject(new UserData());
+        appPref.saveUserObject(new User());
         appPref.setLoginFlag(false);
         Intent intent=new Intent(getActivity(),SigninActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -283,7 +288,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
 
     private void updatelanguageApi() {
         final int language= appPref.getLanguage(0);
-        Call<ApiResponse> apiResponseCall=  RestClient.getService().changeLanguage(userData.getId(),language,"");
+        Call<ApiResponse> apiResponseCall=  RestClient.getService().changeLanguage(user.getId(),language,"");
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -331,11 +336,25 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
     private void showFragmentManually() {
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container_home, new FanHomeFragment());
+        transaction.replace(R.id.container_home, new CorporateHomeFragment());
         transaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
                 R.anim.activity_animation_enter, R.anim.activity_animation_exit);
-
-
         transaction.commit();
+    }
+    public void setProfileFragmentReference(ProfileFragment profileFragmentReference){
+        this.mProfileFragment = profileFragmentReference;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            mProfileFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void updatedata() {
+        init();
+        setUserDataIntoNaviagtion();
     }
 }

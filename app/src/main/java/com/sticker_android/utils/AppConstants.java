@@ -11,5 +11,6 @@ public class AppConstants {
     public static final int DESIGNER = 1;
 
     public static final int CORPORATE = 2;
+    public static final String USERSELECTION = "userSelection";
 
 }

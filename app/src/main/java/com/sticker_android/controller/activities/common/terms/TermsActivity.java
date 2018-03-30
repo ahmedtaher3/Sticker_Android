@@ -8,8 +8,7 @@ import android.widget.TextView;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
-import com.sticker_android.controller.activities.common.signup.SignUpActivity;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -17,13 +16,15 @@ public class TermsActivity extends AppBaseActivity {
 
     private AppPref appPref ;
     private Toolbar toolbar;
-    private UserData userData;
+    private User user;
+    private String type="fan";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terms);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        getUserSelectedOption();
         setToolbarData();
         setViewReferences();
         setViewListeners();
@@ -50,9 +51,15 @@ public class TermsActivity extends AppBaseActivity {
         textView.setText(getActivity().getString(R.string.txt_hint_terms_conditions));
         toolbar.setTitle("");
     }
+    private void getUserSelectedOption() {
+        if(getIntent().getExtras()!=null){
+            type=getIntent().getExtras().getString(AppConstants.USERSELECTION);
+        }
+
+    }
 
     private void setBackground(Toolbar toolbar) {
-        switch (SigninActivity.selectedOption){
+        switch (type){
             case "fan":
                 toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_hdpi));
                 /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));*/

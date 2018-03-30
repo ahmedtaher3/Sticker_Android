@@ -1,5 +1,6 @@
 package com.sticker_android.controller.activities.fan.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -19,26 +20,26 @@ import android.widget.TextView;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
-import com.sticker_android.controller.activities.common.userprofile.ViewProfileActivity;
 import com.sticker_android.controller.fragment.AccountSettingFragment;
+import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.controller.fragment.fancustomization.FanCustomizationFragment;
 import com.sticker_android.controller.fragment.fandownloads.FanDownloadFragment;
 import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.network.ApiConstant;
-import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.List;
 
 public class FanHomeActivity extends AppBaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener ,ProfileFragment.OnFragmentProfileListener{
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
     private AppPref appPref;
-    private UserData userData;
+    private User user;
     private MenuItem item;
     private TextView tvUserName;
     private TextView tvEmail;
@@ -47,7 +48,7 @@ public class FanHomeActivity extends AppBaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusBarGradiant(this, AppConstants.FAN);
+        /*setStatusBarGradiant(this, AppConstants.FAN);*/
         setContentView(R.layout.activity_fan_home);
         init();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -57,7 +58,7 @@ public class FanHomeActivity extends AppBaseActivity
         setViewReferences();
         setViewListeners();
         actionBarToggle(toolbar);
-        /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));*/
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
         setUserDataIntoNaviagtion();
         showFragmentManually();
     }
@@ -65,17 +66,17 @@ public class FanHomeActivity extends AppBaseActivity
         View header= navigationView.getHeaderView(0);
         TextView   tvUserName=(TextView)header.findViewById(R.id.tvUserName);
         TextView   tvEmail=(TextView)header.findViewById(R.id.tvEmail);
-        tvUserName.setText(userData.getFirstName()+" "+userData.getLastName());
-        tvEmail.setText(userData.getEmail());
+        tvUserName.setText(user.getFirstName()+" "+ user.getLastName());
+        tvEmail.setText(user.getEmail());
         ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+userData.getCompanyLogo(),imageProfile, displayImageOptions);
+        imageLoader.displayImage(ApiConstant.IMAGE_URl+ user.getCompanyLogo(),imageProfile, displayImageOptions);
 
         LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.fan_profile_bg_hdpi));
         imageProfile.setImageResource(R.drawable.fan_xhdpi);
     }
     private void setBackground(Toolbar toolbar) {
-        switch (userData.getUserType()){
+        switch (user.getUserType()){
             case "fan":
                 toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_xhdpi));
                 break;
@@ -92,7 +93,7 @@ public class FanHomeActivity extends AppBaseActivity
 
     private void init() {
         appPref=new AppPref(this);
-        userData=appPref.getUserInfo();
+        user =appPref.getUserInfo();
     }
 
     @Override
@@ -163,9 +164,14 @@ public class FanHomeActivity extends AppBaseActivity
 
     @Override
     public void onBackPressed() {
+        TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
+        textView.setText(getResources().getString(R.string.txt_home));
+        toolbar.setTitle("");
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if(getFragmentManager().getBackStackEntryCount()>0){
+            getFragmentManager().popBackStack();
+        }else{
             super.onBackPressed();
         }
     }
@@ -190,8 +196,9 @@ public class FanHomeActivity extends AppBaseActivity
 
         } else if (id == R.id.nav_profile) {
             textView.setText("Home");
-            startNewActivity(ViewProfileActivity.class);
-            fragmentClass = new FanHomeFragment();
+          //  startNewActivity(ViewProfileActivity.class);
+            fragmentClass = new ProfileFragment();
+            textView.setText(getResources().getString(R.string.txt_myprofile));
             overridePendingTransition(R.anim.activity_animation_enter,
                     R.anim.activity_animation_exit);
         }
@@ -200,7 +207,7 @@ public class FanHomeActivity extends AppBaseActivity
             fragmentClass = AccountSettingFragment.newInstance("","");
         }
         else if (id == R.id.nav_logout) {
-            appPref.saveUserObject(new UserData());
+            appPref.saveUserObject(new User());
             appPref.setLoginFlag(false);
             startNewActivity(SigninActivity.class);
             SigninActivity.selectedOption="fan";
@@ -219,7 +226,9 @@ public class FanHomeActivity extends AppBaseActivity
         fragmentTransaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
                 R.anim.activity_animation_enter, R.anim.activity_animation_exit);
         fragmentTransaction.replace(R.id.container_home,
-                fragmentClass).commit();
+                fragmentClass);
+            fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
 
@@ -249,8 +258,24 @@ public class FanHomeActivity extends AppBaseActivity
     private void showFragmentManually() {
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container_home, new FanHomeFragment());
+        Fragment fragment=new FanHomeFragment();
+        transaction.replace(R.id.container_home, fragment);
         transaction.commit();
     }
+    public void setProfileFragmentReference(ProfileFragment profileFragmentReference){
+        this.mProfileFragment = profileFragmentReference;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            mProfileFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
+    @Override
+    public void updatedata() {
+        init();
+        setUserDataIntoNaviagtion();
+    }
 }

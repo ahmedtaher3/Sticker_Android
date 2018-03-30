@@ -58,14 +58,14 @@
     <!--Contact us-->
     <dimen name="margin_top_tv">20dp</dimen>
 <!--corporate profile-->
-    <dimen name="corporate_profile_rlheight_150">250dp</dimen>
+    <dimen name="corporate_profile_rlheight_150">270dp</dimen>
     <dimen name="corporate_profile_rl_height">200dp</dimen>
 
     <!--Profile-->
     <dimen name="profile_rlheight_150">250dp</dimen>
     <dimen name="company_profile_rlheight_150">250dp</dimen>
 
-    <dimen name="profile_rl_height">200dp</dimen>
+    <dimen name="profile_rl_height">190dp</dimen>
 
     <dimen name="profile_image_width">140dp</dimen>
     <dimen name="profile_image_height">140dp</dimen>
@@ -100,6 +100,8 @@
     <dimen name="margin_top_30dp_password">40dp</dimen>
     <dimen name="text_size_18sp">21sp</dimen>
     <dimen name="margin_top_profile">25dp</dimen>
+    <dimen name="margin_top_login_btn">40dp</dimen>
+    <dimen name="act_signin_margin_top_radio">20dp</dimen>
 
 
 </resources>

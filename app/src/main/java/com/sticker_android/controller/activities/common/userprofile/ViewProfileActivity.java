@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.fragment.ProfileFragment;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -17,7 +17,7 @@ public class ViewProfileActivity extends AppBaseActivity {
 
     private Toolbar toolbar;
     private AppPref appPref;
-    private UserData userData;
+    private User user;
     private ProfileFragment mProfileFragment;
 
     @Override
@@ -46,11 +46,11 @@ public class ViewProfileActivity extends AppBaseActivity {
 
     private void init() {
         appPref=new AppPref(this);
-        userData=appPref.getUserInfo();
+        user =appPref.getUserInfo();
     }
 
     private void setBackground(Toolbar toolbar) {
-        switch (userData.getUserType()){
+        switch (user.getUserType()){
             case "fan":
                 toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_hdpi));
                 changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));

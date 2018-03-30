@@ -7,26 +7,26 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.common.terms.TermsActivity;
 import com.sticker_android.controller.activities.corporate.CorporateProfileActivity;
 import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.ProgressDialogHandler;
+import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import retrofit2.Call;
@@ -39,6 +39,7 @@ public class SignUpActivity extends AppBaseActivity {
     private LinearLayout bgSignup;
     private CheckBox checkBoxTerms;
     private TextView tvTermsConditions;
+    private String type="fan";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class SignUpActivity extends AppBaseActivity {
         toolbar.setNavigationIcon(R.drawable.back_arrow_small);
         setViewReferences();
         setViewListeners();
+        getUserSelectedOption();
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,20 +64,28 @@ public class SignUpActivity extends AppBaseActivity {
         setLoginButtonData();
     }
 
+    private void getUserSelectedOption() {
+    if(getIntent().getExtras()!=null){
+          type=getIntent().getExtras().getString(AppConstants.USERSELECTION);
+    }
+
+    }
+
     private void setLoginButtonData() {
-        if(SigninActivity.selectedOption.equals("corporate"))
+        btnSignUp.setText("Sign up");
+        /*if(SigninActivity.selectedOption.equals("corporate"))
         {
             btnSignUp.setText(getString(R.string.txt_hint_proceed));
         }else
         {
             btnSignUp.setText("Submit");
 
-        }
+        }*/
     }
 
 
     private void setBackground() {
-    switch (SigninActivity.selectedOption){
+    switch (type){
         case "fan":
             bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
             btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.fan_btn_background));
@@ -106,7 +116,11 @@ public class SignUpActivity extends AppBaseActivity {
         tvTermsConditions.setOnClickListener(new View.OnClickListener() {
     @Override
      public void onClick(View v) {
-        startActivityWithResult(TermsActivity.class,new Bundle(),101);
+        Intent intent=new Intent(SignUpActivity.this,TermsActivity.class);
+        intent.putExtra(AppConstants.USERSELECTION,type);
+        startActivity(intent);
+        overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
 
     }
         });
@@ -163,12 +177,12 @@ public class SignUpActivity extends AppBaseActivity {
 
     private void moveToActivity() {
         Intent intent=null;
-        UserData userData = appPref.getUserInfo();
-        if (userData.getUserType().equals("corporate")) {
+        User user = appPref.getUserInfo();
+        if (user.getUserType().equals("corporate")) {
              intent=new Intent(SignUpActivity.this,CorporateProfileActivity.class);
-        } else if (userData.getUserType().equals("fan")) {
+        } else if (user.getUserType().equals("fan")) {
              intent=new Intent(SignUpActivity.this,FanHomeActivity.class);
-        } else if (userData.getUserType().equals("designer")) {
+        } else if (user.getUserType().equals("designer")) {
              intent=new Intent(SignUpActivity.this,DesignerHomeActivity.class);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

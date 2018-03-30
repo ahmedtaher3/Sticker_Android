@@ -1,9 +1,6 @@
 package com.sticker_android.controller.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +8,7 @@ import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -31,7 +28,7 @@ public class TermsAndConditionFragment extends BaseFragment {
     private String mParam2;
     private TextView tvTerms;
     private AppPref appPref;
-    private UserData userData;
+    private User user;
 
     public TermsAndConditionFragment() {
         // Required empty public constructor
@@ -78,7 +75,7 @@ public class TermsAndConditionFragment extends BaseFragment {
     }
 
     private void getuserData() {
-        userData=appPref.getUserInfo();
+        user =appPref.getUserInfo();
     }
 
     private void init() {
@@ -87,7 +84,7 @@ public class TermsAndConditionFragment extends BaseFragment {
     }
 
     private void getTermsConditionData() {
-        Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent(userData.getId(),"2");
+        Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent(user.getId(),"2");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

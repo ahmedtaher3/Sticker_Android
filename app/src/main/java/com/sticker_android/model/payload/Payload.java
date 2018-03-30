@@ -1,7 +1,7 @@
 package com.sticker_android.model.payload;
 
 import com.google.gson.annotations.SerializedName;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 
 /**
  * Created by user on 26/3/18.
@@ -10,13 +10,13 @@ import com.sticker_android.model.UserData;
 public class Payload {
 
     @SerializedName("data")
-    private UserData data;
+    private User data;
 
-    public UserData getData() {
+    public User getData() {
         return data;
     }
 
-    public void setData(UserData data) {
+    public void setData(User data) {
         this.data = data;
     }
 

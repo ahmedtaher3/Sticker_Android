@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 
 /**
  * Make Class shared Preference to set and get the response.
@@ -23,24 +23,24 @@ public class AppPref {
     }
 
 
-    public UserData getUserInfo()
+    public User getUserInfo()
     {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 
         String userInfo = settings.getString("user_data", null);
-        UserData userData = new Gson().fromJson(userInfo,
-                UserData.class);
-        if(userData==null)
+        User user = new Gson().fromJson(userInfo,
+                User.class);
+        if(user ==null)
         {
-            userData=new UserData();
+            user =new User();
         }
-        return userData;
+        return user;
     }
 
-    public void saveUserObject(UserData userData) {
+    public void saveUserObject(User user) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor prefsEditor = sp.edit();
-        prefsEditor.putString("user_data", new Gson().toJson(userData));
+        prefsEditor.putString("user_data", new Gson().toJson(user));
         prefsEditor.apply();
     }
 

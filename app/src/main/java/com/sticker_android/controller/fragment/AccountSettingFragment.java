@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
@@ -26,7 +25,7 @@ import android.widget.TextView;
 import com.sticker_android.R;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -50,7 +49,7 @@ public class AccountSettingFragment extends BaseFragment {
     private TabLayout tabLayout;
     private ViewPagerAdapter adapter;
     private AppPref appPref;
-    private UserData userdata;
+    private User userdata;
     private AlertDialog languageDialog;
 
     public AccountSettingFragment() {
@@ -84,7 +83,6 @@ public class AccountSettingFragment extends BaseFragment {
         init();
         setViewReferences(view);
         setViewListeners();
-        setupViewPager();
         setupViewPager();
         addFragmentToTab();
         setBackground();

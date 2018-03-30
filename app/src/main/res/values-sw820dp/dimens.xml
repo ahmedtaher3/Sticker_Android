@@ -88,6 +88,8 @@
     <dimen name="margin_top_30dp_password">30dp</dimen>
     <dimen name="text_size_18sp">26sp</dimen>
     <dimen name="margin_top_profile">40dp</dimen>
+    <dimen name="margin_top_login_btn">30dp</dimen>
+    <dimen name="act_signin_margin_top_radio">20dp</dimen>
 
 
 </resources>

@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sticker_android.R;
+import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.utils.AppConstants;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -29,6 +30,7 @@ public abstract class AppBaseActivity extends AppCompatActivity {
 
     public ImageLoader imageLoader = ImageLoader.getInstance();
     public DisplayImageOptions displayImageOptions;
+    public ProfileFragment mProfileFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

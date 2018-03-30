@@ -149,7 +149,8 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:layout_marginTop="@dimen/activit_margin_top_edit"
+                android:layout_marginTop="@dimen/margin_top_profile"
+
                 android:id="@+id/act_signup_txt_input_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

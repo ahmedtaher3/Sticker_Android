@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.changelanguage.ChangeLanguageActivity;
 import com.sticker_android.controller.activities.common.signup.SignUpActivity;
@@ -26,13 +27,14 @@ import com.sticker_android.controller.activities.corporate.CorporateProfileActiv
 import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.ShareOneTouchAlertNewBottom;
+import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -143,7 +145,11 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
             case R.id.act_signin_tv_signup:
                 edtEmail.setText("");
                 edtPassword.setText("");
-                startNewActivity(SignUpActivity.class);
+                Intent intent=new Intent(this,SignUpActivity.class);
+                intent.putExtra(AppConstants.USERSELECTION,selectedOption);
+                startActivity(intent);
+                overridePendingTransition(R.anim.activity_animation_enter,
+                        R.anim.activity_animation_exit);
                 break;
             case R.id.act_signin_forgot_password:
                 Log.d("Forgot password","cloicked");
@@ -187,18 +193,17 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
 
     private void moveToActivity() {
         Intent intent=null;
-        UserData userData = appPref.getUserInfo();
-        if (userData.getUserType().equals("corporate")) {
-            if(userData.getCompanyName()!=null&&!userData.getCompanyName().isEmpty())
+        User user = appPref.getUserInfo();
+        if (user.getUserType().equals("corporate")) {
+            if(user.getCompanyName()!=null&&!user.getCompanyName().isEmpty())
             {
                 intent=new Intent(SigninActivity.this,CorporateHomeActivity.class);
-
             }else{
                 intent=new Intent(SigninActivity.this,CorporateProfileActivity.class);
             }
-        } else if (userData.getUserType().equals("fan")) {
+        } else if (user.getUserType().equals("fan")) {
             intent=new Intent(SigninActivity.this,FanHomeActivity.class);
-        } else if (userData.getUserType().equals("designer")) {
+        } else if (user.getUserType().equals("designer")) {
             intent=new Intent(SigninActivity.this,DesignerHomeActivity.class);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -12,11 +12,10 @@ import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -28,7 +27,7 @@ import static com.sticker_android.utils.helper.PermissionManager.Constant.MAKE_C
 
 public class ContactUsFragment extends BaseFragment implements View.OnClickListener {
     private AppPref appPref;
-    private UserData userData;
+    private User user;
     private TextView tvEmailContactUs;
     private TextView tvContactUsContactNum;
     private String mMobileNumber;
@@ -53,7 +52,7 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void getuserData() {
-        userData=appPref.getUserInfo();
+        user =appPref.getUserInfo();
     }
 
     private void init() {
@@ -63,7 +62,7 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
 
 
     private void getContactApi() {
-        Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent(userData.getId(),"1");
+        Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent(user.getId(),"1");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -82,9 +81,9 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
     }
     private void setBackground() {
         appPref=new AppPref(getActivity());
-        userData=appPref.getUserInfo();
-        if(userData.getUserType()!=null)
-            switch (userData.getUserType()){
+        user =appPref.getUserInfo();
+        if(user.getUserType()!=null)
+            switch (user.getUserType()){
                 case "fan":
                     tvEmailContactUs.setTextColor(getResources().getColor(R.color.colorFanText));
                     tvContactUsContactNum.setTextColor(getResources().getColor(R.color.colorFanText));

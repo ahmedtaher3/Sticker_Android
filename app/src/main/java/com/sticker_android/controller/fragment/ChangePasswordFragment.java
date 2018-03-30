@@ -11,7 +11,7 @@ import android.widget.EditText;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -35,8 +35,8 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
     EditText oldPassword,newPassword,confirmPassword;
     private Button buttonSubmit;
     private AppPref appPref;
-    private UserData userData;
-    private UserData mUserData;
+    private User user;
+    private User mUser;
 
     public ChangePasswordFragment() {
         // Required empty public constructor
@@ -78,7 +78,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
 
     private void init() {
         appPref=new AppPref(getActivity());
-        mUserData=appPref.getUserInfo();
+        mUser =appPref.getUserInfo();
     }
 
 
@@ -98,7 +98,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
 
 
     private void setBackground() {
-        switch (mUserData.getUserType()){
+        switch (mUser.getUserType()){
             case "fan":
                 buttonSubmit.setBackground(getResources().getDrawable(R.drawable.fan_btn_background));
                 break;
@@ -155,10 +155,10 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
             return false;
 
         }*/else if(!newPass.equals(confirmPass)){
-            Utils.showToast(getActivity(),getActivity().getString(R.string.old_password_not_match));
+            Utils.showToast(getActivity(),getActivity().getString(R.string.confirm_password_not_match));
             return false;
-        }else if(!mUserData.getPasssword().equals(oldPass)){
-            Utils.showToast(getActivity(),"Old Password Not match");
+        }else if(!mUser.getPasssword().equals(oldPass)){
+            Utils.showToast(getActivity(),getActivity().getString(R.string.old_password_not_match));
             return false;
         }
 
@@ -180,23 +180,25 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
     private void changePasswordApi() {
         final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
         progressDialogHandler.show();
-        Log.d("jhcjdsc",mUserData.getId());
-        Call<ApiResponse> apiResponseCall= RestClient.getService().changePassword(mUserData.getId(),confirmPassword.getText().toString(),"");
+        Log.d("jhcjdsc", mUser.getId());
+        Call<ApiResponse> apiResponseCall= RestClient.getService().changePassword(mUser.getId(),confirmPassword.getText().toString(),"");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
                 if(apiResponse.status)
                     if(apiResponse.status) {
-                        CommonSnackBar.show(oldPassword,"Password updated successfully", Snackbar.LENGTH_SHORT);
+                       Utils.showToast(getActivity(),"Password updated successfully");
+                        // CommonSnackBar.show(oldPassword,"Password updated successfully", Snackbar.LENGTH_SHORT);
                         appPref.saveUserObject(null);
-                       UserData userData=new UserData();
-                        userData=mUserData;
-                        userData.setPasssword(newPassword.getText().toString());
-                        appPref.saveUserObject(userData);
+                       User user =new User();
+                        user = mUser;
+                        user.setPasssword(newPassword.getText().toString());
+                        appPref.saveUserObject(user);
                         oldPassword.setText("");
                         confirmPassword.setText("");
                         newPassword.setText("");
+                        getActivity().onBackPressed();
                     }else {
                         Utils.showToast(getActivity(),apiResponse.error.message);
                         //CommonSnackBar.show(oldPassword, apiResponse.error.message, Snackbar.LENGTH_SHORT);

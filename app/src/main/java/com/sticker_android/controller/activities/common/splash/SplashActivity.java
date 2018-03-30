@@ -15,7 +15,7 @@ import com.sticker_android.controller.activities.corporate.CorporateProfileActiv
 import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
-import com.sticker_android.model.UserData;
+import com.sticker_android.model.User;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.Locale;
@@ -108,17 +108,17 @@ public class SplashActivity extends AppBaseActivity {
     }
 
   public void  moveToActivity() {
-      UserData userData = appPref.getUserInfo();
-      if (userData.getUserType().equals("corporate")) {
-          if (userData.getCompanyName() != null&& !userData.getCompanyName().isEmpty()){
+      User user = appPref.getUserInfo();
+      if (user.getUserType().equals("corporate")) {
+          if (user.getCompanyName() != null&& !user.getCompanyName().isEmpty()){
               startNewActivity(CorporateHomeActivity.class);
       } else {
           startNewActivity(CorporateProfileActivity.class);
       }
     }
-      else if (userData.getUserType().equals("fan")) {
+      else if (user.getUserType().equals("fan")) {
           startNewActivity(FanHomeActivity.class);
-      } else if (userData.getUserType().equals("designer")) {
+      } else if (user.getUserType().equals("designer")) {
           startNewActivity(DesignerHomeActivity.class);
       }
 
