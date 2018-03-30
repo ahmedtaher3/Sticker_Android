@@ -34,7 +34,7 @@ import java.util.List;
 public class FanHomeActivity extends AppBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private  DrawerLayout drawer;
+    private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
     private AppPref appPref;
@@ -91,7 +91,7 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
     private void init() {
-         appPref=new AppPref(this);
+        appPref=new AppPref(this);
         userData=appPref.getUserInfo();
     }
 
@@ -148,11 +148,11 @@ public class FanHomeActivity extends AppBaseActivity
 
     @Override
     protected void setViewReferences() {
-         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-         navigationView = (NavigationView) findViewById(R.id.nav_view);
-         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-     //   tvUserName=(TextView)findViewById(R.id.tvUserName);
-       // tvEmail=(TextView)findViewById(R.id.tvEmail);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //   tvUserName=(TextView)findViewById(R.id.tvUserName);
+        // tvEmail=(TextView)findViewById(R.id.tvEmail);
 
     }
 
@@ -196,7 +196,7 @@ public class FanHomeActivity extends AppBaseActivity
             textView.setText("Home");
             startNewActivity(ViewProfileActivity.class);
             fragmentClass = new FanHomeFragment();
-             }
+        }
         else if (id == R.id.nav_account_setting) {
             textView.setText(getString(R.string.txt_account_setting));
             fragmentClass = AccountSettingFragment.newInstance("","");

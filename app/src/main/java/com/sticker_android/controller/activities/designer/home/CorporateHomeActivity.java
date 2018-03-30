@@ -79,7 +79,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
     }
 
     private void setUserDataIntoNaviagtion() {
-       View header= navigationView.getHeaderView(0);
+        View header= navigationView.getHeaderView(0);
         TextView   tvUserName=(TextView)header.findViewById(R.id.tvUserName);
         TextView   tvEmail=(TextView)header.findViewById(R.id.tvEmail);
         tvUserName.setText(userData.getFirstName()+" "+userData.getLastName());
@@ -198,7 +198,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
             startNewActivity(ViewProfileActivity.class);
             fragmentClass = new CorporateHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
-           }
+        }
         else if (id == R.id.nav_account_setting) {
             fragmentClass = AccountSettingFragment.newInstance("","");
             textView.setText(getResources().getString(R.string.txt_account_setting));

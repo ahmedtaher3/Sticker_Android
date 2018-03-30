@@ -139,6 +139,7 @@
                     />
             </android.support.design.widget.TextInputLayout>
             <Button
+                android:textSize="@dimen/text_size_contact_us"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:elevation="@dimen/dp_5"
                 android:background="@drawable/fan_btn_background"

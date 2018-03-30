@@ -7,9 +7,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -85,11 +85,10 @@ public class AccountSettingFragment extends BaseFragment {
         setViewReferences(view);
         setViewListeners();
         setupViewPager();
-        setSelectedTabColor();
         setupViewPager();
         addFragmentToTab();
         setBackground();
-
+        setSelectedTabColor();
         int runningDeviceConfig = getResources().getInteger(R.integer.running_device_config);
 
         if(runningDeviceConfig == 7){
@@ -115,13 +114,12 @@ public class AccountSettingFragment extends BaseFragment {
         adapter.addFragment(new ContactUsFragment(), "Contact Us ");
         adapter.addFragment(new TermsAndConditionFragment(), "Terms & Conditions");
         adapter.addFragment(new AboutUsFragment(), "About Us ");
-        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(adapter);
 
     }
 
     private void setSelectedTabColor() {
-        tabLayout.setTabTextColors(R.color.colorTabUnselected, Color.WHITE);
+        tabLayout.setTabTextColors(Color.parseColor("#AAFFFFFF"), Color.WHITE);
     }
 
     private void setupViewPager() {
@@ -251,6 +249,7 @@ public class AccountSettingFragment extends BaseFragment {
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Utils.hideKeyboard(getActivity());
                 updateLanguage(radioGroup,rdbEnglish,rdbArabic);
                 updatelanguageApi();
                 languageDialog.dismiss();

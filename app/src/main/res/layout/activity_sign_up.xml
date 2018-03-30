@@ -9,10 +9,10 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:layout_height="match_parent">
         <LinearLayout
             android:orientation="vertical"
             android:layout_height="match_parent"
@@ -52,6 +52,7 @@
                     app:srcCompat="@drawable/football" />
             </RelativeLayout>
             <RelativeLayout
+                android:gravity="center"
                 android:padding="@dimen/signup_rl_padding"
                 android:layout_weight="6"
                 android:layout_width="match_parent"
@@ -60,11 +61,13 @@
                     android:layout_margin="5dp"
                     app:contentPadding="@dimen/signup_rl_content_padding"
                     app:cardCornerRadius="@dimen/corner_radius"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/login_cardview_width"
                     android:layout_height="match_parent"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true">
                     <RelativeLayout
+                        android:layout_marginEnd="@dimen/act_signin_edit_margin_start"
+                        android:layout_marginStart="@dimen/act_signin_edit_margin_end"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
                         <LinearLayout
@@ -77,6 +80,7 @@
                             android:paddingRight="@dimen/activity_horizontal_margin">
 
                             <android.support.design.widget.TextInputLayout
+                                android:layout_marginTop="@dimen/activit_margin_top_edit"
                                 android:id="@+id/act_signup_txt_input_first_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -93,6 +97,7 @@
                                     />
                             </android.support.design.widget.TextInputLayout>
                             <android.support.design.widget.TextInputLayout
+                                android:layout_marginTop="@dimen/activit_margin_top_edit"
                                 android:id="@+id/act_signup_txt_input_userName"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -110,6 +115,7 @@
                             </android.support.design.widget.TextInputLayout>
 
                             <android.support.design.widget.TextInputLayout
+                                android:layout_marginTop="@dimen/activit_margin_top_edit"
                                 android:id="@+id/act_signup_txt_input_email"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -130,6 +136,7 @@
 
 
                             <android.support.design.widget.TextInputLayout
+                                android:layout_marginTop="@dimen/activit_margin_top_edit"
                                 app:passwordToggleEnabled="true"
                                 app:passwordToggleTint="@color/edt_background_tint"
                                 android:id="@+id/act_signup_txt_input_phone_number"
@@ -151,6 +158,7 @@
                             </android.support.design.widget.TextInputLayout>
 
                             <android.support.design.widget.TextInputLayout
+                                android:layout_marginTop="@dimen/activit_margin_top_edit"
                                 android:visibility="gone"
                                 android:id="@+id/act_signup_txt_confirm_password"
                                 android:layout_width="match_parent"
@@ -171,6 +179,7 @@
                             </android.support.design.widget.TextInputLayout>
 
                             <Button
+                                android:textSize="@dimen/text_size_contact_us"
                                 android:elevation="@dimen/dp_5"
                                 android:background="@drawable/fan_btn_background"
                                 android:layout_gravity="center"
@@ -201,7 +210,7 @@
                                 <TextView
                                     android:id="@+id/tv_act_signup_terms_conditions"
                                     android:textColor="@android:color/black"
-                                    android:textSize="15sp"
+                                    android:textSize="@dimen/text_size_contact_us"
                                     fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
                                     android:layout_gravity="center"
                                     android:layout_toRightOf="@+id/act_signup_terms_conditions"

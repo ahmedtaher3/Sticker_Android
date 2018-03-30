@@ -2,6 +2,7 @@ package com.sticker_android.controller.activities.common.terms;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import com.sticker_android.R;
@@ -26,6 +27,13 @@ public class TermsActivity extends AppBaseActivity {
         setToolbarData();
         setViewReferences();
         setViewListeners();
+        toolbar.setNavigationIcon(R.drawable.back_arrow_small);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     private void setToolbarData() {
