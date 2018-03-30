@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -221,5 +222,34 @@ public class Utils {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
+
+
+    /**
+     * This method prompt the dialog in order to provide option for selecting image
+     */
+    public static void showAlertDialogToGetPicFromFragment(final Activity activity, final ImagePickerListener pickerListener, final Fragment fragment) {
+
+        final String[] items = new String[]{activity.getString(R.string.pick_gallery), activity.getString(R.string.take_photo)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setCancelable(true);
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (items[which].equals(activity.getString(R.string.take_photo))) {
+                    if (PermissionManager.checkWriteStoragePermissionInFragment(activity, fragment,WRITE_STORAGE_ACCESS_RQ)) {
+                        pickerListener.captureFromCamera();
+                    }
+                } else if (items[which].equals(activity.getString(R.string.pick_gallery))) {
+                    if (PermissionManager.checkReadPhoneStatePermissionInFragment(activity,fragment ,READ_STORAGE_ACCESS_RQ)) {
+                        pickerListener.pickFromGallery();
+                    }
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.show();
+        alertDialog.setCanceledOnTouchOutside(true);
+    }
+
 
 }

@@ -92,13 +92,14 @@
     <dimen name="act_corporate_profile_margin_top">20dp</dimen>
     <dimen name="change_pass_margin_top">10dp</dimen>
     <dimen name="width_my_profile_image">100dp</dimen>
-    <dimen name="width_my_profile_imag">250dp</dimen>
+    <dimen name="width_my_profile_imag">260dp</dimen>
     <dimen name="act_company_profile_margin_top_30">50dp</dimen>
     <dimen name="margin_top_contact_us">30dp</dimen>
     <dimen name="text_size_contact_us">17sp</dimen>
     <dimen name="change_password_margin_top_5dp">10dp</dimen>
     <dimen name="margin_top_30dp_password">40dp</dimen>
     <dimen name="text_size_18sp">21sp</dimen>
+    <dimen name="margin_top_profile">25dp</dimen>
 
 
 </resources>

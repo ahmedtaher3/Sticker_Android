@@ -16,26 +16,29 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:paddingBottom="1dp"
+            android:clipToPadding="false"
             android:layout_width="match_parent"
             android:layout_height="@dimen/width_my_profile_imag">
-        <RelativeLayout
-            android:id="@+id/bgProfile"
-            android:background="@drawable/gradient_bg_fan_hdpi"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/profile_rl_height">
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/tvCompanyDetails"
-                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                android:layout_marginTop="@dimen/dp_10"
-                android:textSize="15sp"
-                android:textColor="@android:color/white"
-                android:text="Company Details"
-                android:gravity="center"
+            <RelativeLayout
+                android:id="@+id/bgProfile"
+                android:background="@drawable/gradient_bg_fan_hdpi"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-         </RelativeLayout>
+                android:layout_height="@dimen/profile_rl_height">
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/tvCompanyDetails"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:textSize="15sp"
+                    android:textColor="@android:color/white"
+                    android:text="Company Details"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
             <com.sticker_android.view.CircularImageView
+                android:elevation="3dp"
                 android:background="@drawable/image_shadow"
                 app:civ_app_border_color="@android:color/white"
                 app:civ_app_border_width="3dp"
@@ -59,7 +62,7 @@
         <LinearLayout
             android:layout_marginTop="@dimen/activit_margin_top_edit"
             android:paddingEnd="@dimen/profile_padding_end"
-          android:paddingStart="@dimen/profile_padding_start"
+            android:paddingStart="@dimen/profile_padding_start"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -68,50 +71,50 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputLayout
-                android:layout_marginTop="@dimen/dp_20"
-                android:id="@+id/act_profile_txt_company_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
-                <android.support.design.widget.TextInputEditText
-                    style="@style/EditText"
-                    android:backgroundTint="@color/edt_background_tint"
-                    android:id="@+id/act_profile_edt_company_name"
-                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                    android:maxLines="1"
-                    android:maxLength="100"
-                    android:inputType="text|textNoSuggestions|textCapWords"
-                    android:hint="Company Name"
-                    />
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_marginTop="@dimen/activit_margin_top_edit"
-                android:id="@+id/act_profile_txt_input_company_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                <android.support.design.widget.TextInputLayout
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:id="@+id/act_profile_txt_company_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <android.support.design.widget.TextInputEditText
+                        style="@style/EditText"
+                        android:backgroundTint="@color/edt_background_tint"
+                        android:id="@+id/act_profile_edt_company_name"
+                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                        android:maxLines="1"
+                        android:maxLength="100"
+                        android:inputType="text|textNoSuggestions|textCapWords"
+                        android:hint="Company Name"
+                        />
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_marginTop="@dimen/activit_margin_top_edit"
+                    android:id="@+id/act_profile_txt_input_company_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
 
-                <android.support.design.widget.TextInputEditText
-                    android:backgroundTint="@color/edt_background_tint"
-                    android:id="@+id/act_profile_edt_company_address"
-                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                    android:inputType="text|textNoSuggestions|textCapWords|textMultiLine"
-                    style="@style/EditText"
-                    android:hint="Company Address"
-                    android:maxLength="100" />
-            </android.support.design.widget.TextInputLayout>
+                    <android.support.design.widget.TextInputEditText
+                        android:backgroundTint="@color/edt_background_tint"
+                        android:id="@+id/act_profile_edt_company_address"
+                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                        android:inputType="text|textNoSuggestions|textCapWords|textMultiLine"
+                        style="@style/EditText"
+                        android:hint="Company Address"
+                        android:maxLength="100" />
+                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/frag_profile_tv_personal"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="@dimen/margin_top_profile"
                 android:gravity="center"
                 android:text="@string/txt_personal_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <android.support.design.widget.TextInputLayout
-                android:layout_marginTop="@dimen/activit_margin_top_edit"
+                android:layout_marginTop="@dimen/margin_top_profile"
                 android:id="@+id/act_signup_txt_input_first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -128,7 +131,7 @@
                     />
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
-                android:layout_marginTop="@dimen/activit_margin_top_edit"
+                android:layout_marginTop="@dimen/margin_top_profile"
                 android:id="@+id/act_signup_txt_input_userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -169,7 +172,7 @@
                 android:elevation="@dimen/dp_5"
                 android:background="@drawable/fan_btn_background"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/act_company_profile_margin_top_30"
+                android:layout_marginTop="@dimen/margin_top_profile"
                 android:id="@+id/act_profile_btn_register"
                 android:layout_width="@dimen/signup_btn_next_width"
                 android:layout_height="wrap_content"

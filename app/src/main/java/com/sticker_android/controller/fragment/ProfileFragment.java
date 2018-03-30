@@ -367,14 +367,14 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         }
     }
 
-     private void openCropActivity(String url) {
-         CropImage.activity(Uri.fromFile(new File(url)))
-                 .setGuidelines(CropImageView.Guidelines.OFF)
-                 .setFixAspectRatio(true)
-                 .setAspectRatio(1, 1)
-                 .setAutoZoomEnabled(true)
-                 .start(getActivity());
-     }
+    private void openCropActivity(String url) {
+        CropImage.activity(Uri.fromFile(new File(url)))
+                .setGuidelines(CropImageView.Guidelines.OFF)
+                .setFixAspectRatio(true)
+                .setAspectRatio(1, 1)
+                .setAutoZoomEnabled(true)
+                .start(getActivity());
+    }
 
     public void uploadImage(){
         final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());

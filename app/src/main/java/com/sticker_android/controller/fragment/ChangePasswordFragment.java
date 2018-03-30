@@ -157,7 +157,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
         }*/else if(!newPass.equals(confirmPass)){
             Utils.showToast(getActivity(),getActivity().getString(R.string.old_password_not_match));
             return false;
-        }else if(!userData.getPasssword().equals(oldPass)){
+        }else if(!mUserData.getPasssword().equals(oldPass)){
             Utils.showToast(getActivity(),"Old Password Not match");
             return false;
         }
@@ -189,6 +189,11 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
                 if(apiResponse.status)
                     if(apiResponse.status) {
                         CommonSnackBar.show(oldPassword,"Password updated successfully", Snackbar.LENGTH_SHORT);
+                        appPref.saveUserObject(null);
+                       UserData userData=new UserData();
+                        userData=mUserData;
+                        userData.setPasssword(newPassword.getText().toString());
+                        appPref.saveUserObject(userData);
                         oldPassword.setText("");
                         confirmPassword.setText("");
                         newPassword.setText("");
