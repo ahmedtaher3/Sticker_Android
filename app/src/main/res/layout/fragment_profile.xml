@@ -16,6 +16,8 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:paddingBottom="1dp"
+            android:clipToPadding="false"
             android:layout_width="match_parent"
             android:layout_height="@dimen/width_my_profile_imag">
         <RelativeLayout
@@ -36,6 +38,7 @@
                 android:layout_height="wrap_content" />
          </RelativeLayout>
             <com.sticker_android.view.CircularImageView
+                android:elevation="3dp"
                 android:background="@drawable/image_shadow"
                 app:civ_app_border_color="@android:color/white"
                 app:civ_app_border_width="3dp"
@@ -105,13 +108,13 @@
 
             <TextView
                 android:id="@+id/frag_profile_tv_personal"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="@dimen/margin_top_profile"
                 android:gravity="center"
                 android:text="@string/txt_personal_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <android.support.design.widget.TextInputLayout
-                android:layout_marginTop="@dimen/activit_margin_top_edit"
+                android:layout_marginTop="@dimen/margin_top_profile"
                 android:id="@+id/act_signup_txt_input_first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -128,7 +131,7 @@
                     />
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
-                android:layout_marginTop="@dimen/activit_margin_top_edit"
+                android:layout_marginTop="@dimen/margin_top_profile"
                 android:id="@+id/act_signup_txt_input_userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -169,7 +172,7 @@
                 android:elevation="@dimen/dp_5"
                 android:background="@drawable/fan_btn_background"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/act_company_profile_margin_top_30"
+                android:layout_marginTop="@dimen/margin_top_profile"
                 android:id="@+id/act_profile_btn_register"
                 android:layout_width="@dimen/signup_btn_next_width"
                 android:layout_height="wrap_content"

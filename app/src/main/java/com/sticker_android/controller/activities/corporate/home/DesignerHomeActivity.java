@@ -202,10 +202,9 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
             startNewActivity(ViewProfileActivity.class);
             fragmentClass = new DesignerHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
-         /*   TextView  textView=toolbar.findViewById(R.id.tvToolbar);
-            textView.setText(getResources().getString(R.string.txt_profile));
-            fragmentClass = ProfileFragment.newInstance("","");
-      */  }
+            overridePendingTransition(R.anim.activity_animation_enter,
+                    R.anim.activity_animation_exit);
+        }
         else if (id == R.id.nav_account_setting) {
             fragmentClass = AccountSettingFragment.newInstance("","");
             textView.setText(getResources().getString(R.string.txt_account_setting));
@@ -222,13 +221,20 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         // Insert the fragment by replacing any existing fragment
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if(fragmentClass!=null)
-            fragmentManager.beginTransaction().replace(R.id.container_home, fragmentClass).commit();
-        drawer.closeDrawer(GravityCompat.START);
+        if(fragmentClass!=null) {
+            replaceFragment(fragmentClass);
+        } drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-
+   public void replaceFragment(Fragment fragmentClass){
+    FragmentTransaction fragmentTransaction =
+            getSupportFragmentManager().beginTransaction();
+    fragmentTransaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
+            R.anim.activity_animation_enter, R.anim.activity_animation_exit);
+    fragmentTransaction.replace(R.id.container_home,
+            fragmentClass).commit();
+}
     private void openLanguageDialog() {
 
         LayoutInflater factory = LayoutInflater.from(getActivity());

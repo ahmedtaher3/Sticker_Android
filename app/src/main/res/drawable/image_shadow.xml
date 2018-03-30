@@ -14,7 +14,7 @@
         android:top="0dp"
         android:bottom="3dp">
         <shape android:shape="oval">
-            <solid android:color="#e1e1e1"/>
+            <solid android:color="#e1e1e1"/>//Background Color
         </shape>
     </item>
 </layer-list>

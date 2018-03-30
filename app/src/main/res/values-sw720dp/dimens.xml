@@ -65,7 +65,7 @@
     <!--Profile-->
     <dimen name="profile_rlheight_150">200dp</dimen>
 
-    <dimen name="profile_rl_height">160dp</dimen>
+    <dimen name="profile_rl_height">170dp</dimen>
     <dimen name="profile_image_width">160dp</dimen>
     <dimen name="profile_image_height">160dp</dimen>
 
@@ -399,11 +399,12 @@
     <dimen name="act_corporate_profile_margin_top">30dp</dimen>
     <dimen name="change_pass_margin_top">10dp</dimen>
     <dimen name="width_my_profile_image">90dp</dimen>
-    <dimen name="width_my_profile_imag">250dp</dimen>
+    <dimen name="width_my_profile_imag">258dp</dimen>
     <dimen name="act_company_profile_margin_top_30">60dp</dimen>
     <dimen name="margin_top_contact_us">50dp</dimen>
     <dimen name="text_size_contact_us">19sp</dimen>
     <dimen name="change_password_margin_top_5dp">15dp</dimen>
     <dimen name="margin_top_30dp_password">60dp</dimen>
     <dimen name="text_size_18sp">24sp</dimen>
+    <dimen name="margin_top_profile">30dp</dimen>
 </resources>

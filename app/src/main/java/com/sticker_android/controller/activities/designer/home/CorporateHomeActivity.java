@@ -195,7 +195,9 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
             startNewActivity(ViewProfileActivity.class);
             fragmentClass = new CorporateHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
-           }
+            overridePendingTransition(R.anim.activity_animation_enter,
+                    R.anim.activity_animation_exit);
+        }
         else if (id == R.id.nav_account_setting) {
             fragmentClass = AccountSettingFragment.newInstance("","");
             textView.setText(getResources().getString(R.string.txt_account_setting));
@@ -207,11 +209,22 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         // Insert the fragment by replacing any existing fragment
         setUserDataIntoNaviagtion();
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if(fragmentClass!=null)
-            fragmentManager.beginTransaction().replace(R.id.container_home, fragmentClass).commit();
+        if(fragmentClass!=null) {
+           replaceFragment(fragmentClass);
+            }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void replaceFragment(Fragment fragmentClass){
+        FragmentTransaction fragmentTransaction =
+                getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
+                R.anim.activity_animation_enter, R.anim.activity_animation_exit);
+        fragmentTransaction.replace(R.id.container_home,
+                fragmentClass).commit();
+    }
+
 
     private void userLogout() {
         appPref.saveUserObject(new UserData());
@@ -316,6 +329,10 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.container_home, new FanHomeFragment());
+        transaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
+                R.anim.activity_animation_enter, R.anim.activity_animation_exit);
+
+
         transaction.commit();
     }
 }

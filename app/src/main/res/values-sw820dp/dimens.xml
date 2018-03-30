@@ -86,6 +86,7 @@
     <dimen name="change_password_margin_top_5dp">20dp</dimen>
     <dimen name="margin_top_30dp_password">30dp</dimen>
     <dimen name="text_size_18sp">26sp</dimen>
+    <dimen name="margin_top_profile">40dp</dimen>
 
 
 </resources>
