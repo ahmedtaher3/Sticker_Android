@@ -17,6 +17,7 @@ import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.CommonSnackBar;
 import com.sticker_android.utils.ProgressDialogHandler;
+import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -72,7 +73,6 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
         oldPassword.setText("");
         confirmPassword.setText("");
         newPassword.setText("");
-
         return view;
     }
 
@@ -98,14 +98,16 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
 
 
     private void setBackground() {
-        switch (mUser.getUserType()){
-            case "fan":
+        UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,mUser.getUserType().toUpperCase());
+
+        switch (userTypeEnum){
+            case FAN:
                 buttonSubmit.setBackground(getResources().getDrawable(R.drawable.fan_btn_background));
                 break;
-            case "designer":
+            case DESIGNER:
                 buttonSubmit.setBackground(getResources().getDrawable(R.drawable.designer_btn_background));
                 break;
-            case "corporate":
+            case CORPORATE:
                 buttonSubmit.setBackground(getResources().getDrawable(R.drawable.corporate_btn_background));
 
                 break;

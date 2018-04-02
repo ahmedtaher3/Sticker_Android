@@ -5,5 +5,10 @@ package com.sticker_android.utils;
  */
 
 public enum  UserTypeEnum {
-    fan,corporate,designer;
+    FAN,CORPORATE,DESIGNER;
+    //fan,corporate,designer;
+    @Override
+    public String toString() {
+        return name().toLowerCase();
+    }
 }

@@ -84,21 +84,25 @@ public class SignUpActivity extends AppBaseActivity {
     }
 
 
+    /**
+     * This method is used to set the background of app according to type
+     */
     private void setBackground() {
-    switch (type){
-        case "fan":
+        UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,type.toUpperCase());
+    switch (userTypeEnum){
+        case FAN:
             bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
             btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.fan_btn_background));
             /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));*/
             setStatusBarGradiant(SignUpActivity.this, AppConstants.FAN);
             break;
-        case "designer":
+        case DESIGNER:
             bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
             btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.designer_btn_background));
             /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));*/
             setStatusBarGradiant(SignUpActivity.this, AppConstants.DESIGNER);
             break;
-        case "corporate":
+        case CORPORATE:
             bgSignup.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
            btnSignUp.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
             /*changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));*/
@@ -152,7 +156,7 @@ public class SignUpActivity extends AppBaseActivity {
 
         Call<ApiResponse> apiResponseCall= RestClient.getService().userRegistration(language,edtEmail.getText().toString(),
                 edtPassword.getText().toString(),edtFirstName.getText().toString(),edtLastName.getText().toString(),
-                SigninActivity.selectedOption,"android","111",deviceId);
+                type,"android","111",deviceId);
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

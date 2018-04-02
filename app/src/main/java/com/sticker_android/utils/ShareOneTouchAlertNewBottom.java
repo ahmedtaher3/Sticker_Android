@@ -17,10 +17,12 @@ import com.sticker_android.controller.activities.common.signin.SigninActivity;
 
 public  class ShareOneTouchAlertNewBottom extends BottomSheetDialogFragment {
 
+    private  String selectedOption;
     DialogListener listener;
-  public   ShareOneTouchAlertNewBottom(DialogListener listener){
+  public   ShareOneTouchAlertNewBottom(DialogListener listener,String selectedOption){
 
       this.listener=listener;
+      this.selectedOption=selectedOption;
     }
 
     @Override
@@ -46,9 +48,9 @@ public  class ShareOneTouchAlertNewBottom extends BottomSheetDialogFragment {
     }
 
     private void setBackground(Button sendMail) {
-        if(SigninActivity.selectedOption.equals("fan"))
+        if(selectedOption.equals("fan"))
         sendMail.setBackground(getResources().getDrawable(R.drawable.fan_btn_background));
-          else if(SigninActivity.selectedOption.equals("designer")){
+          else if(selectedOption.equals("designer")){
             sendMail.setBackground(getResources().getDrawable(R.drawable.designer_btn_background));
         }else {
             sendMail.setBackground(getResources().getDrawable(R.drawable.corporate_btn_background));

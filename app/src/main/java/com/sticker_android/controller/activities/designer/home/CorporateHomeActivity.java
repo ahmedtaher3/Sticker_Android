@@ -41,6 +41,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -103,15 +104,16 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
 
 
     private void setBackground(Toolbar toolbar) {
-        switch (user.getUserType()){
-            case "fan":
+        UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,user.getUserType().toUpperCase());
+        switch (userTypeEnum){
+            case FAN:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_hdpi));
                 break;
-            case "designer":
+            case DESIGNER:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.designer_header_hdpi));
 
                 break;
-            case "corporate":
+            case CORPORATE:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.corporate_header_hdpi));
                 break;
         }
@@ -242,7 +244,6 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         startActivity(intent);
         overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
-        SigninActivity.selectedOption="fan";
         finish();
     }
 

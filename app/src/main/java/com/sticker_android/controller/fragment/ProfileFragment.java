@@ -30,6 +30,7 @@ import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.ProgressDialogHandler;
+import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -148,9 +149,11 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void setUserBackground() {
-        if(user.getUserType()!=null)
-            switch (user.getUserType()){
-                case "fan":
+        if(user.getUserType()!=null) {
+            UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,user.getUserType().toUpperCase());
+
+            switch (userTypeEnum) {
+                case FAN:
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.fan_profile_bg_xhdpi));
                     llCorporate.setVisibility(View.GONE);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.fan_btn_background));
@@ -158,7 +161,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     tvCompanyDetails.setVisibility(View.GONE);
                     imvProfile.setImageResource(R.drawable.fan_hdpi);
                     break;
-                case "designer":
+                case DESIGNER:
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.designer_profile_bg_hdpi));
                     llCorporate.setVisibility(View.GONE);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.designer_btn_background));
@@ -166,20 +169,21 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     tvCompanyDetails.setVisibility(View.GONE);
                     imvProfile.setImageResource(R.drawable.corporate_hdpi);
                     break;
-                case "corporate":
+                case CORPORATE:
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.profile_bg_hdpi));
                     llCorporate.setVisibility(View.VISIBLE);
                     edtCompanyName.setText(user.getCompanyName());
                     edtCompanyAddress.setText(user.getCompanyAddress());
                     edtCompanyName.setSelection(edtCompanyName.getText().length());
                     edtCompanyAddress.setSelection(edtCompanyAddress.getText().length());
-                    imageLoader.displayImage(ApiConstant.IMAGE_URl+ user.getCompanyLogo(), imvProfile, mDisplayImageOptions);
+                    imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imvProfile, mDisplayImageOptions);
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.corporate_btn_background));
                     personalProfile.setTextColor(getResources().getColor(R.color.corporateBtnBackground));
                     tvCompanyDetails.setVisibility(View.VISIBLE);
                     imvProfile.setImageResource(R.drawable.designer_hdpi);
                     break;
             }
+        }
     }
 
     private void init() {

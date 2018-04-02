@@ -29,6 +29,7 @@ import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -125,15 +126,17 @@ public class AccountSettingFragment extends BaseFragment {
     }
 
     private void setBackground() {
-        switch (userdata.getUserType()){
-            case "fan":
+        UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,userdata.getUserType().toUpperCase());
+
+        switch (userTypeEnum){
+            case FAN:
                 tabLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_fan));
                 break;
-            case "designer":
+            case DESIGNER:
                 tabLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_designer));
 
                 break;
-            case "corporate":
+            case CORPORATE:
                 tabLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_corporate));
 
                 break;
@@ -264,18 +267,19 @@ public class AccountSettingFragment extends BaseFragment {
     }
 
     private void setButtonBackground(Button dialogButton, TextView tvtxtChangeLanguage) {
+        UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,userdata.getUserType().toUpperCase());
 
-        switch (userdata.getUserType()){
-            case "fan":
+        switch (userTypeEnum){
+            case FAN:
                 tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorFanText));
                 dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.fan_btn_background));
                 break;
-            case "designer":
+            case DESIGNER:
                 tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorDesignerText));
                 dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.designer_btn_background));
 
                 break;
-            case "corporate":
+            case CORPORATE:
                 tvtxtChangeLanguage.setTextColor(getResources().getColor(R.color.colorCorporateText));
                 dialogButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.corporate_btn_background));
                 break;

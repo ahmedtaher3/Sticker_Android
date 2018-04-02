@@ -18,6 +18,9 @@ import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.Locale;
 
+/**
+ * Class is used to change the Language of app
+ */
 public class ChangeLanguageActivity extends AppBaseActivity implements View.OnClickListener{
 
     private RadioGroup radioGroup;
@@ -29,7 +32,6 @@ public class ChangeLanguageActivity extends AppBaseActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_language);
-
         changeStatusBarColor(Color.parseColor("#38525f"));
         setViewReferences();
         setViewListeners();

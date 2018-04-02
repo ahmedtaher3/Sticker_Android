@@ -27,6 +27,7 @@ import com.sticker_android.controller.fragment.fandownloads.FanDownloadFragment;
 import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiConstant;
+import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -70,21 +71,22 @@ public class FanHomeActivity extends AppBaseActivity
         tvEmail.setText(user.getEmail());
         ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
         imageLoader.displayImage(ApiConstant.IMAGE_URl+ user.getCompanyLogo(),imageProfile, displayImageOptions);
-
         LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.fan_profile_bg_hdpi));
         imageProfile.setImageResource(R.drawable.fan_xhdpi);
     }
     private void setBackground(Toolbar toolbar) {
-        switch (user.getUserType()){
-            case "fan":
+        UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,user.getUserType().toUpperCase());
+
+        switch (userTypeEnum){
+            case FAN:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_xhdpi));
                 break;
-            case "designer":
+            case DESIGNER:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
 
                 break;
-            case "corporate":
+            case CORPORATE:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
 
                 break;
@@ -210,7 +212,6 @@ public class FanHomeActivity extends AppBaseActivity
             appPref.saveUserObject(new User());
             appPref.setLoginFlag(false);
             startNewActivity(SigninActivity.class);
-            SigninActivity.selectedOption="fan";
             finish();
         }
 
@@ -220,14 +221,21 @@ public class FanHomeActivity extends AppBaseActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     public void replaceFragment(Fragment fragmentClass){
+
         FragmentTransaction fragmentTransaction =
                 getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
+
+        fragmentTransaction.setCustomAnimations(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit,
                 R.anim.activity_animation_enter, R.anim.activity_animation_exit);
+
         fragmentTransaction.replace(R.id.container_home,
                 fragmentClass);
+
             fragmentTransaction.addToBackStack(null);
+
         fragmentTransaction.commit();
     }
 

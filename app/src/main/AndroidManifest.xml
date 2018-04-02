@@ -43,7 +43,7 @@
         <activity
             android:name=".controller.activities.common.profile.ProfileActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".controller.activities.common.changelanguage.ChangeLanguageActivity"
             android:screenOrientation="portrait"
@@ -72,6 +72,7 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".controller.activities.corporate.addnew.AddNewCorporateActivity"></activity>
     </application>
 
 </manifest>

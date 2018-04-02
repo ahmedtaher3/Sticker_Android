@@ -44,6 +44,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -98,15 +99,16 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
 
 
     private void setBackground(Toolbar toolbar) {
-        switch (user.getUserType()){
-            case "fan":
+        UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,user.getUserType().toUpperCase());
+        switch (userTypeEnum){
+            case FAN:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_fan_hdpi));
                 break;
-            case "designer":
+            case DESIGNER:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.designer_header_hdpi));
                 changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
                 break;
-            case "corporate":
+            case CORPORATE:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
 
                 break;
@@ -221,7 +223,6 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
             appPref.setLoginFlag(false);
             Toast.makeText(getApplicationContext(),"User logout Successfully",Toast.LENGTH_SHORT).show();
             startNewActivity(SigninActivity.class);
-            SigninActivity.selectedOption="fan";
             finish();
         }
         setUserDataIntoNaviagtion();

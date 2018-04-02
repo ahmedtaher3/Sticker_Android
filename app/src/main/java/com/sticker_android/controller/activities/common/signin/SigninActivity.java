@@ -51,7 +51,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
     private AppPref appPref;
     private RadioGroup radioGroup;
     private RadioGroup radioGroupSelect;
-    public static String selectedOption="fan";
+    public  String selectedOption="fan";
     private RadioButton rdbtnDesigner, rdbtnFan, rdbtnCorporate;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -227,7 +227,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
 
 
 
-        });
+        },selectedOption);
         dialogFragment.show(getSupportFragmentManager(), "Forgot password");
 
     }

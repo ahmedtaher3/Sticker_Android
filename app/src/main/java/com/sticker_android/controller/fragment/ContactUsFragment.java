@@ -16,6 +16,7 @@ import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -83,21 +84,25 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
         appPref=new AppPref(getActivity());
         user =appPref.getUserInfo();
         if(user.getUserType()!=null)
-            switch (user.getUserType()){
-                case "fan":
+        {
+            UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,user.getUserType().toUpperCase());
+            switch (userTypeEnum) {
+                case FAN:
                     tvEmailContactUs.setTextColor(getResources().getColor(R.color.colorFanText));
                     tvContactUsContactNum.setTextColor(getResources().getColor(R.color.colorFanText));
                     break;
-                case "designer":
+                case DESIGNER:
                     tvEmailContactUs.setTextColor(getResources().getColor(R.color.colorDesignerText));
                     tvContactUsContactNum.setTextColor(getResources().getColor(R.color.colorDesignerText));
                     break;
-                case "corporate":
+                case CORPORATE:
                     tvEmailContactUs.setTextColor(getResources().getColor(R.color.colorCorporateText));
                     tvContactUsContactNum.setTextColor(getResources().getColor(R.color.colorCorporateText));
 
                     break;
+
             }
+        }
     }
 
     @Override
