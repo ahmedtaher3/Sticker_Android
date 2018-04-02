@@ -353,4 +353,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements NavigationV
         init();
         setUserDataIntoNaviagtion();
     }
+
+
+
 }

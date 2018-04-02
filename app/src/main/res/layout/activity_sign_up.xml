@@ -179,6 +179,7 @@
                             </android.support.design.widget.TextInputLayout>
 
                             <Button
+                                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                                 android:textSize="@dimen/text_size_contact_us"
                                 android:elevation="@dimen/dp_5"
                                 android:background="@drawable/fan_btn_background"

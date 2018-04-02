@@ -1,14 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_add_new_corporate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sticker_android.controller.activities.corporate.addnew.AddNewCorporateActivity">
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<include layout="@layout/toolbar"/>
-</LinearLayout>
-</ScrollView>
+    tools:context="com.sticker_android.controller.activities.corporate.addnew.AddNewCorporateActivity"
+    tools:ignore="MissingPrefix">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar" />
+
+        <include layout="@layout/view_white" />
+
+        <include layout="@layout/tab_layout_without_viewpager" />
+
+        <ScrollView
+            android:layout_marginBottom="@dimen/dp_5"
+            android:fillViewport="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbarThumbVertical="@android:color/transparent"
+            tools:ignore="MissingPrefix">
+
+            <LinearLayout
+                android:paddingBottom="@dimen/dp_5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/act_add_new_corp_margin"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/act_add_new_corp_imv_height"
+                    android:background="@drawable/upload_image_hdpi" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/add_corp_tv_margin_top">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/act_add_new_corp_edt_name"
+                        style="@style/EditText"
+                        android:hint="@string/act_add_corp_txt_name"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLength="100"
+                        android:maxLines="1" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/add_corp_tv_margin_top">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/act_add_new_ad_corp_edt_expire_date"
+                        style="@style/EditText"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/act_add_corp_txt_expire_date"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:longClickable="false"
+                        android:maxLength="100"
+                        android:maxLines="1" />
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/add_corp_tv_margin_top"
+                    android:text="@string/act_add_corp_txt_write_description" />
+
+                <EditText
+                    android:padding="3dp"
+                    android:gravity="start"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/act_add_corp_write_des_edt_heigh"
+                    android:layout_marginTop="@dimen/act_add_corp_write_des_margin_top_10dp"
+                    android:background="@drawable/btn_shadow_corner" />
+
+                <Button
+                    android:id="@+id/act_corp_add_new_btn_post"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:layout_width="@dimen/signup_btn_next_width"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/corporate_btn_background"
+                    android:elevation="@dimen/dp_5"
+                    android:gravity="center"
+                    android:text="@string/txt_post"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_contact_us" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</RelativeLayout>

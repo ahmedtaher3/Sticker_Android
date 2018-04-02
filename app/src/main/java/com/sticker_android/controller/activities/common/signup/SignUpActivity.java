@@ -73,14 +73,6 @@ public class SignUpActivity extends AppBaseActivity {
 
     private void setLoginButtonData() {
         btnSignUp.setText("Sign up");
-        /*if(SigninActivity.selectedOption.equals("corporate"))
-        {
-            btnSignUp.setText(getString(R.string.txt_hint_proceed));
-        }else
-        {
-            btnSignUp.setText("Submit");
-
-        }*/
     }
 
 

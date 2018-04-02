@@ -15,5 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
         <include  layout="@layout/content_fan_home" />
+
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

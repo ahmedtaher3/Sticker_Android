@@ -1,5 +1,7 @@
 package com.sticker_android.controller.activities.designer.home;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -16,9 +18,13 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -35,7 +41,6 @@ import com.sticker_android.controller.fragment.AccountSettingFragment;
 import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateReportFragment;
-import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
@@ -49,13 +54,16 @@ import java.util.Locale;
 
 import retrofit2.Call;
 
-public class CorporateHomeActivity extends AppBaseActivity  implements NavigationView.OnNavigationItemSelectedListener,ProfileFragment.OnFragmentProfileListener{
+public class CorporateHomeActivity extends AppBaseActivity  implements
+        NavigationView.OnNavigationItemSelectedListener,ProfileFragment.OnFragmentProfileListener
+       ,  SearchView.OnQueryTextListener{
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
     private AppPref appPref;
     private User user;
     private AlertDialog languageDialog;
+    private String TAG=CorporateHomeActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +119,6 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
                 break;
             case DESIGNER:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.designer_header_hdpi));
-
                 break;
             case CORPORATE:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.corporate_header_hdpi));
@@ -160,8 +167,6 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-
 
     }
 
@@ -357,5 +362,27 @@ public class CorporateHomeActivity extends AppBaseActivity  implements Navigatio
     public void updatedata() {
         init();
         setUserDataIntoNaviagtion();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.corporate_menu, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem mSearchmenuItem = menu.findItem(R.id.search);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Log.d(TAG, "onQueryTextSubmit: query->"+query);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Log.d(TAG, "onQueryTextChange: newText->" + newText);
+        return true;
     }
 }
