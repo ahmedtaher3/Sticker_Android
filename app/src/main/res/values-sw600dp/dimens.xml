@@ -107,7 +107,12 @@
     <dimen name="act_add_new_corp_imv_height">130dp</dimen>
 
     <dimen name="add_corp_tv_margin_top">20dp</dimen>
-    <dimen name="act_add_corp_write_des_edt_heigh">150dp</dimen>
+    <dimen name="act_add_corp_write_des_edt_heigh">120dp</dimen>
     <dimen name="act_add_corp_write_des_margin_top_10dp">15dp</dimen>
-
+    <dimen name="margin_start_add_product">30dp</dimen>
+    <dimen name="margin_end_start_add_product">30dp</dimen>
+    <dimen name="act_add_new_margin_top_30dp">50dp</dimen>
+    <dimen name="image_height_add_product">160dp</dimen>
+    <dimen name="text_size_tv_13sp">15sp</dimen>
+    <dimen name="txt_size_home_12sp">14sp</dimen>
 </resources>

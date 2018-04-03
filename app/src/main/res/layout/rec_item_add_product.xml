@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:ignore="MissingPrefix">
 
     <android.support.v7.widget.CardView
@@ -20,39 +20,41 @@
             android:orientation="vertical">
 
             <ImageView
+                android:background="@drawable/btn_shadow_corner"
                 android:src="@drawable/upload_image_hdpi"
                 android:id="@+id/imvOfAds"
                 android:layout_width="match_parent"
-                android:layout_height="120dp" />
+                android:layout_height="@dimen/image_height_add_product" />
 
             <RelativeLayout
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <TextView
+                    android:textSize="@dimen/txt_size_home_12sp"
                     android:id="@+id/tv_add_product_title"
-                    style="@style/EditText"
+                    style="@style/tvHome"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:layout_alignParentTop="true"
                     android:text="Header"
                     android:textColor="@android:color/black" />
+                <ImageButton
+                    android:id="@+id/imvBtnEditRemove"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_more"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-                <TextView
-                    android:id="@+id/tv_add_product_status"
-                    style="@style/EditText"
-                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                    android:layout_alignParentTop="true"
-                    android:gravity="end"
-                    android:text="pending"
-                    android:textColor="@android:color/black" />
             </RelativeLayout>
 
             <TextView
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/tv_add_product_item_description"
                 fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:clickable="false"
                 android:gravity="start"
                 android:text="undo" />
@@ -64,33 +66,47 @@
                 android:orientation="horizontal">
 
                 <CheckBox
+                    android:textSize="@dimen/txt_size_home_12sp"
+                    android:padding="8dp"
+                    android:button="@drawable/like_selector"
                     android:id="@+id/checkboxLike"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1222" />
+                     />
 
                 <CheckBox
+                    android:textSize="@dimen/txt_size_home_12sp"
+                    android:button="@drawable/share_selector"
+                    android:padding="8dp"
                     android:id="@+id/checkboxShare"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="8dp"
                     android:layout_toRightOf="@+id/checkboxLike"
-                    android:text="1222" />
+                     />
 
                 <TextView
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/txt_size_home_12sp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center"
+                    android:drawableLeft="@drawable/ic_time"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="8dp"
                     android:layout_toRightOf="@+id/checkboxShare"
-                    android:text="2hour" />
-           <ImageButton
-               android:background="@android:color/transparent"
-               android:src="@drawable/ic_more_vert_black_24dp"
-               android:layout_centerInParent="true"
-               android:layout_alignParentRight="true"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content" />
+                    android:text="2 hour" />
+                <TextView
+                    android:textSize="@dimen/txt_size_home_12sp"
+                    android:id="@+id/tv_add_product_status"
+                    style="@style/tvHome"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                   android:layout_centerInParent="true"
+                    android:gravity="end"
+                    android:text="Pending"
+                    android:textColor="@android:color/black" />
+
             </RelativeLayout>
 
         </LinearLayout>

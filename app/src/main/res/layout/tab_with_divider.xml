@@ -16,7 +16,7 @@
         app:tabMaxWidth="0dp"
         app:tabGravity="fill"
         android:background="@drawable/tab_layout_background"
-        app:tabIndicatorColor="@android:color/white"
+        app:tabIndicatorColor="@android:color/transparent"
         app:tabTextColor="#ffffff"
         app:tabSelectedTextColor="#AAFFFFFF" />
 

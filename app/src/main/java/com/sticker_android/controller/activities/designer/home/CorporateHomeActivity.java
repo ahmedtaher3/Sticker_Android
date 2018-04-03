@@ -1,19 +1,17 @@
 package com.sticker_android.controller.activities.designer.home;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,11 +26,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
@@ -54,16 +54,16 @@ import java.util.Locale;
 
 import retrofit2.Call;
 
-public class CorporateHomeActivity extends AppBaseActivity  implements
-        NavigationView.OnNavigationItemSelectedListener,ProfileFragment.OnFragmentProfileListener
-       ,  SearchView.OnQueryTextListener{
+public class CorporateHomeActivity extends AppBaseActivity implements
+        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener
+        , SearchView.OnQueryTextListener {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
     private AppPref appPref;
     private User user;
     private AlertDialog languageDialog;
-    private String TAG=CorporateHomeActivity.class.getSimpleName();
+    private String TAG = CorporateHomeActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,31 +71,35 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
         /*setStatusBarGradiant(this, AppConstants.CORPORATE);*/
         setContentView(R.layout.activity_corporate_home);
         init();
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setToolBarTitle();
-        setToolbarBackground(toolbar);
-        setSupportActionBar(toolbar);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toolbar = (Toolbar) findViewById(R.id.toolbar);
+                setToolBarTitle();
+                setToolbarBackground(toolbar);
+                setSupportActionBar(toolbar);
+                actionBarToggle(toolbar);
+                toolbar.setTitle("");
+            }
+        }, 1000);
         setViewReferences();
         setViewListeners();
-        actionBarToggle(toolbar);
-        toolbar.setTitle("");
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
         showFragmentManually();
         setUserDataIntoNaviagtion();
     }
 
     private void setUserDataIntoNaviagtion() {
-        View header= navigationView.getHeaderView(0);
-        TextView   tvUserName=(TextView)header.findViewById(R.id.tvUserName);
-        TextView   tvEmail=(TextView)header.findViewById(R.id.tvEmail);
-        tvUserName.setText(user.getFirstName()+" "+ user.getLastName());
+        View header = navigationView.getHeaderView(0);
+        TextView tvUserName = (TextView) header.findViewById(R.id.tvUserName);
+        TextView tvEmail = (TextView) header.findViewById(R.id.tvEmail);
+        tvUserName.setText(user.getFirstName() + " " + user.getLastName());
         tvEmail.setText(user.getEmail());
-
-        ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
-        LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
+        ImageView imageProfile = (ImageView) header.findViewById(R.id.imageViewProfile);
+        LinearLayout linearLayout = (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.profile_bg_hdpi));
         imageProfile.setImageResource(R.drawable.corporate_hdpi);
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+ user.getCompanyLogo(), imageProfile, displayImageOptions);
+        imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imageProfile, displayImageOptions);
     }
 
     @Override
@@ -112,8 +116,8 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
 
 
     private void setBackground(Toolbar toolbar) {
-        UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,user.getUserType().toUpperCase());
-        switch (userTypeEnum){
+        UserTypeEnum userTypeEnum = Enum.valueOf(UserTypeEnum.class, user.getUserType().toUpperCase());
+        switch (userTypeEnum) {
             case FAN:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_hdpi));
                 break;
@@ -127,26 +131,20 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
     }
 
     private void init() {
-        appPref=new AppPref(this);
-        user =appPref.getUserInfo();
+        appPref = new AppPref(this);
+        user = appPref.getUserInfo();
     }
 
 
     private void setToolBarTitle() {
-        TextView textView=(TextView) toolbar.findViewById(R.id.tvToolbar);
+        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         textView.setText(getResources().getString(R.string.txt_home));
         toolbar.setTitle(" ");
     }
 
 
     private void setToolbarBackground(Toolbar toolbar) {
-        Drawable drawable=getBaseContext().getResources().getDrawable(R.drawable.corporate_header_xhdpi);
-        if (Build.VERSION.SDK_INT >= 16){
-            toolbar.setBackground(drawable);
-        }else{
-            toolbar.setBackgroundDrawable(drawable);
-        }
-        if(user.getUserType()!=null)
+        if (user.getUserType() != null)
             setBackground(toolbar);
     }
 
@@ -171,17 +169,16 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
     }
 
 
-
     @Override
     public void onBackPressed() {
-        TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
+        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         textView.setText(getResources().getString(R.string.txt_home));
         toolbar.setTitle("");
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if(getFragmentManager().getBackStackEntryCount()>0){
+        } else if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
@@ -190,10 +187,10 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        TextView textView=(TextView) toolbar.findViewById(R.id.tvToolbar);
+        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Fragment fragmentClass=null;
+        Fragment fragmentClass = null;
         if (id == R.id.nav_home) {
             fragmentClass = new CorporateHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
@@ -204,38 +201,36 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
             //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_profile) {
-          //  startNewActivity(ViewProfileActivity.class);
+            //  startNewActivity(ViewProfileActivity.class);
             fragmentClass = new ProfileFragment();
             textView.setText(getResources().getString(R.string.txt_myprofile));
             overridePendingTransition(R.anim.activity_animation_enter,
                     R.anim.activity_animation_exit);
-        }
-        else if (id == R.id.nav_account_setting) {
-            fragmentClass = AccountSettingFragment.newInstance("","");
+        } else if (id == R.id.nav_account_setting) {
+            fragmentClass = AccountSettingFragment.newInstance("", "");
             textView.setText(getResources().getString(R.string.txt_account_setting));
-        }
-        else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_logout) {
             userLogout();
         }
 
         // Insert the fragment by replacing any existing fragment
         setUserDataIntoNaviagtion();
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if(fragmentClass!=null) {
+        if (fragmentClass != null) {
             replaceFragment(fragmentClass);
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public void replaceFragment(Fragment fragmentClass){
+    public void replaceFragment(Fragment fragmentClass) {
         FragmentTransaction fragmentTransaction =
                 getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
                 R.anim.activity_animation_enter, R.anim.activity_animation_exit);
         fragmentTransaction.replace(R.id.container_home,
                 fragmentClass);
-        int count=getFragmentManager().getBackStackEntryCount();
+        int count = getFragmentManager().getBackStackEntryCount();
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -244,7 +239,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
     private void userLogout() {
         appPref.saveUserObject(new User());
         appPref.setLoginFlag(false);
-        Intent intent=new Intent(getActivity(),SigninActivity.class);
+        Intent intent = new Intent(getActivity(), SigninActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.activity_animation_enter,
@@ -269,15 +264,15 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
                 .findViewById(R.id.pop_up_language)
                 .setBackgroundResource(android.R.color.transparent);*/
         languageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        ImageView imvLogoChangeLanguage= (ImageView) languageDialogview.findViewById(R.id.imvLogoChangeLanguage);
-        final RadioGroup radioGroup = (RadioGroup)languageDialogview. findViewById(R.id.myRadioGroup);
+        ImageView imvLogoChangeLanguage = (ImageView) languageDialogview.findViewById(R.id.imvLogoChangeLanguage);
+        final RadioGroup radioGroup = (RadioGroup) languageDialogview.findViewById(R.id.myRadioGroup);
         final RadioButton rdbEnglish = (RadioButton) languageDialogview.findViewById(R.id.rdbEnglish);
-        final RadioButton rdbArabic = (RadioButton)languageDialogview. findViewById(R.id.rdbArabic);
+        final RadioButton rdbArabic = (RadioButton) languageDialogview.findViewById(R.id.rdbArabic);
         Button dialogButton = (Button) languageDialogview.findViewById(R.id.btn_update);
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateLanguage(radioGroup,rdbEnglish,rdbArabic);
+                updateLanguage(radioGroup, rdbEnglish, rdbArabic);
                 updatelanguageApi();
                 languageDialog.dismiss();
             }
@@ -286,19 +281,19 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
         languageDialogview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(languageDialog!=null)
+                if (languageDialog != null)
                     languageDialog.dismiss();
             }
         });
     }
 
     private void updatelanguageApi() {
-        final int language= appPref.getLanguage(0);
-        Call<ApiResponse> apiResponseCall=  RestClient.getService().changeLanguage(user.getId(),language,"");
+        final int language = appPref.getLanguage(0);
+        Call<ApiResponse> apiResponseCall = RestClient.getService().changeLanguage(user.getId(), language, "");
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                if(apiResponse.status){
+                if (apiResponse.status) {
                     appPref.setLanguage(language);
                 }
 
@@ -339,6 +334,7 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
         res.updateConfiguration(conf, dm);
 
     }
+
     private void showFragmentManually() {
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -347,13 +343,15 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
                 R.anim.activity_animation_enter, R.anim.activity_animation_exit);
         transaction.commit();
     }
-    public void setProfileFragmentReference(ProfileFragment profileFragmentReference){
+
+    public void setProfileFragmentReference(ProfileFragment profileFragmentReference) {
         this.mProfileFragment = profileFragmentReference;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             mProfileFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -368,21 +366,35 @@ public class CorporateHomeActivity extends AppBaseActivity  implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.corporate_menu, menu);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem mSearchmenuItem = menu.findItem(R.id.search);
+
+        MenuItem item = menu.add("Search");
+        item.setIcon(R.drawable.ic_search);
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+        SearchView searchView = new SearchView(this);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchEditText.setTextColor(ContextCompat.getColor(this, R.color.edt_background_tint));
+        searchEditText.setHintTextColor(ContextCompat.getColor(this, R.color.edt_background_tint));
+
+        searchView.setOnQueryTextListener(this);
+
+        item.setActionView(searchView);
+
         return true;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Log.d(TAG, "onQueryTextSubmit: query->"+query);
+        Toast.makeText(getApplicationContext(),"wjcj",Toast.LENGTH_SHORT).show();
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        Log.d(TAG, "onQueryTextChange: newText->" + newText);
+
+        Toast.makeText(getApplicationContext(),"on text change",Toast.LENGTH_SHORT).show();
         return true;
     }
 }

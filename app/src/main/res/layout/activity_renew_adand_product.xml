@@ -16,9 +16,6 @@
         <include layout="@layout/toolbar" />
 
         <include layout="@layout/view_white" />
-
-        <include layout="@layout/tab_layout_without_viewpager" />
-
         <ScrollView
             android:fillViewport="true"
             android:layout_width="match_parent"
@@ -79,8 +76,6 @@
                     android:text="@string/act_add_corp_txt_write_description" />
 
                 <EditText
-                    android:id="@+id/edtDescription"
-                    android:inputType="text|textMultiLine"
                     android:padding="3dp"
                     android:gravity="start"
                     android:layout_width="match_parent"
@@ -90,8 +85,8 @@
 
                 <Button
                     android:layout_marginTop="@dimen/act_add_new_margin_top_30dp"
-                    android:layout_marginBottom="20dp"
-                    android:id="@+id/act_corp_add_new_btn_post"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/act_corp_add_new_btn_re_post"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:layout_width="@dimen/signup_btn_next_width"
                     android:layout_height="wrap_content"
@@ -99,7 +94,7 @@
                     android:background="@drawable/corporate_btn_background"
                     android:elevation="@dimen/dp_5"
                     android:gravity="center"
-                    android:text="@string/txt_post"
+                    android:text="@string/txt_repost"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/text_size_contact_us" />

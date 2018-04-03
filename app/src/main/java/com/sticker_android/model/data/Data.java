@@ -17,4 +17,6 @@ public class Data {
     private String email;
     @SerializedName("mobile")
     private String mobile;
+
+
 }

@@ -29,6 +29,7 @@
     <!--view radius-->
     <dimen name="corner_radius">10dp</dimen>
     <dimen name="text_size_edittext">15sp</dimen>
+    <dimen name="text_size_tv_13sp">13sp</dimen>
     <!--SignIn-->
     <dimen name="signin_image_logo_height">100dp</dimen>
     <dimen name="signin_image_logo_width">100dp</dimen>
@@ -106,7 +107,12 @@
     <dimen name="act_add_new_corp_margin">20dp</dimen>
     <dimen name="act_add_new_corp_imv_height">130dp</dimen>
     <dimen name="add_corp_tv_margin_top">20dp</dimen>
-    <dimen name="act_add_corp_write_des_edt_heigh">150dp</dimen>
+    <dimen name="act_add_corp_write_des_edt_heigh">110dp</dimen>
     <dimen name="act_add_corp_write_des_margin_top_10dp">10dp</dimen>
+    <dimen name="margin_start_add_product">0dp</dimen>
+    <dimen name="margin_end_start_add_product">0dp</dimen>
+    <dimen name="act_add_new_margin_top_30dp">30dp</dimen>
+    <dimen name="image_height_add_product">150dp</dimen>
+    <dimen name="txt_size_home_12sp">12sp</dimen>
 
 </resources>

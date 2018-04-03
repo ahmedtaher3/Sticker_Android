@@ -15,16 +15,6 @@ import retrofit2.http.Part;
  */
 public interface StickerService {
 
-    /*@FormUrlEncoded
-    @POST(ChatConstant.ACTION_RESTORE_MESSAGE_LIST)
-    Call<ApiResponse> restoreMessageList(@Field("user_id") String user_id,
-
-                                         @Field("restore_media") int restore_media);*/
-
-  /*  @FormUrlEncoded
-    @POST(ApiConstant.API_LOGIN_URL)
-    Call<ApiResponse> testApi(@Header("Authorization") String token,"vivekp@gmail.com","");
-*/
   @FormUrlEncoded
   @POST(ApiConstant.API_LOGIN_URL)
   public Call<ApiResponse> userLogin(@Field("email") String email_id, @Field("password") String password, @Field("device_type") String deviceType
@@ -62,6 +52,18 @@ public interface StickerService {
   @POST(ApiConstant.API_GET_CONTENT)
   public Call<ApiResponse> apiGetContent(@Field("id") String userId,@Field("authrized_key")String authKey);
 
+  @FormUrlEncoded
+  @POST(ApiConstant.API_ADD_PRODUCT)
+  public Call<ApiResponse> apiAddProduct(@Field("language_id") String languageId,@Field("authrized_key")String authKey,
+                                         @Field("user_id")String userId,@Field("product_name")String productname,
+                                         @Field("type")String type,@Field("description")String description,
+                                         @Field("expiry_date")String expireDate
+  ,@Field("image_path")String imagePath,@Field("product_id")int productId);
+  @FormUrlEncoded
+  @POST(ApiConstant.API_GET_PRODUCT_LIST)
+  public Call<ApiResponse> apiGetProductList(@Field("language_id") String languageId,@Field("authrized_key")String authKey,
+                                             @Field("user_id")String userId,@Field("index")int index,
+                                             @Field("limit")int limit,@Field("type")String type);
 
 
 }

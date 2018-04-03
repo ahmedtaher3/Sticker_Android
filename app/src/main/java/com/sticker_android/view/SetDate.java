@@ -53,7 +53,7 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
     }
 
     public String getChosenDate() {
-        return d + "-" + (m+1) + "-" + y;
+        return y + "-" + (m+1) + "-" + d;
     }
 
     public void setDate(String dateQualification) {

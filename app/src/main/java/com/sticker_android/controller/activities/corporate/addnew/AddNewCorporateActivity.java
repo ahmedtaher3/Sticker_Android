@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,7 +14,10 @@ import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.model.User;
+import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.SetDate;
 
 public class AddNewCorporateActivity extends AppBaseActivity implements View.OnClickListener {
 
@@ -23,6 +27,8 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private ViewPagerAdapter adapter;
     private TabLayout tabLayout;
     private Button btnPost;
+    private EditText edtExpireDate;
+    private EditText edtCorpName, edtDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         setSelectedTabColor();
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
     }
 
     private void init() {
@@ -86,6 +93,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     protected void setViewListeners() {
         tabLayout.addOnTabSelectedListener(new TabListeners());
         btnPost.setOnClickListener(this);
+        edtExpireDate.setOnClickListener(this);
     }
 
     private void setSelectedTabColor() {
@@ -94,13 +102,27 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
     @Override
     protected void setViewReferences() {
+        edtCorpName = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
         tabLayout = (TabLayout) findViewById(R.id.act_landing_tab);
         btnPost = (Button) findViewById(R.id.act_corp_add_new_btn_post);
+        edtExpireDate = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
+        edtDescription = (EditText) findViewById(R.id.edtDescription);
     }
 
     @Override
     protected boolean isValidData() {
-        return false;
+
+        if (edtCorpName.getText().toString().trim().isEmpty()) {
+            Utils.showToast(this, "Please enter a name.");
+            return false;
+        } else if (edtExpireDate.getText().toString().trim().isEmpty()) {
+            Utils.showToast(this, "Please enter a expire date.");
+
+            return false;
+        } else if (edtDescription.getText().toString().trim().isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -124,10 +146,20 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.act_corp_add_new_btn_post:
-            Toast.makeText(getApplicationContext(),""+ tabLayout.getSelectedTabPosition(),Toast.LENGTH_SHORT).show();
+                if (isValidData()) {
+                    addProductOrAdApi();
+                }
+                Toast.makeText(getApplicationContext(), "" + tabLayout.getSelectedTabPosition(), Toast.LENGTH_SHORT).show();
                 break;
-             default:
+            case R.id.act_add_new_ad_corp_edt_expire_date:
+                SetDate setDate = new SetDate(edtExpireDate, this);
+                break;
+            default:
         }
+    }
+
+    private void addProductOrAdApi() {
+       // RestClient.getService().apiAddProduct()
     }
 
 

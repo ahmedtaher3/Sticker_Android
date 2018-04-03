@@ -3,9 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.sticker_android.controller.fragment.corporate.ad.AdsFragment">
-<android.support.v7.widget.RecyclerView
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/swipeRefreshAds"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.RecyclerView
     android:id="@+id/recAds"
     android:layout_width="match_parent"
     android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 
+</android.support.v4.widget.SwipeRefreshLayout>
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/progressBarLoadMore"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </RelativeLayout>
