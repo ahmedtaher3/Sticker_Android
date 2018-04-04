@@ -6,23 +6,33 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.ProductList;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.SetDate;
+
+import retrofit2.Call;
 
 public class RenewAdandProductActivity extends AppBaseActivity implements View.OnClickListener {
 
     private AppPref appPref;
     private User userdata;
     private Toolbar toolbar;
-    private TextView rePost;
+    private Button btnRePost;
     private EditText edtExpireDate;
-    private EditText edtCorpName,edtDescription;
+    private EditText edtCorpName, edtDescription;
+    private ProductList productObj;
+    private String mExpireDate;
+    private SetDate setDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,38 +50,65 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
                 onBackPressed();
             }
         });
+        getProductData();
+        setProductdataIntoView();
+    }
 
+    private void setProductdataIntoView() {
+
+        if (productObj != null) {
+
+            edtExpireDate.setText(Utils.dateModify(productObj.getExpireDate()));
+            edtCorpName.setText(productObj.getProductname());
+            edtDescription.setText(productObj.getDescription());
+            edtDescription.setSelection(edtDescription.getText().length());
+            edtCorpName.setSelection(edtCorpName.getText().length());
+            mExpireDate=productObj.getExpireDate();
+        }
+    }
+
+
+    private void getProductData() {
+
+        if (getIntent().getExtras() != null) {
+
+            productObj = getIntent().getExtras().getParcelable(AppConstant.PRODUCT_OBJ_KEY);
+        }
     }
 
     @Override
     protected void setViewListeners() {
 
+        edtExpireDate.setOnClickListener(this);
+        btnRePost.setOnClickListener(this);
     }
 
     @Override
     protected void setViewReferences() {
-        rePost = (Button) findViewById(R.id.act_corp_add_new_btn_re_post);
-        edtExpireDate=(EditText)findViewById(R.id.act_add_new_corp_edt_name);
-        edtDescription=(EditText) findViewById(R.id.edtDescription);
-        edtCorpName=(EditText) findViewById(R.id.act_add_new_corp_edt_name);
+        btnRePost = (Button) findViewById(R.id.act_corp_add_new_btn_re_post);
+        edtExpireDate = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_expire_date);
+        edtDescription = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_description);
+        edtCorpName = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
 
     }
 
     @Override
     protected boolean isValidData() {
 
-        if(edtCorpName.getText().toString().trim().isEmpty()){
-            Utils.showToast(this,"Please enter a name.");
+        if (edtCorpName.getText().toString().trim().isEmpty()) {
+            Utils.showToast(this, "Please enter a name.");
             return false;
-        }else if(edtExpireDate.getText().toString().trim().isEmpty()){
-            Utils.showToast(this,"Please enter a expire date.");
+        } else if (edtExpireDate.getText().toString().trim().isEmpty()) {
+            Utils.showToast(this, "Please enter a expire date.");
 
             return false;
-        }else if(edtDescription.getText().toString().trim().isEmpty()){
+        } else if (edtDescription.getText().toString().trim().isEmpty()) {
             return false;
-        }
+        } /*else if (productObj.getExpireDate().trim().equals(mExpireDate)) {
+            Utils.showToast(this, "Please select a valid date.");
+            return false;
+        }*/
         return true;
-
     }
 
     private void init() {
@@ -112,16 +149,51 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
 
     @Override
     public void onClick(View v) {
+        Utils.hideKeyboard(this);
         switch (v.getId()) {
             case R.id.act_corp_add_new_btn_re_post:
-                if(isValidData()) {
-                    Toast.makeText(getApplicationContext(), "" + "called", Toast.LENGTH_SHORT).show();
+                if (isValidData()) {
+                    renewOrEditApi();
                 }
                 break;
             case R.id.act_add_new_ad_corp_edt_expire_date:
-                SetDate setDate=new SetDate(edtExpireDate,this);
+                setDate = new SetDate(edtExpireDate, this);
+                setDate.setDate(productObj.getExpireDate());
                 break;
             default:
         }
     }
+
+
+    /**
+     * Method is used to call the add ads or product api
+     */
+    private void renewOrEditApi() {
+        if(setDate!=null)
+        mExpireDate = setDate.getChosenDate();
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+        final String type = productObj.getType();
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
+                userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
+                , mExpireDate, "", String.valueOf(productObj.getProductid()));
+
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+                if (apiResponse.status) {
+                    Utils.showToast(getApplicationContext(), type + " added successfully.");
+                    onBackPressed();
+                }
+
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
+    }
+
 }

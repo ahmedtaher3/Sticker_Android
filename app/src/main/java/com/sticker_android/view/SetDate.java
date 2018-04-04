@@ -49,7 +49,7 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
         y = year;
         m = monthOfYear;
         d = dayOfMonth;
-        this.view.setText(d+"-"+(m+1)+"-"+y);
+        this.view.setText(Utils.dateModify(y+"-"+(m+1)+"-"+d));
     }
 
     public String getChosenDate() {
@@ -62,7 +62,14 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
         m = Integer.parseInt(dateQualification.split("-")[1]) - 1;
         d = Integer.parseInt(dateQualification.split("-")[2]);
         pickerDialog.updateDate(y, m, d);
-        this.view.setText(d+"-"+(m+1)+"-"+y);
+        this.view.setText(Utils.dateModify(y+"-"+(m+1)+"-"+d));
     }
+    public void setMinDate(String minDate) {
+        //2017-05-08
+        y = Integer.parseInt(minDate.split("-")[0]);
+        m = Integer.parseInt(minDate.split("-")[1]) - 1;
+        d = Integer.parseInt(minDate.split("-")[2]);
+        pickerDialog.getDatePicker().setMinDate(m/d/y);
 
+    }
 }

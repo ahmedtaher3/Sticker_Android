@@ -55,8 +55,7 @@ import java.util.Locale;
 import retrofit2.Call;
 
 public class CorporateHomeActivity extends AppBaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener
-        , SearchView.OnQueryTextListener {
+        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
@@ -81,7 +80,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
                 actionBarToggle(toolbar);
                 toolbar.setTitle("");
             }
-        }, 1000);
+        }, 200);
         setViewReferences();
         setViewListeners();
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
@@ -360,41 +359,5 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     public void updatedata() {
         init();
         setUserDataIntoNaviagtion();
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-
-        MenuItem item = menu.add("Search");
-        item.setIcon(R.drawable.ic_search);
-        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
-        SearchView searchView = new SearchView(this);
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-
-        EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchEditText.setTextColor(ContextCompat.getColor(this, R.color.edt_background_tint));
-        searchEditText.setHintTextColor(ContextCompat.getColor(this, R.color.edt_background_tint));
-
-        searchView.setOnQueryTextListener(this);
-
-        item.setActionView(searchView);
-
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        Toast.makeText(getApplicationContext(),"wjcj",Toast.LENGTH_SHORT).show();
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-
-        Toast.makeText(getApplicationContext(),"on text change",Toast.LENGTH_SHORT).show();
-        return true;
     }
 }

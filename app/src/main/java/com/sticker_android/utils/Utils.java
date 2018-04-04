@@ -26,7 +26,10 @@ import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.utils.helper.PermissionManager;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -278,4 +281,26 @@ public class Utils {
         boolean hasDecimal = truncated < 100 && (truncated / 10d) != (truncated / 10);
         return hasDecimal ? (truncated / 10d) + suffix : (truncated / 10) + suffix;
     }
+
+
+    public static String dateModify(String jobModifiedDate) {
+        String dater="";
+        try
+        {
+            java.text.DateFormat formatter;
+            Date date;
+            formatter = new SimpleDateFormat("yyyy-MM-dd");
+            date = (Date)formatter.parse(jobModifiedDate);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM,yyyy");
+            dater = simpleDateFormat.format(date);
+
+        }
+        catch (Exception e)
+        {
+            //  e.printStackTrace();
+        }
+
+        return dater;
+    }
+
 }

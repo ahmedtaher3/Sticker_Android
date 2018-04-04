@@ -86,6 +86,7 @@
                      />
 
                 <TextView
+                    android:id="@+id/tvTime"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/txt_size_home_12sp"
                     android:drawablePadding="8dp"
@@ -104,8 +105,7 @@
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                    android:layout_centerInParent="true"
                     android:gravity="end"
-                    android:text="Pending"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/holo_green_light" />
 
             </RelativeLayout>
 

@@ -14,10 +14,15 @@ import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.model.User;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.SetDate;
+
+import retrofit2.Call;
 
 public class AddNewCorporateActivity extends AppBaseActivity implements View.OnClickListener {
 
@@ -29,6 +34,8 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private Button btnPost;
     private EditText edtExpireDate;
     private EditText edtCorpName, edtDescription;
+    private String mExpireDate = "2018-04-06";
+    private SetDate setDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +112,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         edtCorpName = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
         tabLayout = (TabLayout) findViewById(R.id.act_landing_tab);
         btnPost = (Button) findViewById(R.id.act_corp_add_new_btn_post);
-        edtExpireDate = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
+        edtExpireDate = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_expire_date);
         edtDescription = (EditText) findViewById(R.id.edtDescription);
     }
 
@@ -117,9 +124,9 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
             return false;
         } else if (edtExpireDate.getText().toString().trim().isEmpty()) {
             Utils.showToast(this, "Please enter a expire date.");
-
             return false;
         } else if (edtDescription.getText().toString().trim().isEmpty()) {
+            Utils.showToast(this, "Please enter a description.");
             return false;
         }
         return true;
@@ -144,6 +151,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
+        Utils.hideKeyboard(this);
         switch (v.getId()) {
             case R.id.act_corp_add_new_btn_post:
                 if (isValidData()) {
@@ -152,14 +160,54 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                 Toast.makeText(getApplicationContext(), "" + tabLayout.getSelectedTabPosition(), Toast.LENGTH_SHORT).show();
                 break;
             case R.id.act_add_new_ad_corp_edt_expire_date:
-                SetDate setDate = new SetDate(edtExpireDate, this);
+                 setDate = new SetDate(edtExpireDate, this);
                 break;
             default:
         }
     }
 
+    /**
+     * Method is used to call the add ads or product api
+     */
     private void addProductOrAdApi() {
-       // RestClient.getService().apiAddProduct()
+        if(setDate!=null)
+        mExpireDate = setDate.getChosenDate();
+
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+        final String type = getSelectedType();
+        Call<ApiResponse> apiResponseCall   =    RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
+                userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
+                , mExpireDate, "", "");
+
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+                if (apiResponse.status) {
+                    Utils.showToast(getApplicationContext(),type+" added successfully.");
+                    onBackPressed();
+                }
+
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
+    }
+
+    /**
+     * Method is used to get the type of posted product
+     *
+     * @return rerurns the type
+     */
+    public String getSelectedType() {
+        String type = "ads";
+        if (tabLayout.getSelectedTabPosition() == 1)
+            type = "product";
+        return type;
     }
 
 

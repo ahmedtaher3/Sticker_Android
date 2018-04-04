@@ -1,0 +1,186 @@
+package com.sticker_android.controller.activities.corporate.productdetails;
+
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
+import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
+import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
+import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.ProductList;
+import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.helper.TimeUtility;
+import com.sticker_android.utils.sharedpref.AppPref;
+
+public class ProductDetailsActivity extends AppBaseActivity {
+
+    private Toolbar toolbar;
+    private AppPref appPref;
+    private User user;
+    private ProductList productObj;
+
+    public ImageView imvOfAds;
+    public TextView tvProductTitle, tvStatus, tvDesciption, tvTime;
+    public CheckBox checkboxLike, checkboxShare;
+    public ImageButton imvBtnEditRemove;
+
+    TimeUtility timeUtility=new TimeUtility();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_product_details);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        init();
+        getProductData();
+        setSupportActionBar(toolbar);
+        setToolbarBackground();
+        setViewReferences();
+        setViewListeners();
+        setProductDetails();
+        toolbar.setNavigationIcon(R.drawable.back_arrow_small);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+    }
+
+    private void setProductDetails() {
+
+        checkboxLike.setText(Utils.format(1000));
+        checkboxShare.setText(Utils.format(1200));
+        String status="Ongoing";
+        if(productObj.getIsExpired()>0){
+            tvStatus.setTextColor(Color.RED);
+            status="Expired";
+        }else{
+            tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
+
+        }
+        tvStatus.setText(status);
+        imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopup(v);
+            }
+        });
+        tvProductTitle.setText(productObj.getProductname());
+        tvDesciption.setText(productObj.getDescription());
+        tvTime.setText(timeUtility.covertTimeToText(productObj.getExpireDate().toString().trim(), getActivity()));
+    }
+    /**
+     * Method is used to set the toolbar background
+     */
+    private void setToolbarBackground() {
+        toolbar.setBackground(getResources().getDrawable(R.drawable.corporate_header_hdpi));
+    }
+
+
+    private void init() {
+        appPref=new AppPref(this);
+        user =appPref.getUserInfo();
+    }
+
+    private void setToolBarTitle(String type) {
+        TextView textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
+        textView.setText(type+" Details");
+        toolbar.setTitle("");
+    }
+
+
+    private void getProductData() {
+
+        if (getIntent().getExtras() != null) {
+
+            productObj = getIntent().getExtras().getParcelable(AppConstant.PRODUCT_OBJ_KEY);
+           if(productObj!=null)
+            setToolBarTitle(productObj.getType());
+        }
+    }
+
+
+    @Override
+    protected void setViewListeners() {
+
+    }
+
+    @Override
+    protected void setViewReferences() {
+        imvOfAds = (ImageView) findViewById(R.id.imvOfAds);
+        tvProductTitle = (TextView) findViewById(R.id.tv_add_product_title);
+        tvStatus = (TextView) findViewById(R.id.tv_add_product_status);
+        tvDesciption = (TextView) findViewById(R.id.tv_add_product_item_description);
+        checkboxLike = (CheckBox) findViewById(R.id.checkboxLike);
+        checkboxShare = (CheckBox) findViewById(R.id.checkboxShare);
+        imvBtnEditRemove = (ImageButton) findViewById(R.id.imvBtnEditRemove);
+        tvTime = (TextView) findViewById(R.id.tvTime);
+
+    }
+
+    @Override
+    protected boolean isValidData() {
+        return false;
+    }
+
+    /**
+     * Method is used to show the popup with edit and delete option
+     *
+     * @param v        view on which click is perfomed
+     *
+     */
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.edit_remove_product, popup.getMenu());
+        popup.show();
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Utils.hideKeyboard(getActivity());
+                switch (item.getItemId()) {
+                    case R.id.edit:
+                        moveToActivity();
+                        break;
+                    case R.id.remove:
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+
+        private void moveToActivity() {
+
+            Bundle bundle = new Bundle();
+
+            bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, productObj);
+
+            Intent intent = new Intent(getActivity(), RenewAdandProductActivity.class);
+
+            intent.putExtras(bundle);
+
+            startActivityForResult(intent,1011);
+
+            getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                    R.anim.activity_animation_exit);
+        }
+
+
+}

@@ -114,5 +114,7 @@
     <dimen name="act_add_new_margin_top_30dp">30dp</dimen>
     <dimen name="image_height_add_product">150dp</dimen>
     <dimen name="txt_size_home_12sp">12sp</dimen>
+    <dimen name="act_product_details_padding">20dp</dimen>
+    <dimen name="image_height_product_details">250dp</dimen>
 
 </resources>

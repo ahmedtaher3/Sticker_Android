@@ -6,4 +6,8 @@ package com.sticker_android.constant;
 
 public class AppConstant {
     public static final int SPLASH_TIMER_WAIT=3000;
+   /*Intent Constant*/
+    public static final String PRODUCT_OBJ_KEY="productObj";
+
+
 }

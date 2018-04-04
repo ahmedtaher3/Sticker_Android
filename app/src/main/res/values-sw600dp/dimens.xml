@@ -115,4 +115,7 @@
     <dimen name="image_height_add_product">160dp</dimen>
     <dimen name="text_size_tv_13sp">15sp</dimen>
     <dimen name="txt_size_home_12sp">14sp</dimen>
+    <dimen name="act_product_details_padding">25dp</dimen>
+    <dimen name="image_height_product_details">270dp</dimen>
+
 </resources>

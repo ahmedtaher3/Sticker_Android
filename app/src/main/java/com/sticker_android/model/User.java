@@ -60,6 +60,77 @@ public class User {
 
     @SerializedName("password")
     private String passsword;
+
+    @SerializedName("product_id")
+    private int productid;
+
+    @SerializedName("product_name")
+    private String productname;
+    @SerializedName("type")
+    private String type;
+
+    @SerializedName("description")
+    private String description;
+
+    @SerializedName("expiry_date")
+    private String expireDate;
+    @SerializedName("image_path")
+    private String imagePath;
+
+    @SerializedName("title")
+    private String title;
+    @SerializedName("info_text")
+    private String infoText;
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public int getProductid() {
+        return productid;
+    }
+
+    public void setProductid(int productid) {
+        this.productid = productid;
+    }
+
+    public String getProductname() {
+        return productname;
+    }
+
+    public void setProductname(String productname) {
+        this.productname = productname;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(String expireDate) {
+        this.expireDate = expireDate;
+    }
+
+
     public String getTitle() {
         return title;
     }
@@ -75,11 +146,6 @@ public class User {
     public void setInfoText(String infoText) {
         this.infoText = infoText;
     }
-
-    @SerializedName("title")
-    private String title;
-    @SerializedName("info_text")
-    private String infoText;
 
 
     public String getId() {

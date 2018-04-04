@@ -4,5 +4,8 @@
         android:title="@string/txt_edit" />
     <item android:id="@+id/remove"
         android:title="@string/txt_remove" />
+    <item android:id="@+id/repost"
+        android:visible="false"
+        android:title="@string/txt_repost" />
 
 </menu>
