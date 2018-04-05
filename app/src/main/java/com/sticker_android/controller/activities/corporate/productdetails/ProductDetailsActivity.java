@@ -3,10 +3,9 @@ package com.sticker_android.controller.activities.corporate.productdetails;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,18 +18,23 @@ import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
-import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.ProductList;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
+
+import retrofit2.Call;
 
 public class ProductDetailsActivity extends AppBaseActivity {
 
     private Toolbar toolbar;
     private AppPref appPref;
-    private User user;
+    private User mUserData;
     private ProductList productObj;
 
     public ImageView imvOfAds;
@@ -95,7 +99,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
     private void init() {
         appPref=new AppPref(this);
-        user =appPref.getUserInfo();
+        mUserData =appPref.getUserInfo();
     }
 
     private void setToolBarTitle(String type) {
@@ -141,8 +145,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
     /**
      * Method is used to show the popup with edit and delete option
-     *
-     * @param v        view on which click is perfomed
+     *  @param v        view on which click is perfomed
      *
      */
     public void showPopup(View v) {
@@ -150,15 +153,20 @@ public class ProductDetailsActivity extends AppBaseActivity {
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.edit_remove_product, popup.getMenu());
         popup.show();
+        showHideEdit(popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Utils.hideKeyboard(getActivity());
                 switch (item.getItemId()) {
                     case R.id.edit:
-                        moveToActivity();
+                        moveToActivity("Edit");
                         break;
                     case R.id.remove:
+                        removeProductApi();
+                        break;
+                    case R.id.repost:
+                        moveToActivity("Repost");
                         break;
                 }
                 return false;
@@ -166,7 +174,62 @@ public class ProductDetailsActivity extends AppBaseActivity {
         });
     }
 
-        private void moveToActivity() {
+
+    /** Method is used to remove the product
+     *
+     */
+    private void removeProductApi() {
+        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiDeleteProduct(mUserData.getLanguageId(), mUserData.getAuthrizedKey(), mUserData.getId(),
+                String.valueOf(productObj.getProductid()));
+
+        apiResponseCall.enqueue(new ApiCall(getActivity()) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+               progressDialogHandler.hide();
+                if (apiResponse.status) {
+                    Utils.showToast(getActivity(),"Deleted successfully");
+                    onBackPressed();
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
+    }
+
+
+    private void showHideEdit(PopupMenu popup) {
+
+        Menu popupMenu = popup.getMenu();
+        if(productObj.getIsExpired()>0) {
+            popupMenu.findItem(R.id.repost).setVisible(true);
+            popupMenu.findItem(R.id.edit).setVisible(false);
+        }else {
+            popupMenu.findItem(R.id.edit).setVisible(true);
+            popupMenu.findItem(R.id.repost).setVisible(false);
+        }
+    }
+
+    private void moveToActivity(String type) {
+
+        Bundle bundle = new Bundle();
+
+        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, productObj);
+        bundle.putString("edit",type);
+        Intent intent = new Intent(getActivity(), RenewAdandProductActivity.class);
+        intent.putExtras(bundle);
+
+        startActivityForResult(intent,1011);
+
+        getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
+    }
+
+   /* private void moveToActivity() {
 
             Bundle bundle = new Bundle();
 
@@ -181,6 +244,20 @@ public class ProductDetailsActivity extends AppBaseActivity {
             getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                     R.anim.activity_animation_exit);
         }
+*/
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    if(resultCode==RESULT_OK)
+    {
+        switch (requestCode)
+        {
+            case 1011:
+                setResult(RESULT_OK);
+                onBackPressed();
+                break;
+        }
+    }
+    }
 }

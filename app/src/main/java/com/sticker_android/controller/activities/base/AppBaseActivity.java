@@ -19,6 +19,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sticker_android.R;
 import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.utils.AppConstants;
+import com.sticker_android.utils.Utils;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -193,5 +194,11 @@ public abstract class AppBaseActivity extends AppCompatActivity {
             window.setNavigationBarColor(activity.getResources().getColor(android.R.color.transparent));
             window.setBackgroundDrawable(background);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Utils.hideKeyboard(this);
     }
 }

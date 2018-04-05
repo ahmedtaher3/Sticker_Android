@@ -33,13 +33,14 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     private ProductList productObj;
     private String mExpireDate;
     private SetDate setDate;
-
+    private String type="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_renew_adand_product);
         init();
         getuserInfo();
+        getProductData();
         setToolbar();
         setViewReferences();
         setViewListeners();
@@ -50,8 +51,21 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
                 onBackPressed();
             }
         });
-        getProductData();
         setProductdataIntoView();
+        setButtonText();
+    }
+
+    private void setButtonText() {
+
+    if(type.equals("Edit")){
+        btnRePost.setText("Update");
+    }else{
+        edtDescription.setLongClickable(false);
+        edtDescription.setEnabled(false);
+        edtCorpName.setLongClickable(false);
+        edtCorpName.setEnabled(false);
+        btnRePost.setText("Repost");
+    }
     }
 
     private void setProductdataIntoView() {
@@ -73,6 +87,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         if (getIntent().getExtras() != null) {
 
             productObj = getIntent().getExtras().getParcelable(AppConstant.PRODUCT_OBJ_KEY);
+            type=getIntent().getExtras().getString("edit");
         }
     }
 
@@ -125,7 +140,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
      */
     private void setToolBarTitle() {
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(getResources().getString(R.string.act_corp_txt_renew));
+        textView.setText(type+" "+productObj.getType());
         toolbar.setTitle(" ");
     }
 
@@ -184,6 +199,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
                     Utils.showToast(getApplicationContext(), type + " added successfully.");
+                    setResult(RESULT_OK);
                     onBackPressed();
                 }
 

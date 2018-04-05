@@ -71,4 +71,11 @@ public interface StickerService {
   public Call<ApiResponse> apiDeleteProduct(@Field("language_id") String languageId,@Field("authrized_key")String authKey,
                                              @Field("user_id")String userId,@Field("product_id")String productId);
 
+  @FormUrlEncoded
+  @POST(ApiConstant.API_SEARCH_PRODUCT)
+  public Call<ApiResponse> apiSearchProduct(@Field("language_id") String languageId,@Field("authrized_key")String authKey,
+                                            @Field("user_id")String userId,@Field("index")int index,
+                                            @Field("limit")int limit,@Field("type")String type,@Field("search")String search,@Field("key_name")String name);
+
+
 }

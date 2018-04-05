@@ -1,6 +1,8 @@
 package com.sticker_android.controller.fragment.corporate.ad;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
@@ -30,9 +33,9 @@ import com.sticker_android.controller.activities.corporate.productdetails.Produc
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.ProductList;
-import com.sticker_android.model.interfaces.OnLoadMoreListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.LogUtils;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
@@ -40,6 +43,7 @@ import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.OnVerticalScrollListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 
@@ -49,6 +53,7 @@ import retrofit2.Call;
 public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
 
+    private static final int PAGE_SIZE = 2;
     private RecyclerView recAd;
     private ProgressBar progressBarLoadMore;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -56,12 +61,15 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
     private OnVerticalScrollListener scrollListener;
     private boolean loading = true;
     private boolean isLastPage = true;
-    private AdsDataAdapter mAdapter;
+   private ProductAdaptor productAdaptor;
     protected Handler handler;
     private AppPref appPref;
     private User mUserdata;
     ArrayList<ProductList> productList = new ArrayList<>();
     private TimeUtility timeUtility = new TimeUtility();
+    private int index=0;
+    private boolean isLoading;
+    private int currentPageNo;
 
     public AdsFragment() {
         // Required empty public constructor
@@ -79,10 +87,50 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         setViewListeners();
         recyclerViewLayout();
         handler = new Handler();
-        productListApi(0);
         setAdaptor();
+        productListApi(currentPageNo,currentPageNo++);
         adaptorScrollListener();
         return view;
+    }
+
+    private void adaptorScrollListener() {
+
+        recAd.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (swipeRefreshLayout.isRefreshing())
+                    return;
+
+                int visibleItemCount = mLayoutManager.getChildCount();
+                int totalItemCount = mLayoutManager.getItemCount();
+                int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
+
+                LogUtils.printLog(1,"scroll called","visible count "+visibleItemCount+" "+totalItemCount+" "+firstVisibleItemPosition);
+                if (!isLoading && !isLastPage) {
+                    LogUtils.printLog(1,"scroll called","inside is loading ");
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                            && firstVisibleItemPosition >= 0
+                            && totalItemCount >= PAGE_SIZE) {
+                        // loadMoreItems();
+                        LogUtils.printLog(1,"scroll called","inside is loadmore ");
+                        if (productList != null && productList.size() > 0) {
+                            currentPageNo++;
+                            productListApi(currentPageNo,currentPageNo*2);
+                            LogUtils.printLog(1,"scroll called"," loading called ");
+
+                        }
+                    }
+                }
+                }
+            });
+
     }
 
 
@@ -95,46 +143,13 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         mUserdata = appPref.getUserInfo();
     }
 
-    private void adaptorScrollListener() {
-
-        mAdapter.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                //add null , so the adapter will check view_type and show progress bar at bottom
-                // productList.add(null);
-                progressBarLoadMore.setVisibility(View.VISIBLE);
-                if (productList.size() > 5)
-                    mAdapter.notifyItemInserted(productList.size() - 1);
-
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBarLoadMore.setVisibility(View.GONE);
-                        //   remove progress item
-                    /*    userList.remove(userList.size() - 1);
-                        mAdapter.notifyItemRemoved(userList.size());
-                        //add items one by one
-                        int start = userList.size();
-                        int end = start + 20;
-
-                        for (int i = start + 1; i <= end; i++) {
-                            userList.add(new User());
-                            mAdapter.notifyItemInserted(userList.size());
-                        }
-                        mAdapter.setLoaded();
-                   */     //or you can add all at once but do not forget to call mAdapter.notifyDataSetChanged();
-                    }
-                }, 2000);
-
-            }
-        });
-    }
-
     private void setAdaptor() {
-        mAdapter = new AdsDataAdapter(recAd);
-        // set the adapter object to the Recyclerview
-        recAd.setAdapter(mAdapter);
+
+        productAdaptor   =       new ProductAdaptor(getActivity(),productList);
+        recAd.setAdapter(productAdaptor);
     }
+
+
 
     /**
      * Method is used to set the layout on recycler view
@@ -173,31 +188,42 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
         swipeRefreshLayout.setRefreshing(false);
 
-        productListApi(0);
+        if(productList!=null)
+            productList.clear();
+        productListApi(0,2);
     }
 
     /**
      * Method is used for fetching the ads or product api
      */
-    private void productListApi(int index) {
-
+    private void productListApi(int index,int limit) {
+        isLoading=true;
         swipeRefreshLayout.setRefreshing(true);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
-                index, 10, "ads", "product_list");
+                index, limit, "ads", "product_list");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
+                isLoading=false;
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
-                    productList = apiResponse.paylpad.productList;
-                    if (productList != null)
-                        mAdapter.updateProductList(productList);
+                    ArrayList<ProductList> tempList=new ArrayList<ProductList>();
+                    tempList = apiResponse.paylpad.productList;
+                    if(tempList!=null) {
+                        isLastPage=false;
+                        productList.addAll(tempList);
+                        productAdaptor.notifyDataChanged();
+                    }else {
+                        isLastPage=true;
+                    }
+
                 }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
                 swipeRefreshLayout.setRefreshing(false);
+                isLoading=false;
             }
         });
     }
@@ -220,10 +246,13 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 Utils.hideKeyboard(getActivity());
                 switch (item.getItemId()) {
                     case R.id.edit:
-                        moveToActivity(position);
+                        moveToActivity(position,"Edit");
                         break;
                     case R.id.remove:
                         removeProductApi(position);
+                        break;
+                    case R.id.repost:
+                        moveToActivity(position,"Repost");
                         break;
                 }
                 return false;
@@ -231,24 +260,29 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         });
     }
 
+    private void moveToRepost(int position) {
+    }
+
     private void showHideEdit(PopupMenu popup, ProductList product) {
 
         Menu popupMenu = popup.getMenu();
         if(product.getIsExpired()>0) {
-            popupMenu.findItem(R.id.repost).setEnabled(true);
-            popupMenu.findItem(R.id.edit).setEnabled(false);
+            popupMenu.findItem(R.id.repost).setVisible(true);
+            popupMenu.findItem(R.id.edit).setVisible(false);
         }else {
-            popupMenu.findItem(R.id.edit).setEnabled(true);
-            popupMenu.findItem(R.id.repost).setEnabled(false);
+            popupMenu.findItem(R.id.edit).setVisible(true);
+            popupMenu.findItem(R.id.repost).setVisible(false);
         }
     }
 
     /** Method is used to remove the product
      * @param position
      */
-    private void removeProductApi(int position) {
+    private void removeProductApi(final int position) {
+
            swipeRefreshLayout.setRefreshing(true);
-    Call<ApiResponse> apiResponseCall = RestClient.getService().apiDeleteProduct(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
+    Call<ApiResponse> apiResponseCall         =          RestClient.getService().apiDeleteProduct(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
+
                 String.valueOf(productList.get(position).getProductid()));
 
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
@@ -257,7 +291,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                 Utils.showToast(getActivity(),"Deleted successfully");
-                    onRefresh();
+                    if(productAdaptor!=null)
+                        productAdaptor.delete(position);
                 }
             }
 
@@ -268,166 +303,42 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         });
     }
 
-    private void moveToActivity(int position) {
+    private void moveToActivity(int position,String type) {
 
         Bundle bundle = new Bundle();
 
         bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, productList.get(position));
-
+        bundle.putString("edit",type);
         Intent intent = new Intent(getActivity(), RenewAdandProductActivity.class);
-
         intent.putExtras(bundle);
 
-        startActivity(intent);
+        startActivityForResult(intent,AppConstant.INTENT_RENEW_CODE);
 
         getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
     }
 
-    public class AdsDataAdapter extends RecyclerView.Adapter {
+    public void searchProduct(ArrayList<ProductList> productList) {
 
-        private int visibleThreshold = 5;
-        private int lastVisibleItem, totalItemCount;
-        private boolean loading;
-        private OnLoadMoreListener onLoadMoreListener;
+        if(this.productList!=null)
+        {
+            this.productList.clear();
+            productAdaptor.notifyDataChanged();
+        }
+        if(productAdaptor!=null){
 
-
-        public AdsDataAdapter(RecyclerView recyclerView) {
-
-            if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
-
-                final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView
-                        .getLayoutManager();
-
-
-                recyclerView
-                        .addOnScrollListener(new RecyclerView.OnScrollListener() {
-                            @Override
-                            public void onScrolled(RecyclerView recyclerView,
-                                                   int dx, int dy) {
-                                super.onScrolled(recyclerView, dx, dy);
-
-                                totalItemCount = linearLayoutManager.getItemCount();
-                                lastVisibleItem = linearLayoutManager
-                                        .findLastVisibleItemPosition();
-                                if (!loading
-                                        && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                                    // End has been reached
-                                    // Do something
-                                    progressBarLoadMore.setVisibility(View.VISIBLE);
-                                    if (onLoadMoreListener != null) {
-                                        onLoadMoreListener.onLoadMore();
-                                    }
-                                    loading = true;
-                                }
-
-                            }
-                        });
-            }
+            productAdaptor.updateProductList(productList);
         }
 
-        /*  @Override
-          public int getItemViewType(int position) {
-              return userList.get(position) != null ? VIEW_ITEM : VIEW_PROG;
-          }
-  */
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                          int viewType) {
-            RecyclerView.ViewHolder vh;
-            View v = LayoutInflater.from(parent.getContext()).inflate(
-                    R.layout.rec_item_add_product, parent, false);
+    }
 
-            vh = new StudentViewHolder(v);
-
-            return vh;
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-
-            final ProductList product = productList.get(position);
-
-            ((StudentViewHolder) holder).checkboxLike.setText(Utils.format(1000));
-            ((StudentViewHolder) holder).checkboxShare.setText(Utils.format(1200));
-            ((StudentViewHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showPopup(v, position,product);
-                }
-            });
-            ((StudentViewHolder) holder).tvProductTitle.setText(product.getProductname());
-            ((StudentViewHolder) holder).tvDesciption.setText(product.getDescription());
-            ((StudentViewHolder) holder).tvTime.setText(timeUtility.covertTimeToText(product.getExpireDate().toString().trim(), getActivity()));
-            ((StudentViewHolder) holder).cardItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    moveToDetails(product);
-                }
-            });
-               String status="Ongoing";
-            if(product.getIsExpired()>0){
-                ((StudentViewHolder) holder).tvStatus.setTextColor(Color.RED);
-                status="Expired";
-            }else{
-                ((StudentViewHolder) holder).tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
-
-            }
-            ((StudentViewHolder) holder).tvStatus.setText(status);
-
-        }
-
-        public void setLoaded() {
-            loading = false;
-        }
-
-        @Override
-        public int getItemCount() {
-            return productList.size();
-        }
-
-        public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
-            this.onLoadMoreListener = onLoadMoreListener;
-        }
-
-        /**
-         * Method is used to notify the list
-         */
-        public void notifyAdaptor() {
-
-            mAdapter.notifyDataSetChanged();
-        }
-
-        public void updateProductList(ArrayList<ProductList> productLists) {
-            if (productLists != null) {
-                Utils.showToast(getActivity(), "update call" + productLists.size());
-                productList = productLists;
-                mAdapter.notifyDataSetChanged();
-            }
-        }
-
-        //
-        public class StudentViewHolder extends RecyclerView.ViewHolder {
-            public ImageView imvOfAds;
-            public TextView tvProductTitle, tvStatus, tvDesciption, tvTime;
-            public CheckBox checkboxLike, checkboxShare;
-            public ImageButton imvBtnEditRemove;
-            public CardView cardItem;
-
-            public StudentViewHolder(View view) {
-                super(view);
-                imvOfAds = (ImageView) view.findViewById(R.id.imvOfAds);
-                tvProductTitle = (TextView) view.findViewById(R.id.tv_add_product_title);
-                tvStatus = (TextView) view.findViewById(R.id.tv_add_product_status);
-                tvDesciption = (TextView) view.findViewById(R.id.tv_add_product_item_description);
-                checkboxLike = (CheckBox) view.findViewById(R.id.checkboxLike);
-                checkboxShare = (CheckBox) view.findViewById(R.id.checkboxShare);
-                imvBtnEditRemove = (ImageButton) view.findViewById(R.id.imvBtnEditRemove);
-                tvTime = (TextView) view.findViewById(R.id.tvTime);
-                cardItem = (CardView) view.findViewById(R.id.card_view);
-            }
-        }
-
+    /**
+     * Method is used to refresh the list
+     */
+    public void refreshList() {
+        if(productList!=null)
+            productList.clear();
+        onRefresh();
     }
 
     private void moveToDetails(ProductList product) {
@@ -444,4 +355,167 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    if(resultCode== Activity.RESULT_OK){
+        switch (requestCode){
+            case AppConstant.INTENT_RENEW_CODE:
+                onRefresh();
+                break;
+        }
+
+    }
+
+    }
+
+
+    /*New Code*/
+
+    public class ProductAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        public final int TYPE_PRODUCT = 0;
+        public final int TYPE_LOAD = 1;
+        private  ArrayList<ProductList> productList=new ArrayList<>();
+
+        Context context;
+        OnLoadMoreListener loadMoreListener;
+        boolean isLoading = false, isMoreDataAvailable = true;
+
+    /*
+    * isLoading - to set the remote loading and complete status to fix back to back load more call
+    * isMoreDataAvailable - to set whether more data from server available or not.
+    * It will prevent useless load more request even after all the server data loaded
+    * */
+
+
+        public ProductAdaptor(Context context, ArrayList<ProductList> productList) {
+            this.context = context;
+            this.productList=productList;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            if(viewType== TYPE_PRODUCT){
+                return new ProductHolder(inflater.inflate(R.layout.rec_item_add_product,parent,false));
+            }else{
+                return new LoadHolder(inflater.inflate(R.layout.progress_item,parent,false));
+            }
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+            final ProductList product = productList.get(position);
+
+            if(position>=getItemCount()-1 && isMoreDataAvailable && !isLoading && loadMoreListener!=null){
+                isLoading = true;
+                loadMoreListener.onLoadMore();
+            }
+
+                ((ProductHolder) holder).checkboxLike.setText(Utils.format(1000));
+                ((ProductHolder) holder).checkboxShare.setText(Utils.format(1200));
+                ((ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showPopup(v, position,product);
+                    }
+                });
+                ((ProductHolder) holder).tvProductTitle.setText(product.getProductname());
+                ((ProductHolder) holder).tvDesciption.setText(product.getDescription());
+                //   ((AdsViewHolder) holder).tvTime.setText(timeUtility.covertTimeToText(product.getExpireDate(), getActivity()));
+                ((ProductHolder) holder).cardItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        moveToDetails(product);
+                    }
+                });
+                String status  =  "Ongoing";
+                if(product.getIsExpired()>0){
+                    ((ProductHolder) holder).tvStatus.setTextColor(Color.RED);
+                    status  =   "Expired";
+                }else{
+                    ((ProductHolder) holder).tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
+
+                }
+                ((ProductHolder) holder).tvStatus.setText(status);
+
+
+            //No else part needed as load holder doesn't bind any data
+        }
+
+
+        @Override
+        public int getItemCount() {
+            return productList.size();
+        }
+
+        public void delete(int position) { //removes the row
+            productList.remove(position);
+            notifyItemRemoved(position);
+        }
+        public void updateProductList(ArrayList<ProductList> productLists) {
+            if (productLists  != null) {
+                productList   =   productLists;
+                productAdaptor.notifyDataSetChanged();
+            }
+        }
+
+        class ProductHolder extends RecyclerView.ViewHolder{
+            public ImageView imvOfAds;
+            public TextView tvProductTitle, tvStatus, tvDesciption, tvTime;
+            public CheckBox checkboxLike, checkboxShare;
+            public ImageButton imvBtnEditRemove;
+            public CardView cardItem;
+
+            public ProductHolder(View view) {
+                super(view);
+
+                imvOfAds         =    (ImageView) view.findViewById(R.id.imvOfAds);
+                tvProductTitle   =    (TextView) view.findViewById(R.id.tv_add_product_title);
+                tvStatus         =    (TextView) view.findViewById(R.id.tv_add_product_status);
+                tvDesciption     =    (TextView) view.findViewById(R.id.tv_add_product_item_description);
+                checkboxLike     =    (CheckBox) view.findViewById(R.id.checkboxLike);
+                checkboxShare    =    (CheckBox) view.findViewById(R.id.checkboxShare);
+                imvBtnEditRemove =    (ImageButton) view.findViewById(R.id.imvBtnEditRemove);
+                tvTime           =    (TextView) view.findViewById(R.id.tvTime);
+                cardItem         =    (CardView) view.findViewById(R.id.card_view);
+            }
+        }
+
+         class LoadHolder extends RecyclerView.ViewHolder{
+            public LoadHolder(View itemView) {
+                super(itemView);
+            }
+        }
+
+        public void setMoreDataAvailable(boolean moreDataAvailable) {
+            isMoreDataAvailable = moreDataAvailable;
+        }
+
+        /* notifyDataSetChanged is final method so we can't override it
+             call adapter.notifyDataChanged(); after update the list
+             */
+        public void notifyDataChanged(){
+            notifyDataSetChanged();
+            isLoading = false;
+        }
+
+
+
+        public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
+            this.loadMoreListener = loadMoreListener;
+        }
+
+
+    }
+
+    interface OnLoadMoreListener{
+        void onLoadMore();
+    }
+
+
+
 }

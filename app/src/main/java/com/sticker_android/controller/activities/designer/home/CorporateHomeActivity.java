@@ -1,5 +1,6 @@
 package com.sticker_android.controller.activities.designer.home;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -352,6 +353,18 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             mProfileFragment.onActivityResult(requestCode, resultCode, data);
+        }
+        Toast.makeText(getActivity(),"called on Ac"+requestCode+"Result"+ Activity.RESULT_OK,Toast.LENGTH_SHORT).show();
+        if(resultCode==RESULT_OK){
+            switch (requestCode){
+                case 11:
+                    for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                        fragment.onActivityResult(requestCode, resultCode, data);
+                    }
+
+                    break;
+            }
+
         }
     }
 

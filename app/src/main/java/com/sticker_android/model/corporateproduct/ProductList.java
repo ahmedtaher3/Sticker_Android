@@ -18,7 +18,7 @@ public class ProductList implements Parcelable {
     @SerializedName("product_name")
     private String productname;
     @SerializedName("type")
-    private String type;
+    private String type="load";
 
     @SerializedName("description")
     private String description;

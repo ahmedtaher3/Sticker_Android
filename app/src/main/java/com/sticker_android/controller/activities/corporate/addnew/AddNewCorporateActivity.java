@@ -186,6 +186,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
                     Utils.showToast(getApplicationContext(),type+" added successfully.");
+                    setResult(RESULT_OK);
                     onBackPressed();
                 }
 

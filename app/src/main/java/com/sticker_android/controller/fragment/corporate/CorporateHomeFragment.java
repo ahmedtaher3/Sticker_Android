@@ -1,6 +1,7 @@
 package com.sticker_android.controller.fragment.corporate;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.corporate.addnew.AddNewCorporateActivity;
@@ -29,10 +32,18 @@ import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.controller.fragment.corporate.product.ProductsFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.ProductList;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+
+import retrofit2.Call;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,7 +55,11 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     private TabLayout tabLayout;
     private ViewPagerAdapter adapter;
     private AppPref appPref;
-    private User userdata;
+    private User mUserdata;
+    private int index;
+    private Call<ApiResponse> apiResponseCall;
+    private SearchView searchView;
+    private MenuItem item;
 
     public CorporateHomeFragment() {
         // Required empty public constructor
@@ -77,7 +92,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     }
 
     private void getuserInfo() {
-        userdata = appPref.getUserInfo();
+        mUserdata = appPref.getUserInfo();
     }
 
     @Override
@@ -117,7 +132,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
             case R.id.fabAddNew:
 
-                startActivity(new Intent(getActivity(), AddNewCorporateActivity.class));
+                startActivityForResult(new Intent(getActivity(), AddNewCorporateActivity.class), 11);
 
                 break;
         }
@@ -125,8 +140,8 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
     private void addFragmentToTab() {
         adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new AdsFragment(), getString(R.string.txt_ads_frag));
-        adapter.addFragment(new ProductsFragment(), getString(R.string.txt_products_frag));
+        adapter.addFragment(new AdsFragment(), getString(R.string.txt_my_ads_frag));
+        adapter.addFragment(new ProductsFragment(), getString(R.string.txt_my_products_frag));
         viewPager.setAdapter(adapter);
 
     }
@@ -182,36 +197,29 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.corporate_menu, menu);
 
-        final MenuItem item = menu.findItem(R.id.search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        item = menu.findItem(R.id.search);
+        searchView = (SearchView) MenuItemCompat.getActionView(item);
         setSearchTextColour(searchView);
         setSearchIcons(searchView);
-        // manageSearchColor(searchView);
+        searchView.setOnQueryTextListener(this);
     }
 
-    private void manageSearchColor(SearchView searchView) {
-        ImageView searchClose = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
-        ImageView searchButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_button);
-        ImageView searchSubmit = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_go_btn);
-
-        searchButton.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP);
-        searchButton.setImageResource(R.drawable.arrow_back);
-        searchClose.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP);
-        searchClose.setImageResource(R.drawable.close);
-        searchSubmit.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP);
-        searchSubmit.setImageResource(R.drawable.ic_search);
-
-    }
 
 
     private void setSearchTextColour(SearchView searchView) {
         EditText searchBox = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
-        searchBox.setTextColor(getActivity().getResources().getColor(R.color.edt_background_tint));
+        searchBox.setTextColor(getActivity().getResources().getColor(R.color.colorWhiteTransparent));
         searchBox.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        searchBox.setText(getSelectedType());
+        searchView.setQueryHint(getSelectedType());
         ImageView searchButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_button);
         searchButton.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP);
         searchButton.setImageResource(R.drawable.ic_search);
-
+        ImageView searchIcon = (ImageView)searchView.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
+        searchIcon.setImageResource(R.drawable.ic_search);
+        SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchAutoComplete.setHintTextColor(Color.WHITE);
+        searchAutoComplete.setTextColor(Color.WHITE);
     }
 
 
@@ -220,7 +228,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             Field searchField = SearchView.class.getDeclaredField("mCloseButton");
             searchField.setAccessible(true);
             ImageView closeBtn = (ImageView) searchField.get(searchView);
-            closeBtn.setImageResource(R.drawable.close);
+            closeBtn.setImageResource(R.drawable.close_search);
 
         } catch (NoSuchFieldException e) {
 
@@ -232,6 +240,17 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     @Override
     public boolean onQueryTextSubmit(String query) {
         //   Toast.makeText(getApplicationContext(),"wjcj",Toast.LENGTH_SHORT).show();
+
+        String type = getSelectedType();
+        if (apiResponseCall != null) {
+            apiResponseCall.cancel();
+        }
+        searchApiCall(query, type);
+        Utils.hideKeyboard(getActivity());
+        searchView.setIconified(true);
+        searchView.clearFocus();
+        searchView.setQuery("", false);
+        MenuItemCompat.collapseActionView(item);
         return true;
     }
 
@@ -245,5 +264,68 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+
+    /**
+     * Method is used for searching the product
+     *
+     * @param query
+     * @param type
+     */
+    public void searchApiCall(String query, String type) {
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
+        progressDialogHandler.show();
+
+        apiResponseCall = RestClient.getService().apiSearchProduct(mUserdata.getLanguageId(),
+                mUserdata.getAuthrizedKey(), mUserdata.getId(), index, 10, type, query, "product_list");
+
+        apiResponseCall.enqueue(new ApiCall(getActivity()) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+                if (apiResponse.status) {
+
+                    showSearchResultApi(apiResponse.paylpad.productList);
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+
+            }
+        });
+
+
+    }
+
+    private void showSearchResultApi(ArrayList<ProductList> productList) {
+
+        int tab = tabLayout.getSelectedTabPosition();
+        Fragment fragment = adapter.getItem(tab);
+        if (fragment instanceof AdsFragment) {
+            ((AdsFragment) fragment).searchProduct(productList);
+        } else if (fragment instanceof ProductsFragment)
+            ((ProductsFragment) fragment).searchProduct(productList);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 11:
+                int tab = tabLayout.getSelectedTabPosition();
+                Fragment fragment = adapter.getItem(tab);
+                if (fragment instanceof AdsFragment) {
+                    ((AdsFragment) fragment).refreshList();
+                } else if (fragment instanceof ProductsFragment)
+                    ((ProductsFragment) fragment).refreshList();
+
+
+                break;
+
+        }
     }
 }

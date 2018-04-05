@@ -5,7 +5,7 @@ import com.sticker_android.model.message.Message;
 import com.sticker_android.model.payload.Payload;
 
 /**
- * Created by monika on 12/4/17.
+ * Created by user on 12/4/17.
  */
 public class ApiResponse {
 

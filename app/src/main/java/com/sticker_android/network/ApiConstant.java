@@ -22,6 +22,7 @@ public class ApiConstant {
     public static final String API_ADD_PRODUCT = "SaveProduct/";
     public static final String API_GET_PRODUCT_LIST = "getProductList/";
     public static final String API_DELETE_PRODUCT = "deleteProduct/";
+    public static final String API_SEARCH_PRODUCT = "searchProductList/";
 
 
 }

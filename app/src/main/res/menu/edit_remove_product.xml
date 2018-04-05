@@ -2,10 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/edit"
         android:title="@string/txt_edit" />
-    <item android:id="@+id/remove"
-        android:title="@string/txt_remove" />
     <item android:id="@+id/repost"
         android:visible="false"
         android:title="@string/txt_repost" />
-
+    <item android:id="@+id/remove"
+        android:title="@string/txt_remove" />
 </menu>

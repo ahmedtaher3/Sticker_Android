@@ -104,8 +104,12 @@
     <!--corporate add new-->
     <string name="act_corp_txt_add_new">Add New</string>
     <string name="act_corp_txt_renew">Renew</string>
+    <string name="act_corp_txt_edit">Edit</string>
     <string name="txt_ads_frag">Ads</string>
     <string name="txt_products_frag">Products</string>
+    <string name="txt_my_ads_frag">My Ads</string>
+    <string name="txt_my_products_frag">My Products</string>
+
     <string name="act_add_corp_txt_name">Name</string>
     <string name="act_add_corp_txt_expire_date">Expire Date</string>
     <string name="act_add_corp_txt_write_description">Write Description</string>

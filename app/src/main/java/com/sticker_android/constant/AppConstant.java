@@ -10,4 +10,5 @@ public class AppConstant {
     public static final String PRODUCT_OBJ_KEY="productObj";
 
 
+    public static final int INTENT_RENEW_CODE =12 ;
 }
