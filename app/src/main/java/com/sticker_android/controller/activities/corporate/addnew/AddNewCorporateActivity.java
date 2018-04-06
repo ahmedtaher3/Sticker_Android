@@ -68,7 +68,6 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setDate = new SetDate(edtExpireDate, this);
-
         fetchCategoryApi();
 
     }
@@ -182,6 +181,9 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         } else if (edtDescription.getText().toString().trim().isEmpty()) {
             Utils.showToast(this, "Please enter a description.");
             return false;
+        }else if(spnrCategory.getSelectedItem().equals("Select a Category")){
+            Utils.showToast(this, "Please select a category.");
+            return false;
         }
         return true;
     }
@@ -211,7 +213,6 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                 if (isValidData()) {
                     addProductOrAdApi();
                 }
-                Toast.makeText(getApplicationContext(), "" + tabLayout.getSelectedTabPosition(), Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -220,6 +221,8 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
      * Method is used to call the add ads or product api
      */
     private void addProductOrAdApi() {
+        int categoryId=corporateCategories.get(spnrCategory.getSelectedItemPosition()-1).categoryId;
+
         if (setDate != null)
             mExpireDate = setDate.getChosenDate();
 
@@ -228,7 +231,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         final String type = getSelectedType();
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
                 userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
-                , mExpireDate, "", "");
+                , mExpireDate, "", "",categoryId);
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override

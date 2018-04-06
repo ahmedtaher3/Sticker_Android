@@ -21,8 +21,8 @@ public class TimeUtility {
         String convTime = null;
         long dateDiff = 0;
         try {
-          //  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+           // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
             Date pasTime = dateFormat.parse(dataDate);
 

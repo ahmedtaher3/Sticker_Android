@@ -11,4 +11,5 @@ public class AppConstant {
 
 
     public static final int INTENT_RENEW_CODE =12 ;
+    public static final int INTENT_PRODUCT_DETAILS =121 ;
 }

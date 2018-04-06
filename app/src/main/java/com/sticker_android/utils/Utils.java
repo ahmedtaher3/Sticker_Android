@@ -26,13 +26,14 @@ import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.utils.helper.PermissionManager;
 
 import java.io.File;
-import java.text.ParseException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import static com.sticker_android.utils.helper.PermissionManager.Constant.READ_STORAGE_ACCESS_RQ;
@@ -301,6 +302,40 @@ public class Utils {
         }
 
         return dater;
+    }
+
+
+
+    public static String capitlizeText(String name) {
+
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
+    }
+
+    public static String convertToCurrentTimeZone(String Date) {
+        String converted_date = "";
+        try {
+
+            DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            Date date = utcFormat.parse(Date);
+
+            DateFormat currentTFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            currentTFormat.setTimeZone(TimeZone.getTimeZone(getCurrentTimeZone()));
+
+            converted_date =  currentTFormat.format(date);
+        }catch (Exception e){ e.printStackTrace();}
+
+        return converted_date;
+    }
+
+
+    //get the current time zone
+
+    private static String getCurrentTimeZone(){
+        TimeZone tz = Calendar.getInstance().getTimeZone();
+        System.out.println(tz.getDisplayName());
+        return tz.getID();
     }
 
 }
