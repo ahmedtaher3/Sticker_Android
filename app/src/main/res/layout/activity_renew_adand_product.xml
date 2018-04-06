@@ -17,7 +17,6 @@
 
         <include layout="@layout/view_white" />
         <ScrollView
-            android:fillViewport="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbarThumbVertical="@android:color/transparent"
@@ -68,6 +67,20 @@
                         android:maxLength="100"
                         android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
+
+                <Spinner
+                    android:overlapAnchor="false"
+                    android:drawSelectorOnTop="false"
+                    android:dropDownVerticalOffset="35dp"
+                    android:spinnerMode="dropdown"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:gravity="start"
+                    android:id="@+id/spnrCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/add_corp_tv_margin_top">
+
+                </Spinner>
 
                 <TextView
                     android:layout_width="match_parent"

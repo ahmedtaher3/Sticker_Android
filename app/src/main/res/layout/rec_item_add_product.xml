@@ -20,6 +20,8 @@
             android:orientation="vertical">
 
             <ImageView
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
                 android:background="@drawable/btn_shadow_corner"
                 android:src="@drawable/upload_image_hdpi"
                 android:id="@+id/imvOfAds"
@@ -39,8 +41,10 @@
                     android:text="Header"
                     android:textColor="@android:color/black" />
                 <ImageButton
-                    android:id="@+id/imvBtnEditRemove"
                     android:background="@android:color/transparent"
+                    android:padding="10dp"
+                    android:id="@+id/imvBtnEditRemove"
+                    android:tint="@color/colorCorporateText"
                     android:src="@drawable/ic_more"
                     android:layout_centerInParent="true"
                     android:layout_alignParentRight="true"

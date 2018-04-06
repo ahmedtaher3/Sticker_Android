@@ -1,7 +1,6 @@
 package com.sticker_android.controller.fragment.corporate;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -12,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +20,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.corporate.addnew.AddNewCorporateActivity;
@@ -133,7 +131,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             case R.id.fabAddNew:
 
                 startActivityForResult(new Intent(getActivity(), AddNewCorporateActivity.class), 11);
-
+               getActivity().overridePendingTransition(R.anim.activity_animation_enter, R.anim.activity_animation_exit);
                 break;
         }
     }
@@ -202,14 +200,23 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         setSearchTextColour(searchView);
         setSearchIcons(searchView);
         searchView.setOnQueryTextListener(this);
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    searchView.setQueryHint(getSelectedType());
+            }
+        });
+
     }
 
 
 
     private void setSearchTextColour(SearchView searchView) {
+
         EditText searchBox = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
         searchBox.setTextColor(getActivity().getResources().getColor(R.color.colorWhiteTransparent));
         searchBox.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        searchBox.setTextColor(Color.WHITE);
         searchBox.setText(getSelectedType());
         searchView.setQueryHint(getSelectedType());
         ImageView searchButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_button);
@@ -237,6 +244,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
     }
 
+
     @Override
     public boolean onQueryTextSubmit(String query) {
         //   Toast.makeText(getApplicationContext(),"wjcj",Toast.LENGTH_SHORT).show();
@@ -245,13 +253,31 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         if (apiResponseCall != null) {
             apiResponseCall.cancel();
         }
-        searchApiCall(query, type);
+     //   searchApiCall(query, type);
+
+        searchResult(query);
+
         Utils.hideKeyboard(getActivity());
         searchView.setIconified(true);
         searchView.clearFocus();
         searchView.setQuery("", false);
         MenuItemCompat.collapseActionView(item);
         return true;
+    }
+
+    /** Method is used to pass the search result to the fragment
+     * @param query
+     */
+    private void searchResult(String query) {
+
+        int tab = tabLayout.getSelectedTabPosition();
+        Fragment fragment = adapter.getItem(tab);
+        if (fragment instanceof AdsFragment) {
+            ((AdsFragment) fragment).searchProduct(query);
+        } else if (fragment instanceof ProductsFragment)
+            ((ProductsFragment) fragment).searchProduct(query);
+
+
     }
 
     @Override

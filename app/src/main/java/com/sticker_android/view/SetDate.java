@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.sticker_android.utils.Utils;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by ankit on 30/1/17
@@ -40,7 +41,7 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
     @Override
     public void onClick(View v) {
         Utils.hideKeyboard((Activity) ctx);
-        pickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        pickerDialog.getDatePicker().setMinDate(new Date().getTime() - 10000);
         pickerDialog.show();
     }
 

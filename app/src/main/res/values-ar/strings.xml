@@ -89,4 +89,5 @@
     <string name="txt_call">Call</string>
     <string name="no_contact_available">No contact available</string>
     <string name="title_activity_demo">DemoActivity</string>
+    <string name="no_ads_uploaded_yet">No Ads uploaded Yet.</string>
 </resources>

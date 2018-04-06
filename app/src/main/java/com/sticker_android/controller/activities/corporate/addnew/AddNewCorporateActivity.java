@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,13 +15,18 @@ import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.CorporateCategory;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.CategoryAdapter;
+import com.sticker_android.view.NothingSelectedSpinnerAdapter;
 import com.sticker_android.view.SetDate;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 
@@ -36,6 +42,8 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private EditText edtCorpName, edtDescription;
     private String mExpireDate = "2018-04-06";
     private SetDate setDate;
+    private Spinner spnrCategory;
+    private ArrayList<CorporateCategory> corporateCategories = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,50 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
+        setDate = new SetDate(edtExpireDate, this);
+
+        fetchCategoryApi();
+
+    }
+
+    private void fetchCategoryApi() {
+
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiCorporateCategoryList(userdata.getLanguageId(), userdata.getAuthrizedKey()
+                , userdata.getId(), "corporate_category");
+
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+                if (apiResponse.status) {
+                    corporateCategories = apiResponse.paylpad.corporateCategories;
+                    setSpinnerAdaptor();
+                }
+
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
+
+    }
+
+    private void setSpinnerAdaptor() {
+
+        if (corporateCategories != null) {
+            CategoryAdapter categoryAdapter=new CategoryAdapter(this,corporateCategories);
+          //  ArrayAdapter<CorporateCategory> adapter = new ArrayAdapter<CorporateCategory>(this, android.R.layout.simple_spinner_item, corporateCategories);
+          //  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spnrCategory.setAdapter(
+                    new NothingSelectedSpinnerAdapter(
+                            categoryAdapter,
+                            R.layout.spinner_without_selection,
+                            this));
+        }
     }
 
     private void init() {
@@ -109,11 +161,13 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
     @Override
     protected void setViewReferences() {
+
         edtCorpName = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
         tabLayout = (TabLayout) findViewById(R.id.act_landing_tab);
         btnPost = (Button) findViewById(R.id.act_corp_add_new_btn_post);
         edtExpireDate = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_expire_date);
         edtDescription = (EditText) findViewById(R.id.edtDescription);
+        spnrCategory = (Spinner) findViewById(R.id.spnrCategory);
     }
 
     @Override
@@ -159,10 +213,6 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                 }
                 Toast.makeText(getApplicationContext(), "" + tabLayout.getSelectedTabPosition(), Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.act_add_new_ad_corp_edt_expire_date:
-                 setDate = new SetDate(edtExpireDate, this);
-                break;
-            default:
         }
     }
 
@@ -170,13 +220,13 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
      * Method is used to call the add ads or product api
      */
     private void addProductOrAdApi() {
-        if(setDate!=null)
-        mExpireDate = setDate.getChosenDate();
+        if (setDate != null)
+            mExpireDate = setDate.getChosenDate();
 
         final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
         progressDialogHandler.show();
         final String type = getSelectedType();
-        Call<ApiResponse> apiResponseCall   =    RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
                 userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
                 , mExpireDate, "", "");
 
@@ -185,7 +235,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
-                    Utils.showToast(getApplicationContext(),type+" added successfully.");
+                    Utils.showToast(getApplicationContext(), type + " added successfully.");
                     setResult(RESULT_OK);
                     onBackPressed();
                 }
@@ -234,4 +284,8 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
         }
     }
+
+
+
+
 }

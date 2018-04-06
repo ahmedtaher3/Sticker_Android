@@ -134,6 +134,9 @@
     <string name="time_ago_months">%d months</string>
     <string name="time_ago_year">about a year</string>
     <string name="time_ago_years">%d years</string>
+    <string name="no_ads_uploaded_yet">No Ads uploaded Yet.</string>
+    <string name="no_product_uploaded_yet">No Product uploaded Yet.</string>
+    <string name="no_search_found">No Search found.</string>
 
 
 </resources>

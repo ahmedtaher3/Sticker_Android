@@ -22,17 +22,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
 import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.ProductList;
-import com.sticker_android.model.interfaces.OnLoadMoreListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -70,6 +67,9 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
     private int indexIs;
     private int limitIs;
+    private String search="";
+
+    private TextView tvNoProductUploaded;
     public ProductsFragment() {
         // Required empty public constructor
     }
@@ -88,7 +88,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         handler = new Handler();
         setAdaptor();
 
-        productListApi(0,2);
+        productListApi(currentPageNo,search);
         adaptorScrollListener();
         return view;
     }
@@ -135,7 +135,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                         // loadMoreItems();
                         if (productList != null && productList.size() > 0) {
                             currentPageNo++;
-                            productListApi(currentPageNo,currentPageNo*2);
+                            productListApi(currentPageNo*2,search);
                         }
                     }
                 }
@@ -168,9 +168,10 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     @Override
     protected void setViewReferences(View view) {
 
-        recAd = (RecyclerView) view.findViewById(R.id.recAds);
-        progressBarLoadMore = (ProgressBar) view.findViewById(R.id.progressBarLoadMore);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshAds);
+        recAd                 =   (RecyclerView) view.findViewById(R.id.recAds);
+        progressBarLoadMore   =   (ProgressBar) view.findViewById(R.id.progressBarLoadMore);
+        swipeRefreshLayout    =   (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshAds);
+        tvNoProductUploaded =   (TextView)view.findViewById(R.id.tvNoproductUploaded);
     }
 
     @Override
@@ -180,21 +181,25 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-
+        search="";
+        swipeRefreshLayout.setRefreshing(false);
+        currentPageNo=0;
         swipeRefreshLayout.setRefreshing(false);
 
-        productListApi(0,2);
+        if (productList != null)
+            productList.clear();
+        productListApi(0,search);
     }
 
 
     /**
      * Method is used for fetching the ads or product api
      */
-    private void productListApi(int index,int limit) {
+    private void productListApi(int index, final String search) {
         isLoading=true;
         swipeRefreshLayout.setRefreshing(true);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
-                index, limit, "ads", "product_list");
+                index, 20, "product", "product_list",search);
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -210,7 +215,15 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                     }else {
                         isLastPage=true;
                     }
-
+                    if(tempList==null&&search.isEmpty()) {
+                        tvNoProductUploaded.setText(R.string.no_product_uploaded_yet);
+                        tvNoProductUploaded.setVisibility(View.VISIBLE);
+                    }else if(tempList==null&&!search.isEmpty()) {
+                        tvNoProductUploaded.setText(R.string.no_search_found);
+                        tvNoProductUploaded.setVisibility(View.VISIBLE);
+                    }else {
+                        tvNoProductUploaded.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -272,12 +285,28 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
     public void searchProduct(ArrayList<ProductList> productList) {
 
-
+        if(this.productList!=null)
+        {
+            this.productList.clear();
+            productAdaptor.notifyDataChanged();
+        }
         if(productAdaptor!=null){
 
             productAdaptor.updateProductList(productList);
         }
+
     }
+
+
+
+    public void searchProduct(String query) {
+        if(productList!=null)
+            productList.clear();
+        currentPageNo=0;
+        productListApi(0,query);
+
+    }
+
 
     public void refreshList() {
         onRefresh();
@@ -300,6 +329,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                     Utils.showToast(getActivity(),"Deleted successfully.");
                     if(productAdaptor!=null)
                         productAdaptor.delete(position);
+                    onRefresh();
                 }
             }
 

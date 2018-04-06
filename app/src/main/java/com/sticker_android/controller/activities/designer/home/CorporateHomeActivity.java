@@ -354,7 +354,6 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             mProfileFragment.onActivityResult(requestCode, resultCode, data);
         }
-        Toast.makeText(getActivity(),"called on Ac"+requestCode+"Result"+ Activity.RESULT_OK,Toast.LENGTH_SHORT).show();
         if(resultCode==RESULT_OK){
             switch (requestCode){
                 case 11:

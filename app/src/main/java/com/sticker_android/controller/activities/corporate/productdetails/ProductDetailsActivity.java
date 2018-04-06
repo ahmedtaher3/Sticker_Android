@@ -127,14 +127,15 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
     @Override
     protected void setViewReferences() {
-        imvOfAds = (ImageView) findViewById(R.id.imvOfAds);
-        tvProductTitle = (TextView) findViewById(R.id.tv_add_product_title);
-        tvStatus = (TextView) findViewById(R.id.tv_add_product_status);
-        tvDesciption = (TextView) findViewById(R.id.tv_add_product_item_description);
-        checkboxLike = (CheckBox) findViewById(R.id.checkboxLike);
-        checkboxShare = (CheckBox) findViewById(R.id.checkboxShare);
-        imvBtnEditRemove = (ImageButton) findViewById(R.id.imvBtnEditRemove);
-        tvTime = (TextView) findViewById(R.id.tvTime);
+
+        imvOfAds        =    (ImageView) findViewById(R.id.imvOfAds);
+        tvProductTitle  =    (TextView) findViewById(R.id.tv_add_product_title);
+        tvStatus        =     (TextView) findViewById(R.id.tv_add_product_status);
+        tvDesciption    =    (TextView) findViewById(R.id.tv_add_product_item_description);
+        checkboxLike    =    (CheckBox) findViewById(R.id.checkboxLike);
+        checkboxShare   =    (CheckBox) findViewById(R.id.checkboxShare);
+        imvBtnEditRemove =   (ImageButton) findViewById(R.id.imvBtnEditRemove);
+        tvTime           =   (TextView) findViewById(R.id.tvTime);
 
     }
 

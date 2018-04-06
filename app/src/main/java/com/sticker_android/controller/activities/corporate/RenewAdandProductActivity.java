@@ -3,14 +3,17 @@ package com.sticker_android.controller.activities.corporate;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.CorporateCategory;
 import com.sticker_android.model.corporateproduct.ProductList;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -18,7 +21,11 @@ import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.CategoryAdapter;
+import com.sticker_android.view.NothingSelectedSpinnerAdapter;
 import com.sticker_android.view.SetDate;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 
@@ -34,6 +41,9 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     private String mExpireDate;
     private SetDate setDate;
     private String type="";
+    private Spinner spnrCategory;
+    private ArrayList<CorporateCategory> corporateCategories = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +63,60 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         });
         setProductdataIntoView();
         setButtonText();
+        setExpireDate();
+        fetchCategoryApi();
+    }
+
+    /**
+     * Method is used to fetch the category api
+     */
+    private void fetchCategoryApi() {
+
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiCorporateCategoryList(userdata.getLanguageId(), userdata.getAuthrizedKey()
+                , userdata.getId(), "corporate_category");
+
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+                if (apiResponse.status) {
+                    corporateCategories = apiResponse.paylpad.corporateCategories;
+                    setSpinnerAdaptor();
+                }
+
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
+    }
+
+
+    /**
+     * Method is used to set the category in spinner
+     */
+    private void setSpinnerAdaptor() {
+
+        if (corporateCategories != null) {
+            CategoryAdapter categoryAdapter=new CategoryAdapter(this,corporateCategories);
+            //  ArrayAdapter<CorporateCategory> adapter = new ArrayAdapter<CorporateCategory>(this, android.R.layout.simple_spinner_item, corporateCategories);
+            //  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spnrCategory.setAdapter(
+                    new NothingSelectedSpinnerAdapter(
+                            categoryAdapter,
+                            R.layout.spinner_without_selection,
+                            this));
+        }
+    }
+
+    private void setExpireDate() {
+        setDate = new SetDate(edtExpireDate, this);
+        setDate.setDate(productObj.getExpireDate());
+        setDate.setMinDate(productObj.getExpireDate());
     }
 
     private void setButtonText() {
@@ -94,17 +158,17 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     @Override
     protected void setViewListeners() {
 
-        edtExpireDate.setOnClickListener(this);
         btnRePost.setOnClickListener(this);
     }
 
     @Override
     protected void setViewReferences() {
-        btnRePost = (Button) findViewById(R.id.act_corp_add_new_btn_re_post);
-        edtExpireDate = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_expire_date);
-        edtDescription = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_description);
-        edtCorpName = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
 
+        btnRePost          =   (Button) findViewById(R.id.act_corp_add_new_btn_re_post);
+        edtExpireDate      =   (EditText) findViewById(R.id.act_add_new_ad_corp_edt_expire_date);
+        edtDescription     =   (EditText) findViewById(R.id.act_add_new_ad_corp_edt_description);
+        edtCorpName        =   (EditText) findViewById(R.id.act_add_new_corp_edt_name);
+        spnrCategory       =   (Spinner)findViewById(R.id.spnrCategory);
     }
 
     @Override
@@ -140,7 +204,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
      */
     private void setToolBarTitle() {
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(type+" "+productObj.getType());
+        textView.setText(type);
         toolbar.setTitle(" ");
     }
 
@@ -170,12 +234,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
                 if (isValidData()) {
                     renewOrEditApi();
                 }
-                break;
-            case R.id.act_add_new_ad_corp_edt_expire_date:
-                setDate = new SetDate(edtExpireDate, this);
-                setDate.setDate(productObj.getExpireDate());
-                break;
-            default:
+
         }
     }
 

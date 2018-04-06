@@ -2,6 +2,7 @@ package com.sticker_android.model.payload;
 
 import com.google.gson.annotations.SerializedName;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.CorporateCategory;
 import com.sticker_android.model.corporateproduct.ProductList;
 
 import java.util.ArrayList;
@@ -25,5 +26,8 @@ public class Payload {
     public void setData(User data) {
         this.data = data;
     }
+
+    @SerializedName("corporate_category")
+    public ArrayList<CorporateCategory> corporateCategories;
 
 }

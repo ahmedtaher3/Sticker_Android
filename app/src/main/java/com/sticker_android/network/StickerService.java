@@ -63,7 +63,7 @@ public interface StickerService {
   @POST(ApiConstant.API_GET_PRODUCT_LIST)
   public Call<ApiResponse> apiGetProductList(@Field("language_id") String languageId,@Field("authrized_key")String authKey,
                                              @Field("user_id")String userId,@Field("index")int index,
-                                             @Field("limit")int limit,@Field("type")String type,@Field("key_name")String name);
+                                             @Field("limit")int limit,@Field("type")String type,@Field("key_name")String name,@Field("search")String search);
 
 
   @FormUrlEncoded
@@ -76,6 +76,12 @@ public interface StickerService {
   public Call<ApiResponse> apiSearchProduct(@Field("language_id") String languageId,@Field("authrized_key")String authKey,
                                             @Field("user_id")String userId,@Field("index")int index,
                                             @Field("limit")int limit,@Field("type")String type,@Field("search")String search,@Field("key_name")String name);
+
+
+  @FormUrlEncoded
+  @POST(ApiConstant.API_FETCH_CORPORATE_CATEGORY_LIST)
+  public Call<ApiResponse> apiCorporateCategoryList(@Field("language_id") String languageId,@Field("authrized_key")String authKey,
+                                            @Field("user_id")String userId,@Field("key_name")String name);
 
 
 }
