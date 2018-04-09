@@ -10,16 +10,23 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.bumptech.glide.Glide;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.CorporateCategory;
 import com.sticker_android.model.corporateproduct.ProductList;
@@ -27,6 +34,7 @@ import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AWSUtil;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -65,7 +73,9 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     private ImageView imvProductImage;
     private String mCapturedImageUrl;
     private android.app.AlertDialog mPermissionDialog;
+    private String TAG=RenewAdandProductActivity.class.getSimpleName();
 
+    private boolean isUpdated;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,6 +193,10 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
             edtDescription.setSelection(edtDescription.getText().length());
             edtCorpName.setSelection(edtCorpName.getText().length());
             mExpireDate = productObj.getExpireDate();
+            Glide.with(this)
+                    .load(productObj.getImagePath())
+                    .into(imvProductImage);
+
         }
     }
 
@@ -210,7 +224,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         edtExpireDate = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_expire_date);
         edtDescription = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_description);
         edtCorpName = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
-        spnrCategory = (Spinner) findViewById(R.id.spnrCategory);
+        spnrCategory = (Spinner) findViewById(R.id.spnrRenewCategory);
         imvProductImage=(ImageView)findViewById(R.id.imvProductImage);
     }
 
@@ -275,8 +289,14 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         switch (v.getId()) {
             case R.id.act_corp_add_new_btn_re_post:
                 if (isValidData()) {
-                    renewOrEditApi();
+                    if(isUpdated)
+                    beginUpload(mCapturedImageUrl);
+                else
+                        renewOrEditApi(productObj.getImagePath());
+
+                   // renewOrEditApi();
                 }
+                break;
 
             case R.id.imvProductImage:
                 Utils.showAlertDialogToGetPic(this, new ImagePickerListener() {
@@ -312,8 +332,9 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
 
     /**
      * Method is used to call the add ads or product api
+     * @param imagePath
      */
-    private void renewOrEditApi() {
+    private void renewOrEditApi(String imagePath) {
         if (setDate != null)
             mExpireDate = setDate.getChosenDate();
         final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
@@ -321,7 +342,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         final String type = productObj.getType();
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
                 userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
-                , mExpireDate, "", String.valueOf(productObj.getProductid()), productObj.getCategoryId());
+                , mExpireDate, imagePath, String.valueOf(productObj.getProductid()), productObj.getCategoryId());
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
@@ -375,6 +396,8 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
                     mCapturedImageUrl = resultUri.getPath();
+                    isUpdated=true;
+                    imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
                     error.printStackTrace();
@@ -455,6 +478,49 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
                     break;
                 }
         }
+    }
+
+    /*
+        * Begins to upload the file specified by the file path.
+        */
+    private void beginUpload(String filePath) {
+        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+        if (filePath == null) {
+            Toast.makeText(this, "Could not find the filepath of the selected file",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        final String fileName = userdata.getId() + "_" + System.currentTimeMillis();
+        File file = new File(filePath);
+        TransferObserver observer = new AWSUtil().getTransferUtility(this).upload(AppConstant.BUCKET_NAME, fileName,
+                file);
+        observer.setTransferListener(new TransferListener(){
+
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                Log.d(TAG, "onStateChanged: " + id + ", " + state);
+                if(TransferState.COMPLETED==state){
+                    progressDialogHandler.hide();
+                    String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
+                    renewOrEditApi(imagePath);
+                    isUpdated=false;
+                }
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                Log.d(TAG, String.format("onProgressChanged: %d, total: %d, current: %d",
+                        id, bytesTotal, bytesCurrent));
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                progressDialogHandler.hide();
+                Log.e(TAG, "Error during upload: " + id, ex);
+            }
+
+        });
     }
 
 }

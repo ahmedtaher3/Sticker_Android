@@ -14,10 +14,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
+import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.ProductList;
 import com.sticker_android.network.ApiCall;
@@ -88,6 +90,9 @@ public class ProductDetailsActivity extends AppBaseActivity {
         tvProductTitle.setText(productObj.getProductname());
         tvDesciption.setText(productObj.getDescription());
         tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productObj.getCreatedTime()), getActivity()));
+        Glide.with(this)
+                .load(productObj.getImagePath())
+                .into(imvOfAds);
     }
     /**
      * Method is used to set the toolbar background

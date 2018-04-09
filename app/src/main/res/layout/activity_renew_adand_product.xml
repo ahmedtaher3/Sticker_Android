@@ -31,6 +31,7 @@
                 android:paddingBottom="@dimen/dp_5">
 
                 <ImageView
+                    android:scaleType="centerCrop"
                     android:id="@+id/imvProductImage"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/act_add_new_corp_imv_height"
@@ -97,7 +98,7 @@
 
                     <Spinner
                         android:textSize="@dimen/text_size_contact_us"
-                        android:id="@+id/spnrCategory"
+                        android:id="@+id/spnrRenewCategory"
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -2,6 +2,7 @@ package com.sticker_android.controller.activities.corporate.addnew;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transfermanager.Transfer;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
@@ -204,17 +206,23 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     @Override
     protected boolean isValidData() {
 
+
+        if(mCapturedImageUrl==null){
+            Utils.showToast(this, "Please upload a image.");
+            return false;
+
+        }else
         if (edtCorpName.getText().toString().trim().isEmpty()) {
             Utils.showToast(this, "Please enter a name.");
             return false;
         } else if (edtExpireDate.getText().toString().trim().isEmpty()) {
             Utils.showToast(this, "Please enter a expire date.");
             return false;
+        }else if(spnrCategory.getSelectedItem()==null){
+            Utils.showToast(this, "Please select a category.");
+            return false;
         } else if (edtDescription.getText().toString().trim().isEmpty()) {
             Utils.showToast(this, "Please enter a description.");
-            return false;
-        }else if(spnrCategory.getSelectedItem().equals("Select a Category")){
-            Utils.showToast(this, "Please select a category.");
             return false;
         }
         return true;
@@ -243,7 +251,8 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         switch (v.getId()) {
             case R.id.act_corp_add_new_btn_post:
                 if (isValidData()) {
-                    addProductOrAdApi();
+                    beginUpload(mCapturedImageUrl);
+                    //addProductOrAdApi();
                 }
                 break;
             case R.id.imvProductImage:
@@ -278,8 +287,9 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
     /**
      * Method is used to call the add ads or product api
+     * @param imagePath
      */
-    private void addProductOrAdApi() {
+    private void addProductOrAdApi(String imagePath) {
         int categoryId=corporateCategories.get(spnrCategory.getSelectedItemPosition()-1).categoryId;
 
         if (setDate != null)
@@ -290,7 +300,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         final String type = getSelectedType();
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
                 userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
-                , mExpireDate, "", "",categoryId);
+                , mExpireDate, imagePath, "",categoryId);
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
@@ -361,6 +371,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                     if (mCapturedImageUrl != null) {
                         openCropActivity(mCapturedImageUrl);
                         //uploadImage();
+
                     }
                 }
                 break;
@@ -380,6 +391,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
                     mCapturedImageUrl = resultUri.getPath();
+                    imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
                     error.printStackTrace();
@@ -466,6 +478,8 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
          * Begins to upload the file specified by the file path.
          */
     private void beginUpload(String filePath) {
+       final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+        progressDialogHandler.show();
         if (filePath == null) {
             Toast.makeText(this, "Could not find the filepath of the selected file",
                     Toast.LENGTH_LONG).show();
@@ -480,7 +494,11 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
             @Override
             public void onStateChanged(int id, TransferState state) {
                 Log.d(TAG, "onStateChanged: " + id + ", " + state);
-                String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
+                if(TransferState.COMPLETED==state){
+                    progressDialogHandler.hide();
+                    String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
+                    addProductOrAdApi(imagePath);
+                }
             }
 
             @Override
@@ -491,8 +509,10 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
             @Override
             public void onError(int id, Exception ex) {
+                progressDialogHandler.hide();
                 Log.e(TAG, "Error during upload: " + id, ex);
             }
+
         });
     }
 

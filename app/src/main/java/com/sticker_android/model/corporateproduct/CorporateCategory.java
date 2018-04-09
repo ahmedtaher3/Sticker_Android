@@ -13,4 +13,10 @@ public class CorporateCategory {
 
     @SerializedName("category_name")
      public   String categoryName;
+
+
+    @Override
+    public String toString() {
+        return categoryName;
+    }
 }

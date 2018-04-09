@@ -34,7 +34,7 @@
 
                 <ImageView
                     android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:id="@+id/imvProductImage"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/act_add_new_corp_imv_height"

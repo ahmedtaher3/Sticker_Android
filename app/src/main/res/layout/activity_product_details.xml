@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:id="@+id/imvOfAds"
             android:layout_width="match_parent"
             android:layout_height="@dimen/image_height_product_details"
@@ -28,6 +28,8 @@
             android:layout_marginTop="@dimen/dp_10">
 
             <TextView
+                android:layout_marginRight="5dp"
+               android:layout_toLeftOf="@+id/imvBtnEditRemove"
                 android:id="@+id/tv_add_product_title"
                 style="@style/tvHome"
                 fontPath="fonts/SanFranciscoText-Regular_0.ttf"

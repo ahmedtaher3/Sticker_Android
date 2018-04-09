@@ -318,9 +318,9 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     Utils.showToast(getActivity(), "Deleted successfully");
-                    productAdaptor.notifyDataChanged();
-                    refreshApi();
-                }
+                 productAdaptor.delete(position);
+                   /* refreshApi();
+               */ }
             }
 
             @Override
@@ -491,7 +491,11 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
         public void delete(int position) { //removes the row
             productList.remove(position);
-            notifyItemRemoved(position);
+            productAdaptor.notifyDataSetChanged();
+            if(productList!=null)
+                if(productList.size()==0)
+                    tvNoAdsUploaded.setVisibility(View.VISIBLE);
+         //   notifyItemRemoved(position);
         }
 
         public void updateProductList(ArrayList<ProductList> productLists) {

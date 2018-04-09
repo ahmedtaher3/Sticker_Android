@@ -104,7 +104,7 @@
     <dimen name="act_signin_margin_top_radio">20dp</dimen>
     <dimen name="add_corp_margin">30dp</dimen>
     <dimen name="act_add_new_corp_margin">30dp</dimen>
-    <dimen name="act_add_new_corp_imv_height">130dp</dimen>
+    <dimen name="act_add_new_corp_imv_height">150dp</dimen>
 
     <dimen name="add_corp_tv_margin_top">20dp</dimen>
     <dimen name="act_add_corp_write_des_edt_heigh">120dp</dimen>

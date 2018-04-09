@@ -23,11 +23,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
 import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.ProductList;
 import com.sticker_android.network.ApiCall;
@@ -342,8 +344,9 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     Utils.showToast(getActivity(),"Deleted successfully.");
-                    productAdaptor.notifyDataChanged();
-                    refreshApi();
+                    productAdaptor.delete(position);
+                   /* productAdaptor.notifyDataChanged();
+                    refreshApi();*/
                 }
             }
 
@@ -469,8 +472,12 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
                 }
                 ((ProductAdaptor.ProductHolder) holder).tvStatus.setText(status);
-
+                Glide.with(context)
+                        .load(product.getImagePath())
+                        .into(((ProductAdaptor.ProductHolder) holder).imvOfAds);
             }
+
+
             //No else part needed as load holder doesn't bind any data
         }
 
@@ -490,7 +497,11 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
         public void delete(int position) { //removes the row
             productList.remove(position);
-            notifyItemRemoved(position);
+            productAdaptor.notifyDataSetChanged();
+          /*  notifyItemRemoved(position);*/
+            if(productList!=null)
+                if(productList.size()==0)
+                    tvNoProductUploaded.setVisibility(View.VISIBLE);
         }
         public void updateProductList(ArrayList<ProductList> productLists) {
             if (productLists != null) {
