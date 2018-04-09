@@ -5,6 +5,7 @@
     tools:ignore="MissingPrefix"
     android:layout_height="match_parent">
     <TextView
+        android:textColor="@android:color/black"
         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
         android:id="@+id/textView_name"
         android:layout_width="wrap_content"

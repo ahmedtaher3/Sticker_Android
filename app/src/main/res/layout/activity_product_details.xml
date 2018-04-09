@@ -37,6 +37,8 @@
                 android:textSize="@dimen/txt_size_home_12sp" />
 
             <ImageButton
+                android:tint="@color/colorCorporateText"
+                android:padding="10dp"
                 android:id="@+id/imvBtnEditRemove"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

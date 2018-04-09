@@ -177,7 +177,11 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             if (fragment instanceof ChangePasswordFragment) {
                 ((ChangePasswordFragment) fragment).clearField();
             }
+            if(searchView!=null){
+                MenuItemCompat.collapseActionView(item);
+            }
         }
+
 
         @Override
         public void onTabUnselected(TabLayout.Tab tab) {
@@ -203,7 +207,8 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    searchView.setQueryHint(getSelectedType());
+                    searchView.setQueryHint(Utils.capitlizeText(getSelectedType()));
+
             }
         });
 
@@ -215,6 +220,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
         EditText searchBox = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
         searchBox.setTextColor(getActivity().getResources().getColor(R.color.colorWhiteTransparent));
+        searchBox.setHintTextColor(getActivity().getResources().getColor(R.color.colorTabSearchHint));
         searchBox.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
         searchBox.setTextColor(Color.WHITE);
         searchBox.setText(getSelectedType());

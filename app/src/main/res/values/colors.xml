@@ -14,6 +14,8 @@
 
     <color name="colorWhiteTransparent">#26676767</color>
     <color name="colorTabUnselected">#ffffff</color>
+    <color name="colorTabSearchHint">#71ffffff</color>
+
 
     <color name="colorstatusBarCorporate">#bc79f0</color>
 

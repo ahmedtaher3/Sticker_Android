@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:name=".application.StickerApp"
@@ -49,24 +50,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".controller.activities.corporate.home.DesignerHomeActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".controller.activities.designer.home.CorporateHomeActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/search" />
-        </activity>
-        <activity
             android:name=".controller.activities.corporate.CorporateProfileActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
@@ -90,10 +73,18 @@
             android:name=".controller.activities.corporate.RenewAdandProductActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity android:name=".controller.activities.corporate.home.CorporateHomeActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".controller.activities.designer.home.DesignerHomeActivity"
+            android:screenOrientation="portrait"/>
+
         <activity  android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden"  android:name=".controller.activities.corporate.productdetails.ProductDetailsActivity"></activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:name=".controller.activities.corporate.productdetails.ProductDetailsActivity"/>
 
-
+        <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" android:enabled="true" />
 
     </application>
 

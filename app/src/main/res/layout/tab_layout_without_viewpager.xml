@@ -21,7 +21,7 @@
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="30dp"
+                android:layout_height="25dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"

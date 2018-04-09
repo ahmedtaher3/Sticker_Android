@@ -3,7 +3,6 @@ package com.sticker_android.controller.activities.corporate;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -22,10 +21,11 @@ import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.CategoryAdapter;
-import com.sticker_android.view.NothingSelectedSpinnerAdapter;
 import com.sticker_android.view.SetDate;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import retrofit2.Call;
 
@@ -40,7 +40,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     private ProductList productObj;
     private String mExpireDate;
     private SetDate setDate;
-    private String type="";
+    private String type = "";
     private Spinner spnrCategory;
     private ArrayList<CorporateCategory> corporateCategories = new ArrayList<>();
 
@@ -101,16 +101,35 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
      */
     private void setSpinnerAdaptor() {
 
+        ArrayList<CorporateCategory> corporate = new ArrayList<>(setCategory());
+        corporateCategories.clear();
+        corporateCategories.addAll(corporate);
         if (corporateCategories != null) {
-            CategoryAdapter categoryAdapter=new CategoryAdapter(this,corporateCategories);
+            CategoryAdapter categoryAdapter = new CategoryAdapter(this, corporate);
             //  ArrayAdapter<CorporateCategory> adapter = new ArrayAdapter<CorporateCategory>(this, android.R.layout.simple_spinner_item, corporateCategories);
             //  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spnrCategory.setAdapter(
-                    new NothingSelectedSpinnerAdapter(
-                            categoryAdapter,
-                            R.layout.spinner_without_selection,
-                            this));
+            spnrCategory.setAdapter(categoryAdapter);
+
         }
+
+    }
+
+    private Set<CorporateCategory> setCategory() {
+
+        Set<CorporateCategory> temp = new HashSet<>();
+        ArrayList<ProductList> tempPro = new ArrayList<>();
+        if (productObj != null) {
+            for (int i = 0; i < corporateCategories.size(); i++) {
+                if (corporateCategories.get(i).categoryId == productObj.getCategoryId()) {
+                    temp.add(corporateCategories.get(i));
+                    break;
+                }
+            }
+
+        }
+        temp.addAll(corporateCategories);
+
+        return temp;
     }
 
     private void setExpireDate() {
@@ -121,15 +140,15 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
 
     private void setButtonText() {
 
-    if(type.equals("Edit")){
-        btnRePost.setText("Update");
-    }else{
-        edtDescription.setLongClickable(false);
-        edtDescription.setEnabled(false);
-        edtCorpName.setLongClickable(false);
-        edtCorpName.setEnabled(false);
-        btnRePost.setText("Repost");
-    }
+        if (type.equals("Edit")) {
+            btnRePost.setText("Update");
+        } else {
+            edtDescription.setLongClickable(false);
+            edtDescription.setEnabled(false);
+            edtCorpName.setLongClickable(false);
+            edtCorpName.setEnabled(false);
+            btnRePost.setText("Update");
+        }
     }
 
     private void setProductdataIntoView() {
@@ -141,7 +160,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
             edtDescription.setText(productObj.getDescription());
             edtDescription.setSelection(edtDescription.getText().length());
             edtCorpName.setSelection(edtCorpName.getText().length());
-            mExpireDate=productObj.getExpireDate();
+            mExpireDate = productObj.getExpireDate();
         }
     }
 
@@ -151,7 +170,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         if (getIntent().getExtras() != null) {
 
             productObj = getIntent().getExtras().getParcelable(AppConstant.PRODUCT_OBJ_KEY);
-            type=getIntent().getExtras().getString("edit");
+            type = getIntent().getExtras().getString("edit");
         }
     }
 
@@ -164,11 +183,11 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     @Override
     protected void setViewReferences() {
 
-        btnRePost          =   (Button) findViewById(R.id.act_corp_add_new_btn_re_post);
-        edtExpireDate      =   (EditText) findViewById(R.id.act_add_new_ad_corp_edt_expire_date);
-        edtDescription     =   (EditText) findViewById(R.id.act_add_new_ad_corp_edt_description);
-        edtCorpName        =   (EditText) findViewById(R.id.act_add_new_corp_edt_name);
-        spnrCategory       =   (Spinner)findViewById(R.id.spnrCategory);
+        btnRePost = (Button) findViewById(R.id.act_corp_add_new_btn_re_post);
+        edtExpireDate = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_expire_date);
+        edtDescription = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_description);
+        edtCorpName = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
+        spnrCategory = (Spinner) findViewById(R.id.spnrCategory);
     }
 
     @Override
@@ -204,7 +223,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
      */
     private void setToolBarTitle() {
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(type);
+        textView.setText(Utils.capitlizeText(type));
         toolbar.setTitle(" ");
     }
 
@@ -243,14 +262,14 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
      * Method is used to call the add ads or product api
      */
     private void renewOrEditApi() {
-        if(setDate!=null)
-        mExpireDate = setDate.getChosenDate();
+        if (setDate != null)
+            mExpireDate = setDate.getChosenDate();
         final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
         progressDialogHandler.show();
         final String type = productObj.getType();
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
                 userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
-                , mExpireDate, "", String.valueOf(productObj.getProductid()));
+                , mExpireDate, "", String.valueOf(productObj.getProductid()), productObj.getCategoryId());
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override

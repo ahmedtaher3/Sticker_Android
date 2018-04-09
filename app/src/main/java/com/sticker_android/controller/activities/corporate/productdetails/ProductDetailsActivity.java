@@ -87,7 +87,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
         });
         tvProductTitle.setText(productObj.getProductname());
         tvDesciption.setText(productObj.getDescription());
-        tvTime.setText(timeUtility.covertTimeToText(productObj.getExpireDate().toString().trim(), getActivity()));
+        tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productObj.getCreatedTime()), getActivity()));
     }
     /**
      * Method is used to set the toolbar background
@@ -104,7 +104,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
     private void setToolBarTitle(String type) {
         TextView textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(type+" Details");
+        textView.setText(Utils.capitlizeText(type)+" Details");
         toolbar.setTitle("");
     }
 
@@ -191,6 +191,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
                progressDialogHandler.hide();
                 if (apiResponse.status) {
                     Utils.showToast(getActivity(),"Deleted successfully");
+                    setResult(RESULT_OK);
                     onBackPressed();
                 }
             }

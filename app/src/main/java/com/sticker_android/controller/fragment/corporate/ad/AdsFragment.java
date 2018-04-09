@@ -303,8 +303,6 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     Utils.showToast(getActivity(), "Deleted successfully");
-                    if (productAdaptor != null)
-                        productAdaptor.delete(position);
                     onRefresh();
                 }
             }
@@ -376,7 +374,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
         intent.putExtras(bundle);
 
-        startActivity(intent);
+        startActivityForResult(intent,AppConstant.INTENT_PRODUCT_DETAILS);
 
         getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
@@ -389,6 +387,9 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case AppConstant.INTENT_RENEW_CODE:
+                    onRefresh();
+                    break;
+                case AppConstant.INTENT_PRODUCT_DETAILS:
                     onRefresh();
                     break;
             }
@@ -437,9 +438,9 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     showPopup(v, position, product);
                 }
             });
-            ((ProductHolder) holder).tvProductTitle.setText(product.getProductname());
-            ((ProductHolder) holder).tvDesciption.setText(product.getDescription());
-               ((ProductHolder) holder).tvTime.setText(timeUtility.covertTimeToText(product.getExpireDate(), getActivity()));
+            ((ProductHolder) holder).tvProductTitle.setText(Utils.capitlizeText(product.getProductname()));
+            ((ProductHolder) holder).tvDesciption.setText(Utils.capitlizeText(product.getDescription()));
+               ((ProductHolder) holder).tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(product.getCreatedTime()), getActivity()));
             ((ProductHolder) holder).cardItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

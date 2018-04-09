@@ -87,7 +87,6 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         recyclerViewLayout();
         handler = new Handler();
         setAdaptor();
-
         productListApi(currentPageNo,search);
         adaptorScrollListener();
         return view;
@@ -276,7 +275,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         Intent intent = new Intent(getActivity(), RenewAdandProductActivity.class);
         intent.putExtras(bundle);
 
-        startActivityForResult(intent,AppConstant.INTENT_RENEW_CODE);
+        startActivityForResult(intent,AppConstant.INTENT_PRODUCT_DETAILS);
 
         getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
@@ -327,8 +326,6 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     Utils.showToast(getActivity(),"Deleted successfully.");
-                    if(productAdaptor!=null)
-                        productAdaptor.delete(position);
                     onRefresh();
                 }
             }
@@ -358,6 +355,9 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 case AppConstant.INTENT_RENEW_CODE:
                     onRefresh();
                     break;
+            case AppConstant.INTENT_PRODUCT_DETAILS:
+                   onRefresh();
+                break;
             }
 
         }
@@ -432,9 +432,9 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                         showPopup(v, position,product);
                     }
                 });
-                ((ProductAdaptor.ProductHolder) holder).tvProductTitle.setText(product.getProductname());
-                ((ProductAdaptor.ProductHolder) holder).tvDesciption.setText(product.getDescription());
-                //   ((AdsViewHolder) holder).tvTime.setText(timeUtility.covertTimeToText(product.getExpireDate(), getActivity()));
+                ((ProductAdaptor.ProductHolder) holder).tvProductTitle.setText(Utils.capitlizeText(product.getProductname()));
+                ((ProductAdaptor.ProductHolder) holder).tvDesciption.setText(Utils.capitlizeText(product.getDescription()));
+                  ((ProductAdaptor.ProductHolder) holder).tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(product.getCreatedTime()), getActivity()));
                 ((ProductAdaptor.ProductHolder) holder).cardItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

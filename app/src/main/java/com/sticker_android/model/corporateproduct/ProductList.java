@@ -39,6 +39,28 @@ public class ProductList implements Parcelable {
     @SerializedName("is_expired")
     private int isExpired;
 
+    public String getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    @SerializedName("created_time")
+    private String createdTime;
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    @SerializedName("category_id")
+    private int categoryId;
+
     public ProductList() {
     }
 
@@ -104,6 +126,8 @@ public class ProductList implements Parcelable {
         dest.writeString(this.expireDate);
         dest.writeString(this.imagePath);
         dest.writeInt(this.isExpired);
+        dest.writeString(this.createdTime);
+        dest.writeInt(this.categoryId);
     }
 
     protected ProductList(Parcel in) {
@@ -114,6 +138,8 @@ public class ProductList implements Parcelable {
         this.expireDate = in.readString();
         this.imagePath = in.readString();
         this.isExpired = in.readInt();
+        this.createdTime = in.readString();
+        this.categoryId = in.readInt();
     }
 
     public static final Creator<ProductList> CREATOR = new Creator<ProductList>() {
