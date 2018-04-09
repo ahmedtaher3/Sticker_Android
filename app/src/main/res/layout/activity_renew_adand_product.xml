@@ -31,6 +31,7 @@
                 android:paddingBottom="@dimen/dp_5">
 
                 <ImageView
+                    android:id="@+id/imvProductImage"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/act_add_new_corp_imv_height"
                     android:background="@drawable/upload_image_hdpi" />

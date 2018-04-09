@@ -70,6 +70,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     private String search="";
 
     private TextView tvNoProductUploaded;
+    private int scroll;
+
     public ProductsFragment() {
         // Required empty public constructor
     }
@@ -119,7 +121,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
+                scroll=1;
                 if (swipeRefreshLayout.isRefreshing())
                     return;
 
@@ -180,6 +182,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
+        scroll=0;
         search="";
         swipeRefreshLayout.setRefreshing(false);
         currentPageNo=0;
@@ -190,6 +193,14 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         productListApi(0,search);
     }
 
+    public void refreshApi(){
+        scroll=0;
+        search="";
+        currentPageNo=0;
+        if (productList != null)
+            productList.clear();
+        productListApi(0,search);
+    }
 
     /**
      * Method is used for fetching the ads or product api
@@ -222,6 +233,11 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                         tvNoProductUploaded.setVisibility(View.VISIBLE);
                     }else {
                         tvNoProductUploaded.setVisibility(View.GONE);
+                    }
+
+                    if(scroll>0){
+                        tvNoProductUploaded.setVisibility(View.GONE);
+
                     }
                 }
             }
@@ -326,7 +342,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     Utils.showToast(getActivity(),"Deleted successfully.");
-                    onRefresh();
+                    productAdaptor.notifyDataChanged();
+                    refreshApi();
                 }
             }
 
@@ -356,6 +373,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                     onRefresh();
                     break;
             case AppConstant.INTENT_PRODUCT_DETAILS:
+                if(productAdaptor!=null)
+                    productAdaptor.notifyDataChanged();
                    onRefresh();
                 break;
             }

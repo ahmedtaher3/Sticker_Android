@@ -1,34 +1,50 @@
 package com.sticker_android.controller.activities.corporate.addnew;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.CorporateCategory;
+import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.CategoryAdapter;
 import com.sticker_android.view.NothingSelectedSpinnerAdapter;
 import com.sticker_android.view.SetDate;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import retrofit2.Call;
+
+import static com.sticker_android.utils.helper.PermissionManager.Constant.READ_STORAGE_ACCESS_RQ;
+import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_STORAGE_ACCESS_RQ;
 
 public class AddNewCorporateActivity extends AppBaseActivity implements View.OnClickListener {
 
@@ -45,6 +61,11 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private Spinner spnrCategory;
     private ArrayList<CorporateCategory> corporateCategories = new ArrayList<>();
 
+    private final int PROFILE_CAMERA_IMAGE = 0;
+    private final int PROFILE_GALLERY_IMAGE = 1;
+    private ImageView imvProductImage;
+    private String mCapturedImageUrl;
+    private android.app.AlertDialog mPermissionDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +88,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
-        setDate = new SetDate(edtExpireDate, this);
+        setDate = new SetDate(edtExpireDate, this, R.style.AppThemeAddRenew);
         fetchCategoryApi();
 
     }
@@ -152,6 +173,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         tabLayout.addOnTabSelectedListener(new TabListeners());
         btnPost.setOnClickListener(this);
         edtExpireDate.setOnClickListener(this);
+        imvProductImage.setOnClickListener(this);
     }
 
     private void setSelectedTabColor() {
@@ -167,6 +189,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         edtExpireDate = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_expire_date);
         edtDescription = (EditText) findViewById(R.id.edtDescription);
         spnrCategory = (Spinner) findViewById(R.id.spnrCategory);
+        imvProductImage=(ImageView)findViewById(R.id.imvProductImage);
     }
 
     @Override
@@ -214,7 +237,34 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                     addProductOrAdApi();
                 }
                 break;
+            case R.id.imvProductImage:
+                Utils.showAlertDialogToGetPic(this, new ImagePickerListener() {
+                    @Override
+                    public void pickFromGallery() {
+                        pickGalleryImage();
+                    }
+
+                    @Override
+                    public void captureFromCamera() {
+                        captureImage();
+                    }
+                });
+                break;
         }
+    }
+
+
+    private void captureImage() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = Utils.getCustomImagePath(this, System.currentTimeMillis() + "");
+        mCapturedImageUrl = file.getAbsolutePath();
+        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+        startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
+    }
+
+    private void pickGalleryImage() {
+        Intent openGallery = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(openGallery, PROFILE_GALLERY_IMAGE);
     }
 
     /**
@@ -288,6 +338,120 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         }
     }
 
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+
+            case PROFILE_CAMERA_IMAGE:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (mCapturedImageUrl != null) {
+                        openCropActivity(mCapturedImageUrl);
+                        //uploadImage();
+                    }
+                }
+                break;
+
+            case PROFILE_GALLERY_IMAGE:
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri selectedImage = data.getData();
+                    String sourceUrl = Utils.getGalleryImagePath(this, selectedImage);
+                    File file = Utils.getCustomImagePath(this, "temp");
+                    mCapturedImageUrl = file.getAbsolutePath();
+                    mCapturedImageUrl=sourceUrl;
+                    openCropActivity(sourceUrl);
+                }
+                break;
+            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    Uri resultUri = result.getUri();
+                    mCapturedImageUrl = resultUri.getPath();
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                    error.printStackTrace();
+                }
+        }
+    }
+
+    private void openCropActivity(String url) {
+        CropImage.activity(Uri.fromFile(new File(url)))
+                .setGuidelines(CropImageView.Guidelines.OFF)
+                .setFixAspectRatio(true)
+                .setAspectRatio(2, 1)
+                .setAutoZoomEnabled(true)
+                .start(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case WRITE_STORAGE_ACCESS_RQ:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    captureImage();
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    boolean isDenied = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                    if (!isDenied) {
+                        //If the user turned down the permission request in the past and chose the Don't ask again option in the permission request system dialog
+
+                        mPermissionDialog = PermissionManager.showCustomPermissionDialog(this, getString(R.string.external_storage_permission_msg), new PermissionManager.CustomPermissionDialogCallback() {
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+
+                            @Override
+                            public void onOpenSettingClick() {
+
+                            }
+                        });
+                        //Toast.makeText(mContext, getResources().getString(R.string.storage_permission_msg), Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+            case READ_STORAGE_ACCESS_RQ:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    pickGalleryImage();
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    boolean isDenied = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                    if (!isDenied) {
+                        //If the user turned down the permission request in the past and chose the Don't ask again option in the permission request system dialog
+                        mPermissionDialog = PermissionManager.showCustomPermissionDialog(this, getString(R.string.external_storage_permission_msg), new PermissionManager.CustomPermissionDialogCallback() {
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+
+                            @Override
+                            public void onOpenSettingClick() {
+
+                            }
+                        });
+                    }
+                    break;
+                }
+        }
+    }
 
 
 

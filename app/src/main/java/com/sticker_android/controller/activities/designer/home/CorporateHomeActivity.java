@@ -42,6 +42,8 @@ import com.sticker_android.controller.fragment.AccountSettingFragment;
 import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateReportFragment;
+import com.sticker_android.controller.fragment.corporate.contentapproval.CorporateContentApprovalFragment;
+import com.sticker_android.controller.fragment.corporate.contest.CorporateContestFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
@@ -211,6 +213,12 @@ public class CorporateHomeActivity extends AppBaseActivity implements
             textView.setText(getResources().getString(R.string.txt_account_setting));
         } else if (id == R.id.nav_logout) {
             userLogout();
+        }else if(id==R.id.nav_corp_contest){
+            textView.setText(getResources().getString(R.string.txt_contest));
+            fragmentClass=new CorporateContestFragment();
+        }else if(id==R.id.nav_content_for_approval){
+            textView.setText(getResources().getString(R.string.txt_content_approval));
+            fragmentClass=new CorporateContentApprovalFragment();
         }
 
         // Insert the fragment by replacing any existing fragment

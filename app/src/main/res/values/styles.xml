@@ -159,4 +159,10 @@
 
 </style>
 
+    <style name="AppThemeAddRenew" parent="Theme.AppCompat.Light.Dialog">
+        <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/colorCorporateText</item>
+
+    </style>
+
 </resources>

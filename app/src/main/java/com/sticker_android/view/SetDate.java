@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import com.sticker_android.R;
 import com.sticker_android.utils.Utils;
 
 import java.util.Calendar;
@@ -26,7 +27,7 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
     private int d = myCalendar.get(Calendar.DAY_OF_MONTH);
     private DatePickerDialog pickerDialog;
 
-    public SetDate(TextView view, Context ctx) {
+    public SetDate(TextView view, Context ctx,int style) {
         this.view = view;
         this.ctx = ctx;
         this.view.setOnClickListener(this);
@@ -34,7 +35,7 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
         y = myCalendar.get(Calendar.YEAR);
         m = myCalendar.get(Calendar.MONTH);
         d = myCalendar.get(Calendar.DAY_OF_MONTH);
-        pickerDialog = new DatePickerDialog(ctx, this, y, m, d);
+        pickerDialog = new DatePickerDialog(ctx, style,this, y, m, d);
         //  this.view.setText(Utils.formatDate(ctx, y, m, d));
     }
 
