@@ -2,6 +2,7 @@ package com.sticker_android.controller.activities.corporate.addnew;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -12,14 +13,20 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.model.User;
@@ -28,6 +35,7 @@ import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AWSUtil;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -48,6 +56,7 @@ import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_
 
 public class AddNewCorporateActivity extends AppBaseActivity implements View.OnClickListener {
 
+    private final String TAG = AddNewCorporateActivity.class.getSimpleName();
     private Toolbar toolbar;
     private AppPref appPref;
     private User userdata;
@@ -453,6 +462,38 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         }
     }
 
+    /*
+         * Begins to upload the file specified by the file path.
+         */
+    private void beginUpload(String filePath) {
+        if (filePath == null) {
+            Toast.makeText(this, "Could not find the filepath of the selected file",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        final String fileName = userdata.getId() + "_" + System.currentTimeMillis();
+        File file = new File(filePath);
+        TransferObserver observer = new AWSUtil().getTransferUtility(this).upload(AppConstant.BUCKET_NAME, fileName,
+                file);
+        observer.setTransferListener(new TransferListener(){
 
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                Log.d(TAG, "onStateChanged: " + id + ", " + state);
+                String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                Log.d(TAG, String.format("onProgressChanged: %d, total: %d, current: %d",
+                        id, bytesTotal, bytesCurrent));
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                Log.e(TAG, "Error during upload: " + id, ex);
+            }
+        });
+    }
 
 }
