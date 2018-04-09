@@ -328,6 +328,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+        scroll=0;
     }
 
     private void moveToActivity(int position, String type) {

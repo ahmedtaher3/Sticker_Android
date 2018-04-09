@@ -22,7 +22,7 @@
 
             <ImageView
                 android:adjustViewBounds="true"
-                android:scaleType="fitXY"
+                android:scaleType="fitCenter"
                 android:background="@drawable/btn_shadow_corner"
                 android:src="@drawable/ic_upload_image"
                 android:id="@+id/imvOfAds"

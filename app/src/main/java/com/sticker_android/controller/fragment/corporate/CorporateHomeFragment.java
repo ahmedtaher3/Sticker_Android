@@ -131,7 +131,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             case R.id.fabAddNew:
 
                 startActivityForResult(new Intent(getActivity(), AddNewCorporateActivity.class), 11);
-               getActivity().overridePendingTransition(R.anim.activity_animation_enter, R.anim.activity_animation_exit);
+                getActivity().overridePendingTransition(R.anim.activity_animation_enter, R.anim.activity_animation_exit);
                 break;
         }
     }
@@ -177,7 +177,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             if (fragment instanceof ChangePasswordFragment) {
                 ((ChangePasswordFragment) fragment).clearField();
             }
-            if(searchView!=null){
+            if (searchView != null) {
                 MenuItemCompat.collapseActionView(item);
             }
         }
@@ -207,13 +207,12 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    searchView.setQueryHint(Utils.capitlizeText(getSelectedType()));
+                searchView.setQueryHint(Utils.capitlizeText(getSelectedType()));
 
             }
         });
 
     }
-
 
 
     private void setSearchTextColour(SearchView searchView) {
@@ -228,9 +227,9 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         ImageView searchButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_button);
         searchButton.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP);
         searchButton.setImageResource(R.drawable.ic_search);
-        ImageView searchIcon = (ImageView)searchView.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
+        ImageView searchIcon = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
         searchIcon.setImageResource(R.drawable.ic_search);
-        SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchAutoComplete.setHintTextColor(Color.WHITE);
         searchAutoComplete.setTextColor(Color.WHITE);
     }
@@ -259,7 +258,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         if (apiResponseCall != null) {
             apiResponseCall.cancel();
         }
-     //   searchApiCall(query, type);
+        //   searchApiCall(query, type);
 
         searchResult(query);
 
@@ -271,7 +270,9 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         return true;
     }
 
-    /** Method is used to pass the search result to the fragment
+    /**
+     * Method is used to pass the search result to the fragment
+     *
      * @param query
      */
     private void searchResult(String query) {
@@ -360,4 +361,6 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
         }
     }
+
+
 }

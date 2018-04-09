@@ -380,4 +380,6 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         init();
         setUserDataIntoNaviagtion();
     }
+
+
 }
