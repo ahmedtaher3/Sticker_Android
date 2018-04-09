@@ -24,7 +24,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:background="@drawable/btn_shadow_corner"
-                android:src="@drawable/upload_image_hdpi"
+                android:src="@drawable/ic_upload_image"
                 android:id="@+id/imvOfAds"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/image_height_add_product" />

@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/image_height_product_details"
             android:background="@drawable/btn_shadow_corner"
-            android:src="@drawable/upload_image_hdpi" />
+            android:src="@drawable/ic_upload_image" />
 
         <RelativeLayout
             android:layout_width="match_parent"
