@@ -24,7 +24,7 @@ import android.widget.TextView;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
-import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
+import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;

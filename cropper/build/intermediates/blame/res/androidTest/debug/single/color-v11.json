@@ -1,18 +1,10 @@
 [
     {
-        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/androidTest/debug/color-v11/abc_background_cache_hint_selector_material_light.xml",
-        "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/color-v11/abc_background_cache_hint_selector_material_light.xml"
-    },
-    {
         "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/androidTest/debug/color-v11/abc_background_cache_hint_selector_material_dark.xml",
         "source": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/color-v11/abc_background_cache_hint_selector_material_dark.xml"
     },
     {
         "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/androidTest/debug/color-v11/abc_background_cache_hint_selector_material_light.xml",
         "source": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/color-v11/abc_background_cache_hint_selector_material_light.xml"
-    },
-    {
-        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/androidTest/debug/color-v11/abc_background_cache_hint_selector_material_dark.xml",
-        "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/color-v11/abc_background_cache_hint_selector_material_dark.xml"
     }
 ]

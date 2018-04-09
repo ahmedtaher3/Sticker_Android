@@ -1,18 +1,17 @@
 package com.sticker_android.controller.activities.corporate.addnew;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.app.Activity;
-import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -32,22 +31,28 @@ import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.CorporateCategory;
+import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AWSUtil;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.CategoryAdapter;
 import com.sticker_android.view.NothingSelectedSpinnerAdapter;
 import com.sticker_android.view.SetDate;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
+
+import static com.sticker_android.utils.helper.PermissionManager.Constant.READ_STORAGE_ACCESS_RQ;
+import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_STORAGE_ACCESS_RQ;
 
 public class AddNewCorporateActivity extends AppBaseActivity implements View.OnClickListener {
 
@@ -57,7 +62,6 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private User userdata;
     private ViewPagerAdapter adapter;
     private TabLayout tabLayout;
-    private ImageView imgCorporateItem;
     private Button btnPost;
     private EditText edtExpireDate;
     private EditText edtCorpName, edtDescription;
@@ -66,6 +70,11 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private Spinner spnrCategory;
     private ArrayList<CorporateCategory> corporateCategories = new ArrayList<>();
 
+    private final int PROFILE_CAMERA_IMAGE = 0;
+    private final int PROFILE_GALLERY_IMAGE = 1;
+    private ImageView imvProductImage;
+    private String mCapturedImageUrl;
+    private android.app.AlertDialog mPermissionDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +97,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
-        setDate = new SetDate(edtExpireDate, this);
+        setDate = new SetDate(edtExpireDate, this, R.style.AppThemeAddRenew);
         fetchCategoryApi();
 
     }
@@ -173,7 +182,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         tabLayout.addOnTabSelectedListener(new TabListeners());
         btnPost.setOnClickListener(this);
         edtExpireDate.setOnClickListener(this);
-        imgCorporateItem.setOnClickListener(this);
+        imvProductImage.setOnClickListener(this);
     }
 
     private void setSelectedTabColor() {
@@ -182,13 +191,14 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
     @Override
     protected void setViewReferences() {
-        imgCorporateItem = (ImageView) findViewById(R.id.imgCorporateItem);
+
         edtCorpName = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
         tabLayout = (TabLayout) findViewById(R.id.act_landing_tab);
         btnPost = (Button) findViewById(R.id.act_corp_add_new_btn_post);
         edtExpireDate = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_expire_date);
         edtDescription = (EditText) findViewById(R.id.edtDescription);
         spnrCategory = (Spinner) findViewById(R.id.spnrCategory);
+        imvProductImage=(ImageView)findViewById(R.id.imvProductImage);
     }
 
     @Override
@@ -236,10 +246,34 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                     addProductOrAdApi();
                 }
                 break;
-            case R.id.imgCorporateItem:
-                pickGalleryImage();
+            case R.id.imvProductImage:
+                Utils.showAlertDialogToGetPic(this, new ImagePickerListener() {
+                    @Override
+                    public void pickFromGallery() {
+                        pickGalleryImage();
+                    }
+
+                    @Override
+                    public void captureFromCamera() {
+                        captureImage();
+                    }
+                });
                 break;
         }
+    }
+
+
+    private void captureImage() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = Utils.getCustomImagePath(this, System.currentTimeMillis() + "");
+        mCapturedImageUrl = file.getAbsolutePath();
+        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+        startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
+    }
+
+    private void pickGalleryImage() {
+        Intent openGallery = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(openGallery, PROFILE_GALLERY_IMAGE);
     }
 
     /**
@@ -313,44 +347,140 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         }
     }
 
-    private void pickGalleryImage() {
-        Intent openGallery = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(openGallery, 0);
-    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            Uri selectedImage = data.getData();
-            String sourceUrl = Utils.getGalleryImagePath(getActivity(), selectedImage);
-            beginUpload(sourceUrl);
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+
+            case PROFILE_CAMERA_IMAGE:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (mCapturedImageUrl != null) {
+                        openCropActivity(mCapturedImageUrl);
+                        //uploadImage();
+                    }
+                }
+                break;
+
+            case PROFILE_GALLERY_IMAGE:
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri selectedImage = data.getData();
+                    String sourceUrl = Utils.getGalleryImagePath(this, selectedImage);
+                    File file = Utils.getCustomImagePath(this, "temp");
+                    mCapturedImageUrl = file.getAbsolutePath();
+                    mCapturedImageUrl=sourceUrl;
+                    openCropActivity(sourceUrl);
+                }
+                break;
+            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    Uri resultUri = result.getUri();
+                    mCapturedImageUrl = resultUri.getPath();
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                    error.printStackTrace();
+                }
+        }
+    }
+
+    private void openCropActivity(String url) {
+        CropImage.activity(Uri.fromFile(new File(url)))
+                .setGuidelines(CropImageView.Guidelines.OFF)
+                .setFixAspectRatio(true)
+                .setAspectRatio(2, 1)
+                .setAutoZoomEnabled(true)
+                .start(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case WRITE_STORAGE_ACCESS_RQ:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    captureImage();
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    boolean isDenied = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                    if (!isDenied) {
+                        //If the user turned down the permission request in the past and chose the Don't ask again option in the permission request system dialog
+
+                        mPermissionDialog = PermissionManager.showCustomPermissionDialog(this, getString(R.string.external_storage_permission_msg), new PermissionManager.CustomPermissionDialogCallback() {
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+
+                            @Override
+                            public void onOpenSettingClick() {
+
+                            }
+                        });
+                        //Toast.makeText(mContext, getResources().getString(R.string.storage_permission_msg), Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+            case READ_STORAGE_ACCESS_RQ:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    pickGalleryImage();
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    boolean isDenied = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                    if (!isDenied) {
+                        //If the user turned down the permission request in the past and chose the Don't ask again option in the permission request system dialog
+                        mPermissionDialog = PermissionManager.showCustomPermissionDialog(this, getString(R.string.external_storage_permission_msg), new PermissionManager.CustomPermissionDialogCallback() {
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+
+                            @Override
+                            public void onOpenSettingClick() {
+
+                            }
+                        });
+                    }
+                    break;
+                }
         }
     }
 
     /*
-     * Begins to upload the file specified by the file path.
-     */
+         * Begins to upload the file specified by the file path.
+         */
     private void beginUpload(String filePath) {
         if (filePath == null) {
             Toast.makeText(this, "Could not find the filepath of the selected file",
                     Toast.LENGTH_LONG).show();
             return;
         }
+        final String fileName = userdata.getId() + "_" + System.currentTimeMillis();
         File file = new File(filePath);
-        TransferObserver observer = new AWSUtil().getTransferUtility(this).upload(AppConstant.BUCKET_NAME, file.getName(),
+        TransferObserver observer = new AWSUtil().getTransferUtility(this).upload(AppConstant.BUCKET_NAME, fileName,
                 file);
-        /*
-         * Note that usually we set the transfer listener after initializing the
-         * transfer. However it isn't required in this sample app. The flow is
-         * click upload button -> start an activity for image selection
-         * startActivityForResult -> onActivityResult -> beginUpload -> onResume
-         * -> set listeners to in progress transfers.
-         */
         observer.setTransferListener(new TransferListener(){
 
             @Override
             public void onStateChanged(int id, TransferState state) {
                 Log.d(TAG, "onStateChanged: " + id + ", " + state);
+                String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
             }
 
             @Override
@@ -366,83 +496,4 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         });
     }
 
-    /*
-     * Gets the file path of the given Uri.
-     */
-    @SuppressLint("NewApi")
-    private String getPath(Uri uri) throws URISyntaxException {
-        final boolean needToCheckUri = Build.VERSION.SDK_INT >= 19;
-        String selection = null;
-        String[] selectionArgs = null;
-        // Uri is different in versions after KITKAT (Android 4.4), we need to
-        // deal with different Uris.
-        if (needToCheckUri && DocumentsContract.isDocumentUri(getApplicationContext(), uri)) {
-            if (isExternalStorageDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                return Environment.getExternalStorageDirectory() + "/" + split[1];
-            } else if (isDownloadsDocument(uri)) {
-                final String id = DocumentsContract.getDocumentId(uri);
-                uri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-            } else if (isMediaDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-                if ("image".equals(type)) {
-                    uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                } else if ("video".equals(type)) {
-                    uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                } else if ("audio".equals(type)) {
-                    uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                }
-                selection = "_id=?";
-                selectionArgs = new String[] {
-                        split[1]
-                };
-            }
-        }
-        if ("content".equalsIgnoreCase(uri.getScheme())) {
-            String[] projection = {
-                    MediaStore.Images.Media.DATA
-            };
-            Cursor cursor = null;
-            try {
-                cursor = getContentResolver()
-                        .query(uri, projection, selection, selectionArgs, null);
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                if (cursor.moveToFirst()) {
-                    return cursor.getString(column_index);
-                }
-            } catch (Exception e) {
-            }
-        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-        return null;
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     */
-    public static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
-    public static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     */
-    public static boolean isMediaDocument(Uri uri) {
-        return "com.android.providers.media.documents".equals(uri.getAuthority());
-    }
 }

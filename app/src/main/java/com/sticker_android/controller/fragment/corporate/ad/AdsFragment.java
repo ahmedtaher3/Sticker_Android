@@ -71,6 +71,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
     private int currentPageNo;
     private String search="";
     private TextView tvNoAdsUploaded;
+    private int scroll;
 
     public AdsFragment() {
         // Required empty public constructor
@@ -105,7 +106,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
+                scroll=1;
                 if (swipeRefreshLayout.isRefreshing())
                     return;
 
@@ -186,9 +187,19 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() {
+        scroll=0;
            search="";
           currentPageNo=0;
-        swipeRefreshLayout.setRefreshing(false);
+
+        if (productList != null)
+            productList.clear();
+        productListApi(0,search);
+    }
+
+    public void refreshApi(){
+        scroll=0;
+        search="";
+        currentPageNo=0;
 
         if (productList != null)
             productList.clear();
@@ -218,7 +229,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     } else {
                         isLastPage = true;
                     }
-                    if(tempList==null&&productList==null&&search.isEmpty()) {
+                    if(tempList==null&&search.isEmpty()) {
                         tvNoAdsUploaded.setText(R.string.no_ads_uploaded_yet);
                         tvNoAdsUploaded.setVisibility(View.VISIBLE);
                     }else if(tempList==null&&!search.isEmpty()) {
@@ -227,6 +238,10 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     }else {
                         tvNoAdsUploaded.setVisibility(View.GONE);
                     }
+                if(scroll>0){
+                    tvNoAdsUploaded.setVisibility(View.GONE);
+                    tvNoAdsUploaded.setVisibility(View.GONE);
+                }
                 }
             }
 
@@ -303,7 +318,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     Utils.showToast(getActivity(), "Deleted successfully");
-                    onRefresh();
+                    productAdaptor.notifyDataChanged();
+                    refreshApi();
                 }
             }
 
@@ -390,6 +406,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     onRefresh();
                     break;
                 case AppConstant.INTENT_PRODUCT_DETAILS:
+                    if(productAdaptor!=null)
+                        productAdaptor.notifyDataChanged();
                     onRefresh();
                     break;
             }

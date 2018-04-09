@@ -24,7 +24,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:background="@drawable/btn_shadow_corner"
-                android:src="@drawable/upload_image_hdpi"
+                android:src="@drawable/ic_upload_image"
                 android:id="@+id/imvOfAds"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/image_height_add_product" />
@@ -43,7 +43,8 @@
                     android:textColor="@android:color/black" />
                 <ImageButton
                     android:background="@android:color/transparent"
-                    android:padding="10dp"
+                    android:paddingStart="10dp"
+                    android:paddingBottom="5dp"
                     android:id="@+id/imvBtnEditRemove"
                     android:tint="@color/colorCorporateText"
                     android:src="@drawable/ic_more"

@@ -54,7 +54,8 @@
 
     <string name="txt_account_setting">Account Settings</string>
     <string name="txt_profile">Profile</string>
-
+    <string name="txt_contest">Contest</string>
+    <string name="txt_content_approval">Content for Approval</string>
     <string name="txt_home">Home</string>
     <string name="txt_myprofile">My Profile</string>
     <!--Change password-->
@@ -135,7 +136,7 @@
     <string name="time_ago_year">about a year</string>
     <string name="time_ago_years">%d years</string>
     <string name="no_ads_uploaded_yet">No Ads uploaded Yet.</string>
-    <string name="no_product_uploaded_yet">No Product uploaded Yet.</string>
+    <string name="no_product_uploaded_yet">No Products uploaded Yet.</string>
     <string name="no_search_found">No Search found.</string>
 
 

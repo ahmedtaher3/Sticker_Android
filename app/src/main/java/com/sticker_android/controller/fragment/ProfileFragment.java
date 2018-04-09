@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
-import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
+import com.sticker_android.controller.activities.corporate.home.DesignerHomeActivity;
+import com.sticker_android.controller.activities.designer.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;

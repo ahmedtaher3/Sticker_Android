@@ -9,6 +9,12 @@
             android:id="@+id/nav_report"
             android:title="Report" />
         <item
+            android:id="@+id/nav_corp_contest"
+            android:title="Contest" />
+        <item
+            android:id="@+id/nav_content_for_approval"
+            android:title="Content for Approval" />
+        <item
             android:id="@+id/nav_profile"
             android:title="My Profile" />
         <item

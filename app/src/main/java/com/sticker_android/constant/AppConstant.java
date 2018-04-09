@@ -7,14 +7,14 @@ import com.amazonaws.regions.Regions;
  */
 
 public class AppConstant {
-
     public static final int SPLASH_TIMER_WAIT=3000;
-   /*Intent Constant*/
+    /*Intent Constant*/
     public static final String PRODUCT_OBJ_KEY="productObj";
 
 
     public static final int INTENT_RENEW_CODE =12 ;
     public static final int INTENT_PRODUCT_DETAILS =121 ;
+    public static final String BUCKET_IMAGE_BASE_URL = "https://s3.ap-south-1.amazonaws.com/sportwidget/";
 
     /*
      * You should replace these values with your own. See the README for details
