@@ -1,5 +1,7 @@
 package com.sticker_android.controller.activities.corporate.productdetails;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -169,7 +171,8 @@ public class ProductDetailsActivity extends AppBaseActivity {
                         moveToActivity("Edit");
                         break;
                     case R.id.remove:
-                        removeProductApi();
+                        deleteDialog();
+                     //   removeProductApi();
                         break;
                     case R.id.repost:
                         moveToActivity("Repost");
@@ -267,4 +270,35 @@ public class ProductDetailsActivity extends AppBaseActivity {
         }
     }
     }
+
+    public void deleteDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.AppThemeAddRenew);
+        builder.setMessage("Are you sure you want to delete this item?");
+        builder.setCancelable(true);
+
+        builder.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        removeProductApi();
+                        dialog.cancel();
+                    }
+                });
+
+        builder.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getButton(alertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorCorporateText));
+        alertDialog.getButton(alertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorCorporateText));
+    }
+
+
+
 }

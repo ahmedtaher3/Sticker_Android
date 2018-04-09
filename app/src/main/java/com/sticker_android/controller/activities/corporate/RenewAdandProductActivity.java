@@ -214,7 +214,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     protected void setViewListeners() {
 
         btnRePost.setOnClickListener(this);
-        imvProductImage.setOnClickListener(this);
+      //  imvProductImage.setOnClickListener(this);
     }
 
     @Override

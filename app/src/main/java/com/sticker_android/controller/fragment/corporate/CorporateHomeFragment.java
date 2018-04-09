@@ -180,6 +180,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             if (searchView != null) {
                 MenuItemCompat.collapseActionView(item);
             }
+
         }
 
 

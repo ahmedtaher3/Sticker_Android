@@ -2,7 +2,9 @@ package com.sticker_android.controller.fragment.corporate.ad;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -238,10 +240,16 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     }else {
                         tvNoAdsUploaded.setVisibility(View.GONE);
                     }
-                if(scroll>0){
+              /*  if(scroll>0){
                     tvNoAdsUploaded.setVisibility(View.GONE);
                     tvNoAdsUploaded.setVisibility(View.GONE);
-                }
+                }*/
+                    if(!search.isEmpty()){
+                        if(tempList==null&&currentPageNo==0){
+                            tvNoAdsUploaded.setText(R.string.no_search_found);
+                            tvNoAdsUploaded.setVisibility(View.VISIBLE);
+                        }
+                    }
                 }
             }
 
@@ -275,7 +283,9 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                         moveToActivity(position, "Edit");
                         break;
                     case R.id.remove:
-                        removeProductApi(position);
+                        search="";
+                        deleteDialog(position);
+                     //   removeProductApi(position);
                         break;
                     case R.id.repost:
                         moveToActivity(position, "Repost");
@@ -364,7 +374,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
      * @param query
      */
     public void searchProduct(String query) {
-
+scroll=0;
         if(productList!=null)
             productList.clear();
             currentPageNo=0;
@@ -533,5 +543,36 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         }
 
     }
+public void deleteDialog(final int position){
+    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    builder.setMessage("Are you sure you want to delete this item?");
+    builder.setCancelable(true);
+
+    builder.setPositiveButton(
+            "Yes",
+            new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    removeProductApi(position);
+                    dialog.cancel();
+                }
+            });
+
+    builder.setNegativeButton(
+            "No",
+            new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+
+    AlertDialog alertDialog = builder.create();
+    alertDialog.show();
+    alertDialog.getButton(alertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorCorporateText));
+    alertDialog.getButton(alertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorCorporateText));
 
 }
+
+
+
+}
+
