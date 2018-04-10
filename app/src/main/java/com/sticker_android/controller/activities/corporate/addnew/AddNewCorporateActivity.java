@@ -35,12 +35,11 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AWSUtil;
+import com.sticker_android.utils.CategorySpinnerAdaptor;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
-import com.sticker_android.view.CategoryAdapter;
-import com.sticker_android.view.NothingSelectedSpinnerAdapter;
 import com.sticker_android.view.SetDate;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -130,6 +129,9 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private void setSpinnerAdaptor() {
 
         if (corporateCategories != null) {
+            CategorySpinnerAdaptor categorySpinnerAdaptor = new CategorySpinnerAdaptor(this, corporateCategories);
+            spnrCategory.setAdapter(categorySpinnerAdaptor);
+            /*
             CategoryAdapter categoryAdapter=new CategoryAdapter(this,corporateCategories);
           //  ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(this, android.R.layout.simple_spinner_item, corporateCategories);
           //  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -138,6 +140,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                             categoryAdapter,
                             R.layout.spinner_without_selection,
                             this));
+*/
         }
     }
 
@@ -214,7 +217,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         } else if (edtExpireDate.getText().toString().trim().isEmpty()) {
             Utils.showToast(this, "Please enter a expire date.");
             return false;
-        }else if(spnrCategory.getSelectedItem()==null){
+        }else if(spnrCategory.getSelectedItemPosition()==0){
             Utils.showToast(this, "Please select a category.");
             return false;
         } else if (edtDescription.getText().toString().trim().isEmpty()) {
@@ -287,7 +290,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
      * @param imagePath
      */
     private void addProductOrAdApi(String imagePath) {
-        int categoryId=corporateCategories.get(spnrCategory.getSelectedItemPosition()-1).categoryId;
+        int categoryId=corporateCategories.get(spnrCategory.getSelectedItemPosition()).categoryId;
 
         if (setDate != null)
             mExpireDate = setDate.getChosenDate();
@@ -400,7 +403,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         CropImage.activity(Uri.fromFile(new File(url)))
                 .setGuidelines(CropImageView.Guidelines.OFF)
                 .setFixAspectRatio(true)
-                .setAspectRatio(2, 1)
+                .setAspectRatio(4, 3)
                 .setAutoZoomEnabled(true)
                 .start(this);
     }
@@ -475,7 +478,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
          * Begins to upload the file specified by the file path.
          */
     private void beginUpload(String filePath) {
-       final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
         progressDialogHandler.show();
         if (filePath == null) {
             Toast.makeText(this, "Could not find the filepath of the selected file",

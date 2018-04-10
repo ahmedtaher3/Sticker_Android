@@ -30,11 +30,13 @@ import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
 import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.controller.fragment.corporate.product.ProductsFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.lang.reflect.Field;
+import java.util.Locale;
 
 import retrofit2.Call;
 
@@ -155,7 +157,7 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setQueryHint(Utils.capitlizeText(getSelectedType()));
+                searchView.setQueryHint(getString(R.string.search) + " " +Utils.capitlizeText(getSelectedType()));
             }
         });
     }
@@ -194,17 +196,19 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
     }*/
 
     /**
-     * Method is used to get the type of posted product
-     *
+     * Method is used to get the type of posted product     *
      * @return rerurns the type
      */
     public String getSelectedType() {
-        String type = "sticker";
-        if (tabLayout.getSelectedTabPosition() == 1){
-            type = "gif";
+        String type = DesignType.stickers.getType();
+        if (tabLayout.getSelectedTabPosition() == 0){
+            type = DesignType.stickers.getType();
+        }
+        else if (tabLayout.getSelectedTabPosition() == 1){
+            type = DesignType.gif.getType().toUpperCase(Locale.US);
         }
         else if(tabLayout.getSelectedTabPosition() == 2){
-            type = "emoji";
+            type = DesignType.emoji.getType();
         }
         return type;
     }

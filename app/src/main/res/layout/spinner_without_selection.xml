@@ -5,8 +5,6 @@ xmlns:tools="http://schemas.android.com/tools"
 tools:ignore="MissingPrefix"
 android:layout_height="match_parent">
 <TextView
-    android:drawableRight="@drawable/ic_keyboard_arrow_down_black_24dp"
-    android:text="Select a Category"
     android:singleLine="true"
     android:gravity="start"
     android:textColor="@android:color/black"

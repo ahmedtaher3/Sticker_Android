@@ -30,12 +30,23 @@
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/dp_5">
 
-                <ImageView
-                    android:scaleType="centerCrop"
-                    android:id="@+id/imvProductImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/act_add_new_corp_imv_height"
-                    android:background="@drawable/upload_image_hdpi" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ProgressBar
+                        android:id="@+id/pgrImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true" />
+
+                    <ImageView
+                        android:id="@+id/imvProductImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/act_add_new_corp_imv_height"
+                        android:background="@drawable/upload_image_hdpi"
+                        android:scaleType="centerCrop" />
+                </RelativeLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -43,10 +54,10 @@
                     android:layout_marginTop="@dimen/add_corp_tv_margin_top">
 
                     <android.support.design.widget.TextInputEditText
-                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                        android:backgroundTint="@color/edt_background_tint"
                         android:id="@+id/act_add_new_corp_edt_name"
                         style="@style/EditText"
+                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                        android:backgroundTint="@color/edt_background_tint"
                         android:hint="@string/act_add_corp_txt_name"
                         android:imeOptions="actionNext"
                         android:inputType="text|textCapSentences|textNoSuggestions"
@@ -60,10 +71,10 @@
                     android:layout_marginTop="@dimen/add_corp_tv_margin_top">
 
                     <android.support.design.widget.TextInputEditText
-                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                        android:backgroundTint="@color/edt_background_tint"
                         android:id="@+id/act_add_new_ad_corp_edt_expire_date"
                         style="@style/EditText"
+                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                        android:backgroundTint="@color/edt_background_tint"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:hint="@string/act_add_corp_txt_expire_date"
@@ -84,20 +95,19 @@
                         android:layout_height="wrap_content">
 
                         <android.support.design.widget.TextInputEditText
+                            style="@style/EditText"
                             fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                             android:backgroundTint="@color/edt_background_tint"
-                            android:inputType="text|textCapSentences|textNoSuggestions"
                             android:clickable="false"
-                            android:longClickable="false"
-                            style="@style/EditText"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
                             android:hint="Select Category "
+                            android:inputType="text|textCapSentences|textNoSuggestions"
+                            android:longClickable="false"
                             android:text=" " />
                     </android.support.design.widget.TextInputLayout>
 
                     <Spinner
-                        android:textSize="@dimen/text_size_contact_us"
                         android:id="@+id/spnrRenewCategory"
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                         android:layout_width="match_parent"
@@ -106,41 +116,43 @@
                         android:background="@null"
                         android:dropDownVerticalOffset="35dp"
                         android:gravity="start"
-                        android:spinnerMode="dropdown">
+                        android:spinnerMode="dropdown"
+                        android:textSize="@dimen/text_size_contact_us">
 
                     </Spinner>
                 </RelativeLayout>
 
                 <TextView
-                    android:layout_marginLeft="2dp"
-                    android:textSize="@dimen/text_size_contact_us"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
                     android:layout_marginTop="@dimen/add_corp_tv_margin_top"
-                    android:text="@string/act_add_corp_txt_write_description" />
+                    android:text="@string/act_add_corp_txt_write_description"
+                    android:textSize="@dimen/text_size_contact_us" />
 
                 <EditText
-                    android:layout_marginLeft="2dp"
-                    android:inputType="text|textCapSentences|textNoSuggestions|textMultiLine"
-                    android:textSize="@dimen/text_size_contact_us"
-                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:id="@+id/act_add_new_ad_corp_edt_description"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="@dimen/act_add_corp_write_des_edt_heigh"
+                    android:layout_marginLeft="2dp"
                     android:layout_marginTop="@dimen/act_add_corp_write_des_margin_top_10dp"
                     android:background="@drawable/btn_shadow_corner"
                     android:gravity="start"
-                    android:padding="5dp" />
+                    android:hint="@string/write_some_description"
+                    android:inputType="text|textCapSentences|textNoSuggestions|textMultiLine"
+                    android:minHeight="@dimen/act_add_corp_write_des_edt_heigh"
+                    android:padding="5dp"
+                    android:textSize="@dimen/text_size_contact_us" />
 
                 <Button
-                    android:layout_marginBottom="20dp"
                     android:id="@+id/act_corp_add_new_btn_re_post"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:layout_width="@dimen/signup_btn_next_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="20dp"
                     android:layout_marginTop="@dimen/act_add_new_margin_top_30dp"
                     android:background="@drawable/corporate_btn_background"
                     android:elevation="@dimen/dp_5"

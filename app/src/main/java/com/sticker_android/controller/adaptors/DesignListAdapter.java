@@ -1,12 +1,17 @@
 package com.sticker_android.controller.adaptors;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -24,6 +29,7 @@ import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.helper.TimeUtility;
 
 import java.util.ArrayList;
 
@@ -40,6 +46,8 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private final int ITEM_FOOTER = 0;
     private final int ITEM_PRODUCT = 1;
+
+    private TimeUtility timeUtility = new TimeUtility();
 
     public interface OnProductItemClickListener{
         void onProductItemClick(Product product);
@@ -183,7 +191,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         final int itemType = getItemViewType(position);
@@ -192,7 +200,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         } else {
             ViewHolder itemHolder = (ViewHolder) holder;
-            Product productItem = mItems.get(position);
+            final Product productItem = mItems.get(position);
 
             itemHolder.checkboxLike.setText(Utils.format(1000));
             itemHolder.checkboxShare.setText(Utils.format(1200));
@@ -204,14 +212,14 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             });
             itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));
             itemHolder.tvDesciption.setText(Utils.capitlizeText(productItem.getDescription()));
-            itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), getActivity()));
+            itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context));
 
             String status = "Ongoing";
             if (productItem.getIsExpired() > 0) {
                 itemHolder.tvStatus.setTextColor(Color.RED);
                 status = "Expired";
             } else {
-                itemHolder.tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
+                itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorHomeGreen));
             }
             itemHolder.tvStatus.setText(status);
 
@@ -235,5 +243,34 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else {
             return ITEM_PRODUCT;
         }
+    }
+
+    /**
+     * Method is used to show the popup with edit and delete option     *
+     * @param v view on which click is perfomed
+     * @param position position of item
+     * @param product
+     */
+    public void showPopup(View v, final int position, Product product) {
+        PopupMenu popup = new PopupMenu(context, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.edit_remove_product, popup.getMenu());
+        popup.show();
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.edit:
+                        break;
+                    case R.id.remove:
+
+                        break;
+                    case R.id.repost:
+
+                        break;
+                }
+                return false;
+            }
+        });
     }
 }

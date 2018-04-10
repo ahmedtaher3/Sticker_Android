@@ -483,7 +483,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         CropImage.activity(Uri.fromFile(new File(url)))
                 .setGuidelines(CropImageView.Guidelines.OFF)
                 .setFixAspectRatio(true)
-                .setAspectRatio(2, 1)
+                .setAspectRatio(4, 3)
                 .setAutoZoomEnabled(true)
                 .start(this);
     }

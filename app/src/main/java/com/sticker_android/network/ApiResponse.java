@@ -19,13 +19,15 @@ public class ApiResponse {
     @SerializedName("responseCode")
     public int responseCode;
 
-
     @SerializedName("status")
     public Boolean status;
+
     @SerializedName("authrized_status")
     public String authrizedStatus;
-     @SerializedName("sql_error")
-     public Object sqlError;
+
+    @SerializedName("sql_error")
+    public Object sqlError;
+
     @SerializedName("paylpad")
     public Payload paylpad;
 

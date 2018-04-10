@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,9 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
@@ -72,9 +76,10 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     private ImageView imvProductImage;
     private String mCapturedImageUrl;
     private android.app.AlertDialog mPermissionDialog;
-    private String TAG=RenewAdandProductActivity.class.getSimpleName();
-
+    private String TAG = RenewAdandProductActivity.class.getSimpleName();
+    ProgressBar pgrImage;
     private boolean isUpdated;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,9 +197,24 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
             edtDescription.setSelection(edtDescription.getText().length());
             edtCorpName.setSelection(edtCorpName.getText().length());
             mExpireDate = productObj.getExpireDate();
+
             Glide.with(this)
-                    .load(productObj.getImagePath())
+                    .load(productObj.getImagePath()).placeholder(R.drawable.ic_upload_image)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            pgrImage.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
                     .into(imvProductImage);
+
 
         }
     }
@@ -211,9 +231,8 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
 
     @Override
     protected void setViewListeners() {
-
         btnRePost.setOnClickListener(this);
-        imvProductImage.setOnClickListener(this);
+        //  imvProductImage.setOnClickListener(this);
     }
 
     @Override
@@ -224,7 +243,8 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         edtDescription = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_description);
         edtCorpName = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
         spnrCategory = (Spinner) findViewById(R.id.spnrRenewCategory);
-        imvProductImage=(ImageView)findViewById(R.id.imvProductImage);
+        imvProductImage = (ImageView) findViewById(R.id.imvProductImage);
+        pgrImage = (ProgressBar) findViewById(R.id.pgrImage);
     }
 
     @Override
@@ -288,12 +308,12 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         switch (v.getId()) {
             case R.id.act_corp_add_new_btn_re_post:
                 if (isValidData()) {
-                    if(isUpdated)
-                    beginUpload(mCapturedImageUrl);
-                else
+                    if (isUpdated)
+                        beginUpload(mCapturedImageUrl);
+                    else
                         renewOrEditApi(productObj.getImagePath());
 
-                   // renewOrEditApi();
+                    // renewOrEditApi();
                 }
                 break;
 
@@ -314,7 +334,6 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     }
 
 
-
     private void captureImage() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File file = Utils.getCustomImagePath(this, System.currentTimeMillis() + "");
@@ -331,6 +350,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
 
     /**
      * Method is used to call the add ads or product api
+     *
      * @param imagePath
      */
     private void renewOrEditApi(String imagePath) {
@@ -363,8 +383,6 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     }
 
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -386,7 +404,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
                     String sourceUrl = Utils.getGalleryImagePath(this, selectedImage);
                     File file = Utils.getCustomImagePath(this, "temp");
                     mCapturedImageUrl = file.getAbsolutePath();
-                    mCapturedImageUrl=sourceUrl;
+                    mCapturedImageUrl = sourceUrl;
                     openCropActivity(sourceUrl);
                 }
                 break;
@@ -395,7 +413,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
                     mCapturedImageUrl = resultUri.getPath();
-                    isUpdated=true;
+                    isUpdated = true;
                     imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
@@ -483,7 +501,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         * Begins to upload the file specified by the file path.
         */
     private void beginUpload(String filePath) {
-        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
         progressDialogHandler.show();
         if (filePath == null) {
             Toast.makeText(this, "Could not find the filepath of the selected file",
@@ -494,16 +512,16 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         File file = new File(filePath);
         TransferObserver observer = new AWSUtil().getTransferUtility(this).upload(AppConstant.BUCKET_NAME, fileName,
                 file);
-        observer.setTransferListener(new TransferListener(){
+        observer.setTransferListener(new TransferListener() {
 
             @Override
             public void onStateChanged(int id, TransferState state) {
                 Log.d(TAG, "onStateChanged: " + id + ", " + state);
-                if(TransferState.COMPLETED==state){
+                if (TransferState.COMPLETED == state) {
                     progressDialogHandler.hide();
                     String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
                     renewOrEditApi(imagePath);
-                    isUpdated=false;
+                    isUpdated = false;
                 }
             }
 
