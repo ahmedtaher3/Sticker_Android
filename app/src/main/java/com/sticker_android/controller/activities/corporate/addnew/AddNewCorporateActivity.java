@@ -2,8 +2,6 @@ package com.sticker_android.controller.activities.corporate.addnew;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -23,7 +21,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.mobileconnectors.s3.transfermanager.Transfer;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
@@ -38,12 +35,11 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AWSUtil;
+import com.sticker_android.utils.CategorySpinnerAdaptor;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
-import com.sticker_android.view.CategoryAdapter;
-import com.sticker_android.view.NothingSelectedSpinnerAdapter;
 import com.sticker_android.view.SetDate;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -133,6 +129,9 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private void setSpinnerAdaptor() {
 
         if (corporateCategories != null) {
+            CategorySpinnerAdaptor categorySpinnerAdaptor=new CategorySpinnerAdaptor(this,corporateCategories);
+         spnrCategory.setAdapter(categorySpinnerAdaptor);
+            /*
             CategoryAdapter categoryAdapter=new CategoryAdapter(this,corporateCategories);
           //  ArrayAdapter<CorporateCategory> adapter = new ArrayAdapter<CorporateCategory>(this, android.R.layout.simple_spinner_item, corporateCategories);
           //  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -141,6 +140,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                             categoryAdapter,
                             R.layout.spinner_without_selection,
                             this));
+*/
         }
     }
 
@@ -218,7 +218,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         } else if (edtExpireDate.getText().toString().trim().isEmpty()) {
             Utils.showToast(this, "Please enter a expire date.");
             return false;
-        }else if(spnrCategory.getSelectedItem()==null){
+        }else if(spnrCategory.getSelectedItemPosition()==0){
             Utils.showToast(this, "Please select a category.");
             return false;
         } else if (edtDescription.getText().toString().trim().isEmpty()) {
@@ -290,7 +290,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
      * @param imagePath
      */
     private void addProductOrAdApi(String imagePath) {
-        int categoryId=corporateCategories.get(spnrCategory.getSelectedItemPosition()-1).categoryId;
+        int categoryId=corporateCategories.get(spnrCategory.getSelectedItemPosition()).categoryId;
 
         if (setDate != null)
             mExpireDate = setDate.getChosenDate();

@@ -26,14 +26,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
 import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
 import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.ProductList;
+import com.sticker_android.model.interfaces.CloseSearch;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -61,20 +66,21 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     private AppPref appPref;
     private User mUserdata;
     ArrayList<ProductList> productList = new ArrayList<>();
-    private TimeUtility timeUtility=new TimeUtility();
+    private TimeUtility timeUtility = new TimeUtility();
     private ProductAdaptor productAdaptor;
 
-    private int index=0;
+    private int index = 0;
     private boolean isLoading;
     private int currentPageNo;
     private static final int PAGE_SIZE = 2;
 
     private int indexIs;
     private int limitIs;
-    private String search="";
+    private String search = "";
 
     private TextView tvNoProductUploaded;
     private int scroll;
+
 
     public ProductsFragment() {
         // Required empty public constructor
@@ -85,7 +91,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_products, container, false);
+        View view = inflater.inflate(R.layout.fragment_products, container, false);
         init();
         getuserInfo();
         setViewReferences(view);
@@ -93,8 +99,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         recyclerViewLayout();
         handler = new Handler();
         setAdaptor();
-        productListApi(currentPageNo,search);
-        adaptorScrollListener();
+        productListApi(currentPageNo, search);
+        //  adaptorScrollListener();
         return view;
     }
 
@@ -109,7 +115,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
     private void setAdaptor() {
 
-        productAdaptor     =    new ProductAdaptor(getActivity(),productList);
+        productAdaptor = new ProductAdaptor(getActivity(), productList);
         recAd.setAdapter(productAdaptor);
     }
 
@@ -125,7 +131,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                scroll=1;
+                scroll = 1;
                 if (swipeRefreshLayout.isRefreshing())
                     return;
 
@@ -140,7 +146,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                         // loadMoreItems();
                         if (productList != null && productList.size() > 0) {
                             currentPageNo++;
-                            productListApi(currentPageNo*2,search);
+                            productListApi(currentPageNo * 2, search);
                         }
                     }
                 }
@@ -150,14 +156,13 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     }
 
 
-
     /**
      * Method is used to set the layout on recycler view
      */
     private void recyclerViewLayout() {
         recAd.hasFixedSize();
 
-        mLayoutManager   =   new LinearLayoutManager(getContext());
+        mLayoutManager = new LinearLayoutManager(getContext());
 
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
@@ -173,10 +178,10 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     @Override
     protected void setViewReferences(View view) {
 
-        recAd                 =   (RecyclerView) view.findViewById(R.id.recAds);
-        progressBarLoadMore   =   (ProgressBar) view.findViewById(R.id.progressBarLoadMore);
-        swipeRefreshLayout    =   (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshAds);
-        tvNoProductUploaded =   (TextView)view.findViewById(R.id.tvNoproductUploaded);
+        recAd = (RecyclerView) view.findViewById(R.id.recAds);
+        progressBarLoadMore = (ProgressBar) view.findViewById(R.id.progressBarLoadMore);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshAds);
+        tvNoProductUploaded = (TextView) view.findViewById(R.id.tvNoproductUploaded);
     }
 
     @Override
@@ -186,54 +191,58 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-        scroll=0;
-        search="";
 
-        currentPageNo=0;
+        scroll = 0;
+        search = "";
+
+        currentPageNo = 0;
         if (productList != null)
             productList.clear();
-        productListApi(0,search);
+        productListApi(0, search);
+
+        CorporateHomeFragment parentFrag = ((CorporateHomeFragment)ProductsFragment.this.getParentFragment());
+        parentFrag.clearSearch();
     }
 
-    public void refreshApi(){
-        scroll=0;
-        search="";
-        currentPageNo=0;
+    public void refreshApi() {
+        scroll = 0;
+        search = "";
+        currentPageNo = 0;
         if (productList != null)
             productList.clear();
-        productListApi(0,search);
+        productListApi(0, search);
     }
 
     /**
      * Method is used for fetching the ads or product api
      */
     private void productListApi(int index, final String search) {
-        isLoading=true;
+        isLoading = true;
         swipeRefreshLayout.setRefreshing(true);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
-                index, 20, "product", "product_list",search);
+                index, 50, "product", "product_list", search);
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                isLoading=false;
+                isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
-                    ArrayList<ProductList> tempList=new ArrayList<ProductList>();
+                    ArrayList<ProductList> tempList = new ArrayList<ProductList>();
                     tempList = apiResponse.paylpad.productList;
-                    if(tempList!=null) {
-                        isLastPage=false;
+                    if (tempList != null) {
+                        isLastPage = false;
                         productList.addAll(tempList);
                         productAdaptor.notifyDataChanged();
-                    }else {
-                        isLastPage=true;
+                    } else {
+                        isLastPage = true;
                     }
-                    if(tempList==null&&search.isEmpty()) {
+                    if (tempList == null && search.isEmpty()) {
                         tvNoProductUploaded.setText(R.string.no_product_uploaded_yet);
                         tvNoProductUploaded.setVisibility(View.VISIBLE);
-                    }else if(tempList==null&&!search.isEmpty()) {
+                    } else if (tempList == null && !search.isEmpty()) {
                         tvNoProductUploaded.setText(R.string.no_search_found);
                         tvNoProductUploaded.setVisibility(View.VISIBLE);
-                    }else {
+                    } else {
                         tvNoProductUploaded.setVisibility(View.GONE);
                     }
 
@@ -241,7 +250,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                         tvNoProductUploaded.setVisibility(View.GONE);
 
                     }*/
-                    if(!search.isEmpty()) {
+                    if (!search.isEmpty()) {
                         if (tempList == null && currentPageNo == 0) {
                             tvNoProductUploaded.setText(R.string.no_search_found);
                             tvNoProductUploaded.setVisibility(View.VISIBLE);
@@ -253,14 +262,15 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
                 swipeRefreshLayout.setRefreshing(false);
-                isLoading=false;
+                isLoading = false;
             }
         });
     }
 
     /**
      * Method is used to show the popup with edit and delete option
-     *  @param v        view on which click is perfomed
+     *
+     * @param v        view on which click is perfomed
      * @param position position of item
      * @param product
      */
@@ -269,22 +279,28 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.edit_remove_product, popup.getMenu());
         popup.show();
-        showHideEdit(popup,product);
+        showHideEdit(popup, product);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Utils.hideKeyboard(getActivity());
                 switch (item.getItemId()) {
                     case R.id.edit:
-                        moveToActivity(position,"Edit");
+                        moveToActivity(position, "Edit");
                         break;
                     case R.id.remove:
-                        search="";
-                        deleteDialog(position);
-                      //  removeProductApi(position);
+                        search = "";
+                        Utils.deleteDialog(getString(R.string.txt_are_you_sure), getActivity(), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeProductApi(position);
+                            }
+                        });
+
+                        //  removeProductApi(position);
                         break;
                     case R.id.repost:
-                        moveToActivity(position,"Repost");
+                        moveToActivity(position, "Repost");
                         break;
                 }
                 return false;
@@ -292,30 +308,30 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         });
     }
 
-    private void moveToActivity(int position,String type) {
+    private void moveToActivity(int position, String type) {
 
         Bundle bundle = new Bundle();
 
         bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, productList.get(position));
-        bundle.putString("edit",type);
+        bundle.putString("edit", type);
         Intent intent = new Intent(getActivity(), RenewAdandProductActivity.class);
         intent.putExtras(bundle);
 
-        startActivityForResult(intent,AppConstant.INTENT_PRODUCT_DETAILS);
+        startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
 
         getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
+
     }
 
 
     public void searchProduct(ArrayList<ProductList> productList) {
 
-        if(this.productList!=null)
-        {
+        if (this.productList != null) {
             this.productList.clear();
             productAdaptor.notifyDataChanged();
         }
-        if(productAdaptor!=null){
+        if (productAdaptor != null) {
 
             productAdaptor.updateProductList(productList);
         }
@@ -323,12 +339,11 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     }
 
 
-
     public void searchProduct(String query) {
-        if(productList!=null)
+        if (productList != null)
             productList.clear();
-        currentPageNo=0;
-        productListApi(0,query);
+        currentPageNo = 0;
+        productListApi(0, query);
 
     }
 
@@ -337,7 +352,9 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         onRefresh();
     }
 
-    /** Method is used to remove the product
+    /**
+     * Method is used to remove the product
+     *
      * @param position
      */
     private void removeProductApi(final int position) {
@@ -351,7 +368,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             public void onSuccess(ApiResponse apiResponse) {
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
-                    Utils.showToast(getActivity(),"Deleted successfully.");
+                    Utils.showToast(getActivity(), "Deleted successfully.");
                     productAdaptor.delete(position);
                    /* productAdaptor.notifyDataChanged();
                     refreshApi();*/
@@ -364,17 +381,19 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             }
         });
     }
+
     private void showHideEdit(PopupMenu popup, ProductList product) {
 
         Menu popupMenu = popup.getMenu();
-        if(product.getIsExpired()>0) {
+        if (product.getIsExpired() > 0) {
             popupMenu.findItem(R.id.repost).setVisible(true);
             popupMenu.findItem(R.id.edit).setVisible(false);
-        }else {
+        } else {
             popupMenu.findItem(R.id.edit).setVisible(true);
             popupMenu.findItem(R.id.repost).setVisible(false);
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -383,17 +402,18 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 case AppConstant.INTENT_RENEW_CODE:
                     onRefresh();
                     break;
-            case AppConstant.INTENT_PRODUCT_DETAILS:
-                if(productAdaptor!=null) {
-                    productAdaptor.notifyDataChanged();
-                    productAdaptor.notifyDataSetChanged();
-                }
-               refreshApi();
-                break;
+                case AppConstant.INTENT_PRODUCT_DETAILS:
+                    if (productAdaptor != null) {
+                        productAdaptor.notifyDataChanged();
+                        productAdaptor.notifyDataSetChanged();
+                    }
+                    refreshApi();
+                    break;
             }
 
         }
     }
+
     private void moveToDetails(ProductList product) {
         Bundle bundle = new Bundle();
 
@@ -438,22 +458,22 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            if(viewType== TYPE_PRODUCT){
-                return new ProductAdaptor.ProductHolder(inflater.inflate(R.layout.rec_item_add_product,parent,false));
-            }else{
-                return new ProductAdaptor.LoadHolder(inflater.inflate(R.layout.progress_item,parent,false));
+            if (viewType == TYPE_PRODUCT) {
+                return new ProductAdaptor.ProductHolder(inflater.inflate(R.layout.rec_item_add_product, parent, false));
+            } else {
+                return new ProductAdaptor.LoadHolder(inflater.inflate(R.layout.progress_item, parent, false));
             }
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
-            if(position>=getItemCount()-1 && isMoreDataAvailable && !isLoading && loadMoreListener!=null){
+            if (position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
                 isLoading = true;
                 loadMoreListener.onLoadMore();
             }
 
-            if(getItemViewType(position)== TYPE_PRODUCT){
+            if (getItemViewType(position) == TYPE_PRODUCT) {
                 final ProductList product = productLists.get(position);
 
                 ((ProductAdaptor.ProductHolder) holder).checkboxLike.setText(Utils.format(1000));
@@ -461,30 +481,50 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 ((ProductAdaptor.ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showPopup(v, position,product);
+                        showPopup(v, position, product);
                     }
                 });
                 ((ProductAdaptor.ProductHolder) holder).tvProductTitle.setText(Utils.capitlizeText(product.getProductname()));
                 ((ProductAdaptor.ProductHolder) holder).tvDesciption.setText(Utils.capitlizeText(product.getDescription()));
-                  ((ProductAdaptor.ProductHolder) holder).tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(product.getCreatedTime()), getActivity()));
+                ((ProductAdaptor.ProductHolder) holder).tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(product.getCreatedTime()), getActivity()));
                 ((ProductAdaptor.ProductHolder) holder).cardItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         moveToDetails(product);
                     }
                 });
-                String status="Ongoing";
-                if(product.getIsExpired()>0){
+                String status = "Ongoing";
+                if (product.getIsExpired() > 0) {
                     ((ProductAdaptor.ProductHolder) holder).tvStatus.setTextColor(Color.RED);
-                    status="Expired";
-                }else{
+                    status = "Expired";
+                } else {
                     ((ProductAdaptor.ProductHolder) holder).tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
 
                 }
                 ((ProductAdaptor.ProductHolder) holder).tvStatus.setText(status);
-                Glide.with(context)
+           /*     Glide.with(context)
                         .load(product.getImagePath())
+                        .into(((ProductAdaptor.ProductHolder) holder).imvOfAds);*/
+
+                ((ProductAdaptor.ProductHolder) holder).pgrImage.setVisibility(View.VISIBLE);
+                Glide.with(context)
+                        .load(product.getImagePath()).placeholder(R.drawable.ic_upload_image)
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                ((ProductAdaptor.ProductHolder) holder).pgrImage.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
                         .into(((ProductAdaptor.ProductHolder) holder).imvOfAds);
+
+
             }
 
 
@@ -493,9 +533,9 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
         @Override
         public int getItemViewType(int position) {
-            if(productLists.get(position).getType().equals("ads")||productLists.get(position).getType().equals("product")){
+            if (productLists.get(position).getType().equals("ads") || productLists.get(position).getType().equals("product")) {
                 return TYPE_PRODUCT;
-            }else{
+            } else {
                 return TYPE_LOAD;
             }
         }
@@ -509,10 +549,11 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             productList.remove(position);
             productAdaptor.notifyDataSetChanged();
           /*  notifyItemRemoved(position);*/
-            if(productList!=null)
-                if(productList.size()==0)
+            if (productList != null)
+                if (productList.size() == 0)
                     tvNoProductUploaded.setVisibility(View.VISIBLE);
         }
+
         public void updateProductList(ArrayList<ProductList> productLists) {
             if (productLists != null) {
                 Utils.showToast(getActivity(), "update call" + productLists.size());
@@ -523,12 +564,13 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
     /* VIEW HOLDERS */
 
-        class ProductHolder extends RecyclerView.ViewHolder{
+        class ProductHolder extends RecyclerView.ViewHolder {
             public ImageView imvOfAds;
             public TextView tvProductTitle, tvStatus, tvDesciption, tvTime;
             public CheckBox checkboxLike, checkboxShare;
             public ImageButton imvBtnEditRemove;
             public CardView cardItem;
+            public ProgressBar pgrImage;
 
             public ProductHolder(View view) {
                 super(view);
@@ -541,10 +583,11 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 imvBtnEditRemove = (ImageButton) view.findViewById(R.id.imvBtnEditRemove);
                 tvTime = (TextView) view.findViewById(R.id.tvTime);
                 cardItem = (CardView) view.findViewById(R.id.card_view);
+                pgrImage = (ProgressBar) view.findViewById(R.id.pgrImage);
             }
         }
 
-        class LoadHolder extends RecyclerView.ViewHolder{
+        class LoadHolder extends RecyclerView.ViewHolder {
             public LoadHolder(View itemView) {
                 super(itemView);
             }
@@ -557,11 +600,10 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         /* notifyDataSetChanged is final method so we can't override it
              call adapter.notifyDataChanged(); after update the list
              */
-        public void notifyDataChanged(){
+        public void notifyDataChanged() {
             notifyDataSetChanged();
             isLoading = false;
         }
-
 
 
         public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
@@ -571,12 +613,12 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
     }
 
-    interface OnLoadMoreListener{
+    interface OnLoadMoreListener {
         void onLoadMore();
     }
 
-    public void deleteDialog(final int position){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.AppThemeAddRenew);
+    public void deleteDialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppThemeAddRenew);
         builder.setMessage("Are you sure you want to delete this item?");
         builder.setCancelable(true);
 
@@ -602,7 +644,5 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         alertDialog.getButton(alertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorCorporateText));
 
     }
-
-
 
 }

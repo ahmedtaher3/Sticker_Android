@@ -3,11 +3,13 @@ package com.sticker_android.view;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-import com.sticker_android.R;
 import com.sticker_android.utils.Utils;
 
 import java.util.Calendar;
@@ -27,7 +29,7 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
     private int d = myCalendar.get(Calendar.DAY_OF_MONTH);
     private DatePickerDialog pickerDialog;
 
-    public SetDate(TextView view, Context ctx,int style) {
+    public SetDate(TextView view, Context ctx, int style) {
         this.view = view;
         this.ctx = ctx;
         this.view.setOnClickListener(this);
@@ -35,7 +37,17 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
         y = myCalendar.get(Calendar.YEAR);
         m = myCalendar.get(Calendar.MONTH);
         d = myCalendar.get(Calendar.DAY_OF_MONTH);
-        pickerDialog = new DatePickerDialog(ctx, style,this, y, m, d);
+
+        pickerDialog = new DatePickerDialog(ctx, style, this, y, m, d){
+            @Override
+            protected void onCreate(Bundle savedInstanceState) {
+                super.onCreate(savedInstanceState);
+                if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP){
+                    // do something for phones running an SDK before lollipop
+                    getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+            }
+        };
         //  this.view.setText(Utils.formatDate(ctx, y, m, d));
     }
 
@@ -51,11 +63,11 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
         y = year;
         m = monthOfYear;
         d = dayOfMonth;
-        this.view.setText(Utils.dateModify(y+"-"+(m+1)+"-"+d));
+        this.view.setText(Utils.dateModify(y + "-" + (m + 1) + "-" + d));
     }
 
     public String getChosenDate() {
-        return y + "-" + (m+1) + "-" + d;
+        return y + "-" + (m + 1) + "-" + d;
     }
 
     public void setDate(String dateQualification) {
@@ -64,14 +76,17 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
         m = Integer.parseInt(dateQualification.split("-")[1]) - 1;
         d = Integer.parseInt(dateQualification.split("-")[2]);
         pickerDialog.updateDate(y, m, d);
-        this.view.setText(Utils.dateModify(y+"-"+(m+1)+"-"+d));
+        this.view.setText(Utils.dateModify(y + "-" + (m + 1) + "-" + d));
     }
+
     public void setMinDate(String minDate) {
         //2017-05-08
         y = Integer.parseInt(minDate.split("-")[0]);
         m = Integer.parseInt(minDate.split("-")[1]) - 1;
         d = Integer.parseInt(minDate.split("-")[2]);
-        pickerDialog.getDatePicker().setMinDate(m/d/y);
+
+     //   pickerDialog.getDatePicker().setMinDate(Utils.convertStringToDate(minDate).getTime() - 1000);
+        pickerDialog.getDatePicker().setMinDate(Utils.changeDays(minDate).getTime() - 1000);
 
     }
 }

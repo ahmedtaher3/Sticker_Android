@@ -14,6 +14,10 @@ public class CorporateCategory {
     @SerializedName("category_name")
      public   String categoryName;
 
+    public CorporateCategory(int categoryId, String categoryName) {
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+    }
 
     @Override
     public String toString() {

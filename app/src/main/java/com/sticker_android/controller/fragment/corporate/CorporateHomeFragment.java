@@ -1,10 +1,13 @@
 package com.sticker_android.controller.fragment.corporate;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -20,7 +23,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.corporate.addnew.AddNewCorporateActivity;
@@ -31,11 +33,13 @@ import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.controller.fragment.corporate.product.ProductsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.ProductList;
+import com.sticker_android.model.interfaces.CloseSearch;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.fragmentinterface.UpdateToolbarTitle;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.lang.reflect.Field;
@@ -46,7 +50,7 @@ import retrofit2.Call;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CorporateHomeFragment extends BaseFragment implements View.OnClickListener, SearchView.OnQueryTextListener {
+public class CorporateHomeFragment extends BaseFragment implements View.OnClickListener, SearchView.OnQueryTextListener{
 
     private FloatingActionButton fabAddNew;
     private ViewPager viewPager;
@@ -58,6 +62,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     private Call<ApiResponse> apiResponseCall;
     private SearchView searchView;
     private MenuItem item;
+    private UpdateToolbarTitle mUpdateToolbarCallback;
 
     public CorporateHomeFragment() {
         // Required empty public constructor
@@ -80,9 +85,20 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         setHasOptionsMenu(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //   mUpdateToolbarCallback.updateToolbarTitle(getResources().getString(R.string.txt_home));
+            }
+        }, 300);
         return view;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     private void init() {
 
@@ -161,6 +177,12 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     }
 
 
+    public void clearSearch() {
+        if(searchView!=null)
+        MenuItemCompat.collapseActionView(item);
+    }
+
+
     public class TabListeners implements TabLayout.OnTabSelectedListener {
 
         private ViewPager viewPager;
@@ -202,9 +224,10 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
         item = menu.findItem(R.id.search);
         searchView = (SearchView) MenuItemCompat.getActionView(item);
-        setSearchTextColour(searchView);
+      //  setSearchTextColour(searchView);
         setSearchIcons(searchView);
         searchView.setOnQueryTextListener(this);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,17 +244,11 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         EditText searchBox = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
         searchBox.setTextColor(getActivity().getResources().getColor(R.color.colorWhiteTransparent));
         searchBox.setHintTextColor(getActivity().getResources().getColor(R.color.colorTabSearchHint));
-        searchBox.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
         searchBox.setTextColor(Color.WHITE);
         searchBox.setText(getSelectedType());
         searchView.setQueryHint(getSelectedType());
-        ImageView searchButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_button);
-        searchButton.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP);
-        searchButton.setImageResource(R.drawable.ic_search);
-        ImageView searchIcon = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
-        searchIcon.setImageResource(R.drawable.ic_search);
-        SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchAutoComplete.setHintTextColor(Color.WHITE);
+       SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchAutoComplete.setHintTextColor(getResources().getColor(R.color.colorWhiteTransparent));
         searchAutoComplete.setTextColor(Color.WHITE);
     }
 
@@ -255,20 +272,28 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     public boolean onQueryTextSubmit(String query) {
         //   Toast.makeText(getApplicationContext(),"wjcj",Toast.LENGTH_SHORT).show();
 
+        Utils.hideKeyboard(getActivity());
         String type = getSelectedType();
         if (apiResponseCall != null) {
             apiResponseCall.cancel();
         }
         //   searchApiCall(query, type);
 
-        searchResult(query);
-
-        Utils.hideKeyboard(getActivity());
-        searchView.setIconified(true);
+        if (query.isEmpty()) {
+            Utils.showToast(getActivity(), "Search cannot be empty.");
+        } else
+            searchResult(query);
+        searchView.setIconified(false);
         searchView.clearFocus();
-        searchView.setQuery("", false);
-        MenuItemCompat.collapseActionView(item);
+        //   MenuItemCompat.collapseActionView(item);
         return true;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (item != null)
+            MenuItemCompat.collapseActionView(item);
     }
 
     /**
@@ -363,5 +388,25 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         }
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mUpdateToolbarCallback = (UpdateToolbarTitle) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+    }
+
+
+    public void refreshSearch(){
+
+
+
+    }
 
 }

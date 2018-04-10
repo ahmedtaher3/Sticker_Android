@@ -1,5 +1,6 @@
 package com.sticker_android.controller.adaptors;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -23,14 +24,11 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         mFragmentList.get(position);
         return mFragmentList.get(position);
-        // Which Fragment should be dislpayed by the viewpager for the given position
-        // In my case we are showing up only one fragment in all the three tabs so we are
-        // not worrying about the position and just returning the TabFragment
-    }
+     }
 
     @Override
     public int getCount() {
-        return mFragmentList.size();           // As there are only 3 Tabs
+        return mFragmentList.size();
     }
 
     public void addFragment(Fragment fragment, String title) {
@@ -43,4 +41,10 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         return mFragmentTitleList.get(position);
     }
 
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
+
+
+    }
 }

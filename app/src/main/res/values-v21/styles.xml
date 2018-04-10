@@ -6,4 +6,13 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
+
+
+    <style name="AppThemeAddRenew" parent="Theme.AppCompat.Light.Dialog">
+        <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/colorCorporateText</item>
+     <!--   <item name="android:windowBackground">@android:color/transparent</item>&ndash;&gt;
+-->
+    </style>
+
 </resources>

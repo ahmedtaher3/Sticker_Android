@@ -42,6 +42,7 @@ import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.UserTypeEnum;
+import com.sticker_android.utils.fragmentinterface.UpdateToolbarTitle;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -50,7 +51,7 @@ import java.util.Locale;
 import retrofit2.Call;
 
 public class CorporateHomeActivity extends AppBaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener {
+        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener, UpdateToolbarTitle {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
@@ -58,6 +59,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     private User user;
     private AlertDialog languageDialog;
     private String TAG = CorporateHomeActivity.class.getSimpleName();
+    Fragment fragmentClass = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,13 +167,20 @@ public class CorporateHomeActivity extends AppBaseActivity implements
 
     @Override
     public void onBackPressed() {
-        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
+      /*  TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         textView.setText(getResources().getString(R.string.txt_home));
         toolbar.setTitle("");
+      */
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+            int count = getSupportFragmentManager().getBackStackEntryCount();
+            for (int i = 0; i < count; i++) {
+                if (getSupportFragmentManager().findFragmentByTag( getResources().getString(R.string.txt_home)) != null)
+                    if ( getResources().getString(R.string.txt_home) == getSupportFragmentManager().findFragmentByTag( getResources().getString(R.string.txt_home)).getTag()) {
+                        getFragmentManager().popBackStack();
+                    }
+            }
         } else {
             super.onBackPressed();
         }
@@ -181,60 +190,71 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        String tag = getResources().getString(R.string.txt_home);
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Fragment fragmentClass = null;
+
         if (id == R.id.nav_home) {
             fragmentClass = new CorporateHomeFragment();
-            textView.setText(getResources().getString(R.string.txt_home));
+            //textView.setText(getResources().getString(R.string.txt_home));
+            tag = getResources().getString(R.string.txt_home);
             // Handle the camera action
         } else if (id == R.id.nav_report) {
             fragmentClass = new CorporateReportFragment();
-            textView.setText("Report");
+            textView.setText(R.string.txt_report);
+            tag = getResources().getString(R.string.txt_report);
             //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_profile) {
             //  startNewActivity(ViewProfileActivity.class);
             fragmentClass = new ProfileFragment();
             textView.setText(getResources().getString(R.string.txt_myprofile));
+            tag = getResources().getString(R.string.txt_myprofile);
             overridePendingTransition(R.anim.activity_animation_enter,
                     R.anim.activity_animation_exit);
         } else if (id == R.id.nav_account_setting) {
             fragmentClass = AccountSettingFragment.newInstance("", "");
             textView.setText(getResources().getString(R.string.txt_account_setting));
+            tag = getResources().getString(R.string.txt_account_setting);
         } else if (id == R.id.nav_logout) {
             userLogout();
-        }else if(id==R.id.nav_corp_contest){
+        } else if (id == R.id.nav_corp_contest) {
             textView.setText(getResources().getString(R.string.txt_contest));
-            fragmentClass=new CorporateContestFragment();
-        }else if(id==R.id.nav_content_for_approval){
+            fragmentClass = new CorporateContestFragment();
+            tag = getResources().getString(R.string.txt_contest);
+        } else if (id == R.id.nav_content_for_approval) {
             textView.setText(getResources().getString(R.string.txt_content_approval));
-            fragmentClass=new CorporateContentApprovalFragment();
+            fragmentClass = new CorporateContentApprovalFragment();
+            tag = getResources().getString(R.string.txt_content_approval);
         }
-
         // Insert the fragment by replacing any existing fragment
         setUserDataIntoNaviagtion();
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentClass != null) {
-            replaceFragment(fragmentClass);
+            if (fragmentClass instanceof CorporateHomeFragment) {
+            } else {
+                if (!isAdded(tag))
+                    replaceFragment(fragmentClass, tag);
+            }
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public void replaceFragment(Fragment fragmentClass) {
-        FragmentTransaction fragmentTransaction =
+    public void replaceFragment(Fragment fragmentClass, String tag) {
+
+        FragmentTransaction fragmentTransaction   =
                 getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
                 R.anim.activity_animation_enter, R.anim.activity_animation_exit);
         fragmentTransaction.replace(R.id.container_home,
-                fragmentClass);
-        int count = getFragmentManager().getBackStackEntryCount();
-        fragmentTransaction.addToBackStack(null);
+                fragmentClass, tag);
+        int count  =    getFragmentManager().getBackStackEntryCount();
+        fragmentTransaction.addToBackStack(tag);
         fragmentTransaction.commit();
-    }
 
+    }
 
     private void userLogout() {
         appPref.saveUserObject(new User());
@@ -247,6 +267,17 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         finish();
     }
 
+    public boolean isAdded(String tag) {
+
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        for (int i = 0; i < count; i++) {
+            if (getSupportFragmentManager().findFragmentByTag(tag) != null)
+                if (tag == getSupportFragmentManager().findFragmentByTag(tag).getTag()) {
+                    return true;
+                }
+        }
+        return false;
+    }
 
     private void openLanguageDialog() {
 
@@ -338,7 +369,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     private void showFragmentManually() {
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container_home, new CorporateHomeFragment());
+        transaction.replace(R.id.container_home, new CorporateHomeFragment(), getResources().getString(R.string.txt_home));
         transaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
                 R.anim.activity_animation_enter, R.anim.activity_animation_exit);
         transaction.commit();
@@ -354,8 +385,8 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             mProfileFragment.onActivityResult(requestCode, resultCode, data);
         }
-        if(resultCode==RESULT_OK){
-            switch (requestCode){
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
                 case 11:
                     for (Fragment fragment : getSupportFragmentManager().getFragments()) {
                         fragment.onActivityResult(requestCode, resultCode, data);
@@ -374,4 +405,10 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     }
 
 
+    @Override
+    public void updateToolbarTitle(String name) {
+        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
+        textView.setText(name);
+
+    }
 }

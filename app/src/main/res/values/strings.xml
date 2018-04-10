@@ -138,6 +138,11 @@
     <string name="no_ads_uploaded_yet">No Ads uploaded Yet.</string>
     <string name="no_product_uploaded_yet">No Products uploaded Yet.</string>
     <string name="no_search_found">No Search found.</string>
+    <string name="txt_are_you_sure">Are you sure you want to delete this item?</string>
+    <string name="txt_delete_resources">Deleted successfully</string>
+    <string name="txt_report">Report</string>
+    <string name="write_some_description">Write something here...</string>
+    <string name="select_category_txt">Select a Category</string>
 
 
 </resources>

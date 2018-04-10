@@ -14,9 +14,13 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
@@ -47,6 +51,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
     public ImageButton imvBtnEditRemove;
 
     TimeUtility timeUtility=new TimeUtility();
+    private ProgressBar pgrImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,9 +97,25 @@ public class ProductDetailsActivity extends AppBaseActivity {
         tvProductTitle.setText(productObj.getProductname());
         tvDesciption.setText(productObj.getDescription());
         tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productObj.getCreatedTime()), getActivity()));
+
         Glide.with(this)
-                .load(productObj.getImagePath())
+                .load(productObj.getImagePath()).placeholder(R.drawable.ic_upload_image)
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                       pgrImage.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
                 .into(imvOfAds);
+
+
     }
     /**
      * Method is used to set the toolbar background
@@ -143,6 +164,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
         checkboxShare   =    (CheckBox) findViewById(R.id.checkboxShare);
         imvBtnEditRemove =   (ImageButton) findViewById(R.id.imvBtnEditRemove);
         tvTime           =   (TextView) findViewById(R.id.tvTime);
+        pgrImage         =   (ProgressBar)findViewById(R.id.pgrImage);
 
     }
 
@@ -171,7 +193,13 @@ public class ProductDetailsActivity extends AppBaseActivity {
                         moveToActivity("Edit");
                         break;
                     case R.id.remove:
-                        deleteDialog();
+                        Utils.deleteDialog(getString(R.string.txt_are_you_sure), getActivity(), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeProductApi();
+                            }
+                        });
+
                      //   removeProductApi();
                         break;
                     case R.id.repost:
@@ -198,7 +226,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
             public void onSuccess(ApiResponse apiResponse) {
                progressDialogHandler.hide();
                 if (apiResponse.status) {
-                    Utils.showToast(getActivity(),"Deleted successfully");
+                    Utils.showToast(getActivity(),getString(R.string.txt_delete_resources));
                     setResult(RESULT_OK);
                     onBackPressed();
                 }

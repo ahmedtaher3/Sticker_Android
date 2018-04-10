@@ -162,7 +162,14 @@
     <style name="AppThemeAddRenew" parent="Theme.AppCompat.Light.Dialog">
         <!-- Customize your theme here. -->
         <item name="colorAccent">@color/colorCorporateText</item>
-
+   <!--    <item name="android:windowBackground">@android:color/transparent</item>&ndash;&gt;
+-->
     </style>
+    <style name="AppThemeDialog" parent="Theme.AppCompat.Light.Dialog">
+        <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/colorCorporateText</item>
+           <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
 
 </resources>
