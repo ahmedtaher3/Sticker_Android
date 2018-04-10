@@ -10,15 +10,19 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.sticker_android.R;
@@ -173,7 +177,7 @@ public class Utils {
      * @param string
      */
     public static void showToast(Context context, String string) {
-            Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -304,7 +308,19 @@ public class Utils {
         return dater;
     }
 
+    public static void setTabLayoutDivider(TabLayout tabLayout){
+        LinearLayout linearLayout = (LinearLayout)tabLayout.getChildAt(0);
+        linearLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setColor(Color.WHITE);
+        drawable.setSize(3, 1);
+        linearLayout.setDividerPadding(40);
+        linearLayout.setDividerDrawable(drawable);
+    }
 
+    public static String getFileName(String userId){
+        return userId  + "/" +  System.currentTimeMillis();
+    }
 
     public static String capitlizeText(String name) {
 
@@ -336,32 +352,6 @@ public class Utils {
         TimeZone tz = Calendar.getInstance().getTimeZone();
         System.out.println(tz.getDisplayName());
         return tz.getID();
-    }
-
-
-    public static void dialogRemove(Context context, View.OnClickListener onClickListener){
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-        builder1.setMessage("Are you sure you want to delete this item?");
-        builder1.setCancelable(true);
-
-        builder1.setPositiveButton(
-                "Yes",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        builder1.setNegativeButton(
-                "No",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
     }
 
 }

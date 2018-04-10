@@ -32,11 +32,11 @@ public class SplashActivity extends AppBaseActivity {
         waitForFewSecond();
         setSelectedLangage();
         changeStatusBarColor(getResources().getColor(R.color.colorFanText));
-
     }
 
     private void init() {
-        appPref=new AppPref(this);
+        appPref = new AppPref(this);
+        appPref.clearCategoryList();
     }
 
     private void setSelectedLangage() {

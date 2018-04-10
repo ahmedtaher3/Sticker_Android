@@ -24,5 +24,7 @@
     <color name="colorstatusBarDesigner">#b065fe</color>
     <color name="colorBtnBackground">#3F5B6C</color>
     <color name="colorFloatingCorporate">#a54dfd</color>
+    <color name="colorFloatingDesigner">#1d93FB</color>
     <color name="colorHomeGreen">#06c85d</color>
+    <color name="icon_color">#FF5d5d5f</color>
 </resources>

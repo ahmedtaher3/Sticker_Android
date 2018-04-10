@@ -10,6 +10,10 @@ import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.Category;
+import com.sticker_android.model.data.CategoryDataWrapper;
+
+import java.util.ArrayList;
 
 /**
  * Make Class shared Preference to set and get the response.
@@ -17,21 +21,18 @@ import com.sticker_android.model.User;
 public class AppPref {
 
     private Context context;
+    public static final String SHARED_PREFS_NAME = "sport_widget";
 
     public AppPref(Context context) {
         this.context = context;
     }
 
-
-    public User getUserInfo()
-    {
+    public User getUserInfo() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 
         String userInfo = settings.getString("user_data", null);
-        User user = new Gson().fromJson(userInfo,
-                User.class);
-        if(user ==null)
-        {
+        User user = new Gson().fromJson(userInfo, User.class);
+        if(user ==null) {
             user =new User();
         }
         return user;
@@ -42,6 +43,37 @@ public class AppPref {
         SharedPreferences.Editor prefsEditor = sp.edit();
         prefsEditor.putString("user_data", new Gson().toJson(user));
         prefsEditor.apply();
+    }
+
+    public void saveCategoryList(ArrayList<Category> categories) {
+        CategoryDataWrapper categoryDataWrapper = new CategoryDataWrapper();
+        categoryDataWrapper.categories = categories;
+        SharedPreferences sp = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
+        SharedPreferences.Editor prefsEditor = sp.edit();
+        prefsEditor.putString("category_data", new Gson().toJson(categoryDataWrapper));
+        prefsEditor.commit();
+    }
+
+    public ArrayList<Category> getCategoryList(){
+        SharedPreferences settings = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
+        String categoryInfo = settings.getString("category_data", null);
+        CategoryDataWrapper categoryDataWrapper = new Gson().fromJson(categoryInfo, CategoryDataWrapper.class);
+
+        if(categoryDataWrapper == null
+                || (categoryDataWrapper != null && categoryDataWrapper.categories != null
+                && categoryDataWrapper.categories.size() == 0)){
+            return new ArrayList<>();
+        }
+        else{
+            return categoryDataWrapper.categories;
+        }
+    }
+
+    public void clearCategoryList(){
+        SharedPreferences sp = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
+        SharedPreferences.Editor prefsEditor = sp.edit();
+        prefsEditor.remove("category_data");
+        prefsEditor.commit();
     }
 
   /*

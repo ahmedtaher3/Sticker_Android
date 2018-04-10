@@ -2,8 +2,6 @@ package com.sticker_android.controller.activities.corporate.addnew;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -23,7 +21,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.mobileconnectors.s3.transfermanager.Transfer;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
@@ -32,7 +29,7 @@ import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.model.User;
-import com.sticker_android.model.corporateproduct.CorporateCategory;
+import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -70,7 +67,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private String mExpireDate = "2018-04-06";
     private SetDate setDate;
     private Spinner spnrCategory;
-    private ArrayList<CorporateCategory> corporateCategories = new ArrayList<>();
+    private ArrayList<Category> corporateCategories = new ArrayList<>();
 
     private final int PROFILE_CAMERA_IMAGE = 0;
     private final int PROFILE_GALLERY_IMAGE = 1;
@@ -134,7 +131,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
         if (corporateCategories != null) {
             CategoryAdapter categoryAdapter=new CategoryAdapter(this,corporateCategories);
-          //  ArrayAdapter<CorporateCategory> adapter = new ArrayAdapter<CorporateCategory>(this, android.R.layout.simple_spinner_item, corporateCategories);
+          //  ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(this, android.R.layout.simple_spinner_item, corporateCategories);
           //  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spnrCategory.setAdapter(
                     new NothingSelectedSpinnerAdapter(
@@ -206,7 +203,6 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     @Override
     protected boolean isValidData() {
 
-
         if(mCapturedImageUrl==null){
             Utils.showToast(this, "Please upload a image.");
             return false;
@@ -243,6 +239,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         sec.setText(getString(R.string.txt__add_products_frag)); // set the Text for the first Tab
         tabLayout.addTab(sec);
 
+        Utils.setTabLayoutDivider(tabLayout);
     }
 
     @Override
@@ -478,14 +475,15 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
          * Begins to upload the file specified by the file path.
          */
     private void beginUpload(String filePath) {
-       final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+       final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
         progressDialogHandler.show();
         if (filePath == null) {
             Toast.makeText(this, "Could not find the filepath of the selected file",
                     Toast.LENGTH_LONG).show();
             return;
         }
-        final String fileName = userdata.getId() + "_" + System.currentTimeMillis();
+        final String fileName = Utils.getFileName(userdata.getId());
+
         File file = new File(filePath);
         TransferObserver observer = new AWSUtil().getTransferUtility(this).upload(AppConstant.BUCKET_NAME, fileName,
                 file);
@@ -515,5 +513,4 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
         });
     }
-
 }

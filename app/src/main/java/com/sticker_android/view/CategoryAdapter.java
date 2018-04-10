@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.sticker_android.R;
-import com.sticker_android.model.corporateproduct.CorporateCategory;
+import com.sticker_android.model.corporateproduct.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +19,12 @@ import java.util.List;
  * Created by user on 6/4/18.
  */
 
-public class CategoryAdapter extends ArrayAdapter<CorporateCategory> {
+public class CategoryAdapter extends ArrayAdapter<Category> {
 
     private Context mContext;
-    private List<CorporateCategory> categoryList = new ArrayList<>();
+    private List<Category> categoryList = new ArrayList<>();
 
-    public CategoryAdapter(@NonNull Context context, ArrayList<CorporateCategory> list) {
+    public CategoryAdapter(@NonNull Context context, ArrayList<Category> list) {
         super(context, 0, list);
         mContext = context;
         categoryList = list;

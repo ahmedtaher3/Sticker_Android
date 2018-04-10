@@ -138,6 +138,13 @@
     <string name="no_ads_uploaded_yet">No Ads uploaded Yet.</string>
     <string name="no_product_uploaded_yet">No Products uploaded Yet.</string>
     <string name="no_search_found">No Search found.</string>
-
+    <string name="emoji">Emoji</string>
+    <string name="gif">GIF</string>
+    <string name="stickers">Stickers</string>
+    <string name="press_again_to_exit">Press again to exit.</string>
+    <string name="select_category">Select Category</string>
+    <string name="category">Category</string>
+    <string name="select_design_category">Select Category</string>
+    <string name="loading">Loading...</string>
 
 </resources>
