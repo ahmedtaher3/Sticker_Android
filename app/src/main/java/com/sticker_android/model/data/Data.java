@@ -7,16 +7,19 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Data {
+
     @SerializedName("id")
     private int id;
+
     @SerializedName("title")
     private String title;
+
     @SerializedName("info_text")
     private String infoText;
+
     @SerializedName("email")
     private String email;
+
     @SerializedName("mobile")
     private String mobile;
-
-
 }

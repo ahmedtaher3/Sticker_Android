@@ -10,17 +10,19 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.sticker_android.R;
@@ -307,6 +309,19 @@ public class Utils {
         return dater;
     }
 
+    public static void setTabLayoutDivider(TabLayout tabLayout){
+        LinearLayout linearLayout = (LinearLayout)tabLayout.getChildAt(0);
+        linearLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setColor(Color.WHITE);
+        drawable.setSize(3, 1);
+        linearLayout.setDividerPadding(40);
+        linearLayout.setDividerDrawable(drawable);
+    }
+
+    public static String getFileName(String userId){
+        return userId  + "/" +  System.currentTimeMillis();
+    }
 
     public static String capitlizeText(String name) {
 
@@ -341,7 +356,6 @@ public class Utils {
         System.out.println(tz.getDisplayName());
         return tz.getID();
     }
-
 
     public static void deleteDialog(String message, Activity activity, DialogInterface.OnClickListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeAddRenew);

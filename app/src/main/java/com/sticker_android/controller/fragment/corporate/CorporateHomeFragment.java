@@ -4,7 +4,6 @@ package com.sticker_android.controller.fragment.corporate;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -20,8 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.sticker_android.R;
@@ -32,8 +29,7 @@ import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.controller.fragment.corporate.product.ProductsFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.corporateproduct.ProductList;
-import com.sticker_android.model.interfaces.CloseSearch;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -68,7 +64,6 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,6 +74,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         setViewReferences(view);
         setViewListeners();
         setupViewPager();
+        Utils.setTabLayoutDivider(tabLayout);
         addFragmentToTab();
         setSelectedTabColor();
         setBackground();
@@ -130,7 +126,6 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     }
 
     private void init() {
-
         appPref = new AppPref(getActivity());
     }
 
@@ -140,11 +135,8 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
     @Override
     protected void setViewListeners() {
-
         fabAddNew.setOnClickListener(this);
-
         tabLayout.addOnTabSelectedListener(new TabListeners(viewPager));
-
     }
 
     @Override
@@ -152,7 +144,6 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         fabAddNew = (FloatingActionButton) view.findViewById(R.id.fabAddNew);
         viewPager = (ViewPager) view.findViewById(R.id.view_pager);
         tabLayout = (TabLayout) view.findViewById(R.id.act_landing_tab);
-
     }
 
     private void setSelectedTabColor() {
@@ -231,7 +222,6 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             if (searchView != null) {
                 MenuItemCompat.collapseActionView(item);
             }
-
         }
 
 
@@ -267,18 +257,23 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
     }
 
-
     private void setSearchTextColour(SearchView searchView) {
 
-        EditText searchBox = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
+        /*EditText searchBox = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
         searchBox.setTextColor(getActivity().getResources().getColor(R.color.colorWhiteTransparent));
         searchBox.setHintTextColor(getActivity().getResources().getColor(R.color.colorTabSearchHint));
         searchBox.setTextColor(Color.WHITE);
         searchBox.setText(getSelectedType());
         searchView.setQueryHint(getSelectedType());
-       SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchAutoComplete.setHintTextColor(getResources().getColor(R.color.colorWhiteTransparent));
-        searchAutoComplete.setTextColor(Color.WHITE);
+<<<<<<< HEAD
+        ImageView searchButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_button);
+        searchButton.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP);
+        searchButton.setImageResource(R.drawable.ic_search);
+        ImageView searchIcon = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
+        searchIcon.setImageResource(R.drawable.ic_search);
+        SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchAutoComplete.setHintTextColor(Color.WHITE);
+        searchAutoComplete.setTextColor(Color.WHITE);*/
     }
 
 
@@ -374,7 +369,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
 
-                    showSearchResultApi(apiResponse.paylpad.productList);
+                    showSearchResultApi(apiResponse.paylpad.product);
                 }
             }
 
@@ -388,14 +383,14 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
     }
 
-    private void showSearchResultApi(ArrayList<ProductList> productList) {
+    private void showSearchResultApi(ArrayList<Product> product) {
 
         int tab = tabLayout.getSelectedTabPosition();
         Fragment fragment = adapter.getItem(tab);
         if (fragment instanceof AdsFragment) {
-            ((AdsFragment) fragment).searchProduct(productList);
+            ((AdsFragment) fragment).searchProduct(product);
         } else if (fragment instanceof ProductsFragment)
-            ((ProductsFragment) fragment).searchProduct(productList);
+            ((ProductsFragment) fragment).searchProduct(product);
 
     }
 

@@ -1,6 +1,5 @@
 package com.sticker_android.controller.activities.corporate.productdetails;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,9 +24,8 @@ import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
-import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.corporateproduct.ProductList;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -43,7 +41,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
     private Toolbar toolbar;
     private AppPref appPref;
     private User mUserData;
-    private ProductList productObj;
+    private Product productObj;
 
     public ImageView imvOfAds;
     public TextView tvProductTitle, tvStatus, tvDesciption, tvTime;
@@ -143,7 +141,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
         if (getIntent().getExtras() != null) {
 
             productObj = getIntent().getExtras().getParcelable(AppConstant.PRODUCT_OBJ_KEY);
-            if (productObj != null)
+            if(productObj!=null)
                 setToolBarTitle(productObj.getType());
         }
     }
@@ -201,7 +199,6 @@ public class ProductDetailsActivity extends AppBaseActivity {
                             }
                         });
 
-                        //   removeProductApi();
                         break;
                     case R.id.repost:
                         moveToActivity("Repost");
@@ -288,8 +285,10 @@ public class ProductDetailsActivity extends AppBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
+        if(resultCode==RESULT_OK)
+        {
+            switch (requestCode)
+            {
                 case 1011:
                     setResult(RESULT_OK);
                     onBackPressed();
@@ -298,33 +297,6 @@ public class ProductDetailsActivity extends AppBaseActivity {
         }
     }
 
-    public void deleteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppThemeAddRenew);
-        builder.setMessage("Are you sure you want to delete this item?");
-        builder.setCancelable(true);
-
-        builder.setPositiveButton(
-                "Yes",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        removeProductApi();
-                        dialog.cancel();
-                    }
-                });
-
-        builder.setNegativeButton(
-                "No",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-        alertDialog.getButton(alertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorCorporateText));
-        alertDialog.getButton(alertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorCorporateText));
-    }
 
 
 }

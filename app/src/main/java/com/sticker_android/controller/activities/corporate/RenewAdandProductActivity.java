@@ -30,10 +30,9 @@ import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
-import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.corporateproduct.CorporateCategory;
-import com.sticker_android.model.corporateproduct.ProductList;
+import com.sticker_android.model.corporateproduct.Category;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -66,12 +65,12 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     private Button btnRePost;
     private EditText edtExpireDate;
     private EditText edtCorpName, edtDescription;
-    private ProductList productObj;
+    private Product productObj;
     private String mExpireDate;
     private SetDate setDate;
     private String type = "";
     private Spinner spnrCategory;
-    private ArrayList<CorporateCategory> corporateCategories = new ArrayList<>();
+    private ArrayList<Category> corporateCategories = new ArrayList<>();
     private final int PROFILE_CAMERA_IMAGE = 0;
     private final int PROFILE_GALLERY_IMAGE = 1;
     private ImageView imvProductImage;
@@ -138,12 +137,12 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
      */
     private void setSpinnerAdaptor() {
 
-        ArrayList<CorporateCategory> corporate = new ArrayList<>(setCategory());
+        ArrayList<Category> corporate = new ArrayList<>(setCategory());
         corporateCategories.clear();
         corporateCategories.addAll(corporate);
         if (corporateCategories != null) {
             CategoryAdapter categoryAdapter = new CategoryAdapter(this, corporate);
-            //  ArrayAdapter<CorporateCategory> adapter = new ArrayAdapter<CorporateCategory>(this, android.R.layout.simple_spinner_item, corporateCategories);
+            //  ArrayAdapter<Category> adapter = new ArrayAdapter<Category>(this, android.R.layout.simple_spinner_item, corporateCategories);
             //  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spnrCategory.setAdapter(categoryAdapter);
@@ -152,10 +151,10 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
 
     }
 
-    private Set<CorporateCategory> setCategory() {
+    private Set<Category> setCategory() {
 
-        Set<CorporateCategory> temp = new HashSet<>();
-        ArrayList<ProductList> tempPro = new ArrayList<>();
+        Set<Category> temp = new HashSet<>();
+        ArrayList<Product> tempPro = new ArrayList<>();
         if (productObj != null) {
             for (int i = 0; i < corporateCategories.size(); i++) {
                 if (corporateCategories.get(i).categoryId == productObj.getCategoryId()) {
@@ -233,7 +232,6 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
 
     @Override
     protected void setViewListeners() {
-
         btnRePost.setOnClickListener(this);
         //  imvProductImage.setOnClickListener(this);
     }

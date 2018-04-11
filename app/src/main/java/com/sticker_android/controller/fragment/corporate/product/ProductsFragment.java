@@ -38,7 +38,7 @@ import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
 import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.corporateproduct.ProductList;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.CloseSearch;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -66,7 +66,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     protected Handler handler;
     private AppPref appPref;
     private User mUserdata;
-    ArrayList<ProductList> productList = new ArrayList<>();
+    ArrayList<Product> productList = new ArrayList<>();
     private TimeUtility timeUtility = new TimeUtility();
     private ProductAdaptor productAdaptor;
 
@@ -229,8 +229,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
-                    ArrayList<ProductList> tempList = new ArrayList<ProductList>();
-                    tempList = apiResponse.paylpad.productList;
+                    ArrayList<Product> tempList = new ArrayList<>();
+                    tempList = apiResponse.paylpad.product;
                     if (tempList != null) {
                         isLastPage = false;
                         productList.addAll(tempList);
@@ -277,7 +277,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
      * @param position position of item
      * @param product
      */
-    public void showPopup(View v, final int position, ProductList product) {
+    public void showPopup(View v, final int position, Product product) {
         PopupMenu popup = new PopupMenu(getActivity(), v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.edit_remove_product, popup.getMenu());
@@ -329,7 +329,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     }
 
 
-    public void searchProduct(ArrayList<ProductList> productList) {
+    public void searchProduct(ArrayList<Product> productList) {
 
         if (this.productList != null) {
             this.productList.clear();
@@ -389,7 +389,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         search="";
     }
 
-    private void showHideEdit(PopupMenu popup, ProductList product) {
+    private void showHideEdit(PopupMenu popup, Product product) {
 
         Menu popupMenu = popup.getMenu();
         if (product.getIsExpired() > 0) {
@@ -421,8 +421,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         }
     }
 
-    private void moveToDetails(ProductList product) {
-
+    private void moveToDetails(Product product) {
         Bundle bundle = new Bundle();
 
         bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
@@ -447,7 +446,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         public final int TYPE_LOAD = 1;
 
         Context context;
-        List<ProductList> productLists;
+        List<Product> productLists;
         OnLoadMoreListener loadMoreListener;
         boolean isLoading = false, isMoreDataAvailable = true;
 
@@ -458,7 +457,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     * */
 
 
-        public ProductAdaptor(Context context, List<ProductList> productLists) {
+        public ProductAdaptor(Context context, List<Product> productLists) {
             this.context = context;
             this.productLists = productLists;
         }
@@ -482,7 +481,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             }
 
             if (getItemViewType(position) == TYPE_PRODUCT) {
-                final ProductList product = productLists.get(position);
+                final Product product = productLists.get(position);
 
                 ((ProductAdaptor.ProductHolder) holder).checkboxLike.setText(Utils.format(1000));
                 ((ProductAdaptor.ProductHolder) holder).checkboxShare.setText(Utils.format(1200));
@@ -562,7 +561,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                     tvNoProductUploaded.setVisibility(View.VISIBLE);
         }
 
-        public void updateProductList(ArrayList<ProductList> productLists) {
+        public void updateProductList(ArrayList<Product> productLists) {
             if (productLists != null) {
                 Utils.showToast(getActivity(), "update call" + productLists.size());
                 this.productLists = productLists;

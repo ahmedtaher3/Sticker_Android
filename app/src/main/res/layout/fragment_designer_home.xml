@@ -1,14 +1,28 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sticker_android.controller.fragment.corporate.CorporateHomeFragment">
+    android:fitsSystemWindows="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.sticker_android.controller.fragment.designer.DesignerHomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:gravity="center"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content">
+        <include layout="@layout/tab_with_divider"/>
+    </RelativeLayout>
 
-</FrameLayout>
+    <android.support.design.widget.FloatingActionButton
+        app:backgroundTint="@color/colorFloatingDesigner"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/fabAddNew"
+        android:elevation="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_add"
+        android:layout_margin="@dimen/add_corp_margin" />
+
+</RelativeLayout>
+

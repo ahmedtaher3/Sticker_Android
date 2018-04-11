@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.sticker_android.R;
-import com.sticker_android.model.corporateproduct.CorporateCategory;
+import com.sticker_android.model.corporateproduct.Category;
 
 import java.util.List;
 
@@ -18,14 +18,14 @@ import java.util.List;
 
 public class CategorySpinnerAdaptor extends ArrayAdapter {
 
-        private List<CorporateCategory> mStringDataList;
+        private List<Category> mStringDataList;
         private Context mContext;
 
-        public CategorySpinnerAdaptor(Context context, List<CorporateCategory> stringList) {
+        public CategorySpinnerAdaptor(Context context, List<Category> stringList) {
             super(context, 0);
             this.mContext = context;
             this.mStringDataList = stringList;
-            stringList.add(0,new CorporateCategory(-1,context.getString(R.string.select_category_txt)));
+            stringList.add(0, new Category(-1,context.getString(R.string.select_category_txt)));
 
 
 

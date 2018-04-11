@@ -39,7 +39,7 @@ import com.sticker_android.controller.activities.corporate.productdetails.Produc
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.corporateproduct.ProductList;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.CloseSearch;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -73,7 +73,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
     protected Handler handler;
     private AppPref appPref;
     private User mUserdata;
-    ArrayList<ProductList> productList = new ArrayList<>();
+    ArrayList<Product> productList = new ArrayList<>();
     private TimeUtility timeUtility = new TimeUtility();
     private int index = 0;
     private boolean isLoading;
@@ -233,8 +233,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
-                    ArrayList<ProductList> tempList = new ArrayList<ProductList>();
-                    tempList = apiResponse.paylpad.productList;
+                    ArrayList<Product> tempList = new ArrayList<Product>();
+                    tempList = apiResponse.paylpad.product;
                     if (tempList != null) {
                         isLastPage = false;
                         productList.addAll(tempList);
@@ -280,7 +280,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
      * @param position position of item
      * @param product
      */
-    public void showPopup(View v, final int position, ProductList product) {
+    public void showPopup(View v, final int position, Product product) {
         PopupMenu popup = new PopupMenu(getActivity(), v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.edit_remove_product, popup.getMenu());
@@ -317,7 +317,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
     private void moveToRepost(int position) {
     }
 
-    private void showHideEdit(PopupMenu popup, ProductList product) {
+    private void showHideEdit(PopupMenu popup, Product product) {
 
         Menu popupMenu = popup.getMenu();
         if (product.getIsExpired() > 0) {
@@ -376,7 +376,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 R.anim.activity_animation_exit);
     }
 
-    public void searchProduct(ArrayList<ProductList> productList) {
+    public void searchProduct(ArrayList<Product> productList) {
 
         if (this.productList != null) {
             this.productList.clear();
@@ -412,7 +412,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         onRefresh();
     }
 
-    private void moveToDetails(ProductList product) {
+    private void moveToDetails(Product product) {
         Bundle bundle = new Bundle();
 
         bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
@@ -452,7 +452,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
     public class ProductAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private ArrayList<ProductList> productList = new ArrayList<>();
+        private ArrayList<Product> productList = new ArrayList<>();
 
         Context context;
         boolean isLoading = false, isMoreDataAvailable = true;
@@ -464,7 +464,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
     * */
 
 
-        public ProductAdaptor(Context context, ArrayList<ProductList> productList) {
+        public ProductAdaptor(Context context, ArrayList<Product> productList) {
             this.context = context;
             this.productList = productList;
         }
@@ -477,7 +477,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-            final ProductList product = productList.get(position);
+            final Product product = productList.get(position);
 
             ((ProductHolder) holder).checkboxLike.setText(Utils.format(1000));
             ((ProductHolder) holder).checkboxShare.setText(Utils.format(1200));
@@ -545,7 +545,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             //   notifyItemRemoved(position);
         }
 
-        public void updateProductList(ArrayList<ProductList> productLists) {
+        public void updateProductList(ArrayList<Product> productLists) {
             if (productLists != null) {
                 productList = productLists;
                 productAdaptor.notifyDataSetChanged();
@@ -611,8 +611,4 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         alertDialog.getButton(alertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorCorporateText));
 
     }
-
-
-
 }
-
