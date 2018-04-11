@@ -15,6 +15,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -284,6 +285,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.edit_remove_product, popup.getMenu());
         popup.show();
+        popup.setGravity(Gravity.CENTER);
         showHideEdit(popup, product);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -356,6 +358,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             }
         });
         scroll = 0;
+        search="";
     }
 
     private void moveToActivity(int position, String type) {

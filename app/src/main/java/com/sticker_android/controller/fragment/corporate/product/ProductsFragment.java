@@ -13,6 +13,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -281,6 +282,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.edit_remove_product, popup.getMenu());
         popup.show();
+
         showHideEdit(popup, product);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -351,6 +353,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
 
     public void refreshList() {
+        if (productList != null)
+            productList.clear();
         onRefresh();
     }
 
@@ -382,6 +386,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+        search="";
     }
 
     private void showHideEdit(PopupMenu popup, ProductList product) {
@@ -417,6 +422,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     }
 
     private void moveToDetails(ProductList product) {
+
         Bundle bundle = new Bundle();
 
         bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
@@ -425,7 +431,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
         intent.putExtras(bundle);
 
-        startActivity(intent);
+        startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
 
         getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);

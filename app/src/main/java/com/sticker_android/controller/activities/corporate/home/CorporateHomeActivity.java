@@ -420,7 +420,6 @@ public class CorporateHomeActivity extends AppBaseActivity implements
                     for (Fragment fragment : getSupportFragmentManager().getFragments()) {
                         fragment.onActivityResult(requestCode, resultCode, data);
                     }
-
                     break;
             }
 

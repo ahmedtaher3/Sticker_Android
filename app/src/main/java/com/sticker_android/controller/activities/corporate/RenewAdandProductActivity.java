@@ -172,7 +172,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
 
     private void setExpireDate() {
         setDate = new SetDate(edtExpireDate, this, R.style.AppThemeAddRenew);
-       // setDate.setDate(productObj.getExpireDate());
+        // setDate.setDate(productObj.getExpireDate());
         setDate.setMinDate(productObj.getExpireDate());
     }
 
@@ -199,9 +199,9 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
             edtDescription.setSelection(edtDescription.getText().length());
             edtCorpName.setSelection(edtCorpName.getText().length());
             mExpireDate = productObj.getExpireDate();
-
+            pgrImage.setVisibility(View.VISIBLE);
             Glide.with(this)
-                    .load(productObj.getImagePath()).placeholder(R.drawable.ic_upload_image)
+                    .load(productObj.getImagePath()).placeholder(R.drawable.upload_image_hdpi)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

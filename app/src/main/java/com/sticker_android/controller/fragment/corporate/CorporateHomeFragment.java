@@ -91,7 +91,36 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
                 //   mUpdateToolbarCallback.updateToolbarTitle(getResources().getString(R.string.txt_home));
             }
         }, 300);
+        swipeListener();
         return view;
+
+    }
+
+    private void swipeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(final int i, final float v, final int i2) {
+
+            }
+            @Override
+            public void onPageSelected(final int i) {
+                if(i==0) {
+                    AdsFragment fragment = (AdsFragment) adapter.instantiateItem(viewPager, i);
+                    if (fragment != null) {
+                        fragment.onRefresh();
+                    }
+                }else{
+                    ProductsFragment fragment = (ProductsFragment) adapter.instantiateItem(viewPager, i);
+                    if (fragment != null) {
+                        fragment.onRefresh();
+                    }
+                }
+            }
+            @Override
+            public void onPageScrollStateChanged(final int i) {
+            }
+        });
+
     }
 
     @Override
@@ -231,7 +260,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setQueryHint(Utils.capitlizeText(getSelectedType()));
+                searchView.setQueryHint("Search "+Utils.capitlizeText(getSelectedType())+" by name");
 
             }
         });
