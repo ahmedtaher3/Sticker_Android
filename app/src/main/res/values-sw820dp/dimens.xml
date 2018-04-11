@@ -103,5 +103,6 @@
     <dimen name="txt_size_home_12sp">12sp</dimen>
     <dimen name="act_product_details_padding">20dp</dimen>
     <dimen name="margin_spinner_top">25dp</dimen>
+    <dimen name="card_height_notification">120dp</dimen>
 
 </resources>

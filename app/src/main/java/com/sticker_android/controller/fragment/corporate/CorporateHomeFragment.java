@@ -46,7 +46,7 @@ import retrofit2.Call;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CorporateHomeFragment extends BaseFragment implements View.OnClickListener, SearchView.OnQueryTextListener{
+public class CorporateHomeFragment extends BaseFragment implements View.OnClickListener, SearchView.OnQueryTextListener {
 
     private FloatingActionButton fabAddNew;
     private ViewPager viewPager;
@@ -98,20 +98,22 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             public void onPageScrolled(final int i, final float v, final int i2) {
 
             }
+
             @Override
             public void onPageSelected(final int i) {
-                if(i==0) {
+                if (i == 0) {
                     AdsFragment fragment = (AdsFragment) adapter.instantiateItem(viewPager, i);
                     if (fragment != null) {
                         fragment.onRefresh();
                     }
-                }else{
+                } else {
                     ProductsFragment fragment = (ProductsFragment) adapter.instantiateItem(viewPager, i);
                     if (fragment != null) {
                         fragment.onRefresh();
                     }
                 }
             }
+
             @Override
             public void onPageScrollStateChanged(final int i) {
             }
@@ -198,8 +200,8 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
 
     public void clearSearch() {
-        if(searchView!=null)
-        MenuItemCompat.collapseActionView(item);
+        if (searchView != null)
+            MenuItemCompat.collapseActionView(item);
     }
 
 
@@ -243,18 +245,29 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
         item = menu.findItem(R.id.search);
         searchView = (SearchView) MenuItemCompat.getActionView(item);
-      //  setSearchTextColour(searchView);
+        //  setSearchTextColour(searchView);
         setSearchIcons(searchView);
         searchView.setOnQueryTextListener(this);
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setQueryHint("Search "+Utils.capitlizeText(getSelectedType())+" by name");
+                searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
 
             }
         });
-
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                int tab = tabLayout.getSelectedTabPosition();
+                Fragment fragment = adapter.getItem(tab);
+                if (fragment instanceof AdsFragment) {
+                    ((AdsFragment) fragment).refreshList();
+                } else if (fragment instanceof ProductsFragment)
+                    ((ProductsFragment) fragment).refreshList();
+                return false;
+            }
+        });
     }
 
     private void setSearchTextColour(SearchView searchView) {
@@ -427,8 +440,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     }
 
 
-    public void refreshSearch(){
-
+    public void refreshSearch() {
 
 
     }

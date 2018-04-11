@@ -425,5 +425,6 @@
     <dimen name="act_product_details_padding">40dp</dimen>
     <dimen name="image_height_product_details">290dp</dimen>
     <dimen name="margin_spinner_top">30dp</dimen>
+    <dimen name="card_height_notification">120dp</dimen>
 
 </resources>

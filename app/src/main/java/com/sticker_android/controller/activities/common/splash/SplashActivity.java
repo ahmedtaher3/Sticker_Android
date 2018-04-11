@@ -15,6 +15,7 @@ import com.sticker_android.controller.activities.corporate.CorporateProfileActiv
 import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -32,6 +33,8 @@ public class SplashActivity extends AppBaseActivity {
         waitForFewSecond();
         setSelectedLangage();
         changeStatusBarColor(getResources().getColor(R.color.colorFanText));
+        LocalNotification localNotification=new LocalNotification();
+        localNotification.setNotification(this,"sdcdscdc","dscdscdc");
     }
 
     private void init() {

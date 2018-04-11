@@ -137,4 +137,26 @@ public class AppPref {
     }
 
 
+
+    /**
+     * This method is to save the new messages count
+     *@param value
+     */
+    public  void saveNewMessagesCount( int value){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("messageCount", value);
+        editor.commit();
+
+    }
+
+    /**
+     * This method is to get the new messages count
+     *@return message count
+     */
+    public  int getNewMessagesCount(int defVal){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt("messageCount", defVal);
+    }
+
 }
