@@ -98,6 +98,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         recyclerViewLayout();
         handler = new Handler();
         setAdaptor();
+        productList.clear();
         productListApi(currentPageNo, search);
         //adaptorScrollListener();
         return view;
@@ -268,6 +269,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 isLoading = false;
             }
         });
+        this.search="";
     }
 
     /**

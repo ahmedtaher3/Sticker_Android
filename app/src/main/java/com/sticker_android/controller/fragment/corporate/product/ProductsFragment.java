@@ -99,6 +99,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         recyclerViewLayout();
         handler = new Handler();
         setAdaptor();
+        productList.clear();
         productListApi(currentPageNo, search);
         //  adaptorScrollListener();
         return view;
@@ -265,6 +266,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 isLoading = false;
             }
         });
+        this.search="";
     }
 
     /**

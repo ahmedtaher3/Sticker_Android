@@ -17,6 +17,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
@@ -60,7 +62,9 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     private AlertDialog languageDialog;
     private String TAG = CorporateHomeActivity.class.getSimpleName();
     Fragment fragmentClass = null;
-
+    boolean doubleBackToExitPressedOnce = false;
+    CorporateHomeFragment  corporateHomeFragment=new CorporateHomeFragment();
+    private boolean isFragClicked;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,23 +171,43 @@ public class CorporateHomeActivity extends AppBaseActivity implements
 
     @Override
     public void onBackPressed() {
-      /*  TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(getResources().getString(R.string.txt_home));
-        toolbar.setTitle("");
-      */
+
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (getFragmentManager().getBackStackEntryCount() > 0) {
-            int count = getSupportFragmentManager().getBackStackEntryCount();
-            for (int i = 0; i < count; i++) {
-                if (getSupportFragmentManager().findFragmentByTag( getResources().getString(R.string.txt_home)) != null)
-                    if ( getResources().getString(R.string.txt_home) == getSupportFragmentManager().findFragmentByTag( getResources().getString(R.string.txt_home)).getTag()) {
-                        getFragmentManager().popBackStack();
-                    }
-            }
-        } else {
-            super.onBackPressed();
+        } else if(f instanceof CorporateHomeFragment) {
+            exitOnBack();
+        }else{
+             setToolBarTitle();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container_home, corporateHomeFragment, getResources().getString(R.string.txt_home));
+        transaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
+                R.anim.activity_animation_enter, R.anim.activity_animation_exit);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+
         }
+
+    }
+
+    private void exitOnBack() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 
 
@@ -194,50 +218,56 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
 
-        if (id == R.id.nav_home) {
-            fragmentClass = new CorporateHomeFragment();
-            //textView.setText(getResources().getString(R.string.txt_home));
+        if (id == R.id.nav_home &&!(f instanceof CorporateHomeFragment)) {
+            fragmentClass = corporateHomeFragment;
+            textView.setText(getResources().getString(R.string.txt_home));
             tag = getResources().getString(R.string.txt_home);
+            replaceFragment(fragmentClass,tag);
             // Handle the camera action
-        } else if (id == R.id.nav_report) {
+        } else if (id == R.id.nav_report&&!(f instanceof CorporateReportFragment)) {
             fragmentClass = new CorporateReportFragment();
             textView.setText(R.string.txt_report);
             tag = getResources().getString(R.string.txt_report);
+            replaceFragment(fragmentClass,tag);
             //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.nav_profile) {
+        } else if (id == R.id.nav_profile&&!(f instanceof ProfileFragment)) {
             //  startNewActivity(ViewProfileActivity.class);
             fragmentClass = new ProfileFragment();
             textView.setText(getResources().getString(R.string.txt_myprofile));
             tag = getResources().getString(R.string.txt_myprofile);
-            overridePendingTransition(R.anim.activity_animation_enter,
-                    R.anim.activity_animation_exit);
-        } else if (id == R.id.nav_account_setting) {
+            replaceFragment(fragmentClass,tag);
+        } else if (id == R.id.nav_account_setting&&!(f instanceof AccountSettingFragment)) {
             fragmentClass = AccountSettingFragment.newInstance("", "");
             textView.setText(getResources().getString(R.string.txt_account_setting));
             tag = getResources().getString(R.string.txt_account_setting);
+            replaceFragment(fragmentClass,tag);
         } else if (id == R.id.nav_logout) {
             userLogout();
-        } else if (id == R.id.nav_corp_contest) {
+        } else if (id == R.id.nav_corp_contest&&!(f instanceof CorporateContestFragment)) {
             textView.setText(getResources().getString(R.string.txt_contest));
             fragmentClass = new CorporateContestFragment();
             tag = getResources().getString(R.string.txt_contest);
-        } else if (id == R.id.nav_content_for_approval) {
+            replaceFragment(fragmentClass,tag);
+        } else if (id == R.id.nav_content_for_approval&&!(f instanceof CorporateContentApprovalFragment)) {
             textView.setText(getResources().getString(R.string.txt_content_approval));
             fragmentClass = new CorporateContentApprovalFragment();
             tag = getResources().getString(R.string.txt_content_approval);
+            replaceFragment(fragmentClass,tag);
         }
         // Insert the fragment by replacing any existing fragment
         setUserDataIntoNaviagtion();
-        FragmentManager fragmentManager = getSupportFragmentManager();
+       /* FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentClass != null) {
             if (fragmentClass instanceof CorporateHomeFragment) {
             } else {
                 if (!isAdded(tag))
                     replaceFragment(fragmentClass, tag);
             }
-        }
+        }*/
+      //  replaceFragment(fragmentClass, tag);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -246,12 +276,10 @@ public class CorporateHomeActivity extends AppBaseActivity implements
 
         FragmentTransaction fragmentTransaction   =
                 getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
-                R.anim.activity_animation_enter, R.anim.activity_animation_exit);
-        fragmentTransaction.replace(R.id.container_home,
+       fragmentTransaction.replace(R.id.container_home,
                 fragmentClass, tag);
         int count  =    getFragmentManager().getBackStackEntryCount();
-        fragmentTransaction.addToBackStack(tag);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
     }
@@ -273,6 +301,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         for (int i = 0; i < count; i++) {
             if (getSupportFragmentManager().findFragmentByTag(tag) != null)
                 if (tag == getSupportFragmentManager().findFragmentByTag(tag).getTag()) {
+                    getFragmentManager().popBackStackImmediate();
                     return true;
                 }
         }
@@ -410,5 +439,14 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         textView.setText(name);
 
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent objEvent) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onBackPressed();
+            return true;
+        }
+        return super.onKeyUp(keyCode, objEvent);
     }
 }

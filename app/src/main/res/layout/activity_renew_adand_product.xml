@@ -112,7 +112,7 @@
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/add_corp_tv_margin_top"
+                        android:layout_marginTop="@dimen/margin_spinner_top"
                         android:background="@null"
                         android:dropDownVerticalOffset="35dp"
                         android:gravity="start"

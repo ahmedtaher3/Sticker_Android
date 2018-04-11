@@ -344,7 +344,7 @@ public class Utils {
 
 
     public static void deleteDialog(String message, Activity activity, DialogInterface.OnClickListener listener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeAddRenew);
         builder.setMessage(message);
         builder.setCancelable(true);
         builder.setPositiveButton(
@@ -361,7 +361,10 @@ public class Utils {
         alertDialog.show();
         alertDialog.getButton(alertDialog.BUTTON_NEGATIVE).setTextColor(activity.getResources().getColor(R.color.colorCorporateText));
         alertDialog.getButton(alertDialog.BUTTON_POSITIVE).setTextColor(activity.getResources().getColor(R.color.colorCorporateText));
-
+        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP){
+            // do something for phones running an SDK before lollipop
+          //  alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
 
 
     }

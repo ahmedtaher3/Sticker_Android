@@ -131,6 +131,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         if (corporateCategories != null) {
             CategorySpinnerAdaptor categorySpinnerAdaptor=new CategorySpinnerAdaptor(this,corporateCategories);
          spnrCategory.setAdapter(categorySpinnerAdaptor);
+
             /*
             CategoryAdapter categoryAdapter=new CategoryAdapter(this,corporateCategories);
           //  ArrayAdapter<CorporateCategory> adapter = new ArrayAdapter<CorporateCategory>(this, android.R.layout.simple_spinner_item, corporateCategories);

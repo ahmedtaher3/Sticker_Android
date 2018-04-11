@@ -145,6 +145,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
             CategoryAdapter categoryAdapter = new CategoryAdapter(this, corporate);
             //  ArrayAdapter<CorporateCategory> adapter = new ArrayAdapter<CorporateCategory>(this, android.R.layout.simple_spinner_item, corporateCategories);
             //  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spnrCategory.setAdapter(categoryAdapter);
 
         }
@@ -171,7 +172,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
 
     private void setExpireDate() {
         setDate = new SetDate(edtExpireDate, this, R.style.AppThemeAddRenew);
-        setDate.setDate(productObj.getExpireDate());
+       // setDate.setDate(productObj.getExpireDate());
         setDate.setMinDate(productObj.getExpireDate());
     }
 
