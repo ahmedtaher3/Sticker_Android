@@ -315,7 +315,7 @@ public class Utils {
         GradientDrawable drawable = new GradientDrawable();
         drawable.setColor(Color.WHITE);
         drawable.setSize(3, 1);
-        linearLayout.setDividerPadding(30);
+        linearLayout.setDividerPadding((int) context.getResources().getDimension(R.dimen.divider_padding));
         linearLayout.setDividerDrawable(drawable);
     }
 
