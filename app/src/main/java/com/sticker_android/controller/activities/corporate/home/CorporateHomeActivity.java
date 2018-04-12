@@ -63,7 +63,6 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     private String TAG = CorporateHomeActivity.class.getSimpleName();
     Fragment fragmentClass = null;
     boolean doubleBackToExitPressedOnce = false;
-    CorporateHomeFragment  corporateHomeFragment=new CorporateHomeFragment();
     private boolean isFragClicked;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,7 +180,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         }else{
              setToolBarTitle();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container_home, corporateHomeFragment, getResources().getString(R.string.txt_home));
+        transaction.replace(R.id.container_home, CorporateHomeFragment.newInstance(), getResources().getString(R.string.txt_home));
         transaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
                 R.anim.activity_animation_enter, R.anim.activity_animation_exit);
         transaction.addToBackStack(null);
@@ -221,7 +220,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
 
         if (id == R.id.nav_home &&!(f instanceof CorporateHomeFragment)) {
-            fragmentClass = corporateHomeFragment;
+            fragmentClass = CorporateHomeFragment.newInstance();
             textView.setText(getResources().getString(R.string.txt_home));
             tag = getResources().getString(R.string.txt_home);
             replaceFragment(fragmentClass,tag);
@@ -398,7 +397,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     private void showFragmentManually() {
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container_home, new CorporateHomeFragment(), getResources().getString(R.string.txt_home));
+        transaction.replace(R.id.container_home, CorporateHomeFragment.newInstance(), getResources().getString(R.string.txt_home));
         transaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
                 R.anim.activity_animation_enter, R.anim.activity_animation_exit);
         transaction.commit();

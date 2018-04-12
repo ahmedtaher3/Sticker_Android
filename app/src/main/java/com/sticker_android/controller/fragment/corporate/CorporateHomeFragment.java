@@ -60,6 +60,13 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     private MenuItem item;
     private UpdateToolbarTitle mUpdateToolbarCallback;
 
+
+
+    public static CorporateHomeFragment newInstance() {
+        CorporateHomeFragment f = new CorporateHomeFragment();
+
+        return f;
+    }
     public CorporateHomeFragment() {
         // Required empty public constructor
     }
