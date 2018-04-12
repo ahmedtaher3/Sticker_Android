@@ -271,15 +271,21 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         return true;
     }
 
-    public void replaceFragment(Fragment fragmentClass, String tag) {
+    public void replaceFragment(final Fragment fragmentClass, final String tag) {
 
-        FragmentTransaction fragmentTransaction   =
-                getSupportFragmentManager().beginTransaction();
-       fragmentTransaction.replace(R.id.container_home,
-                fragmentClass, tag);
-        int count  =    getFragmentManager().getBackStackEntryCount();
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                FragmentTransaction fragmentTransaction   =
+                        getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.container_home,
+                        fragmentClass, tag);
+                int count  =    getFragmentManager().getBackStackEntryCount();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        }, 200);
+
 
     }
 
