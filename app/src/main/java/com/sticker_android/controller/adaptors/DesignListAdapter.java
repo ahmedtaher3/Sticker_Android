@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 import com.sticker_android.R;
 import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.corporateproduct.Product;

@@ -74,7 +74,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         setViewReferences(view);
         setViewListeners();
         setupViewPager();
-        Utils.setTabLayoutDivider(tabLayout);
+        Utils.setTabLayoutDivider(tabLayout,getActivity());
         addFragmentToTab();
         setSelectedTabColor();
         setBackground();
@@ -255,6 +255,31 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             }
         });
 
+        searchViewExpandListener(item);
+
+    }
+
+    private void searchViewExpandListener(MenuItem item) {
+
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Write your code here
+                int tab = tabLayout.getSelectedTabPosition();
+                Fragment fragment = adapter.getItem(tab);
+                if (fragment instanceof AdsFragment) {
+                    ((AdsFragment) fragment).refreshApi();
+                } else if (fragment instanceof ProductsFragment)
+                    ((ProductsFragment) fragment).refreshApi();
+
+                return true;
+            }
+        });
     }
 
     private void setSearchTextColour(SearchView searchView) {

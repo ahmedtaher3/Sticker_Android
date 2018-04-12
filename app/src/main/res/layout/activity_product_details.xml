@@ -20,6 +20,7 @@
             android:layout_height="wrap_content">
 
             <ProgressBar
+                android:visibility="visible"
                 android:id="@+id/pgrImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

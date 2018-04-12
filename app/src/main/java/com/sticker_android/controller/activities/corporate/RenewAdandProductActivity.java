@@ -12,10 +12,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,6 +82,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     private String TAG = RenewAdandProductActivity.class.getSimpleName();
     ProgressBar pgrImage;
     private boolean isUpdated;
+    private ImageView imvProductImage2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +103,26 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         });
         setProductdataIntoView();
         setButtonText();
-        setExpireDate();
         fetchCategoryApi();
+        measureImageWidthHeight();
+        imvProductImage2.setVisibility(View.GONE);
+    }
+
+    private void measureImageWidthHeight() {
+
+        ViewTreeObserver vto = imvProductImage.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                imvProductImage.getViewTreeObserver().removeOnPreDrawListener(this);
+                int finalWidth = imvProductImage.getMeasuredWidth();
+                int height = finalWidth * 3 /5;
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imvProductImage.getLayoutParams();
+                //  LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imvProductImage.getLayoutParams();
+                layoutParams.height = height;
+                imvProductImage.setLayoutParams(layoutParams);
+                return true;
+            }
+        });
     }
 
     /**
@@ -179,12 +201,14 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
 
         if (type.equals("Edit")) {
             btnRePost.setText("Update");
+            setDate = new SetDate(edtExpireDate, this, R.style.AppThemeAddRenew);
         } else {
             edtDescription.setLongClickable(false);
             edtDescription.setEnabled(false);
             edtCorpName.setLongClickable(false);
             edtCorpName.setEnabled(false);
             btnRePost.setText("Update");
+            setExpireDate();
         }
     }
 
@@ -200,7 +224,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
             mExpireDate = productObj.getExpireDate();
             pgrImage.setVisibility(View.VISIBLE);
             Glide.with(this)
-                    .load(productObj.getImagePath()).placeholder(R.drawable.upload_image_hdpi)
+                    .load(productObj.getImagePath()).placeholder(R.drawable.ic_upload_imagee)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -246,6 +270,8 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         spnrCategory = (Spinner) findViewById(R.id.spnrRenewCategory);
         imvProductImage = (ImageView) findViewById(R.id.imvProductImage);
         pgrImage = (ProgressBar) findViewById(R.id.pgrImage);
+        imvProductImage2 = (ImageView) findViewById(R.id.imvProductImage2);
+
     }
 
     @Override
@@ -415,6 +441,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
                     Uri resultUri = result.getUri();
                     mCapturedImageUrl = resultUri.getPath();
                     isUpdated = true;
+                    imvProductImage2.setVisibility(View.GONE);
                     imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();

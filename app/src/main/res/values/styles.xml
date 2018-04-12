@@ -170,6 +170,9 @@
         <item name="colorAccent">@color/colorCorporateText</item>
            <item name="android:windowBackground">@android:color/transparent</item>
     </style>
-
+    <style name="customTabBar" parent="@android:style/Widget.Holo.ActionBar.TabBar">
+        <item name="android:showDividers">middle</item>
+        <item name="android:dividerPadding">30dp</item>
+    </style>
 
 </resources>

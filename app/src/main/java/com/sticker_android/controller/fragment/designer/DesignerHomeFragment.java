@@ -68,7 +68,7 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
         setViewReferences(view);
         setViewListeners();
         setupViewPager();
-        Utils.setTabLayoutDivider(tabLayout);
+        Utils.setTabLayoutDivider(tabLayout,getActivity());
 
         addFragmentToTab();
         setSelectedTabColor();

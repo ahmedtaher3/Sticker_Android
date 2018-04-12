@@ -14,9 +14,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,6 +75,8 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private ImageView imvProductImage;
     private String mCapturedImageUrl;
     private android.app.AlertDialog mPermissionDialog;
+    private ImageView imvProductImage2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +100,27 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setDate = new SetDate(edtExpireDate, this, R.style.AppThemeAddRenew);
+
+        measureImageWidthHeight();
         fetchCategoryApi();
 
+    }
+
+    private void measureImageWidthHeight() {
+
+        ViewTreeObserver vto = imvProductImage.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                imvProductImage.getViewTreeObserver().removeOnPreDrawListener(this);
+                int finalWidth = imvProductImage.getMeasuredWidth();
+                int height = finalWidth * 3 /5;
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imvProductImage.getLayoutParams();
+                //    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imvProductImage.getLayoutParams();
+                layoutParams.height = height;
+                imvProductImage.setLayoutParams(layoutParams);
+                return true;
+            }
+        });
     }
 
     private void fetchCategoryApi() {
@@ -202,6 +225,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         edtDescription = (EditText) findViewById(R.id.edtDescription);
         spnrCategory = (Spinner) findViewById(R.id.spnrCategory);
         imvProductImage=(ImageView)findViewById(R.id.imvProductImage);
+        imvProductImage2=(ImageView)findViewById(R.id.imvProductImage2);
     }
 
     @Override
@@ -243,7 +267,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         sec.setText(getString(R.string.txt__add_products_frag)); // set the Text for the first Tab
         tabLayout.addTab(sec);
 
-        Utils.setTabLayoutDivider(tabLayout);
+        Utils.setTabLayoutDivider(tabLayout,this);
     }
 
     @Override
@@ -392,6 +416,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
                     mCapturedImageUrl = resultUri.getPath();
+                    imvProductImage2.setVisibility(View.GONE);
                     imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
@@ -404,7 +429,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         CropImage.activity(Uri.fromFile(new File(url)))
                 .setGuidelines(CropImageView.Guidelines.OFF)
                 .setFixAspectRatio(true)
-                .setAspectRatio(4, 3)
+                .setAspectRatio(5, 3)
                 .setAutoZoomEnabled(true)
                 .start(this);
     }

@@ -31,6 +31,7 @@
                 android:paddingBottom="@dimen/dp_5">
 
                 <RelativeLayout
+                    android:background="@drawable/background_gray"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
@@ -39,13 +40,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true" />
-
                     <ImageView
+                        android:scaleType="fitXY"
                         android:id="@+id/imvProductImage"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/act_add_new_corp_imv_height"
-                        android:background="@drawable/upload_image_hdpi"
-                        android:scaleType="centerCrop" />
+                        />
+                    <ImageView
+                        android:id="@+id/imvProductImage2"
+                        android:minHeight="@dimen/act_add_new_corp_imv_height"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/ic_upload_imagee"
+                        android:layout_centerInParent="true"
+                        android:scaleType="fitXY"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
                 </RelativeLayout>
 
                 <android.support.design.widget.TextInputLayout

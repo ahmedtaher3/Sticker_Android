@@ -309,13 +309,13 @@ public class Utils {
         return dater;
     }
 
-    public static void setTabLayoutDivider(TabLayout tabLayout){
+    public static void setTabLayoutDivider(TabLayout tabLayout,Context context){
         LinearLayout linearLayout = (LinearLayout)tabLayout.getChildAt(0);
         linearLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
         GradientDrawable drawable = new GradientDrawable();
         drawable.setColor(Color.WHITE);
         drawable.setSize(3, 1);
-        linearLayout.setDividerPadding(40);
+        linearLayout.setDividerPadding(30);
         linearLayout.setDividerDrawable(drawable);
     }
 

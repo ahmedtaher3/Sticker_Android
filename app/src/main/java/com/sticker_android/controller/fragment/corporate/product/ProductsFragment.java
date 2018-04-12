@@ -229,6 +229,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
+                    if(productList!=null)
+                        productList.clear();
                     ArrayList<Product> tempList = new ArrayList<>();
                     tempList = apiResponse.paylpad.product;
                     if (tempList != null) {
