@@ -220,6 +220,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
      */
     private void productListApi(int index, final String search) {
         isLoading = true;
+        if(swipeRefreshLayout!=null)
         swipeRefreshLayout.setRefreshing(true);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
                 index, 50, "product", "product_list", search);
@@ -227,6 +228,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 isLoading = false;
+                if(swipeRefreshLayout!=null)
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     if(productList!=null)
@@ -265,6 +267,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
+                if(swipeRefreshLayout!=null)
                 swipeRefreshLayout.setRefreshing(false);
                 isLoading = false;
             }
