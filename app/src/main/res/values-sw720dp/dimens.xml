@@ -428,4 +428,6 @@
     <dimen name="sticker_progress_loader_size">40dp</dimen>
     <dimen name="home_icon_color_size">22dp</dimen>
 
+    <dimen name="margin_spinner_top">30dp</dimen>
+
 </resources>

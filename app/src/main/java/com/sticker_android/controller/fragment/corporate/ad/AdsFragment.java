@@ -15,6 +15,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -98,6 +99,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         recyclerViewLayout();
         handler = new Handler();
         setAdaptor();
+        productList.clear();
         productListApi(currentPageNo, search);
         //adaptorScrollListener();
         return view;
@@ -195,7 +197,6 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() {
-
         scroll = 0;
         search = "";
         currentPageNo = 0;
@@ -222,6 +223,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
      */
     private void productListApi(int index, final String search) {
         isLoading = true;
+        if(swipeRefreshLayout!=null)
         swipeRefreshLayout.setRefreshing(true);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
                 index, 50, "ads", "product_list", search);
@@ -229,8 +231,11 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 isLoading = false;
+                if(swipeRefreshLayout!=null)
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
+                    if(productList!=null)
+                        productList.clear();
                     ArrayList<Product> tempList = new ArrayList<Product>();
                     tempList = apiResponse.paylpad.productList;
                     if (tempList != null) {
@@ -264,10 +269,12 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
+                if(swipeRefreshLayout!=null)
                 swipeRefreshLayout.setRefreshing(false);
                 isLoading = false;
             }
         });
+        this.search="";
     }
 
     /**
@@ -282,6 +289,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.edit_remove_product, popup.getMenu());
         popup.show();
+        popup.setGravity(Gravity.CENTER);
         showHideEdit(popup, product);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -348,12 +356,12 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 }
             }
 
-            @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
         scroll = 0;
+        search="";
     }
 
     private void moveToActivity(int position, String type) {
@@ -507,7 +515,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     .into(((ProductHolder) holder).imvOfAds);*/
                 ((ProductHolder) holder).pgrImage.setVisibility(View.VISIBLE);
             Glide.with(context)
-                    .load(product.getImagePath()).placeholder(R.drawable.ic_upload_image)
+                    .load(product.getImagePath()).placeholder(R.drawable.ic_upload_image).fitCenter()
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -546,6 +554,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 productAdaptor.notifyDataSetChanged();
             }
         }
+
 
         class ProductHolder extends RecyclerView.ViewHolder {
             public ImageView imvOfAds;

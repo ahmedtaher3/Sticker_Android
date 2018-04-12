@@ -71,6 +71,7 @@ import retrofit2.Call;
 import static com.sticker_android.utils.helper.PermissionManager.Constant.READ_STORAGE_ACCESS_RQ;
 import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_STORAGE_ACCESS_RQ;
 
+
 public class AddNewDesignActivity extends AppBaseActivity implements View.OnClickListener {
 
     private final String TAG = AddNewDesignActivity.class.getSimpleName();

@@ -10,10 +10,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -48,7 +50,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
     public CheckBox checkboxLike, checkboxShare;
     public ImageButton imvBtnEditRemove;
 
-    TimeUtility timeUtility=new TimeUtility();
+    TimeUtility timeUtility = new TimeUtility();
     private ProgressBar pgrImage;
 
     @Override
@@ -70,18 +72,37 @@ public class ProductDetailsActivity extends AppBaseActivity {
                 onBackPressed();
             }
         });
-
+        measureImageWidthHeight();
     }
+
+    private void measureImageWidthHeight() {
+
+        ViewTreeObserver vto = imvOfAds.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                imvOfAds.getViewTreeObserver().removeOnPreDrawListener(this);
+                int finalWidth = imvOfAds.getMeasuredWidth();
+                int height = finalWidth * 3 /5;
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imvOfAds.getLayoutParams();
+
+                //      LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imvOfAds.getLayoutParams();
+                layoutParams.height = height;
+                imvOfAds.setLayoutParams(layoutParams);
+                return true;
+            }
+        });
+    }
+
 
     private void setProductDetails() {
 
         checkboxLike.setText(Utils.format(1000));
         checkboxShare.setText(Utils.format(1200));
-        String status="Ongoing";
-        if(productObj.getIsExpired()>0){
+        String status = "Ongoing";
+        if (productObj.getIsExpired() > 0) {
             tvStatus.setTextColor(Color.RED);
-            status="Expired";
-        }else{
+            status = "Expired";
+        } else {
             tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
 
         }
@@ -95,9 +116,9 @@ public class ProductDetailsActivity extends AppBaseActivity {
         tvProductTitle.setText(productObj.getProductname());
         tvDesciption.setText(productObj.getDescription());
         tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productObj.getCreatedTime()), getActivity()));
-
+        pgrImage.setVisibility(View.VISIBLE);
         Glide.with(this)
-                .load(productObj.getImagePath()).placeholder(R.drawable.ic_upload_image)
+                .load(productObj.getImagePath()).placeholder(R.drawable.ic_upload_image).fitCenter()
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -115,6 +136,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
 
     }
+
     /**
      * Method is used to set the toolbar background
      */
@@ -124,13 +146,13 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
 
     private void init() {
-        appPref=new AppPref(this);
-        mUserData =appPref.getUserInfo();
+        appPref = new AppPref(this);
+        mUserData = appPref.getUserInfo();
     }
 
     private void setToolBarTitle(String type) {
-        TextView textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(Utils.capitlizeText(type)+" Details");
+        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
+        textView.setText(Utils.capitlizeText(type) + " Details");
         toolbar.setTitle("");
     }
 
@@ -154,15 +176,15 @@ public class ProductDetailsActivity extends AppBaseActivity {
     @Override
     protected void setViewReferences() {
 
-        imvOfAds        =    (ImageView) findViewById(R.id.imvOfAds);
-        tvProductTitle  =    (TextView) findViewById(R.id.tv_add_product_title);
-        tvStatus        =     (TextView) findViewById(R.id.tv_add_product_status);
-        tvDesciption    =    (TextView) findViewById(R.id.tv_add_product_item_description);
-        checkboxLike    =    (CheckBox) findViewById(R.id.checkboxLike);
-        checkboxShare   =    (CheckBox) findViewById(R.id.checkboxShare);
-        imvBtnEditRemove =   (ImageButton) findViewById(R.id.imvBtnEditRemove);
-        tvTime           =   (TextView) findViewById(R.id.tvTime);
-        pgrImage         =   (ProgressBar)findViewById(R.id.pgrImage);
+        imvOfAds = (ImageView) findViewById(R.id.imvOfAds);
+        tvProductTitle = (TextView) findViewById(R.id.tv_add_product_title);
+        tvStatus = (TextView) findViewById(R.id.tv_add_product_status);
+        tvDesciption = (TextView) findViewById(R.id.tv_add_product_item_description);
+        checkboxLike = (CheckBox) findViewById(R.id.checkboxLike);
+        checkboxShare = (CheckBox) findViewById(R.id.checkboxShare);
+        imvBtnEditRemove = (ImageButton) findViewById(R.id.imvBtnEditRemove);
+        tvTime = (TextView) findViewById(R.id.tvTime);
+        pgrImage = (ProgressBar) findViewById(R.id.pgrImage);
 
     }
 
@@ -173,8 +195,8 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
     /**
      * Method is used to show the popup with edit and delete option
-     *  @param v        view on which click is perfomed
      *
+     * @param v view on which click is perfomed
      */
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(getActivity(), v);
@@ -209,11 +231,11 @@ public class ProductDetailsActivity extends AppBaseActivity {
     }
 
 
-    /** Method is used to remove the product
-     *
+    /**
+     * Method is used to remove the product
      */
     private void removeProductApi() {
-        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
         progressDialogHandler.show();
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiDeleteProduct(mUserData.getLanguageId(), mUserData.getAuthrizedKey(), mUserData.getId(),
                 String.valueOf(productObj.getProductid()));
@@ -223,7 +245,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
-                    Utils.showToast(getActivity(),getString(R.string.txt_delete_resources));
+                    Utils.showToast(getActivity(), getString(R.string.txt_delete_resources));
                     setResult(RESULT_OK);
                     onBackPressed();
                 }
@@ -240,10 +262,10 @@ public class ProductDetailsActivity extends AppBaseActivity {
     private void showHideEdit(PopupMenu popup) {
 
         Menu popupMenu = popup.getMenu();
-        if(productObj.getIsExpired()>0) {
+        if (productObj.getIsExpired() > 0) {
             popupMenu.findItem(R.id.repost).setVisible(true);
             popupMenu.findItem(R.id.edit).setVisible(false);
-        }else {
+        } else {
             popupMenu.findItem(R.id.edit).setVisible(true);
             popupMenu.findItem(R.id.repost).setVisible(false);
         }
@@ -254,11 +276,11 @@ public class ProductDetailsActivity extends AppBaseActivity {
         Bundle bundle = new Bundle();
 
         bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, productObj);
-        bundle.putString("edit",type);
+        bundle.putString("edit", type);
         Intent intent = new Intent(getActivity(), RenewAdandProductActivity.class);
         intent.putExtras(bundle);
 
-        startActivityForResult(intent,1011);
+        startActivityForResult(intent, 1011);
 
         getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
@@ -295,4 +317,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
             }
         }
     }
+
+
+
 }

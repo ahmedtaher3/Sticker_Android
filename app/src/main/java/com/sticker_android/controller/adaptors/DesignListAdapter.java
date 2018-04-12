@@ -11,27 +11,22 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.squareup.picasso.Picasso;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.designer.addnew.DesignDetailActivity;
-import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.DesignerActionListener;
@@ -205,6 +200,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 public void onClick(View view) {
                     int position = vh.getAdapterPosition();
                     Product product = mItems.get(position);
+                    productItemClickListener.onProductItemClick(product);
                     Intent intent = new Intent(context, DesignDetailActivity.class);
                     intent.putExtra(AppConstant.PRODUCT, product);
                     ((Activity)context).startActivityForResult(intent, 0);

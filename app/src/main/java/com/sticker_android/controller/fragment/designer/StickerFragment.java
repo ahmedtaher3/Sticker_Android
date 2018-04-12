@@ -229,7 +229,10 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     public void searchByKeyword(String keyword){
-
+        mCurrentPage = 0;
+        mStickerList.clear();
+        mAdapter.setData(mStickerList);
+        getDesignFromServer(false, keyword);
     }
 
     public void addNewSticker(Product sticker){
@@ -324,7 +327,12 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                     } else {
                                         mStickerList.clear();
                                         mAdapter.setData(mStickerList);
-                                        txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                        if(searchKeyword.length() != 0){
+                                            txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                        }
+                                        else{
+                                            txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                        }
                                         showNoDataFound();
                                     }
                                 } else {
@@ -341,7 +349,12 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                             mAdapter.setData(mStickerList);
                                         } else {
                                             showNoDataFound();
-                                            txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                            if(searchKeyword.length() != 0){
+                                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                            }
+                                            else{
+                                                txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                            }
                                             rcDesignList.setVisibility(View.GONE);
                                         }
                                     } else {
@@ -360,7 +373,12 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                 AppLogger.error(TAG, "item list size => " + mStickerList.size());
 
                             } else if (mStickerList == null || (mStickerList != null && mStickerList.size() == 0)) {
-                                txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                if(searchKeyword.length() != 0){
+                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                }
+                                else{
+                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                }
                                 showNoDataFound();
                             }
                         }

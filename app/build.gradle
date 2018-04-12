@@ -31,6 +31,8 @@ dependencies {
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
     compile "com.android.support:support-vector-drawable:$rootProject.supportLibraryVersion"
     compile "com.android.support:animated-vector-drawable:$rootProject.supportLibraryVersion"
+    compile "com.jakewharton:butterknife:$rootProject.butterKnifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.butterKnifeVersion"
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
     compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
     compile "com.squareup.okhttp3:logging-interceptor:$rootProject.loginterceptorVersion"
@@ -38,13 +40,16 @@ dependencies {
     compile "com.google.code.gson:gson:$rootProject.gsonVersion"
     // font
     compile "uk.co.chrisjenx:calligraphy:$rootProject.calligraphyVersion"
+    compile 'com.facebook.android:facebook-android-sdk:4.13.1'
+    compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
     compile 'com.github.JakeWharton:ViewPagerIndicator:2.4.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:multidex:1.0.1'
     compile files('libs/universal-image-loader-1.9.5.jar')
+    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile project(':cropper')
-    compile 'com.amazonaws:aws-android-sdk-s3:2.6.+'
+compile 'com.amazonaws:aws-android-sdk-s3:2.6.+'
     compile 'com.amazonaws:aws-android-sdk-cognito:2.6.+'
-    compile 'com.github.bumptech.glide:glide:3.8.0'
+compile 'com.github.bumptech.glide:glide:3.8.0'
     compile 'com.android.support:support-v4:19.1.0'
 }

@@ -35,8 +35,8 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View listItem = convertView;
         if (listItem == null)
-            listItem = LayoutInflater.from(mContext).inflate(R.layout.text_view_category, parent, false);
-        TextView name = (TextView) listItem.findViewById(R.id.textView_name);
+            listItem = LayoutInflater.from(mContext).inflate(R.layout.spinner_item, parent, false);
+        TextView name = (TextView) listItem.findViewById(R.id.tvSpinnerMainItem);
         name.setText(categoryList.get(position).categoryName);
 
         return listItem;

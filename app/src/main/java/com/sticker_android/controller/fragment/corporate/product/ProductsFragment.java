@@ -13,6 +13,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -99,6 +100,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         recyclerViewLayout();
         handler = new Handler();
         setAdaptor();
+        productList.clear();
         productListApi(currentPageNo, search);
         //  adaptorScrollListener();
         return view;
@@ -218,6 +220,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
      */
     private void productListApi(int index, final String search) {
         isLoading = true;
+        if(swipeRefreshLayout!=null)
         swipeRefreshLayout.setRefreshing(true);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
                 index, 50, "product", "product_list", search);
@@ -225,8 +228,11 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 isLoading = false;
+                if(swipeRefreshLayout!=null)
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
+                    if(productList!=null)
+                        productList.clear();
                     ArrayList<Product> tempList = new ArrayList<>();
                     tempList = apiResponse.paylpad.productList;
                     if (tempList != null) {
@@ -261,10 +267,12 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
+                if(swipeRefreshLayout!=null)
                 swipeRefreshLayout.setRefreshing(false);
                 isLoading = false;
             }
         });
+        this.search="";
     }
 
     /**
@@ -279,6 +287,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.edit_remove_product, popup.getMenu());
         popup.show();
+
         showHideEdit(popup, product);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -349,6 +358,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
 
     public void refreshList() {
+        if (productList != null)
+            productList.clear();
         onRefresh();
     }
 
@@ -380,6 +391,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+        search="";
     }
 
     private void showHideEdit(PopupMenu popup, Product product) {
@@ -423,7 +435,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
         intent.putExtras(bundle);
 
-        startActivity(intent);
+        startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
 
         getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
@@ -508,7 +520,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
                 ((ProductAdaptor.ProductHolder) holder).pgrImage.setVisibility(View.VISIBLE);
                 Glide.with(context)
-                        .load(product.getImagePath()).placeholder(R.drawable.ic_upload_image)
+                        .load(product.getImagePath()).placeholder(R.drawable.ic_upload_image).fitCenter()
                         .listener(new RequestListener<String, GlideDrawable>() {
                             @Override
                             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

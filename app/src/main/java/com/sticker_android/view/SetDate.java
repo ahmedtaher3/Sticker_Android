@@ -47,6 +47,7 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
                     getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 }
             }
+
         };
         //  this.view.setText(Utils.formatDate(ctx, y, m, d));
     }
@@ -54,7 +55,13 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
     @Override
     public void onClick(View v) {
         Utils.hideKeyboard((Activity) ctx);
-        pickerDialog.getDatePicker().setMinDate(new Date().getTime() - 10000);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        pickerDialog.setTitle("");
+        pickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
         pickerDialog.show();
     }
 
@@ -77,6 +84,7 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
         d = Integer.parseInt(dateQualification.split("-")[2]);
         pickerDialog.updateDate(y, m, d);
         this.view.setText(Utils.dateModify(y + "-" + (m + 1) + "-" + d));
+
     }
 
     public void setMinDate(String minDate) {
@@ -84,9 +92,15 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
         y = Integer.parseInt(minDate.split("-")[0]);
         m = Integer.parseInt(minDate.split("-")[1]) - 1;
         d = Integer.parseInt(minDate.split("-")[2]);
-
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(y,m,d);
      //   pickerDialog.getDatePicker().setMinDate(Utils.convertStringToDate(minDate).getTime() - 1000);
-        pickerDialog.getDatePicker().setMinDate(Utils.changeDays(minDate).getTime() - 1000);
-
-    }
+        pickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP){
+            // do something for phones running an SDK before lollipop
+           pickerDialog. getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }    }
 }

@@ -465,7 +465,11 @@ public class Utils {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Calendar c = Calendar.getInstance();
         c.setTime(dtStartDate);
-        c.add(Calendar.DATE, 1);  // number of days to add
+        c.add(Calendar.DATE, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+// number of days to add
         String dt = sdf.format(c.getTime());  // dt is now the new date
         return convertStringToDate(dt);
     }

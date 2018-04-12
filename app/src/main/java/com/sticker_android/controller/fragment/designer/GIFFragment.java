@@ -142,7 +142,10 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     }
 
     public void searchByKeyword(String keyword){
-
+        mCurrentPage = 0;
+        mGifList.clear();
+        mAdapter.setData(mGifList);
+        getDesignFromServer(false, keyword);
     }
 
     @Override
@@ -323,7 +326,12 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                                     } else {
                                         mGifList.clear();
                                         mAdapter.setData(mGifList);
-                                        txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
+                                        if(searchKeyword.length() != 0){
+                                            txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                        }
+                                        else{
+                                            txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
+                                        }
                                         showNoDataFound();
                                     }
                                 } else {
@@ -340,7 +348,12 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                                             mAdapter.setData(mGifList);
                                         } else {
                                             showNoDataFound();
-                                            txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
+                                            if(searchKeyword.length() != 0){
+                                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                            }
+                                            else{
+                                                txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
+                                            }
                                             rcDesignList.setVisibility(View.GONE);
                                         }
                                     } else {
@@ -359,7 +372,12 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                                 AppLogger.error(TAG, "item list size => " + mGifList.size());
 
                             } else if (mGifList == null || (mGifList != null && mGifList.size() == 0)) {
-                                txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
+                                if(searchKeyword.length() != 0){
+                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                }
+                                else{
+                                    txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
+                                }
                                 showNoDataFound();
                             }
                         }
@@ -404,7 +422,7 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                                 }
                             }, 0);
                         } else {
-                            //Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
                         }
                     }
                 }
@@ -422,7 +440,7 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getDesignFromServer(true, "");
         } else {
-            //Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
     }
 

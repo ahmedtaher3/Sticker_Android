@@ -25,6 +25,8 @@ import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.designer.addnew.AddNewDesignActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
+import com.sticker_android.controller.fragment.corporate.product.ProductsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
@@ -145,6 +147,18 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(item != null && searchView.getQuery().length() != 0){
+            item.collapseActionView();
+        }
+    }
 
     /**
      * replace existing fragment of container
@@ -200,7 +214,23 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
     @Override
     public boolean onQueryTextSubmit(String query) {
         AppLogger.error(TAG, "Search text => " + query);
+        searchResult(query.trim());
+        searchView.setIconified(false);
+        searchView.clearFocus();
         return false;
+    }
+
+    private void searchResult(String query) {
+        Fragment fragment = mFragmentManager.findFragmentById(R.id.rlFragmentContainer);
+        if(fragment != null && fragment instanceof StickerFragment){
+            ((StickerFragment)fragment).searchByKeyword(query);
+        }
+        else if(fragment != null && fragment instanceof GIFFragment){
+            ((GIFFragment)fragment).searchByKeyword(query);
+        }
+        else if(fragment != null && fragment instanceof EmojiFragment){
+            ((EmojiFragment)fragment).searchByKeyword(query);
+        }
     }
 
     @Override
@@ -320,6 +350,32 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
             @Override
             public void onClick(View v) {
                 searchView.setQueryHint(getString(R.string.search) + " " + Utils.capitlizeText(getSelectedType()));
+            }
+        });
+
+        searchViewExpandListener(item);
+    }
+
+    private void searchViewExpandListener(MenuItem item) {
+
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Write your code here
+                Fragment fragment = mFragmentManager.findFragmentById(R.id.rlFragmentContainer);
+                if (fragment != null && fragment instanceof StickerFragment) {
+                    ((StickerFragment) fragment).updateTheFragment();
+                } else if (fragment != null && fragment instanceof GIFFragment) {
+                    ((GIFFragment) fragment).updateTheFragment();
+                } else if (fragment != null && fragment instanceof EmojiFragment) {
+                    ((EmojiFragment) fragment).updateTheFragment();
+                }
+                return true;
             }
         });
     }

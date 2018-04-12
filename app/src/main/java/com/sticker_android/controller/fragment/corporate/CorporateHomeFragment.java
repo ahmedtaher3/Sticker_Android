@@ -60,6 +60,13 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     private MenuItem item;
     private UpdateToolbarTitle mUpdateToolbarCallback;
 
+
+
+    public static CorporateHomeFragment newInstance() {
+        CorporateHomeFragment f = new CorporateHomeFragment();
+
+        return f;
+    }
     public CorporateHomeFragment() {
         // Required empty public constructor
     }
@@ -74,6 +81,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         setViewReferences(view);
         setViewListeners();
         setupViewPager();
+
         Utils.setTabLayoutDivider(tabLayout, getActivity());
         addFragmentToTab();
         setSelectedTabColor();
@@ -87,7 +95,36 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
                 //   mUpdateToolbarCallback.updateToolbarTitle(getResources().getString(R.string.txt_home));
             }
         }, 300);
+        swipeListener();
         return view;
+
+    }
+
+    private void swipeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(final int i, final float v, final int i2) {
+
+            }
+            @Override
+            public void onPageSelected(final int i) {
+                if(i==0) {
+                    AdsFragment fragment = (AdsFragment) adapter.instantiateItem(viewPager, i);
+                    if (fragment != null) {
+                        fragment.onRefresh();
+                    }
+                }else{
+                    ProductsFragment fragment = (ProductsFragment) adapter.instantiateItem(viewPager, i);
+                    if (fragment != null) {
+                        fragment.onRefresh();
+                    }
+                }
+            }
+            @Override
+            public void onPageScrollStateChanged(final int i) {
+            }
+        });
+
     }
 
     @Override
@@ -221,11 +258,36 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setQueryHint(Utils.capitlizeText(getSelectedType()));
+                searchView.setQueryHint("Search "+Utils.capitlizeText(getSelectedType())+" by name");
 
             }
         });
 
+        searchViewExpandListener(item);
+
+    }
+
+    private void searchViewExpandListener(MenuItem item) {
+
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Write your code here
+                int tab = tabLayout.getSelectedTabPosition();
+                Fragment fragment = adapter.getItem(tab);
+                if (fragment instanceof AdsFragment) {
+                    ((AdsFragment) fragment).refreshApi();
+                } else if (fragment instanceof ProductsFragment)
+                    ((ProductsFragment) fragment).refreshApi();
+
+                return true;
+            }
+        });
     }
 
     private void setSearchTextColour(SearchView searchView) {

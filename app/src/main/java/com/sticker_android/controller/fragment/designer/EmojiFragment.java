@@ -130,7 +130,10 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void searchByKeyword(String keyword){
-
+        mCurrentPage = 0;
+        mEmojiList.clear();
+        mAdapter.setData(mEmojiList);
+        getDesignFromServer(false, keyword);
     }
 
     private void initRecyclerView() {
@@ -323,7 +326,12 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                     } else {
                                         mEmojiList.clear();
                                         mAdapter.setData(mEmojiList);
-                                        txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
+                                        if(searchKeyword.length() != 0){
+                                            txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                        }
+                                        else{
+                                            txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
+                                        }
                                         showNoDataFound();
                                     }
                                 } else {
@@ -340,7 +348,12 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                             mAdapter.setData(mEmojiList);
                                         } else {
                                             showNoDataFound();
-                                            txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
+                                            if(searchKeyword.length() != 0){
+                                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                            }
+                                            else{
+                                                txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
+                                            }
                                             rcDesignList.setVisibility(View.GONE);
                                         }
                                     } else {
@@ -359,7 +372,12 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                 AppLogger.error(TAG, "item list size => " + mEmojiList.size());
 
                             } else if (mEmojiList == null || (mEmojiList != null && mEmojiList.size() == 0)) {
-                                txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
+                                if(searchKeyword.length() != 0){
+                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                }
+                                else{
+                                    txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
+                                }
                                 showNoDataFound();
                             }
                         }
@@ -404,7 +422,7 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                 }
                             }, 0);
                         } else {
-                            //Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
                         }
                     }
                 }
@@ -422,7 +440,7 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getDesignFromServer(true, "");
         } else {
-            //Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
     }
 

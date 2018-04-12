@@ -119,5 +119,6 @@
     <dimen name="sticker_progress_loader_size">30dp</dimen>
     <dimen name="home_icon_color_size">14dp</dimen>
     <dimen name="tab_divider_height">15dp</dimen>
+    <dimen name="margin_spinner_top">25dp</dimen>
 
 </resources>
