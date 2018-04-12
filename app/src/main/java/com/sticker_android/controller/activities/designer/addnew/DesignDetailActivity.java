@@ -30,6 +30,7 @@ import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -179,7 +180,15 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
     private void setToolBarTitle() {
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         if(mProduct != null){
-            textView.setText(R.string.detail);
+            if(mProduct.getType().equalsIgnoreCase(DesignType.stickers.getType())){
+                textView.setText("Sticker" + " " + getString(R.string.detail));
+            }
+            else if(mProduct.getType().equalsIgnoreCase(DesignType.gif.getType())){
+                textView.setText("GIF" + " " + getString(R.string.detail));
+            }
+            else if(mProduct.getType().equalsIgnoreCase(DesignType.emoji.getType())){
+                textView.setText("Emoji" + " " + getString(R.string.detail));
+            }
         }
         toolbar.setTitle(" ");
     }

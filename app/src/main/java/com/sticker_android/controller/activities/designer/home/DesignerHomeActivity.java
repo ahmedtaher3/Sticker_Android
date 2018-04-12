@@ -38,24 +38,21 @@ import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.fragment.AccountSettingFragment;
 import com.sticker_android.controller.fragment.ProfileFragment;
-import com.sticker_android.controller.fragment.designer.DesignerContentFragment;
+import com.sticker_android.controller.fragment.designer.DesignerPendingContentFragment;
 import com.sticker_android.controller.fragment.designer.DesignerContestFragment;
 import com.sticker_android.controller.fragment.designer.DesignerHomeFragment;
 import com.sticker_android.controller.fragment.designer.DesignerReportFragment;
-import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.UserTypeEnum;
-import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.Locale;
 
-import okhttp3.internal.Util;
 import retrofit2.Call;
 
 public class DesignerHomeActivity extends AppBaseActivity implements
@@ -215,7 +212,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
             fragmentClass = new DesignerHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
         } else if (id == R.id.nav_content_for_appproval) {
-            fragmentClass = new DesignerContentFragment();
+            fragmentClass = new DesignerPendingContentFragment();
             textView.setText("Content Approval");
         } else if (id == R.id.nav_report) {
             fragmentClass = new DesignerReportFragment();

@@ -356,6 +356,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 }
             }
 
+            @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
                 swipeRefreshLayout.setRefreshing(false);
             }
