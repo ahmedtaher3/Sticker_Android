@@ -8,12 +8,13 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -48,15 +49,13 @@ import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
-import com.sticker_android.view.CategoryAdapter;
-import com.sticker_android.view.NothingSelectedSpinnerAdapter;
 import com.sticker_android.view.SetDate;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -321,7 +320,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         emojiTab.setText(getString(R.string.emoji)); // set the Text for the first Tab
         tabLayout.addTab(emojiTab);
 
-        Utils.setTabLayoutDivider(tabLayout);
+        Utils.setTabLayoutDivider(tabLayout,this);
     }
 
     @Override

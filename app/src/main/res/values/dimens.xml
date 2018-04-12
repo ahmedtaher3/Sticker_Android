@@ -117,6 +117,8 @@
     <dimen name="act_product_details_padding">10dp</dimen>
     <dimen name="image_height_product_details">250dp</dimen>
     <dimen name="margin_spinner_top">25dp</dimen>
+
     <dimen name="card_height_notification">120dp</dimen>
+    <dimen name="divider_padding">15dp</dimen>
 
 </resources>

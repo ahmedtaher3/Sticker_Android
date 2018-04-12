@@ -197,7 +197,6 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() {
-
         scroll = 0;
         search = "";
         currentPageNo = 0;
@@ -233,6 +232,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 isLoading = false;
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
+                    if(productList!=null)
+                        productList.clear();
                     ArrayList<Product> tempList = new ArrayList<Product>();
                     tempList = apiResponse.paylpad.product;
                     if (tempList != null) {
@@ -551,6 +552,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 productAdaptor.notifyDataSetChanged();
             }
         }
+
 
         class ProductHolder extends RecyclerView.ViewHolder {
             public ImageView imvOfAds;

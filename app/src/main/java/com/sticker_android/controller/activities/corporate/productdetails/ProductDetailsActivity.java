@@ -10,10 +10,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -70,8 +72,27 @@ public class ProductDetailsActivity extends AppBaseActivity {
                 onBackPressed();
             }
         });
-
+        measureImageWidthHeight();
     }
+
+    private void measureImageWidthHeight() {
+
+        ViewTreeObserver vto = imvOfAds.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                imvOfAds.getViewTreeObserver().removeOnPreDrawListener(this);
+                int finalWidth = imvOfAds.getMeasuredWidth();
+                int height = finalWidth * 3 /5;
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imvOfAds.getLayoutParams();
+
+                //      LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imvOfAds.getLayoutParams();
+                layoutParams.height = height;
+                imvOfAds.setLayoutParams(layoutParams);
+                return true;
+            }
+        });
+    }
+
 
     private void setProductDetails() {
 
