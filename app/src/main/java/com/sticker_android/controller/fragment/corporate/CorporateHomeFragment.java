@@ -74,7 +74,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         setViewReferences(view);
         setViewListeners();
         setupViewPager();
-        Utils.setTabLayoutDivider(tabLayout);
+        Utils.setTabLayoutDivider(tabLayout, getActivity());
         addFragmentToTab();
         setSelectedTabColor();
         setBackground();
@@ -340,7 +340,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
 
-                    showSearchResultApi(apiResponse.paylpad.product);
+                    showSearchResultApi(apiResponse.paylpad.productList);
                 }
             }
 

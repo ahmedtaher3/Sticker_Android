@@ -53,7 +53,8 @@
         <activity
             android:name=".controller.activities.designer.home.DesignerHomeActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".controller.activities.corporate.home.CorporateHomeActivity"
             android:screenOrientation="portrait"
@@ -101,6 +102,9 @@
             android:name=".controller.activities.designer.addnew.AddNewDesignActivity"/>
 
         <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" android:enabled="true" />
+
+        <activity android:name=".controller.activities.designer.addnew.DesignDetailActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

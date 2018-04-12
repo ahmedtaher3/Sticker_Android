@@ -11,6 +11,8 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.model.interfaces.ImagePickerListener;
+import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.utils.helper.PermissionManager;
 
 import java.io.File;
@@ -172,6 +175,50 @@ public class Utils {
         }
     }
 
+    /**
+     * This will show message in alert dialog format
+     *
+     * @param context
+     * @param listener
+     * @param msg      message to show
+     * @param title    Title of message
+     * @param reqCode
+     */
+    public static android.app.AlertDialog showAlertMessage(Context context, final MessageEventListener listener, String msg, String title, final int reqCode) {
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+        builder.setMessage(msg);
+        builder.setTitle(title);
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                if (listener != null) {
+                    listener.onOkClickListener(reqCode);
+                }
+            }
+        });
+        android.app.AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        return dialog;
+    }
+
+    /**
+     * will toast message
+     *
+     * @param context
+     * @param msg
+     */
+    public static void showToastMessage(Context context, String msg) {
+        Toast toast = Toast.makeText(context, msg, Toast.LENGTH_LONG);
+        toast.show();
+    }
 
     /**
      * show message In Toast.
@@ -183,6 +230,23 @@ public class Utils {
         Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * This method check availability of Internet connection
+     */
+    public static boolean isConnectedToInternet(Context context) {
+
+        ConnectivityManager mManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (mManager != null) {
+            NetworkInfo activeNetworkInfo = mManager.getActiveNetworkInfo();
+            if (activeNetworkInfo != null && activeNetworkInfo.isAvailable() && activeNetworkInfo.isConnected()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
 
     public static void changeLanguage(String lang, Activity activity, Class<?> cls) {
         Locale myLocale = new Locale(lang);
@@ -309,13 +373,13 @@ public class Utils {
         return dater;
     }
 
-    public static void setTabLayoutDivider(TabLayout tabLayout){
+    public static void setTabLayoutDivider(TabLayout tabLayout, Context context){
         LinearLayout linearLayout = (LinearLayout)tabLayout.getChildAt(0);
         linearLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
         GradientDrawable drawable = new GradientDrawable();
         drawable.setColor(Color.WHITE);
         drawable.setSize(3, 1);
-        linearLayout.setDividerPadding(40);
+        linearLayout.setDividerPadding((int) context.getResources().getDimension(R.dimen.tab_divider_height));
         linearLayout.setDividerDrawable(drawable);
     }
 
@@ -324,7 +388,6 @@ public class Utils {
     }
 
     public static String capitlizeText(String name) {
-
         return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
@@ -358,7 +421,7 @@ public class Utils {
     }
 
     public static void deleteDialog(String message, Activity activity, DialogInterface.OnClickListener listener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage(message);
         builder.setCancelable(true);
         builder.setPositiveButton(
@@ -375,9 +438,6 @@ public class Utils {
         alertDialog.show();
         alertDialog.getButton(alertDialog.BUTTON_NEGATIVE).setTextColor(activity.getResources().getColor(R.color.colorCorporateText));
         alertDialog.getButton(alertDialog.BUTTON_POSITIVE).setTextColor(activity.getResources().getColor(R.color.colorCorporateText));
-
-
-
     }
 
 

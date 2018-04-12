@@ -15,7 +15,7 @@ import retrofit2.Response;
 public abstract class ApiCall implements Callback<ApiResponse> {
 
     private Activity mActivity;
-    private boolean pdStatus;
+    private boolean pdStatus, hideApiError;
     private Dialog mProgressDialog;
     private Call<ApiResponse> responseCall;
 
@@ -29,6 +29,11 @@ public abstract class ApiCall implements Callback<ApiResponse> {
         if (pdStatus) {
             //  mProgressDialog = Utils.apiCallDialog(mActivity, responseCall);
         }
+    }
+
+    public ApiCall(Activity mActivity, int hideErrorFlag) {
+        this.mActivity = mActivity;
+        this.hideApiError = hideErrorFlag != -1 ? true : false;
     }
 
     private ApiCall(Activity mActivity, boolean pdStatus) {
@@ -61,7 +66,9 @@ public abstract class ApiCall implements Callback<ApiResponse> {
 
     @Override
     public void onFailure(Call<ApiResponse> call, Throwable t) {
-        new  ApiError(mActivity,t);
+        if(!hideApiError){
+            new ApiError(mActivity,t);
+        }
         onFail(call,t);
 
         //  LogUtils.error("Request Cancel by user Manually");

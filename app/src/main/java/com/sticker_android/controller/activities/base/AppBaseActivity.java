@@ -10,14 +10,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sticker_android.R;
 import com.sticker_android.controller.fragment.ProfileFragment;
+import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.Utils;
 
@@ -200,5 +204,32 @@ public abstract class AppBaseActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Utils.hideKeyboard(this);
+    }
+
+    /**
+     * will show custom popup for no internet connection
+     * @param context
+     * @param parent
+     * @param eventListener
+     * @param requestCode
+     */
+    public void manageNoInternetConnectionLayout(Context context, final RelativeLayout parent, final NetworkPopupEventListener eventListener, final int requestCode){
+
+        final View view = LayoutInflater.from(context).inflate(R.layout.layout_no_internet_connection, null);
+        if(parent != null && parent.getChildCount() > 0){
+            parent.removeAllViews();
+        }
+        parent.addView(view);
+
+        LinearLayout llRetry = (LinearLayout) view.findViewById(R.id.llRetry);
+        llRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(parent != null && parent.getChildCount() > 0){
+                    parent.removeAllViews();
+                }
+                eventListener.onRetryClickListener(requestCode);
+            }
+        });
     }
 }

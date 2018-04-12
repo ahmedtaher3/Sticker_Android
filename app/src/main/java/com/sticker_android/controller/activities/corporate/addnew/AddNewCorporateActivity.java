@@ -242,7 +242,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         sec.setText(getString(R.string.txt__add_products_frag)); // set the Text for the first Tab
         tabLayout.addTab(sec);
 
-        Utils.setTabLayoutDivider(tabLayout);
+        Utils.setTabLayoutDivider(tabLayout, this);
     }
 
     @Override

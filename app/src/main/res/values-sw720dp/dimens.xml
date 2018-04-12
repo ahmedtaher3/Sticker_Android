@@ -2,6 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <integer name="designed_item_page_limit">100</integer>
 
     <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_5">5dp</dimen>
@@ -424,5 +425,7 @@
     <dimen name="txt_size_home_12sp">18sp</dimen>
     <dimen name="act_product_details_padding">40dp</dimen>
     <dimen name="image_height_product_details">290dp</dimen>
+    <dimen name="sticker_progress_loader_size">40dp</dimen>
+    <dimen name="home_icon_color_size">22dp</dimen>
 
 </resources>

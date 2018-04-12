@@ -232,7 +232,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     ArrayList<Product> tempList = new ArrayList<Product>();
-                    tempList = apiResponse.paylpad.product;
+                    tempList = apiResponse.paylpad.productList;
                     if (tempList != null) {
                         isLastPage = false;
                         productList.addAll(tempList);

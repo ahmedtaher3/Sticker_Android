@@ -33,13 +33,33 @@
                 android:clipToPadding="false"
                 android:paddingBottom="@dimen/dp_15">
 
-                <ImageView
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"
-                    android:id="@+id/imvProductImage"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/act_add_new_corp_imv_height"
-                    android:background="@drawable/upload_image_hdpi" />
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
+                        android:id="@+id/imvProductImage"
+                        android:layout_width="match_parent"
+                        android:background="@color/image_background_color"
+                        android:layout_height="@dimen/act_add_new_corp_imv_height" />
+
+                    <com.sticker_android.view.CustomAppCompatTextView
+                        android:id="@+id/imgPlaceHolder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:clickable="false"
+                        android:gravity="center_horizontal"
+                        android:longClickable="false"
+                        android:textColor="#babec1"
+                        android:textSize="15sp"
+                        fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                        android:text="@string/upload_sticker"
+                        app:drawableTopCompat="@drawable/upload_sticker_placeholder"/>
+
+                </RelativeLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -52,7 +72,7 @@
                         android:id="@+id/act_add_new_corp_edt_name"
                         style="@style/EditText"
                         android:hint="@string/act_add_corp_txt_name"
-                        android:imeOptions="actionNext"
+                        android:imeOptions="actionDone"
                         android:inputType="text|textCapSentences|textNoSuggestions"
                         android:maxLength="100"
                         android:maxLines="1" />
@@ -105,29 +125,6 @@
                         android:spinnerMode="dropdown"/>
 
                 </RelativeLayout>
-
-                <TextView
-                    android:layout_marginLeft="2dp"
-                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                    android:textSize="@dimen/text_size_contact_us"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/add_corp_tv_margin_top"
-                    android:text="@string/act_add_corp_txt_write_description" />
-
-                <EditText
-                    android:layout_marginLeft="2dp"
-                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                    android:textSize="@dimen/text_size_contact_us"
-                    android:id="@+id/edtDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="@dimen/act_add_corp_write_des_edt_heigh"
-                    android:layout_marginTop="@dimen/add_corp_tv_margin_top"
-                    android:background="@drawable/btn_shadow_corner"
-                    android:gravity="start"
-                    android:inputType="text|textCapSentences|textNoSuggestions|textMultiLine"
-                    android:padding="5dp" />
 
                 <Button
                     android:id="@+id/act_corp_add_new_btn_post"

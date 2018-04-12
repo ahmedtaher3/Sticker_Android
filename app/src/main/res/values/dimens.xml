@@ -113,8 +113,11 @@
     <dimen name="margin_end_start_add_product">0dp</dimen>
     <dimen name="act_add_new_margin_top_30dp">30dp</dimen>
     <dimen name="image_height_add_product">150dp</dimen>
-    <dimen name="txt_size_home_12sp">14sp</dimen>
+    <dimen name="txt_size_home_12sp">12sp</dimen>
     <dimen name="act_product_details_padding">10dp</dimen>
     <dimen name="image_height_product_details">250dp</dimen>
+    <dimen name="sticker_progress_loader_size">30dp</dimen>
+    <dimen name="home_icon_color_size">14dp</dimen>
+    <dimen name="tab_divider_height">15dp</dimen>
 
 </resources>
