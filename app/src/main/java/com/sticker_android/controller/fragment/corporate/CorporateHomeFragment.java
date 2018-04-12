@@ -64,6 +64,12 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         // Required empty public constructor
     }
 
+    public static CorporateHomeFragment newInstance() {
+        CorporateHomeFragment f = new CorporateHomeFragment();
+
+        return f;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
