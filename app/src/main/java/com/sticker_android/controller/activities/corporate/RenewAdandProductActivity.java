@@ -224,7 +224,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
             mExpireDate = productObj.getExpireDate();
             pgrImage.setVisibility(View.VISIBLE);
             Glide.with(this)
-                    .load(productObj.getImagePath()).placeholder(R.drawable.ic_upload_imagee)
+                    .load(productObj.getImagePath()).placeholder(R.drawable.ic_upload_imagee).fitCenter()
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

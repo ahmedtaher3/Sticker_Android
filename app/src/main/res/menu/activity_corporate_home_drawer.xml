@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group >
         <item
@@ -14,12 +15,16 @@
         <item
             android:id="@+id/nav_content_for_approval"
             android:title="Content for Approval" />
+        <item android:id="@+id/nav_notification"
+            app:actionLayout="@layout/menu_counter"
+            android:title="@string/txt_notifications">
+        </item>
         <item
             android:id="@+id/nav_profile"
             android:title="My Profile" />
         <item
             android:id="@+id/nav_account_setting"
-            android:title="Account Settings" />
+            android:title="@string/txt_account_setting" />
         <item
             android:id="@+id/nav_logout"
             android:title="Log Out" />

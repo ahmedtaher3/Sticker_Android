@@ -4,19 +4,21 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -38,6 +40,7 @@ import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateReportFragment;
 import com.sticker_android.controller.fragment.corporate.contentapproval.CorporateContentApprovalFragment;
 import com.sticker_android.controller.fragment.corporate.contest.CorporateContestFragment;
+import com.sticker_android.controller.fragment.corporate.notification.CorporateNotificationFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
@@ -80,6 +83,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
                 setSupportActionBar(toolbar);
                 actionBarToggle(toolbar);
                 toolbar.setTitle("");
+                setBadgeCount();
             }
         }, 200);
         setViewReferences();
@@ -87,7 +91,29 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
         showFragmentManually();
         setUserDataIntoNaviagtion();
+        initializeCountDrawer(10);
     }
+
+    /**
+     * Humberg notification dot visibility
+     */
+    private void setBadgeCount() {
+        toolbar.findViewById(R.id.tv_nav_menu_badge).setVisibility(View.VISIBLE);
+
+    }
+
+    /** Method is used to set the counter in notification tab
+     * @param count
+     */
+    private void initializeCountDrawer(int count) {
+        int itemId= MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_notification)).getId();
+        TextView notificationCounter = (TextView) navigationView.getMenu().findItem(itemId).getActionView();
+        notificationCounter.setGravity(Gravity.CENTER);
+        notificationCounter.setTypeface(null, Typeface.BOLD);
+        notificationCounter.setTextColor(getResources().getColor(R.color.colorFloatingCorporate));
+        notificationCounter.setText(count > 0 ? String.valueOf(count) : null);
+    }
+
 
     private void setUserDataIntoNaviagtion() {
         View header = navigationView.getHeaderView(0);
@@ -149,10 +175,20 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     }
 
     private void actionBarToggle(Toolbar toolbar) {
+
+        ImageView imageView=toolbar.findViewById(R.id.imv_nav_drawer_menu);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(drawer!=null)
+                    drawer.openDrawer(GravityCompat.START);
+            }
+        });
+        /*
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState();*/
     }
 
     @Override
@@ -256,31 +292,34 @@ public class CorporateHomeActivity extends AppBaseActivity implements
             fragmentClass = new CorporateContentApprovalFragment();
             tag = getResources().getString(R.string.txt_content_approval);
             replaceFragment(fragmentClass,tag);
+        }else if(id==R.id.nav_notification&&!(f instanceof CorporateNotificationFragment)){
+            textView.setText(R.string.txt_notifications);
+            fragmentClass =CorporateNotificationFragment.newInstance();
+            tag = getResources().getString(R.string.txt_notifications);
+            replaceFragment(fragmentClass,tag);
         }
+
         // Insert the fragment by replacing any existing fragment
         setUserDataIntoNaviagtion();
-       /* FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentClass != null) {
-            if (fragmentClass instanceof CorporateHomeFragment) {
-            } else {
-                if (!isAdded(tag))
-                    replaceFragment(fragmentClass, tag);
-            }
-        }*/
-      //  replaceFragment(fragmentClass, tag);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public void replaceFragment(Fragment fragmentClass, String tag) {
+    public void replaceFragment(final Fragment fragmentClass, final String tag) {
 
-        FragmentTransaction fragmentTransaction   =
-                getSupportFragmentManager().beginTransaction();
-       fragmentTransaction.replace(R.id.container_home,
-                fragmentClass, tag);
-        int count  =    getFragmentManager().getBackStackEntryCount();
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                FragmentTransaction fragmentTransaction   =
+                        getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.container_home,
+                        fragmentClass, tag);
+                int count  =    getFragmentManager().getBackStackEntryCount();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        }, 200);
+
 
     }
 

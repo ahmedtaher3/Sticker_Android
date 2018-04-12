@@ -94,4 +94,5 @@
     <string name="txt_delete_resources">Deleted successfully</string>
     <string name="txt_report">Report</string>
     <string name="write_some_description">Write something here</string>
+    <string name="txt_notifications">Notifications</string>
 </resources>

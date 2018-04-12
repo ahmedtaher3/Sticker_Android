@@ -33,8 +33,6 @@ public class SplashActivity extends AppBaseActivity {
         waitForFewSecond();
         setSelectedLangage();
         changeStatusBarColor(getResources().getColor(R.color.colorFanText));
-        LocalNotification localNotification=new LocalNotification();
-        localNotification.setNotification(this,"sdcdscdc","dscdscdc");
     }
 
     private void init() {
