@@ -546,6 +546,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                         Utils.showToast(getApplicationContext(), type + " added successfully.");
                     }
 
+
                     if(comingFromDetailActivity){
                         Intent intent = new Intent(AddNewDesignActivity.this, DesignerHomeActivity.class);
                         intent.putExtra(AppConstant.DATA_REFRESH_NEEDED, true);
