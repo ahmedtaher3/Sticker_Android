@@ -6,10 +6,10 @@ package com.sticker_android.model.enums;
 
 public enum ProductStatus {
 
-    PENDING("pending"),
-    APPROVED("approved"),
-    REJECTED("rejected"),
-    EXPIRED("expired");
+    PENDING("1"),
+    APPROVED("2"),
+    REJECTED("3"),
+    EXPIRED("4");
 
     private String mStatus;
 
@@ -17,7 +17,7 @@ public enum ProductStatus {
         this.mStatus = status;
     }
 
-    public String getStatus(){
-        return mStatus;
+    public int getStatus(){
+        return Integer.valueOf(mStatus).intValue();
     }
 }

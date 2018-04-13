@@ -63,7 +63,8 @@ public class Product implements Parcelable {
     @SerializedName("category_id")
     private int categoryId;
 
-    private String productStatus;
+    @SerializedName("status")
+    public int productStatus;
 
     @Override
     public boolean equals(Object obj) {
@@ -125,31 +126,6 @@ public class Product implements Parcelable {
 
     public Product() {}
 
-    protected Product(Parcel in) {
-        productid = in.readInt();
-        productname = in.readString();
-        type = in.readString();
-        description = in.readString();
-        expireDate = in.readString();
-        imagePath = in.readString();
-        isExpired = in.readInt();
-        createdTime = in.readString();
-        categoryId = in.readInt();
-        productStatus = in.readString();
-    }
-
-    public static final Creator<Product> CREATOR = new Creator<Product>() {
-        @Override
-        public Product createFromParcel(Parcel in) {
-            return new Product(in);
-        }
-
-        @Override
-        public Product[] newArray(int size) {
-            return new Product[size];
-        }
-    };
-
     @Override
     public int describeContents() {
         return 0;
@@ -166,6 +142,31 @@ public class Product implements Parcelable {
         dest.writeInt(isExpired);
         dest.writeString(createdTime);
         dest.writeInt(categoryId);
-        dest.writeString(productStatus);
+        dest.writeInt(productStatus);
     }
+
+    protected Product(Parcel in) {
+        productid = in.readInt();
+        productname = in.readString();
+        type = in.readString();
+        description = in.readString();
+        expireDate = in.readString();
+        imagePath = in.readString();
+        isExpired = in.readInt();
+        createdTime = in.readString();
+        categoryId = in.readInt();
+        productStatus = in.readInt();
+    }
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 }

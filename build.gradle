@@ -18,7 +18,7 @@ allprojects {
             url "https://maven.google.com"
         }
         mavenCentral()
-      }
+    }
 }
 
 task clean(type: Delete) {
@@ -27,7 +27,7 @@ task clean(type: Delete) {
 // Define versions in a single place
 ext {
     // Sdk and tools
-    minSdkVersion = 21
+    minSdkVersion = 17
     targetSdkVersion = 23
     compileSdkVersion = 24
     buildToolsVersion = '23.0.2'
@@ -42,5 +42,3 @@ ext {
     butterKnifeVersion = '8.8.1'
     googlePlayServiceVersion = '11.8.0'
 }
-
-

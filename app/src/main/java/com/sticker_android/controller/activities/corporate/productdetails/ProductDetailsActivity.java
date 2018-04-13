@@ -118,7 +118,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
         tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productObj.getCreatedTime()), getActivity()));
         pgrImage.setVisibility(View.VISIBLE);
         Glide.with(this)
-                .load(productObj.getImagePath()).placeholder(R.drawable.ic_upload_image).fitCenter()
+                .load(productObj.getImagePath()).fitCenter()
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

@@ -16,7 +16,6 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -224,7 +223,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
             mExpireDate = productObj.getExpireDate();
             pgrImage.setVisibility(View.VISIBLE);
             Glide.with(this)
-                    .load(productObj.getImagePath()).placeholder(R.drawable.ic_upload_imagee).fitCenter()
+                    .load(productObj.getImagePath()).fitCenter()
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

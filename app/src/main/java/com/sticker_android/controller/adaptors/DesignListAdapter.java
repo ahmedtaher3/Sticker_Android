@@ -29,6 +29,7 @@ import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.designer.addnew.DesignDetailActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.model.enums.ProductStatus;
 import com.sticker_android.model.interfaces.DesignerActionListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -243,17 +244,22 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
             itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context).replaceAll("about", "").trim());
 
-            String status = "pending";
-            if (status.equalsIgnoreCase("rejected")) {
+            int status = productItem.productStatus;
+            AppLogger.error(TAG, "Status => " + status);
+            if (status == ProductStatus.REJECTED.getStatus()) {
                 itemHolder.tvStatus.setTextColor(Color.RED);
-                itemHolder.tvStatus.setText("Rejected");
-            } else if(status.equalsIgnoreCase("approved")){
+                itemHolder.tvStatus.setText(R.string.rejected);
+            }
+            else if(status == ProductStatus.EXPIRED.getStatus()){
+                itemHolder.tvStatus.setTextColor(Color.RED);
+                itemHolder.tvStatus.setText(R.string.expired);
+            }else if(status == ProductStatus.APPROVED.getStatus()){
                 itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorHomeGreen));
-                itemHolder.tvStatus.setText("Approved");
+                itemHolder.tvStatus.setText(R.string.approved);
             }
             else{
                 itemHolder.tvStatus.setTextColor(Color.parseColor("#1D93FB"));
-                itemHolder.tvStatus.setText("Pending");
+                itemHolder.tvStatus.setText(R.string.pending);
             }
 
             if(productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()){

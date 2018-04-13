@@ -272,6 +272,9 @@ public class DesignerHomeActivity extends AppBaseActivity implements
                 if(fragment instanceof DesignerHomeFragment){
                     ((DesignerHomeFragment) fragment).updateAttachedVisibleFragment();
                 }
+                else if(fragment instanceof DesignerPendingContentFragment){
+                    ((DesignerPendingContentFragment) fragment).updateAttachedVisibleFragment();
+                }
             }
         }
     }

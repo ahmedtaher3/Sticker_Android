@@ -516,7 +516,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     .into(((ProductHolder) holder).imvOfAds);*/
                 ((ProductHolder) holder).pgrImage.setVisibility(View.VISIBLE);
             Glide.with(context)
-                    .load(product.getImagePath()).placeholder(R.drawable.ic_upload_image).fitCenter()
+                    .load(product.getImagePath()).fitCenter()
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
