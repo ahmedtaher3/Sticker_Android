@@ -104,6 +104,30 @@ public class Utils {
     }
 
     /**
+     * This method prompt the dialog in order to provide option for selecting image
+     */
+    public static void showAlertDialogToGetGif(final Activity activity, final ImagePickerListener pickerListener) {
+
+        final String[] items = new String[]{activity.getString(R.string.pick_gallery)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setCancelable(true);
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                 if (items[which].equals(activity.getString(R.string.pick_gallery))) {
+                    if (PermissionManager.checkReadStoragePermission(activity, READ_STORAGE_ACCESS_RQ)) {
+                        pickerListener.pickFromGallery();
+                    }
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.show();
+        alertDialog.setCanceledOnTouchOutside(true);
+    }
+
+
+    /**
      * This will return  the path of custom folder
      */
     public static File getCustomImagePath(Context context, String fileName) {

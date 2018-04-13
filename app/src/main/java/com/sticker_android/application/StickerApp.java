@@ -2,6 +2,7 @@ package com.sticker_android.application;
 
 import android.app.Application;
 import android.support.multidex.MultiDex;
+import android.support.v7.app.AppCompatDelegate;
 
 
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -20,6 +21,9 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class StickerApp extends Application {
 
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     private static StickerApp mInstance;
     @Override
     public void onCreate() {

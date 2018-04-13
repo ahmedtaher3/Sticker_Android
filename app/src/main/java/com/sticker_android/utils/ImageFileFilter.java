@@ -9,23 +9,26 @@ import java.io.FileFilter;
 public class ImageFileFilter implements FileFilter
 {
     File file;
-    private final String[] okFileExtensions =  new String[] {"gif"};
+    private final String[] okFileExtensions =  new String[] {"gif","png"};
 
     /**
      *
      */
-    public ImageFileFilter(File newfile)
+    public ImageFileFilter()
     {
-        this.file=newfile;
+
     }
 
     public boolean accept(File file)
     {
+        AppLogger.debug("Image filter","filter image");
         for (String extension : okFileExtensions)
         {
             if (file.getName().toLowerCase().endsWith(extension))
             {
+                AppLogger.debug("Image filter","filter image");
                 return true;
+
             }
         }
         return false;

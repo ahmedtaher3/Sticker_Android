@@ -9,6 +9,6 @@
     android:textColor="@android:color/black"
     android:paddingRight="@dimen/dp_5"
     android:textSize="15sp"
-    android:drawableRight="@drawable/ic_keyboard_arrow_down_black_24dp"
+    android:drawableRight="@drawable/spinner_dropdown"
     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
     xmlns:tools="http://schemas.android.com/tools" />

@@ -113,7 +113,7 @@
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="8dp"
                     android:layout_toRightOf="@+id/checkboxShare"
-                    android:drawableLeft="@drawable/ic_time"
+                    android:drawableLeft="@drawable/tv_svg_time"
                     android:drawablePadding="8dp"
                     android:gravity="center"
                     android:text="2 hour"

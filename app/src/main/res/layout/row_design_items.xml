@@ -67,7 +67,7 @@
                     android:background="@android:color/transparent"
                     android:paddingBottom="5dp"
                     android:paddingStart="10dp"
-                    android:src="@drawable/ic_more"
+                    app:srcCompat="@drawable/ic_more"
                     android:tint="@color/colorCorporateText" />
 
             </RelativeLayout>
@@ -115,7 +115,7 @@
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="8dp"
                     android:layout_toRightOf="@+id/checkboxShare"
-                    android:drawableLeft="@drawable/ic_time"
+                    android:drawableLeft="@drawable/tv_svg_time"
                     android:drawablePadding="8dp"
                     android:gravity="center"
                     android:text="2 hour"
@@ -129,7 +129,7 @@
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="16dp"
                     android:layout_toRightOf="@+id/tvTime"
-                    android:drawableLeft="@drawable/ic_download"
+                    android:drawableLeft="@drawable/ic_svg_drawable_download"
                     android:drawablePadding="8dp"
                     android:gravity="center"
                     android:text="2 hour"

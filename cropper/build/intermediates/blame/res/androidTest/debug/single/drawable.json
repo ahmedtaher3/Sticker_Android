@@ -12,12 +12,12 @@
         "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_ratingbar_small_material.xml"
     },
     {
-        "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/androidTest/debug/drawable/abc_switch_thumb_material.xml",
-        "source": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_switch_thumb_material.xml"
-    },
-    {
         "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/androidTest/debug/drawable/abc_btn_check_material.xml",
         "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_btn_check_material.xml"
+    },
+    {
+        "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/androidTest/debug/drawable/abc_switch_thumb_material.xml",
+        "source": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_switch_thumb_material.xml"
     },
     {
         "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/androidTest/debug/drawable/abc_ic_ab_back_material.xml",

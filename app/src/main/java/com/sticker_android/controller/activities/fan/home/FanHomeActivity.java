@@ -1,7 +1,9 @@
 package com.sticker_android.controller.activities.fan.home;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -41,6 +43,7 @@ public class FanHomeActivity extends AppBaseActivity
     private Toolbar toolbar;
     private AppPref appPref;
     private User user;
+    private CoordinatorLayout mainView;
     private MenuItem item;
     private TextView tvUserName;
     private TextView tvEmail;
@@ -139,9 +142,26 @@ public class FanHomeActivity extends AppBaseActivity
 
     private void actionBarToggle(Toolbar toolbar) {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            public void onDrawerClosed(View view) {
+                supportInvalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                supportInvalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                mainView.setTranslationX(slideOffset * drawerView.getWidth());
+                drawer.bringChildToFront(drawerView);
+                drawer.requestLayout();
+            }
+        };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+        drawer.setScrimColor(Color.TRANSPARENT);
     }
 
     @Override
@@ -154,6 +174,7 @@ public class FanHomeActivity extends AppBaseActivity
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mainView = (CoordinatorLayout) findViewById(R.id.mainView);
         //   tvUserName=(TextView)findViewById(R.id.tvUserName);
         // tvEmail=(TextView)findViewById(R.id.tvEmail);
 

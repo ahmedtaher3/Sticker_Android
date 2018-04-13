@@ -53,6 +53,7 @@ import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AWSUtil;
 import com.sticker_android.utils.AppLogger;
+import com.sticker_android.utils.ImageFileFilter;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -473,17 +474,31 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 }
                 break;
             case R.id.imvProductImage:
-                Utils.showAlertDialogToGetPic(this, new ImagePickerListener() {
-                    @Override
-                    public void pickFromGallery() {
-                        pickGalleryImage();
-                    }
+                if(tabLayout.getSelectedTabPosition()==1){
+                    Utils.showAlertDialogToGetGif(this, new ImagePickerListener() {
+                        @Override
+                        public void pickFromGallery() {
+                            pickGalleryImage();
+                        }
 
-                    @Override
-                    public void captureFromCamera() {
-                        captureImage();
-                    }
-                });
+                        @Override
+                        public void captureFromCamera() {
+
+                        }
+                    });
+                }else {
+                    Utils.showAlertDialogToGetPic(this, new ImagePickerListener() {
+                        @Override
+                        public void pickFromGallery() {
+                            pickGalleryImage();
+                        }
+
+                        @Override
+                        public void captureFromCamera() {
+                            captureImage();
+                        }
+                    });
+                }
                 break;
             case R.id.imgDown2:
                 spnrCategory.performClick();
@@ -617,7 +632,18 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                     File file = Utils.getCustomImagePath(this, "temp");
                     mCapturedImageUrl = file.getAbsolutePath();
                     mCapturedImageUrl=sourceUrl;
-                    openCropActivity(sourceUrl);
+                    ImageFileFilter imageFileFilter=new ImageFileFilter();
+                    if(imageFileFilter.accept(file)){
+                        AppLogger.debug("Image filter","filter image gif");
+                        Glide.with(this).load(mCapturedImageUrl).asGif()
+                                .into(imvProductImage);
+                        imgPlaceHolder.setVisibility(View.GONE);
+
+                    }else {
+                        AppLogger.debug("Image filter","filter image crop");
+                        openCropActivity(sourceUrl);
+                    }
+
                 }
                 break;
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
@@ -625,7 +651,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
                     mCapturedImageUrl = resultUri.getPath();
-                    imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
+                       imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
                     imgPlaceHolder.setVisibility(View.GONE);
                     isDesignedImageChanges = true;
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
