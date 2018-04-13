@@ -220,6 +220,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
      */
     private void productListApi(int index, final String search) {
         isLoading = true;
+        if(swipeRefreshLayout!=null)
         swipeRefreshLayout.setRefreshing(true);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
                 index, 50, "product", "product_list", search);
@@ -227,12 +228,13 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 isLoading = false;
+                if(swipeRefreshLayout!=null)
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     if(productList!=null)
                         productList.clear();
                     ArrayList<Product> tempList = new ArrayList<>();
-                    tempList = apiResponse.paylpad.product;
+                    tempList = apiResponse.paylpad.productList;
                     if (tempList != null) {
                         isLastPage = false;
                         productList.addAll(tempList);
@@ -265,6 +267,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
+                if(swipeRefreshLayout!=null)
                 swipeRefreshLayout.setRefreshing(false);
                 isLoading = false;
             }
@@ -485,8 +488,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             if (getItemViewType(position) == TYPE_PRODUCT) {
                 final Product product = productLists.get(position);
 
-                ((ProductAdaptor.ProductHolder) holder).checkboxLike.setText(Utils.format(1000));
-                ((ProductAdaptor.ProductHolder) holder).checkboxShare.setText(Utils.format(1200));
+                ((ProductAdaptor.ProductHolder) holder).checkboxLike.setText(Utils.format(0));
+                ((ProductAdaptor.ProductHolder) holder).checkboxShare.setText(Utils.format(0));
                 ((ProductAdaptor.ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -517,7 +520,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
                 ((ProductAdaptor.ProductHolder) holder).pgrImage.setVisibility(View.VISIBLE);
                 Glide.with(context)
-                        .load(product.getImagePath()).placeholder(R.drawable.ic_upload_image)
+                        .load(product.getImagePath()).fitCenter()
                         .listener(new RequestListener<String, GlideDrawable>() {
                             @Override
                             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

@@ -50,7 +50,7 @@
                         android:id="@+id/imvProductImage2"
                         android:minHeight="@dimen/act_add_new_corp_imv_height"
                         android:adjustViewBounds="true"
-                        android:src="@drawable/ic_upload_imagee"
+                        app:srcCompat="@drawable/ic_upload_imagee"
                         android:layout_centerInParent="true"
                         android:scaleType="fitXY"
                         android:layout_width="wrap_content"

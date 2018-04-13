@@ -7,6 +7,7 @@
     <string name="txt_designer">Designer</string>
     <string name="text_corporate">Corporate</string>
     <integer name="running_device_config">5</integer>
+    <integer name="designed_item_page_limit">30</integer>
 
     <!--Sign In-->
     <string name="txt_dont_have_a_account">"Don't have a account?"</string>
@@ -127,9 +128,9 @@
     <string name="time_ago_seconds">less than a minute</string>
     <string name="time_ago_minute">about a minute</string>
     <string name="time_ago_minutes">%d minutes</string>
-    <string name="time_ago_hour">about an hour</string>
-    <string name="time_ago_hours">about %d hours</string>
-    <string name="time_ago_day">a day</string>
+    <string name="time_ago_hour">hour</string>
+    <string name="time_ago_hours"> %d hours</string>
+    <string name="time_ago_day">day</string>
     <string name="time_ago_days">%d days</string>
     <string name="time_ago_month">about a month</string>
     <string name="time_ago_months">%d months</string>
@@ -152,5 +153,35 @@
     <string name="write_some_description">Write something here...</string>
     <string name="select_category_txt">Select a Category</string>
     <string name="search">Search</string>
+
     <string name="txt_notifications">Notifications</string>
+
+    <string name="no_data_found">No data found.</string>
+    <string name="server_unreachable">Server unreachable</string>
+    <string name="oops">Oops!</string>
+    <string name="pls_check_ur_internet_connection">Please check internet connection.</string>
+    <string name="try_again">Try Again</string>
+    <string name="connection_not_found">Connection not found</string>
+    <string name="no_stickers_uploaded_yet">No stickers uploaded yet.</string>
+    <string name="no_gif_uploaded_yet">No GIF uploaded yet.</string>
+    <string name="no_emoji_uploaded_yet">No Emoji uploaded yet.</string>
+    <string name="ok">Ok</string>
+    <string name="remove">Remove</string>
+    <string name="edit">Edit</string>
+    <string name="resubmit_with_justification">Re-submit with Justification</string>
+    <string name="upload_sticker">Upload Sticker</string>
+    <string name="upload_gif">Upload GIF</string>
+    <string name="upload_emoji">Upload Emoji</string>
+    <string name="deleted_successfully">Deleted successfully</string>
+    <string name="update">Update</string>
+    <string name="pls_select_category">Please select a category.</string>
+    <string name="pls_enter_name">Please enter a name.</string>
+    <string name="pls_upload_image">Please upload a image.</string>
+    <string name="detail">Details</string>
+    <string name="rejected">Rejected</string>
+    <string name="approved">Approved</string>
+    <string name="pending">Pending</string>
+    <string name="expired">Expired</string>
+
+
 </resources>

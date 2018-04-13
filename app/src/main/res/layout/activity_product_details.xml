@@ -16,9 +16,17 @@
         android:padding="@dimen/act_product_details_padding">
 
         <RelativeLayout
+            android:background="@drawable/background_gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
+
+            <ImageView
+                android:adjustViewBounds="true"
+                android:id="@+id/imvOfAds"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/image_height_product_details"
+                android:scaleType="fitXY" />
             <ProgressBar
                 android:visibility="visible"
                 android:id="@+id/pgrImage"
@@ -26,14 +34,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true" />
 
-            <ImageView
-                android:adjustViewBounds="true"
-                android:id="@+id/imvOfAds"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/image_height_product_details"
-                android:background="@drawable/btn_shadow_corner"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_upload_image" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -61,7 +61,7 @@
                 android:background="@android:color/transparent"
                 android:paddingBottom="5dp"
                 android:paddingStart="10dp"
-                android:src="@drawable/ic_more"
+                app:srcCompat="@drawable/ic_more"
                 android:tint="@color/colorCorporateText" />
 
         </RelativeLayout>
@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:button="@drawable/like_selector"
-                android:padding="8dp"
+                android:padding="@dimen/padding_like_8dp"
                 android:textSize="@dimen/txt_size_home_12sp" />
 
             <CheckBox
@@ -97,7 +97,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_toRightOf="@+id/checkboxLike"
                 android:button="@drawable/share_selector"
-                android:padding="8dp"
+                android:padding="@dimen/padding_like_8dp"
                 android:textSize="@dimen/txt_size_home_12sp" />
 
             <TextView
@@ -107,7 +107,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="8dp"
                 android:layout_toRightOf="@+id/checkboxShare"
-                android:drawableLeft="@drawable/ic_time"
+                android:drawableLeft="@drawable/tv_svg_time"
                 android:drawablePadding="8dp"
                 android:gravity="center"
                 android:text="2 hour"

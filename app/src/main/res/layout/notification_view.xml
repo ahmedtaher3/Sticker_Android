@@ -24,7 +24,7 @@
                 android:paddingTop="10dp">
 
                 <ImageView
-                    android:src="@drawable/ic_side_image_pink"
+                    app:srcCompat="@drawable/ic_side_image_pink"
                     android:id="@+id/imvNotification"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -48,7 +48,7 @@
               android:layout_height="wrap_content">
              <ImageView
                  android:id="@+id/imvtype"
-                 android:src="@drawable/ic_trophy_notification"
+                 app:srcCompat="@drawable/ic_trophy_notification"
                  android:layout_marginRight="10dp"
                  android:layout_toLeftOf="@+id/tvTimeNotification"
                  android:layout_width="wrap_content"

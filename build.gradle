@@ -19,7 +19,7 @@ allprojects {
             url "https://maven.google.com"
         }
         mavenCentral()
-      }
+    }
 }
 
 task clean(type: Delete) {
@@ -43,4 +43,3 @@ ext {
     butterKnifeVersion = '8.8.1'
     googlePlayServiceVersion = '11.8.0'
 }
-

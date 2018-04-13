@@ -53,7 +53,8 @@
         <activity
             android:name=".controller.activities.designer.home.DesignerHomeActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".controller.activities.corporate.home.CorporateHomeActivity"
             android:screenOrientation="portrait"
@@ -109,6 +110,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" ></activity>
 
+
         <service android:name=".fcm.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -125,6 +127,10 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
+
+        <activity android:name=".controller.activities.designer.addnew.DesignDetailActivity"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +20,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,39 +33,40 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.fragment.AccountSettingFragment;
 import com.sticker_android.controller.fragment.ProfileFragment;
-import com.sticker_android.controller.fragment.designer.DesignerContentFragment;
+import com.sticker_android.controller.fragment.designer.DesignerPendingContentFragment;
 import com.sticker_android.controller.fragment.designer.DesignerContestFragment;
 import com.sticker_android.controller.fragment.designer.DesignerHomeFragment;
 import com.sticker_android.controller.fragment.designer.DesignerReportFragment;
-import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.UserTypeEnum;
-import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.Locale;
 
-import okhttp3.internal.Util;
 import retrofit2.Call;
 
 public class DesignerHomeActivity extends AppBaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener {
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    private CoordinatorLayout mainView;
     private Toolbar toolbar;
     private AppPref appPref;
     private User user;
     private AlertDialog languageDialog;
     private boolean doubleBackToExitPressedOnce;
+    private MenuItem mSelectedMenu;
+    private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +85,8 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
         setUserDataIntoNaviagtion();
 
-        replaceFragment(new DesignerHomeFragment());
+        mFragmentManager = getSupportFragmentManager();
+        replaceFragment(mFragmentManager, new DesignerHomeFragment());
         setToolBarTitle(getResources().getString(R.string.txt_home));
     }
 
@@ -145,9 +149,27 @@ public class DesignerHomeActivity extends AppBaseActivity implements
 
     private void actionBarToggle(Toolbar toolbar) {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            public void onDrawerClosed(View view) {
+                supportInvalidateOptionsMenu();
+                manageNavigationClickItem(mSelectedMenu);
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                supportInvalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                mainView.setTranslationX(slideOffset * drawerView.getWidth());
+                drawer.bringChildToFront(drawerView);
+                drawer.requestLayout();
+            }
+        };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+        drawer.setScrimColor(Color.TRANSPARENT);
     }
 
     @Override
@@ -167,12 +189,21 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
+        mainView = (CoordinatorLayout) findViewById(R.id.mainView);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        this.mSelectedMenu = item;
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void manageNavigationClickItem(MenuItem item){
+        if(item == null){
+            return;
+        }
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
@@ -181,7 +212,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
             fragmentClass = new DesignerHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
         } else if (id == R.id.nav_content_for_appproval) {
-            fragmentClass = new DesignerContentFragment();
+            fragmentClass = new DesignerPendingContentFragment();
             textView.setText("Content Approval");
         } else if (id == R.id.nav_report) {
             fragmentClass = new DesignerReportFragment();
@@ -207,22 +238,12 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         setUserDataIntoNaviagtion();
         // Insert the fragment by replacing any existing fragment
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentClass != null) {
-            replaceFragment(fragmentClass);
+            replaceFragment(mFragmentManager, fragmentClass);
         }
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
-    public void replaceFragment(Fragment fragment) {
-        /*FragmentTransaction fragmentTransaction =
-                getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container_home,
-                fragmentClass);
-        fragmentTransaction.addToBackStack(null).commit();*/
-        FragmentManager manager = getSupportFragmentManager();
-
+    public void replaceFragment(FragmentManager manager, Fragment fragment) {
         String backStateName = fragment.getClass().getName();
         String fragmentTag = backStateName;
 
@@ -232,23 +253,40 @@ public class DesignerHomeActivity extends AppBaseActivity implements
             FragmentTransaction ft = manager.beginTransaction();
             ft.replace(R.id.container_home, fragment, fragmentTag);
             ft.addToBackStack(backStateName);
-            ft.commit();
+            ft.commitAllowingStateLoss();
         } else {
             //"Fragment already exist."
         }
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if(intent != null){
+            boolean dataRefreshNeeded = intent.getBooleanExtra(AppConstant.DATA_REFRESH_NEEDED, false);
+
+            if(dataRefreshNeeded){
+                //data of home has been changed
+                Fragment fragment = mFragmentManager.findFragmentById(R.id.container_home);
+                if(fragment instanceof DesignerHomeFragment){
+                    ((DesignerHomeFragment) fragment).updateAttachedVisibleFragment();
+                }
+                else if(fragment instanceof DesignerPendingContentFragment){
+                    ((DesignerPendingContentFragment) fragment).updateAttachedVisibleFragment();
+                }
+            }
+        }
+    }
+
+    @Override
     public void onBackPressed() {
-        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(getResources().getString(R.string.txt_home));
-        toolbar.setTitle("");
+        Log.e("DesignerHomeActivity", "Count => " + getSupportFragmentManager().getBackStackEntryCount());
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (getFragmentManager().getBackStackEntryCount() > 0) {
-            //getFragmentManager().popBackStack();
-            getFragmentManager().popBackStackImmediate(DesignerHomeFragment.class.getName(), 0);
-        } else {
+        }
+        else if (mFragmentManager.getBackStackEntryCount() == 1){
+
             if (doubleBackToExitPressedOnce) {
                 finish();
                 return;
@@ -265,6 +303,11 @@ public class DesignerHomeActivity extends AppBaseActivity implements
                     }
                 }, 2000);
             }
+        }
+        else {
+            TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
+            textView.setText(getString(R.string.txt_home));
+            mFragmentManager.popBackStackImmediate(DesignerHomeFragment.class.getName(), 0);
         }
     }
 

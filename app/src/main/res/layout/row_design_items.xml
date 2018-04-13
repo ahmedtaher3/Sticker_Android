@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingPrefix">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        app:cardCornerRadius="0dp"
+        app:contentPadding="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:foreground="?attr/selectableItemBackground">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imvOfAds"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/image_height_add_product"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:background="@color/image_background_color" />
+
+                <ProgressBar
+                    android:id="@+id/pgrImage"
+                    android:layout_width="@dimen/sticker_progress_loader_size"
+                    android:layout_height="@dimen/sticker_progress_loader_size"
+                    android:layout_centerInParent="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10">
+
+                <TextView
+                    android:id="@+id/tv_add_product_title"
+                    style="@style/tvHome"
+                    fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="5dp"
+                    android:layout_toLeftOf="@+id/imvBtnEditRemove"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Header"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/txt_size_home_12sp" />
+
+                <ImageButton
+                    android:id="@+id/imvBtnEditRemove"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:background="@android:color/transparent"
+                    android:paddingBottom="5dp"
+                    android:paddingStart="10dp"
+                    app:srcCompat="@drawable/ic_more"
+                    android:tint="@color/colorCorporateText" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_add_product_item_description"
+                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:maxLines="2"
+                android:text="undo"
+                android:textSize="12sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkboxLike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/like_selector"
+                    android:padding="@dimen/padding_like_8dp"
+                    android:textSize="@dimen/txt_size_home_12sp" />
+
+                <CheckBox
+                    android:id="@+id/checkboxShare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@+id/checkboxLike"
+                    android:button="@drawable/share_selector"
+                    android:padding="@dimen/padding_like_8dp"
+                    android:textSize="@dimen/txt_size_home_12sp" />
+
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@+id/checkboxShare"
+                    android:drawableLeft="@drawable/tv_svg_time"
+                    android:drawablePadding="8dp"
+                    android:gravity="center"
+                    android:text="2 hour"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/txt_size_home_12sp" />
+
+                <TextView
+                    android:id="@+id/tvDownloads"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="16dp"
+                    android:layout_toRightOf="@+id/tvTime"
+                    android:drawableLeft="@drawable/ic_svg_drawable_download"
+                    android:drawablePadding="8dp"
+                    android:gravity="center"
+                    android:text="2 hour"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/txt_size_home_12sp" />
+
+                <TextView
+                    android:id="@+id/tv_add_product_status"
+                    style="@style/tvHome"
+                    android:layout_width="match_parent"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:gravity="end"
+                    android:layout_toRightOf="@id/tvDownloads"
+                    android:layout_marginLeft="10dp"
+                    android:layout_centerVertical="true"
+                    android:textColor="@android:color/holo_green_light"
+                    android:textSize="@dimen/txt_size_home_12sp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+
+</RelativeLayout>

@@ -96,8 +96,8 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
     private void setProductDetails() {
 
-        checkboxLike.setText(Utils.format(1000));
-        checkboxShare.setText(Utils.format(1200));
+        checkboxLike.setText(Utils.format(0));
+        checkboxShare.setText(Utils.format(0));
         String status = "Ongoing";
         if (productObj.getIsExpired() > 0) {
             tvStatus.setTextColor(Color.RED);
@@ -118,7 +118,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
         tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productObj.getCreatedTime()), getActivity()));
         pgrImage.setVisibility(View.VISIBLE);
         Glide.with(this)
-                .load(productObj.getImagePath()).placeholder(R.drawable.ic_upload_image).fitCenter()
+                .load(productObj.getImagePath()).fitCenter()
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

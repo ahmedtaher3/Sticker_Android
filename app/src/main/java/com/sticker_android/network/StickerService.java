@@ -59,6 +59,15 @@ public interface StickerService {
                                          @Field("type")String type,@Field("description")String description,
                                          @Field("expiry_date")String expireDate
   ,@Field("image_path")String imagePath,@Field("product_id")String productId,@Field("category_id")int categoryId);
+
+  @FormUrlEncoded
+  @POST(ApiConstant.API_ADD_PRODUCT)
+  public Call<ApiResponse> apiAddProduct(@Field("language_id") String languageId,@Field("authrized_key")String authKey,
+                                         @Field("user_id")String userId,@Field("product_name")String productname,
+                                         @Field("type")String type,@Field("description")String description,
+                                         @Field("expiry_date")String expireDate
+          ,@Field("image_path")String imagePath,@Field("product_id")String productId,@Field("category_id")int categoryId, @Field("key_name") String keyName);
+
   @FormUrlEncoded
   @POST(ApiConstant.API_GET_PRODUCT_LIST)
   public Call<ApiResponse> apiGetProductList(@Field("language_id") String languageId,@Field("authrized_key")String authKey,

@@ -8,9 +8,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -21,10 +20,12 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,12 +33,18 @@ import android.widget.Toast;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Category;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.model.interfaces.CategoryDataListener;
 import com.sticker_android.model.interfaces.ImagePickerListener;
@@ -45,16 +52,18 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AWSUtil;
+import com.sticker_android.utils.AppLogger;
+import com.sticker_android.utils.ImageFileFilter;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.CustomAppCompatTextView;
 import com.sticker_android.view.SetDate;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -62,6 +71,7 @@ import retrofit2.Call;
 
 import static com.sticker_android.utils.helper.PermissionManager.Constant.READ_STORAGE_ACCESS_RQ;
 import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_STORAGE_ACCESS_RQ;
+
 
 public class AddNewDesignActivity extends AppBaseActivity implements View.OnClickListener {
 
@@ -73,7 +83,9 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
     private TabLayout tabLayout;
     private Button btnPost;
     private ImageView imgCategoryDropDown;
-    private EditText edtCorpName, edtDescription;
+    private RelativeLayout rlTabLayoutContainer;
+    private CustomAppCompatTextView imgPlaceHolder;
+    private EditText edtCorpName;
     private String mExpireDate = "";
     private SetDate setDate;
     private Spinner spnrCategory;
@@ -84,6 +96,11 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
     private ImageView imvProductImage;
     private String mCapturedImageUrl;
     private android.app.AlertDialog mPermissionDialog;
+
+    private Product mProduct;
+    private boolean isDesignedImageChanges;
+    private boolean comingFromDetailActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +122,9 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         setBackground();
         setSelectedTabColor();
 
+        setImageHeight();
+        getIntentValues();
+
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
@@ -117,6 +137,8 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
             corporateCategories = categoryList;
             corporateCategories.add(0, placeHolderCategory);
             setSpinnerAdapter(getActivity(), spnrCategory, corporateCategories);
+
+            setDetailOfDesignedItem();
         }
         else{
 
@@ -127,6 +149,8 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                     corporateCategories = categories;
                     corporateCategories.add(0, placeHolderCategory);
                     setSpinnerAdapter(getActivity(), spnrCategory, corporateCategories);
+
+                    setDetailOfDesignedItem();
                 }
 
                 @Override
@@ -135,6 +159,80 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 }
             });
         }
+    }
+
+    private void setDetailOfDesignedItem(){
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                setProductDetail();
+            }
+        });
+    }
+
+    private void getIntentValues(){
+        Intent intent = getIntent();
+        if(intent != null){
+            mProduct = intent.getParcelableExtra(AppConstant.PRODUCT);
+            comingFromDetailActivity = intent.getBooleanExtra(AppConstant.DATA_REFRESH_NEEDED, false);
+        }
+    }
+
+    /**
+     * will set the product detail
+     */
+    private void setProductDetail(){
+
+        if(mProduct != null){
+
+            edtCorpName.setText(mProduct.getProductname());
+            edtCorpName.setSelection(edtCorpName.getText().toString().trim().length());
+            Category category = new Category();
+            category.categoryId = mProduct.getCategoryId();
+            int categoryIndex = corporateCategories.indexOf(category);
+            AppLogger.error(TAG, "Category index => " + categoryIndex);
+
+            if(categoryIndex != -1){
+                spnrCategory.setSelection(categoryIndex);
+            }
+            btnPost.setText(R.string.update);
+            imgPlaceHolder.setVisibility(View.GONE);
+            tabLayout.setVisibility(View.GONE);
+            rlTabLayoutContainer.setVisibility(View.GONE);
+
+            setToolBarTitle();
+
+            Glide.with(this)
+                    .load(mProduct.getImagePath())
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
+                    .into(imvProductImage);
+        }
+    }
+
+    private void setImageHeight(){
+        ViewTreeObserver vto = imvProductImage.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                imvProductImage.getViewTreeObserver().removeOnPreDrawListener(this);
+                int finalWidth = imvProductImage.getMeasuredWidth();
+                int height = finalWidth * 3 / 5;
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imvProductImage.getLayoutParams();
+                layoutParams.height = height;
+                imvProductImage.setLayoutParams(layoutParams);
+                return true;
+            }
+        });
     }
 
     private void fetchCategoryApi(final CategoryDataListener categoryDataListener) {
@@ -206,7 +304,12 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
 
                 TextView tv = (TextView) super.getView(position, convertView, parent);
                 tv.setBackgroundColor(Color.TRANSPARENT);
-                tv.setTextColor(Color.BLACK);
+                if(position == 0){
+                    tv.setTextColor(Color.GRAY);
+                }
+                else{
+                    tv.setTextColor(Color.BLACK);
+                }
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.text_size_edittext));
                 tv.setPadding(0, 0, 0, 0);
 
@@ -238,7 +341,12 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
      */
     private void setToolBarTitle() {
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(getResources().getString(R.string.act_corp_txt_add_new));
+        if(mProduct != null){
+            textView.setText(getString(R.string.edit));
+        }
+        else{
+            textView.setText(getResources().getString(R.string.act_corp_txt_add_new));
+        }
         toolbar.setTitle(" ");
     }
 
@@ -265,6 +373,31 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         btnPost.setOnClickListener(this);
         imvProductImage.setOnClickListener(this);
         imgCategoryDropDown.setOnClickListener(this);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(tab.getPosition() == 0){
+                    imgPlaceHolder.setText(getString(R.string.upload_sticker));
+                }
+                else if(tab.getPosition() == 1){
+                    imgPlaceHolder.setText(R.string.upload_gif);
+                }
+                else if(tab.getPosition() == 2){
+                    imgPlaceHolder.setText(R.string.upload_emoji);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     private void setSelectedTabColor() {
@@ -277,26 +410,24 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         edtCorpName = (EditText) findViewById(R.id.act_add_new_corp_edt_name);
         tabLayout = (TabLayout) findViewById(R.id.act_landing_tab);
         btnPost = (Button) findViewById(R.id.act_corp_add_new_btn_post);
-        edtDescription = (EditText) findViewById(R.id.edtDescription);
         spnrCategory = (Spinner) findViewById(R.id.spnrCategory);
         imvProductImage=(ImageView)findViewById(R.id.imvProductImage);
+        imgPlaceHolder = (CustomAppCompatTextView) findViewById(R.id.imgPlaceHolder);
+        rlTabLayoutContainer = (RelativeLayout) findViewById(R.id.rlTabLayoutContainer);
     }
 
     @Override
     protected boolean isValidData() {
 
-        if(mCapturedImageUrl==null){
-            Utils.showToast(this, "Please upload a image.");
+        if(mProduct == null && mCapturedImageUrl == null){
+            Utils.showToast(this, getString(R.string.pls_upload_image));
             return false;
         }
         else if (edtCorpName.getText().toString().trim().isEmpty()) {
-            Utils.showToast(this, "Please enter a name.");
+            Utils.showToast(this, getString(R.string.pls_enter_name));
             return false;
-        } else if(spnrCategory.getSelectedItem()==null){
-            Utils.showToast(this, "Please select a category.");
-            return false;
-        } else if (edtDescription.getText().toString().trim().isEmpty()) {
-            Utils.showToast(this, "Please enter a description.");
+        } else if(spnrCategory.getSelectedItemPosition() == 0){
+            Utils.showToast(this, getString(R.string.pls_select_category));
             return false;
         }
         return true;
@@ -320,7 +451,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         emojiTab.setText(getString(R.string.emoji)); // set the Text for the first Tab
         tabLayout.addTab(emojiTab);
 
-        Utils.setTabLayoutDivider(tabLayout,this);
+        Utils.setTabLayoutDivider(tabLayout, this);
     }
 
     @Override
@@ -329,28 +460,51 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         switch (v.getId()) {
             case R.id.act_corp_add_new_btn_post:
                 if (isValidData()) {
-                    beginUpload(mCapturedImageUrl);
+                    if(mProduct != null){
+                        if(isDesignedImageChanges){
+                            beginUpload(mCapturedImageUrl);
+                        }
+                        else{
+                            addDesignApi(mProduct.getImagePath());
+                        }
+                    }
+                    else{
+                        beginUpload(mCapturedImageUrl);
+                    }
                 }
                 break;
             case R.id.imvProductImage:
-                Utils.showAlertDialogToGetPic(this, new ImagePickerListener() {
-                    @Override
-                    public void pickFromGallery() {
-                        pickGalleryImage();
-                    }
+                if(tabLayout.getSelectedTabPosition()==1){
+                    Utils.showAlertDialogToGetGif(this, new ImagePickerListener() {
+                        @Override
+                        public void pickFromGallery() {
+                            pickGalleryImage();
+                        }
 
-                    @Override
-                    public void captureFromCamera() {
-                        captureImage();
-                    }
-                });
+                        @Override
+                        public void captureFromCamera() {
+
+                        }
+                    });
+                }else {
+                    Utils.showAlertDialogToGetPic(this, new ImagePickerListener() {
+                        @Override
+                        public void pickFromGallery() {
+                            pickGalleryImage();
+                        }
+
+                        @Override
+                        public void captureFromCamera() {
+                            captureImage();
+                        }
+                    });
+                }
                 break;
             case R.id.imgDown2:
                 spnrCategory.performClick();
                 break;
         }
     }
-
 
     private void captureImage() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -371,23 +525,40 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
      */
     private void addDesignApi(String imagePath) {
 
-        int categoryId = corporateCategories.get(spnrCategory.getSelectedItemPosition() - 1).categoryId;
+        int categoryId = corporateCategories.get(spnrCategory.getSelectedItemPosition()).categoryId;
 
         final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
         progressDialogHandler.show();
-        final String type = getSelectedDesignType().toLowerCase(Locale.ENGLISH);
+        final String type = mProduct != null ? mProduct.getType() : getSelectedDesignType().toLowerCase(Locale.ENGLISH);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
-                userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
-                , mExpireDate, imagePath, "", categoryId);
+                userdata.getId(), edtCorpName.getText().toString().trim(), type, ""
+                , mExpireDate, imagePath, mProduct != null ? String.valueOf(mProduct.getProductid()) : "", categoryId, AppConstant.PRODUCT);
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
-                    Utils.showToast(getApplicationContext(), type + " added successfully.");
-                    setResult(RESULT_OK);
-                    onBackPressed();
+                    if(mProduct != null){
+                        Utils.showToast(getApplicationContext(), type + " updated successfully.");
+                    }
+                    else{
+                        Utils.showToast(getApplicationContext(), type + " added successfully.");
+                    }
+
+
+                    if(comingFromDetailActivity){
+                        Intent intent = new Intent(AddNewDesignActivity.this, DesignerHomeActivity.class);
+                        intent.putExtra(AppConstant.DATA_REFRESH_NEEDED, true);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                    else{
+                        Intent intent = new Intent();
+                        intent.putExtra(AppConstant.PRODUCT, apiResponse.paylpad.product);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
                 }
             }
 
@@ -462,7 +633,18 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                     File file = Utils.getCustomImagePath(this, "temp");
                     mCapturedImageUrl = file.getAbsolutePath();
                     mCapturedImageUrl=sourceUrl;
-                    openCropActivity(sourceUrl);
+                    ImageFileFilter imageFileFilter=new ImageFileFilter();
+                    if(imageFileFilter.accept(file)){
+                        AppLogger.debug("Image filter","filter image gif");
+                        Glide.with(this).load(mCapturedImageUrl).asGif()
+                                .into(imvProductImage);
+                        imgPlaceHolder.setVisibility(View.GONE);
+
+                    }else {
+                        AppLogger.debug("Image filter","filter image crop");
+                        openCropActivity(sourceUrl);
+                    }
+
                 }
                 break;
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
@@ -470,7 +652,9 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
                     mCapturedImageUrl = resultUri.getPath();
-                    imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
+                       imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
+                    imgPlaceHolder.setVisibility(View.GONE);
+                    isDesignedImageChanges = true;
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
                     error.printStackTrace();
@@ -482,7 +666,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         CropImage.activity(Uri.fromFile(new File(url)))
                 .setGuidelines(CropImageView.Guidelines.OFF)
                 .setFixAspectRatio(true)
-                .setAspectRatio(4, 3)
+                .setAspectRatio(5, 3)
                 .setAutoZoomEnabled(true)
                 .start(this);
     }

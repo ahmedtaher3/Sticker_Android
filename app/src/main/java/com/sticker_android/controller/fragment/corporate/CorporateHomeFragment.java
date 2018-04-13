@@ -60,15 +60,18 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     private MenuItem item;
     private UpdateToolbarTitle mUpdateToolbarCallback;
 
-    public CorporateHomeFragment() {
-        // Required empty public constructor
-    }
+
 
     public static CorporateHomeFragment newInstance() {
         CorporateHomeFragment f = new CorporateHomeFragment();
 
         return f;
     }
+    public CorporateHomeFragment() {
+        // Required empty public constructor
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,6 +83,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         setViewReferences(view);
         setViewListeners();
         setupViewPager();
+
         Utils.setTabLayoutDivider(tabLayout, getActivity());
         addFragmentToTab();
         setSelectedTabColor();
@@ -415,7 +419,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
 
-                    showSearchResultApi(apiResponse.paylpad.product);
+                    showSearchResultApi(apiResponse.paylpad.productList);
                 }
             }
 

@@ -44,7 +44,7 @@
                         android:scaleType="fitXY"/>
                     <ImageView
                         android:id="@+id/imvProductImage2"
-                        android:src="@drawable/ic_upload_imagee"
+                        app:srcCompat="@drawable/ic_upload_imagee"
                         android:layout_centerInParent="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -120,7 +120,7 @@
                         android:gravity="start|center"
                         android:paddingBottom="5dp"
                         android:spinnerMode="dropdown"
-                        android:textSize="@dimen/text_size_contact_us"></Spinner>
+                        android:textSize="@dimen/text_size_contact_us"/>
                 </RelativeLayout>
 
                 <TextView

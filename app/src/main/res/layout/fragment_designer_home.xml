@@ -6,11 +6,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.sticker_android.controller.fragment.designer.DesignerHomeFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <include layout="@layout/tab_with_divider"/>
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.TabLayout
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+            app:tabMode="scrollable"
+            android:id="@+id/act_landing_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMaxWidth="0dp"
+            app:tabGravity="fill"
+            android:background="@drawable/tab_layout_background"
+            app:tabIndicatorColor="@android:color/transparent"
+            app:tabTextColor="#ffffff"
+            app:tabSelectedTextColor="#AAFFFFFF" />
+
+        <RelativeLayout
+            android:id="@+id/rlFragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         app:backgroundTint="@color/colorFloatingDesigner"

@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IdRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +17,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -59,6 +61,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener, UpdateToolbarTitle {
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    private CoordinatorLayout mainView;
     private Toolbar toolbar;
     private AppPref appPref;
     private User user;
@@ -66,7 +69,6 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     private String TAG = CorporateHomeActivity.class.getSimpleName();
     Fragment fragmentClass = null;
     boolean doubleBackToExitPressedOnce = false;
-    CorporateHomeFragment  corporateHomeFragment=new CorporateHomeFragment();
     private boolean isFragClicked;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +93,9 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
         showFragmentManually();
         setUserDataIntoNaviagtion();
+
         initializeCountDrawer(10);
+
     }
 
     /**
@@ -186,9 +190,30 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         });
         /*
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            public void onDrawerClosed(View view) {
+                supportInvalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                supportInvalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                mainView.setTranslationX(slideOffset * drawerView.getWidth());
+                drawer.bringChildToFront(drawerView);
+                drawer.requestLayout();
+            }
+        };
         drawer.setDrawerListener(toggle);
+<<<<<<< HEAD
         toggle.syncState();*/
+
+     //   toggle.syncState();
+        drawer.setScrimColor(Color.TRANSPARENT);
+
     }
 
     @Override
@@ -201,7 +226,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
+        mainView = (CoordinatorLayout) findViewById(R.id.mainView);
     }
 
 
@@ -235,7 +260,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         }
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
 

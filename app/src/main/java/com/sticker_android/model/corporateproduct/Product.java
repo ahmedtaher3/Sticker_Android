@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.sticker_android.model.enums.ProductStatus;
 
 /**
  * Created by user on 4/4/18.
@@ -62,7 +63,17 @@ public class Product implements Parcelable {
     @SerializedName("category_id")
     private int categoryId;
 
-    public Product() {
+    @SerializedName("status")
+    public int productStatus;
+
+    @Override
+    public boolean equals(Object obj) {
+        return productid == ((Product)obj).productid;
+    }
+
+    @Override
+    public int hashCode() {
+        return String.valueOf(productid).hashCode();
     }
 
     public int getProductid() {
@@ -113,6 +124,8 @@ public class Product implements Parcelable {
         this.imagePath = imagePath;
     }
 
+    public Product() {}
+
     @Override
     public int describeContents() {
         return 0;
@@ -120,33 +133,35 @@ public class Product implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.productid);
-        dest.writeString(this.productname);
-        dest.writeString(this.type);
-        dest.writeString(this.description);
-        dest.writeString(this.expireDate);
-        dest.writeString(this.imagePath);
-        dest.writeInt(this.isExpired);
-        dest.writeString(this.createdTime);
-        dest.writeInt(this.categoryId);
+        dest.writeInt(productid);
+        dest.writeString(productname);
+        dest.writeString(type);
+        dest.writeString(description);
+        dest.writeString(expireDate);
+        dest.writeString(imagePath);
+        dest.writeInt(isExpired);
+        dest.writeString(createdTime);
+        dest.writeInt(categoryId);
+        dest.writeInt(productStatus);
     }
 
     protected Product(Parcel in) {
-        this.productid = in.readInt();
-        this.productname = in.readString();
-        this.type = in.readString();
-        this.description = in.readString();
-        this.expireDate = in.readString();
-        this.imagePath = in.readString();
-        this.isExpired = in.readInt();
-        this.createdTime = in.readString();
-        this.categoryId = in.readInt();
+        productid = in.readInt();
+        productname = in.readString();
+        type = in.readString();
+        description = in.readString();
+        expireDate = in.readString();
+        imagePath = in.readString();
+        isExpired = in.readInt();
+        createdTime = in.readString();
+        categoryId = in.readInt();
+        productStatus = in.readInt();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {
         @Override
-        public Product createFromParcel(Parcel source) {
-            return new Product(source);
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
         }
 
         @Override

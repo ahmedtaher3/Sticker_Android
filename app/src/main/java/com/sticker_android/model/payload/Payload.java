@@ -1,6 +1,7 @@
 package com.sticker_android.model.payload;
 
 import com.google.gson.annotations.SerializedName;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.corporateproduct.Product;
@@ -17,7 +18,10 @@ public class Payload {
     private User data;
 
     @SerializedName("product_list")
-    public ArrayList<Product> product;
+    public ArrayList<Product> productList;
+
+    @SerializedName(AppConstant.PRODUCT)
+    public Product product;
 
     public User getData() {
         return data;
@@ -31,3 +35,5 @@ public class Payload {
     public ArrayList<Category> corporateCategories;
 
 }
+
+

@@ -8,4 +8,11 @@
     <attr name="civ_app_fill_color" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="CustomAppCompatEditText">
+        <attr name="drawableLeftCompat" format="reference"/>
+        <attr name="drawableRightCompat" format="reference"/>
+        <attr name="drawableTopCompat" format="reference"/>
+        <attr name="drawableBottomCompat" format="reference"/>
+    </declare-styleable>
+
 </resources>
