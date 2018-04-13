@@ -122,4 +122,5 @@
     <dimen name="home_icon_color_size">18dp</dimen>
 
     <dimen name="margin_spinner_top">25dp</dimen>
+    <dimen name="padding_like_8dp">10dp</dimen>
 </resources>

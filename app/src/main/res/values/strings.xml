@@ -128,9 +128,9 @@
     <string name="time_ago_seconds">less than a minute</string>
     <string name="time_ago_minute">about a minute</string>
     <string name="time_ago_minutes">%d minutes</string>
-    <string name="time_ago_hour">about an hour</string>
-    <string name="time_ago_hours">about %d hours</string>
-    <string name="time_ago_day">a day</string>
+    <string name="time_ago_hour">hour</string>
+    <string name="time_ago_hours"> %d hours</string>
+    <string name="time_ago_day">day</string>
     <string name="time_ago_days">%d days</string>
     <string name="time_ago_month">about a month</string>
     <string name="time_ago_months">%d months</string>
