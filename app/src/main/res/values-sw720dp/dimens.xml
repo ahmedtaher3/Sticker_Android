@@ -429,5 +429,6 @@
     <dimen name="home_icon_color_size">22dp</dimen>
 
     <dimen name="margin_spinner_top">30dp</dimen>
+    <dimen name="padding_like_8dp">14dp</dimen>
 
 </resources>

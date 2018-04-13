@@ -9,7 +9,7 @@ import java.io.FileFilter;
 public class ImageFileFilter implements FileFilter
 {
     File file;
-    private final String[] okFileExtensions =  new String[] {"gif","png"};
+    private final String[] okFileExtensions =  new String[] {"gif"};
 
     /**
      *

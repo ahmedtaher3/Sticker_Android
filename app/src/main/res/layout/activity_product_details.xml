@@ -19,12 +19,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <ProgressBar
-                android:visibility="visible"
-                android:id="@+id/pgrImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
 
             <ImageView
                 android:adjustViewBounds="true"
@@ -34,6 +28,13 @@
                 android:background="@drawable/btn_shadow_corner"
                 android:scaleType="fitXY"
                 app:srcCompat="@drawable/ic_upload_image" />
+            <ProgressBar
+                android:visibility="visible"
+                android:id="@+id/pgrImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -87,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:button="@drawable/like_selector"
-                android:padding="8dp"
+                android:padding="@dimen/padding_like_8dp"
                 android:textSize="@dimen/txt_size_home_12sp" />
 
             <CheckBox
@@ -97,7 +98,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_toRightOf="@+id/checkboxLike"
                 android:button="@drawable/share_selector"
-                android:padding="8dp"
+                android:padding="@dimen/padding_like_8dp"
                 android:textSize="@dimen/txt_size_home_12sp" />
 
             <TextView

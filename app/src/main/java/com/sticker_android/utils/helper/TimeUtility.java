@@ -62,11 +62,11 @@ public class TimeUtility {
         } else if (minutes < 45) {
             words = r.getString(R.string.time_ago_minutes, Math.round(minutes));
         } else if (minutes < 90) {
-            words = r.getString(R.string.time_ago_hour)+" "+1;
+            words = "1 "+r.getString(R.string.time_ago_hour);
         } else if (hours < 24) {
             words = r.getString(R.string.time_ago_hours, Math.round(hours));
         } else if (hours < 42) {
-            words = r.getString(R.string.time_ago_day)+" "+1;
+            words = "1 "+r.getString(R.string.time_ago_day);
         } else if (days < 30) {
             words = r.getString(R.string.time_ago_days, Math.round(days));
         } else if (days < 45) {

@@ -483,8 +483,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
             final Product product = productList.get(position);
 
-            ((ProductHolder) holder).checkboxLike.setText(Utils.format(1000));
-            ((ProductHolder) holder).checkboxShare.setText(Utils.format(1200));
+            ((ProductHolder) holder).checkboxLike.setText(Utils.format(0));
+            ((ProductHolder) holder).checkboxShare.setText(Utils.format(0));
             ((ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
