@@ -21,6 +21,7 @@
             android:orientation="vertical">
 
             <RelativeLayout
+                android:background="@drawable/background_gray"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView

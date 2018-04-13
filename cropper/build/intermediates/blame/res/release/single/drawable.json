@@ -8,20 +8,20 @@
         "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_ic_go_search_api_material.xml"
     },
     {
-        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/release/drawable/abc_spinner_textfield_background_material.xml",
-        "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_spinner_textfield_background_material.xml"
-    },
-    {
         "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/release/drawable/abc_btn_borderless_material.xml",
         "source": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_btn_borderless_material.xml"
     },
     {
-        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/release/drawable/abc_textfield_search_material.xml",
-        "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_textfield_search_material.xml"
+        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/release/drawable/abc_spinner_textfield_background_material.xml",
+        "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_spinner_textfield_background_material.xml"
     },
     {
         "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/release/drawable/abc_ratingbar_indicator_material.xml",
         "source": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_ratingbar_indicator_material.xml"
+    },
+    {
+        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/release/drawable/abc_textfield_search_material.xml",
+        "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_textfield_search_material.xml"
     },
     {
         "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/release/drawable/abc_list_selector_background_transition_holo_light.xml",

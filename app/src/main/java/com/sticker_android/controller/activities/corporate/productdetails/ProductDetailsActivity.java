@@ -96,8 +96,8 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
     private void setProductDetails() {
 
-        checkboxLike.setText(Utils.format(1000));
-        checkboxShare.setText(Utils.format(1200));
+        checkboxLike.setText(Utils.format(0));
+        checkboxShare.setText(Utils.format(0));
         String status = "Ongoing";
         if (productObj.getIsExpired() > 0) {
             tvStatus.setTextColor(Color.RED);
