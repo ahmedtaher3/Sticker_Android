@@ -440,6 +440,7 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getDesignFromServer(true, "");
         } else {
+            swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
     }
