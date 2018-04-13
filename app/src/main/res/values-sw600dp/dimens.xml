@@ -113,7 +113,7 @@
     <dimen name="margin_start_add_product">30dp</dimen>
     <dimen name="margin_end_start_add_product">30dp</dimen>
     <dimen name="act_add_new_margin_top_30dp">50dp</dimen>
-    <dimen name="image_height_add_product">160dp</dimen>
+    <dimen name="image_height_add_product">180dp</dimen>
     <dimen name="text_size_tv_13sp">15sp</dimen>
     <dimen name="txt_size_home_12sp">14sp</dimen>
     <dimen name="act_product_details_padding">25dp</dimen>

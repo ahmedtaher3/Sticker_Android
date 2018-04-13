@@ -21,7 +21,7 @@ public class ImageFileFilter implements FileFilter
 
     public boolean accept(File file)
     {
-        AppLogger.debug("Image filter","filter image");
+        AppLogger.debug("Image filter","filter image"+file.getName().toLowerCase());
         for (String extension : okFileExtensions)
         {
             if (file.getName().toLowerCase().endsWith(extension))
