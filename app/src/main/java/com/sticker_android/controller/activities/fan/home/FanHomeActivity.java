@@ -230,10 +230,7 @@ public class FanHomeActivity extends AppBaseActivity
             fragmentClass = AccountSettingFragment.newInstance("","");
         }
         else if (id == R.id.nav_logout) {
-            appPref.saveUserObject(new User());
-            appPref.setLoginFlag(false);
-            startNewActivity(SigninActivity.class);
-            finish();
+            userLogout();
         }
 
         // Insert the fragment by replacing any existing fragment
@@ -241,6 +238,17 @@ public class FanHomeActivity extends AppBaseActivity
             replaceFragment(fragmentClass);        }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void userLogout() {
+        appPref.saveUserObject(new User());
+        appPref.setLoginFlag(false);
+        Intent intent = new Intent(getActivity(), SigninActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
+        finish();
     }
 
     public void replaceFragment(Fragment fragmentClass){

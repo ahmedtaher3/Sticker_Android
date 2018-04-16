@@ -552,9 +552,9 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
                     if (mProduct != null) {
-                        Utils.showToast(getApplicationContext(), type + " updated successfully.");
+                        Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " updated successfully.");
                     } else {
-                        Utils.showToast(getApplicationContext(), type + " added successfully.");
+                        Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " added successfully.");
                     }
 
 

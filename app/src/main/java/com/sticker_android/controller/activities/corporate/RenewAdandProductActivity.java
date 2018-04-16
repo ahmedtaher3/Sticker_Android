@@ -394,7 +394,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
-                    Utils.showToast(getApplicationContext(), type + " added successfully.");
+                    Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " updated successfully.");
                     setResult(RESULT_OK);
                     onBackPressed();
                 }

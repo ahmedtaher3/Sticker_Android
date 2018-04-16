@@ -101,7 +101,7 @@
     <dimen name="margin_top_30dp_password">30dp</dimen>
     <dimen name="text_size_18sp">18sp</dimen>
     <dimen name="margin_top_profile">20dp</dimen>
-    <dimen name="margin_top_login_btn">30dp</dimen>
+    <dimen name="margin_top_login_btn">27dp</dimen>
     <dimen name="act_signin_margin_top_radio">0dp</dimen>
     <dimen name="add_corp_margin">20dp</dimen>
     <dimen name="act_add_new_corp_margin">20dp</dimen>
