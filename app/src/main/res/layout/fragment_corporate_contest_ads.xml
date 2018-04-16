@@ -1,13 +1,29 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sticker_android.controller.fragment.corporate.contest.CorporateContestAdsFragment">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recAdsAndProductList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="48dp"
+            android:paddingTop="@dimen/dp_5"
+            android:scrollbars="none" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <TextView
+        android:visibility="gone"
+        android:textSize="@dimen/text_size_contact_us"
+        android:id="@+id/tvNoAdsUploaded"
+        android:gravity="center"
+        android:text="@string/no_ads_uploaded_yet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

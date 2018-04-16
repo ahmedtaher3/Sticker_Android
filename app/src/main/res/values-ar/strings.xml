@@ -95,4 +95,7 @@
     <string name="txt_report">Report</string>
     <string name="write_some_description">Write something here</string>
     <string name="txt_notifications">Notifications</string>
+    <string name="txt_onging">Ongoing</string>
+    <string name="txt_won">Won</string>
+    <string name="end_date">End Date-</string>
 </resources>

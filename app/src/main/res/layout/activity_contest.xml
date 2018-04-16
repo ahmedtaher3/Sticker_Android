@@ -4,13 +4,33 @@
     android:id="@+id/activity_notification"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:ignore="MissingPrefix"
-    tools:context="com.sticker_android.controller.activities.common.contest.ApplyContestActivity">
+    tools:context="com.sticker_android.controller.activities.common.contest.ApplyContestActivity"
+    tools:ignore="MissingPrefix">
+
+    <LinearLayout
+        android:id="@+id/llMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar" />
+
+        <include layout="@layout/view_white" />
+
+        <include layout="@layout/tab_layout_without_viewpager" />
+    </LinearLayout>
+    <FrameLayout
+        android:layout_below="@+id/llMain"
+        android:id="@+id/container_contest"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
+        android:visibility="gone"
         android:id="@+id/swipeRefreshAds"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/llMain">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recNotification"
@@ -22,20 +42,17 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <Button
-        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-        android:background="@color/corporateBtnBackground"
-        android:textColor="@android:color/white"
-        android:textSize="15sp"
-        android:textAllCaps="false"
-        android:text="@string/txt_post"
+        android:visibility="gone"
         android:id="@+id/btnPostContest"
+        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:background="@color/corporateBtnBackground"
+        android:text="@string/txt_post"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="15sp" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <include layout="@layout/tab_with_divider"/>
-    </RelativeLayout>
+
 </RelativeLayout>

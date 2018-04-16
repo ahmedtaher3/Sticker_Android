@@ -12,6 +12,7 @@ import com.sticker_android.model.enums.ProductStatus;
 
 public class Product implements Parcelable {
 
+    public boolean isSelected;
     @SerializedName("product_id")
     private int productid;
 

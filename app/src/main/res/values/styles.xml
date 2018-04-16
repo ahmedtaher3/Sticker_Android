@@ -154,10 +154,13 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
-<style name="tvHomewrap">
-
-
-</style>
+    <style name="tvHomewrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_tv_13sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 
     <style name="AppThemeAddRenew" parent="Theme.AppCompat.Light.Dialog">
         <!-- Customize your theme here. -->

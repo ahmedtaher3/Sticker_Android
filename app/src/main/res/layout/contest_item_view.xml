@@ -25,11 +25,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_gray">
 
-                <ImageView
-                    android:id="@+id/imvSelected"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
+
 
                 <ImageView
                     android:id="@+id/imvOfContest"
@@ -43,10 +39,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/ic_upload_imagee" />
+                    app:srcCompat="@drawable/ic_upload_imagee" />
 
                 <ProgressBar
                     android:id="@+id/pgrImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+                <ImageView
+                    android:id="@+id/imvSelected"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true" />

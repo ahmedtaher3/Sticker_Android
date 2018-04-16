@@ -1,14 +1,15 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sticker_android.controller.fragment.corporate.contest.CorporateContestFragment">
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <include  layout="@layout/tab_layout_without_viewpager"/>
 
-</FrameLayout>
+<RelativeLayout
+    android:layout_below="@+id/tab"
+    android:id="@+id/container_contest"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"></RelativeLayout>
+
+</LinearLayout>
