@@ -332,7 +332,10 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
-                    Utils.showToast(getApplicationContext(), type + " added successfully.");
+                    String typeProduct="Product";
+                    if(type.equalsIgnoreCase("ads"))
+                        typeProduct="Ad";
+                    Utils.showToast(getApplicationContext(), typeProduct + " added successfully.");
                     setResult(RESULT_OK);
                     onBackPressed();
                 }

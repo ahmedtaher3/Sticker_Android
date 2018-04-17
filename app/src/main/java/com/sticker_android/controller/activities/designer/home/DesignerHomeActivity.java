@@ -229,11 +229,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
             fragmentClass = AccountSettingFragment.newInstance("", "");
             textView.setText(getResources().getString(R.string.txt_account_setting));
         } else if (id == R.id.nav_logout) {
-            appPref.saveUserObject(new User());
-            appPref.setLoginFlag(false);
-            Toast.makeText(getApplicationContext(), "User logout Successfully", Toast.LENGTH_SHORT).show();
-            startNewActivity(SigninActivity.class);
-            finish();
+            userLogout();
         }
         setUserDataIntoNaviagtion();
         // Insert the fragment by replacing any existing fragment
@@ -241,6 +237,17 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         if (fragmentClass != null) {
             replaceFragment(mFragmentManager, fragmentClass);
         }
+    }
+
+    private void userLogout() {
+        appPref.saveUserObject(new User());
+        appPref.setLoginFlag(false);
+        Intent intent = new Intent(getActivity(), SigninActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
+        finish();
     }
 
     public void replaceFragment(FragmentManager manager, Fragment fragment) {

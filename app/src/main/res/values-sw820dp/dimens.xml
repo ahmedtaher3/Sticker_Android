@@ -98,7 +98,7 @@
     <dimen name="act_add_corp_write_des_margin_top_10dp">25dp</dimen>
     <dimen name="margin_end_start_add_product">50dp</dimen>
     <dimen name="act_add_new_margin_top_30dp">30dp</dimen>
-    <dimen name="image_height_add_product">190dp</dimen>
+    <dimen name="image_height_add_product">250dp</dimen>
     <dimen name="text_size_tv_13sp">19sp</dimen>
     <dimen name="txt_size_home_12sp">12sp</dimen>
     <dimen name="act_product_details_padding">20dp</dimen>

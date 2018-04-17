@@ -215,7 +215,7 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
     public boolean onQueryTextSubmit(String query) {
         AppLogger.error(TAG, "Search text => " + query);
         searchResult(query.trim());
-        searchView.setMaxWidth(Integer.MAX_VALUE);
+
         searchView.setIconified(false);
         searchView.clearFocus();
         return false;
@@ -346,6 +346,7 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
         item = menu.findItem(R.id.search);
         searchView = (SearchView) MenuItemCompat.getActionView(item);
         setSearchIcons(searchView);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnQueryTextListener(this);
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
