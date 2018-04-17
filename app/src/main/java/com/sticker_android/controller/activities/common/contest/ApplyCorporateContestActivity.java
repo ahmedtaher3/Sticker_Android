@@ -6,41 +6,48 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
-import com.sticker_android.controller.adaptors.ContestAdaptor;
 import com.sticker_android.controller.fragment.corporate.contest.CorporateContestAdsFragment;
 import com.sticker_android.controller.fragment.corporate.contest.CorporateContestProductFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.model.notification.NotificationApp;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
-import java.util.ArrayList;
+import retrofit2.Call;
 
 /**
  * Class is used for the notification
  */
-public class ApplyContestActivity extends AppBaseActivity implements View.OnClickListener{
-    private RecyclerView recNotification;
-    ArrayList<String> strings = new ArrayList<>();
+public class ApplyCorporateContestActivity extends AppBaseActivity implements View.OnClickListener {
+
     private AppPref appPref;
     private User userdata;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private RelativeLayout rlTabLayoutContainer;
-    private String TAG = ApplyContestActivity.class.getSimpleName();
+    private String TAG = ApplyCorporateContestActivity.class.getSimpleName();
 
     private FragmentManager mFragmentManager;
     private FrameLayout contarinerContest;
     private Button btnPostContest;
+    private Product selectedProduct;
+    private NotificationApp notificationObj;
+    private ProgressBar progressBarSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,21 +67,23 @@ public class ApplyContestActivity extends AppBaseActivity implements View.OnClic
         setViewListeners();
         mFragmentManager = getSupportFragmentManager();
         addTabsDynamically();
-        strings.add("hello test");
-        setAdaptor();
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
 
         setSelectedTabColor();
-        replaceFragment( new CorporateContestAdsFragment());
+        replaceFragment(new CorporateContestAdsFragment());
         setBackground();
+        getNotificationData();
     }
 
-    private void setAdaptor() {
-        ContestAdaptor contestAdaptor = new ContestAdaptor(this, strings);
-        recNotification.setAdapter(contestAdaptor);
+    private void getNotificationData() {
+        if (getIntent().getExtras() != null) {
+
+            notificationObj = getIntent().getExtras().getParcelable(AppConstant.NOTIFICATION_OBJ);
+        }
     }
+
 
     private void init() {
         appPref = new AppPref(getActivity());
@@ -116,7 +125,6 @@ public class ApplyContestActivity extends AppBaseActivity implements View.OnClic
     }
 
 
-
     public void addTabsDynamically() {
 
         TabLayout.Tab adsTab = tabLayout.newTab();
@@ -141,11 +149,11 @@ public class ApplyContestActivity extends AppBaseActivity implements View.OnClic
 
     @Override
     protected void setViewReferences() {
-        recNotification = findViewById(R.id.recNotification);
         tabLayout = (TabLayout) findViewById(R.id.act_landing_tab);
         rlTabLayoutContainer = (RelativeLayout) findViewById(R.id.rlTabLayoutContainer);
         contarinerContest = (FrameLayout) findViewById(R.id.container_contest);
-        btnPostContest=(Button)findViewById(R.id.btnPostContest);
+        btnPostContest = (Button) findViewById(R.id.btnPostContest);
+        progressBarSave = (ProgressBar) findViewById(R.id.progressBarSave);
     }
 
     @Override
@@ -155,10 +163,41 @@ public class ApplyContestActivity extends AppBaseActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnPostContest:
-
+                if (selectedProduct != null) {
+                    saveContestApiCall();
+                }else {
+                    Utils.showToast(this,getString(R.string.txt_apply_for_context));
+                }
                 break;
+        }
+    }
+
+    private void saveContestApiCall() {
+        if(progressBarSave!=null)
+        progressBarSave.setVisibility(View.VISIBLE);
+
+        if (notificationObj != null) {
+
+            Call<ApiResponse> apiResponseCall = RestClient.getService().saveUserContest(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId(), selectedProduct.getProductid(), notificationObj.contestObj.contestId, "");
+            apiResponseCall.enqueue(new ApiCall(this) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
+                    if(progressBarSave!=null)
+                    progressBarSave.setVisibility(View.GONE);
+                    if (apiResponse.status) {
+                        Utils.showToast(ApplyCorporateContestActivity.this, getString(R.string.txt_successfully_applied_for_contest));
+                        onBackPressed();
+                    }
+                }
+
+                @Override
+                public void onFail(Call<ApiResponse> call, Throwable t) {
+                    if(progressBarSave!=null)
+                    progressBarSave.setVisibility(View.GONE);
+                }
+            });
         }
     }
 
@@ -171,13 +210,13 @@ public class ApplyContestActivity extends AppBaseActivity implements View.OnClic
 
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
-
+            selectedProduct=null;
             switch (tab.getPosition()) {
                 case 0:
-                    replaceFragment( new CorporateContestAdsFragment());
+                    replaceFragment(new CorporateContestAdsFragment());
                     break;
                 case 1:
-                    replaceFragment( new CorporateContestProductFragment());
+                    replaceFragment(new CorporateContestProductFragment());
                     break;
 
             }
@@ -200,8 +239,8 @@ public class ApplyContestActivity extends AppBaseActivity implements View.OnClic
      *
      * @param fragment
      */
-    private void replaceFragment( Fragment fragment) {
-        FragmentTransaction fragmentTransaction   =
+    private void replaceFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction =
                 getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container_contest,
                 fragment);
@@ -209,8 +248,10 @@ public class ApplyContestActivity extends AppBaseActivity implements View.OnClic
     }
 
 
+    public void saveContest(Product product) {
 
-
+        selectedProduct = product;
+    }
 
 
 }

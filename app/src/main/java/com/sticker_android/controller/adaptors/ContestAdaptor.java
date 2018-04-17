@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.common.contest.ApplyContestActivity;
 
 import java.util.ArrayList;
 

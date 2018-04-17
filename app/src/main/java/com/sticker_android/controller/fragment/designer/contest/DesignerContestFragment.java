@@ -1,10 +1,8 @@
-package com.sticker_android.controller.fragment.corporate.contest;
-
+package com.sticker_android.controller.fragment.designer.contest;
 
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -20,39 +18,28 @@ import com.sticker_android.utils.fragmentinterface.UpdateToolbarTitle;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by user on 29/3/18.
  */
-public class CorporateContestFragment extends BaseFragment {
+
+public class DesignerContestFragment extends BaseFragment{
 
     private UpdateToolbarTitle mUpdateToolbarCallback;
     private AppPref appPref;
     private User userdata;
 
     private TabLayout tabLayout;
-
-    public CorporateContestFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_corporate_contest, container, false);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-          //      mUpdateToolbarCallback.updateToolbarTitle(getResources().getString(R.string.txt_contest));
-            }
-        }, 300);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.frag_designer_contest, container, false);
         init();
         getuserInfo();
         setViewReferences(view);
         setViewListeners();
         setBackground();
         addTabsDynamically();
-        replaceFragment(new CorporateContestOngoingFragment());
+        replaceFragment(new DesignerContestOngingFragment());
         // Inflate the layout for this fragment
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -64,13 +51,12 @@ public class CorporateContestFragment extends BaseFragment {
         tabLayout.setTabTextColors(Color.parseColor("#AAFFFFFF"), Color.WHITE);
     }
 
-
     private void init() {
         appPref = new AppPref(getActivity());
     }
 
     private void setBackground() {
-        tabLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_corporate));
+        tabLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_designer));
     }
 
     private void getuserInfo() {
@@ -112,7 +98,7 @@ public class CorporateContestFragment extends BaseFragment {
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            mUpdateToolbarCallback = (UpdateToolbarTitle) activity;
+          //  mUpdateToolbarCallback = (UpdateToolbarTitle) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnHeadlineSelectedListener");
@@ -130,10 +116,10 @@ public class CorporateContestFragment extends BaseFragment {
 
             switch (tab.getPosition()) {
                 case 0:
-                    replaceFragment(new CorporateContestOngoingFragment());
+                    replaceFragment(new DesignerContestOngingFragment());
                     break;
                 case 1:
-                    replaceFragment(new CorporateContestCompletedFragment());
+                    replaceFragment(new DesignerContestCompletedFragment());
                     break;
 
             }
@@ -162,5 +148,4 @@ public class CorporateContestFragment extends BaseFragment {
                 fragment);
         fragmentTransaction.commit();
     }
-
 }

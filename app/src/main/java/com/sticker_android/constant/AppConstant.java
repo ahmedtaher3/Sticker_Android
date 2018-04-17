@@ -12,7 +12,9 @@ public class AppConstant {
     public static final String PRODUCT_OBJ_KEY="productObj";
     public static final String PRODUCT = "product";
     public static final String DATA_REFRESH_NEEDED = "data_refresh_needed";
+    public static final String NOTIFICATION_OBJ="notificationObj";
 
+    public static final int INTENT_NOTIFICATION_CODE =10 ;
 
     public static final int INTENT_RENEW_CODE =12 ;
     public static final int INTENT_PRODUCT_DETAILS =121 ;

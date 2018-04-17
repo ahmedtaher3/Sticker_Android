@@ -1,4 +1,4 @@
-package com.sticker_android.controller.fragment.corporate.contest;
+package com.sticker_android.controller.fragment.designer.contest;
 
 
 import android.content.Context;
@@ -15,21 +15,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
+import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.adaptors.ContestOngoingListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.fragment.corporate.contest.CorporateContestOngoingFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
-import com.sticker_android.model.interfaces.MessageEventListener;
-import com.sticker_android.model.interfaces.NetworkPopupEventListener;
-import com.sticker_android.model.payload.Payload;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.fragmentinterface.UpdateToolbarTitle;
-import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
@@ -39,10 +35,9 @@ import retrofit2.Call;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CorporateContestOngoingFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class DesignerContestOngingFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-
-    private CorporateHomeActivity mHostActivity;
+    private DesignerHomeActivity mHostActivity;
 
     private RecyclerView recOngoingContestCorp;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -63,10 +58,9 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
     private ArrayList<Product> mProductList;
     private static final String TAG = CorporateContestOngoingFragment.class.getSimpleName();
     private View view;
-
     private UpdateToolbarTitle mUpdateToolbarCallback;
 
-    public CorporateContestOngoingFragment() {
+    public DesignerContestOngingFragment() {
         // Required empty public constructor
     }
 
@@ -74,9 +68,10 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
-        View view = inflater.inflate(R.layout.fragment_corporate_contest_ongoing, container, false);
+        View view = inflater.inflate(R.layout.fragment_designer_contest_onging, container, false);
+
         init();
         getuserInfo();
         setViewReferences(view);
@@ -146,7 +141,7 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        mHostActivity = (CorporateHomeActivity) context;
+        mHostActivity = (DesignerHomeActivity) context;
         try {
             mUpdateToolbarCallback = (UpdateToolbarTitle) context;
         } catch (ClassCastException e) {
@@ -166,29 +161,36 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
 
     }
 
-    private void getContestApi() {
-
-        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserContestList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),"contest_list" );
-        apiResponseCall.enqueue(new ApiCall(getActivity()) {
-            @Override
-            public void onSuccess(ApiResponse apiResponse) {
-               if(apiResponse.status){
-
-                   mAdapter.setData(apiResponse.paylpad.ongoingContestLists);
-               }
-            }
-
-            @Override
-            public void onFail(Call<ApiResponse> call, Throwable t) {
-
-            }
-        });
-    }
 
     private void showNoDataFound() {
         llNoDataFound.setVisibility(View.VISIBLE);
         txtNoDataFoundTitle.setText("");
     }
 
+    private void getContestApi() {
+        swipeRefreshLayout.setRefreshing(true);
+        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserContestList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(), "contest_list");
+        apiResponseCall.enqueue(new ApiCall(getActivity()) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
 
+                swipeRefreshLayout.setRefreshing(false);
+                if (apiResponse.status) {
+                    txtNoDataFoundContent.setVisibility(View.GONE);
+                    if(apiResponse.paylpad.ongoingContestLists!=null){
+                    mAdapter.setData(apiResponse.paylpad.ongoingContestLists);
+                }else {
+                        txtNoDataFoundContent.setVisibility(View.VISIBLE);
+                        txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                txtNoDataFoundContent.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
 }

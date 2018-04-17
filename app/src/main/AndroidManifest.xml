@@ -52,9 +52,9 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".controller.activities.designer.home.DesignerHomeActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:launchMode="singleTask"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".controller.activities.corporate.home.CorporateHomeActivity"
             android:screenOrientation="portrait"
@@ -106,10 +106,10 @@
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
 
-        <activity android:name=".controller.activities.common.contest.ApplyContestActivity"
+        <activity
+            android:name=".controller.activities.common.contest.ApplyCorporateContestActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" ></activity>
-
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <service android:name=".fcm.MyFirebaseInstanceIDService">
             <intent-filter>
@@ -121,16 +121,18 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-         <meta-data
+
+        <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_like_notification" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
-        <activity android:name=".controller.activities.designer.addnew.DesignDetailActivity"
-            android:screenOrientation="portrait"/>
-
+        <activity
+            android:name=".controller.activities.designer.addnew.DesignDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".controller.activities.common.contest.ApplyDesignerContestActivity"></activity>
     </application>
 
 </manifest>

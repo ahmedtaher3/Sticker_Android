@@ -93,4 +93,21 @@ public interface StickerService {
                                             @Field("user_id")String userId,@Field("key_name")String name);
 
 
+  @FormUrlEncoded
+  @POST(ApiConstant.API_FETCH_NOTIFICATION_LIST)
+  public Call<ApiResponse> apiNotificationList(@Field("language_id") String languageId,@Field("authrized_key")String authKey,
+                                                    @Field("user_id")String userId,@Field("key_name")String name);
+
+
+  @FormUrlEncoded
+  @POST(ApiConstant.API_SAVE_USER_CONTEST)
+  public Call<ApiResponse> saveUserContest(@Field("language_id") String languageId,@Field("authrized_key")String authKey,
+                                               @Field("user_id")String userId,@Field("product_id")int productId,@Field("contest_id")int contestId,@Field("key_name")String name);
+
+
+  @FormUrlEncoded
+  @POST(ApiConstant.API_GET_USER_CONTEST_LISt)
+  public Call<ApiResponse> getUserContestList(@Field("language_id") String languageId,@Field("authrized_key")String authKey,
+                                           @Field("user_id")String userId,@Field("key_name")String name);
+
 }

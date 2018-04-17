@@ -25,4 +25,9 @@ public class ApiConstant {
     public static final String API_SEARCH_PRODUCT = "searchProductList/";
 
     public static final String API_FETCH_CORPORATE_CATEGORY_LIST = "categoryList/";
+    public static final String API_FETCH_NOTIFICATION_LIST = "getNotificationList/";
+
+    public static final String API_SAVE_USER_CONTEST = "SaveUserContest/";
+    public static final String API_GET_USER_CONTEST_LISt = "getUserContestList/";
+
 }

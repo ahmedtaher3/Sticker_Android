@@ -231,7 +231,7 @@ public class CorporateContestAdapter extends RecyclerView.Adapter<RecyclerView.V
 
 
     /**
-     * Main list's content ViewHolder
+     * Main list's content ViewHolderOnGoingContest
      */
     protected class ProductVH extends RecyclerView.ViewHolder {
         ImageView imvSelected, imvOfContest, imvProductImage;

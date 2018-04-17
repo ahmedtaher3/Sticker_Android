@@ -1,4 +1,4 @@
-package com.sticker_android.controller.fragment.corporate.contest;
+package com.sticker_android.controller.fragment.designer.contest;
 
 
 import android.content.Context;
@@ -16,10 +16,12 @@ import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.common.contest.ApplyCorporateContestActivity;
+import com.sticker_android.controller.activities.common.contest.ApplyDesignerContestActivity;
 import com.sticker_android.controller.adaptors.CorporateContestListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.model.payload.Payload;
@@ -32,16 +34,18 @@ import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import retrofit2.Call;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CorporateContestProductFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,CorporateContestListAdapter.OnProductItemClickListener {
-    private ApplyCorporateContestActivity mHostActivity;
+public class DesignerContestStickerFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,CorporateContestListAdapter.OnProductItemClickListener{
 
-    private RecyclerView recAdsAndProductList;
+    private ApplyDesignerContestActivity mHostActivity;
+
+    private RecyclerView rcItemList;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout llNoDataFound;
     private AppPref appPref;
@@ -58,10 +62,11 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
     private RelativeLayout rlConnectionContainer;
     private TextView txtNoDataFoundTitle, txtNoDataFoundContent;
     private ArrayList<Product> mProductList;
-    private static final String TAG=CorporateContestProductFragment.class.getSimpleName();
+    private static final String TAG = DesignerContestStickerFragment.class.getSimpleName();
     private View view;
 
-    public CorporateContestProductFragment() {
+
+    public DesignerContestStickerFragment() {
         // Required empty public constructor
     }
 
@@ -69,28 +74,32 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-      PAGE_LIMIT = getActivity() .getResources().getInteger(R.integer.designed_item_page_limit);
 
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_corporate_contest_product, container, false);
-            init();
-            getuserInfo();
-            setViewReferences(view);
-            setViewListeners();
-            mAdapter = new CorporateContestListAdapter(getActivity());
+        PAGE_LIMIT = mHostActivity.getResources().getInteger(R.integer.designed_item_page_limit);;
+        // Inflate the layout for this fragment
+
+        // Inflate the layout for this fragment
+        View view= inflater.inflate(R.layout.layout_design_item_list, container, false);
+        init();
+        getuserInfo();
+        setViewReferences(view);
+        setViewListeners();
+        mAdapter = new CorporateContestListAdapter(getActivity());
         mAdapter.setProductItemClickListener(this);
-            llNoDataFound.setVisibility(View.GONE);
-            mProductList = new ArrayList<>();
-            mCurrentPage = 0;
-            getContestApi(false, "");
-            recAdsAndProductList.setAdapter(mAdapter);
-            recyclerViewLayout();
-            recListener();
+        llNoDataFound.setVisibility(View.GONE);
+        mProductList = new ArrayList<>();
+        mCurrentPage = 0;
+        getContestApi(false, "");
+        rcItemList.setAdapter(mAdapter);
+        recyclerViewLayout();
+        recListener();
 
         return view;
     }
+
     private void recListener() {
-        recAdsAndProductList.addOnScrollListener(new PaginationScrollListener(mLayoutManager) {
+        rcItemList.addOnScrollListener(new PaginationScrollListener(mLayoutManager) {
             @Override
             protected void loadMoreItems() {
                 AppLogger.debug(TAG, "Load more items");
@@ -138,13 +147,13 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
      * Method is used to set the layout on recycler view
      */
     private void recyclerViewLayout() {
-        recAdsAndProductList.hasFixedSize();
+        rcItemList.hasFixedSize();
 
         mLayoutManager = new LinearLayoutManager(getContext());
 
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        recAdsAndProductList.setLayoutManager(mLayoutManager);
+        rcItemList.setLayoutManager(mLayoutManager);
     }
 
 
@@ -157,7 +166,7 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
     protected void setViewReferences(View view) {
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
-        recAdsAndProductList = (RecyclerView) view.findViewById(R.id.recAdsAndProductList);
+        rcItemList = (RecyclerView) view.findViewById(R.id.rcItemList);
         tvNoAdsUploaded = (TextView) view.findViewById(R.id.tvNoAdsUploaded);
         rlContent = (RelativeLayout) view.findViewById(R.id.rlContent);
         llNoDataFound = (LinearLayout) view.findViewById(R.id.llNoDataFound);
@@ -177,7 +186,7 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        mHostActivity = (ApplyCorporateContestActivity) context;
+        mHostActivity = (ApplyDesignerContestActivity) context;
     }
 
     @Override
@@ -217,7 +226,7 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
         }
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
-                index, limit,"product", "product_list", searchKeyword);
+                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword);
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -245,7 +254,7 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                                         mProductList.addAll(payload.productList);
 
                                         llNoDataFound.setVisibility(View.GONE);
-                                        recAdsAndProductList.setVisibility(View.VISIBLE);
+                                        rcItemList.setVisibility(View.VISIBLE);
                                         mAdapter.setData(mProductList);
 
                                         mCurrentPage = 0;
@@ -253,11 +262,10 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                                     } else {
                                         mProductList.clear();
                                         mAdapter.setData(mProductList);
-                                        if(searchKeyword.length() != 0){
+                                        if (searchKeyword.length() != 0) {
                                             txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                        }
-                                        else{
-                                            txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
+                                        } else {
+                                            txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
                                         }
                                         showNoDataFound();
                                     }
@@ -265,23 +273,22 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
 
                                     if (mCurrentPage == 0) {
                                         mProductList.clear();
-                                        if(payload.productList != null){
+                                        if (payload.productList != null) {
                                             mProductList.addAll(payload.productList);
                                         }
 
                                         if (mProductList.size() != 0) {
                                             llNoDataFound.setVisibility(View.GONE);
-                                            recAdsAndProductList.setVisibility(View.VISIBLE);
+                                            rcItemList.setVisibility(View.VISIBLE);
                                             mAdapter.setData(mProductList);
                                         } else {
                                             showNoDataFound();
-                                            if(searchKeyword.length() != 0){
+                                            if (searchKeyword.length() != 0) {
                                                 txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                            } else {
+                                                txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
                                             }
-                                            else{
-                                                txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
-                                            }
-                                            recAdsAndProductList.setVisibility(View.GONE);
+                                            rcItemList.setVisibility(View.GONE);
                                         }
                                     } else {
                                         AppLogger.error(TAG, "Remove loader...");
@@ -299,11 +306,10 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                                 AppLogger.error(TAG, "item list size => " + mProductList.size());
 
                             } else if (mProductList == null || (mProductList != null && mProductList.size() == 0)) {
-                                if(searchKeyword.length() != 0){
+                                if (searchKeyword.length() != 0) {
                                     txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                }
-                                else{
-                                    txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
+                                } else {
+                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
                                 }
                                 showNoDataFound();
                             }
@@ -364,16 +370,17 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
         llNoDataFound.setVisibility(View.VISIBLE);
         txtNoDataFoundTitle.setText("");
     }
-    public void updateTheFragment(){
 
-        if(mProductList != null && mProductList.size() != 0){
+    public void updateTheFragment() {
+
+        if (mProductList != null && mProductList.size() != 0) {
             swipeRefreshLayout.setRefreshing(true);
             getContestApi(true, "");
-        }
-        else{
+        } else {
             getContestApi(false, "");
         }
     }
+
 
     @Override
     public void onProductItemClick(Product product) {

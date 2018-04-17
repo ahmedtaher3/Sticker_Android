@@ -4,23 +4,27 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,8 +42,10 @@ import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.fragment.AccountSettingFragment;
 import com.sticker_android.controller.fragment.ProfileFragment;
+import com.sticker_android.controller.fragment.corporate.notification.CorporateNotificationFragment;
+import com.sticker_android.controller.fragment.designer.DesignerNotificationFragment;
 import com.sticker_android.controller.fragment.designer.DesignerPendingContentFragment;
-import com.sticker_android.controller.fragment.designer.DesignerContestFragment;
+import com.sticker_android.controller.fragment.designer.contest.DesignerContestFragment;
 import com.sticker_android.controller.fragment.designer.DesignerHomeFragment;
 import com.sticker_android.controller.fragment.designer.DesignerReportFragment;
 import com.sticker_android.model.User;
@@ -48,6 +54,7 @@ import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.UserTypeEnum;
+import com.sticker_android.utils.fragmentinterface.UpdateToolbarTitle;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -56,7 +63,7 @@ import java.util.Locale;
 import retrofit2.Call;
 
 public class DesignerHomeActivity extends AppBaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener {
+        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener,UpdateToolbarTitle {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private CoordinatorLayout mainView;
@@ -88,6 +95,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         mFragmentManager = getSupportFragmentManager();
         replaceFragment(mFragmentManager, new DesignerHomeFragment());
         setToolBarTitle(getResources().getString(R.string.txt_home));
+        //initializeCountDrawer(10);
     }
 
     private void setUserDataIntoNaviagtion() {
@@ -103,7 +111,19 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         imageProfile.setImageResource(R.drawable.designer_hdpi);
         imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imageProfile, displayImageOptions);
     }
-
+    /**
+     * Method is used to set the counter in notification tab
+     *
+     * @param count
+     */
+    private void initializeCountDrawer(int count) {
+        int itemId = MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_notification)).getId();
+        TextView notificationCounter = (TextView) navigationView.getMenu().findItem(itemId).getActionView();
+        notificationCounter.setGravity(Gravity.CENTER);
+        notificationCounter.setTypeface(null, Typeface.BOLD);
+        notificationCounter.setTextColor(getResources().getColor(R.color.colorFloatingCorporate));
+        notificationCounter.setText(count > 0 ? String.valueOf(count) : null);
+    }
     @Override
     protected boolean isValidData() {
         return false;
@@ -148,7 +168,43 @@ public class DesignerHomeActivity extends AppBaseActivity implements
     }
 
     private void actionBarToggle(Toolbar toolbar) {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        final ImageView imageView = toolbar.findViewById(R.id.imv_nav_drawer_menu);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawer != null) {
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+        drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+                mainView.setTranslationX(slideOffset * drawerView.getWidth());
+                drawer.bringChildToFront(drawerView);
+                drawer.requestLayout();
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+                supportInvalidateOptionsMenu();
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                supportInvalidateOptionsMenu();
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_humberg));
+                manageNavigationClickItem(mSelectedMenu);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+      /*  ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
             public void onDrawerClosed(View view) {
                 supportInvalidateOptionsMenu();
@@ -168,7 +224,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
             }
         };
         drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState();*/
         drawer.setScrimColor(Color.TRANSPARENT);
     }
 
@@ -230,6 +286,10 @@ public class DesignerHomeActivity extends AppBaseActivity implements
             textView.setText(getResources().getString(R.string.txt_account_setting));
         } else if (id == R.id.nav_logout) {
             userLogout();
+        }else if(id==R.id.nav_notification){
+            fragmentClass =  DesignerNotificationFragment.newInstance();
+            textView.setText(getResources().getString(R.string.txt_notifications));
+
         }
         setUserDataIntoNaviagtion();
         // Insert the fragment by replacing any existing fragment
@@ -418,4 +478,12 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         init();
         setUserDataIntoNaviagtion();
     }
+
+    @Override
+    public void updateToolbarTitle(String name) {
+        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
+        textView.setText(name);
+
+    }
+
 }

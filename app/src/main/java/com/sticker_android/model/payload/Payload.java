@@ -3,8 +3,10 @@ package com.sticker_android.model.payload;
 import com.google.gson.annotations.SerializedName;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.model.User;
+import com.sticker_android.model.contest.OngoingContestList;
 import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.model.notification.NotificationApp;
 
 import java.util.ArrayList;
 
@@ -33,6 +35,12 @@ public class Payload {
 
     @SerializedName("corporate_category")
     public ArrayList<Category> corporateCategories;
+
+    @SerializedName("notification_list")
+    public ArrayList<NotificationApp> notificationArrayList;
+
+    @SerializedName("contest_list")
+    public ArrayList<OngoingContestList> ongoingContestLists;
 
 }
 

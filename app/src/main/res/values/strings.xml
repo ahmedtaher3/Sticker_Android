@@ -183,8 +183,15 @@
     <string name="pending">Pending</string>
     <string name="expired">Expired</string>
     <string name="txt_onging">Ongoing</string>
-    <string name="txt_won">Won</string>
+    <string name="txt_completed">Completed</string>
     <string name="end_date">End Date-</string>
+    <string name="total_count">Total Count-</string>
+    <string name="txt_ongoing_contest">Ongoing Contest</string>
+    <string name="txt_completed_contest">Completed Contest</string>
+    <string name="txt_won">Won</string>
+    <string name="txt_successfully_applied_for_contest">Successfully applied for contest</string>
+    <string name="txt_no_contest_found">No Contest found.</string>
+    <string name="txt_apply_for_context">Please apply for a contest.</string>
 
 
 </resources>

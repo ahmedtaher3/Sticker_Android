@@ -1,9 +1,10 @@
-package com.sticker_android.controller.fragment.corporate.notification;
+package com.sticker_android.controller.fragment.designer;
 
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +17,7 @@ import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
-import com.sticker_android.controller.activities.common.contest.ApplyCorporateContestActivity;
+import com.sticker_android.controller.activities.common.contest.ApplyDesignerContestActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.notification.NotificationApp;
@@ -29,8 +30,10 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 
-
-public class CorporateNotificationFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class DesignerNotificationFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView recNotification;
     ArrayList<String> strings = new ArrayList<>();
@@ -40,17 +43,15 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
     private NotificationAdaptor notificationAdaptor;
     private SwipeRefreshLayout swipeRefreshNotification;
 
-    public CorporateNotificationFragment() {
+    public DesignerNotificationFragment() {
+        // Required empty public constructor
     }
 
-    public static CorporateNotificationFragment newInstance() {
-        CorporateNotificationFragment fragment = new CorporateNotificationFragment();
+    public static DesignerNotificationFragment newInstance() {
+
+        DesignerNotificationFragment fragment = new DesignerNotificationFragment();
+
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -151,11 +152,11 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
         @Override
         public NotificationHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-            return new NotificationHolder(inflater.inflate(R.layout.notification_view, parent, false));
+            return new NotificationAdaptor.NotificationHolder(inflater.inflate(R.layout.notification_view, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(NotificationHolder holder, int position) {
+        public void onBindViewHolder(NotificationAdaptor.NotificationHolder holder, int position) {
             final NotificationApp notification = mNotificationItem.get(position);
             final int contestId = notification.contestObj.status;
 
@@ -175,7 +176,7 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
                 @Override
                 public void onClick(View v) {
                     if (contestId == 5) {
-                        Intent intent = new Intent(getActivity(), ApplyCorporateContestActivity.class);
+                        Intent intent = new Intent(getActivity(), ApplyDesignerContestActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelable(AppConstant.NOTIFICATION_OBJ, notification);
                         intent.putExtras(bundle);
@@ -186,7 +187,7 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
             /*  startActivity(new Intent(getActivity(), ApplyCorporateContestActivity.class));*/
         }
 
-        private void showData(NotificationHolder holder, int contestId) {
+        private void showData(NotificationAdaptor.NotificationHolder holder, int contestId) {
             switch (contestId) {
                 case 5:
                     holder.imvtype.setImageResource(R.drawable.ic_trophy_notification);

@@ -27,9 +27,9 @@ import java.util.ArrayList;
  */
 
 
-public class CorporateContestListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ContestCompletedListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final String TAG = com.sticker_android.controller.adaptors.DesignListAdapter.class.getSimpleName();
+    private final String TAG = DesignListAdapter.class.getSimpleName();
     private ArrayList<Product> mItems;
     private Context context;
     public boolean isLoaderVisible;
@@ -39,12 +39,8 @@ public class CorporateContestListAdapter extends RecyclerView.Adapter<RecyclerVi
     private int selectedPosition = -1;
 
     private TimeUtility timeUtility = new TimeUtility();
-    private OnProductItemClickListener productItemClickListener;
-    private DesignerActionListener designerActionListener;
 
-    public interface OnProductItemClickListener {
-        void onProductItemClick(Product product);
-    }
+    private DesignerActionListener designerActionListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imvSelected, imvOfContest, imvProductImage;
@@ -72,7 +68,7 @@ public class CorporateContestListAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public CorporateContestListAdapter(Context cnxt) {
+    public ContestCompletedListAdapter(Context cnxt) {
         mItems = new ArrayList<>();
         context = cnxt;
     }
@@ -81,9 +77,6 @@ public class CorporateContestListAdapter extends RecyclerView.Adapter<RecyclerVi
         this.designerActionListener = actionListener;
     }
 
-    public void setProductItemClickListener(OnProductItemClickListener actionListener) {
-        this.productItemClickListener = actionListener;
-    }
 
     public void setData(ArrayList<Product> data) {
         mItems = new ArrayList<>();
@@ -158,15 +151,20 @@ public class CorporateContestListAdapter extends RecyclerView.Adapter<RecyclerVi
         if (viewType == ITEM_FOOTER) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_loader_view, parent, false);
             // set the view's size, margins, paddings and layout parameters
-            final CorporateContestListAdapter.LoaderViewHolder vh = new CorporateContestListAdapter.LoaderViewHolder(v);
+            final ContestCompletedListAdapter.LoaderViewHolder vh = new ContestCompletedListAdapter.LoaderViewHolder(v);
             return vh;
         } else {
             // create a new view
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.contest_item_view, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.contest_completed_list, parent, false);
             // set the view's size, margins, paddings and layout parameters
-            final CorporateContestListAdapter.ViewHolder vh = new CorporateContestListAdapter.ViewHolder(v);
+            final ContestCompletedListAdapter.ViewHolder vh = new ContestCompletedListAdapter.ViewHolder(v);
 
+            vh.cardItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
+                }
+            });
             return vh;
         }
     }
@@ -183,16 +181,7 @@ public class CorporateContestListAdapter extends RecyclerView.Adapter<RecyclerVi
         } else {
             final ViewHolder itemHolder = (ViewHolder) holder;
             final Product productItem = mItems.get(position);
-            if (selectedPosition == position) {
 
-                ((ViewHolder) holder).imvSelected.setVisibility(View.VISIBLE);
-
-
-                ((ViewHolder) holder).imvSelected.setImageResource(R.drawable.right_tick_hdpi);
-            } else {
-
-                ((ViewHolder) holder).imvSelected.setVisibility(View.GONE);
-            }
 
             Glide.with(context)
                     .load(productItem.getImagePath()).fitCenter()
@@ -215,14 +204,6 @@ public class CorporateContestListAdapter extends RecyclerView.Adapter<RecyclerVi
                     })
                     .into(((ViewHolder) holder).imvOfContest);
 
-            ((ViewHolder) holder).cardItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    selectedPosition = holder.getAdapterPosition();
-                    productItemClickListener.onProductItemClick(productItem);
-                    notifyDataSetChanged();
-                }
-            });
 
         }
 

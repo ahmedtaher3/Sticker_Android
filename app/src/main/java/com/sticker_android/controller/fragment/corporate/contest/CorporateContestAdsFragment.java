@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.common.contest.ApplyContestActivity;
+import com.sticker_android.controller.activities.common.contest.ApplyCorporateContestActivity;
 import com.sticker_android.controller.adaptors.CorporateContestListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
@@ -38,9 +38,9 @@ import retrofit2.Call;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CorporateContestAdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class CorporateContestAdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, CorporateContestListAdapter.OnProductItemClickListener {
 
-    private ApplyContestActivity mHostActivity;
+    private ApplyCorporateContestActivity mHostActivity;
 
     private RecyclerView recAdsAndProductList;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -73,7 +73,8 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        PAGE_LIMIT = mHostActivity.getResources().getInteger(R.integer.designed_item_page_limit);;
+        PAGE_LIMIT = mHostActivity.getResources().getInteger(R.integer.designed_item_page_limit);
+        ;
         // Inflate the layout for this fragment
         if (view == null) {
             view = inflater.inflate(R.layout.fragment_corporate_contest_ads, container, false);
@@ -82,6 +83,7 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
             setViewReferences(view);
             setViewListeners();
             mAdapter = new CorporateContestListAdapter(getActivity());
+            mAdapter.setProductItemClickListener(this);
             llNoDataFound.setVisibility(View.GONE);
             mProductList = new ArrayList<>();
             mCurrentPage = 0;
@@ -184,7 +186,7 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        mHostActivity = (ApplyContestActivity) context;
+        mHostActivity = (ApplyCorporateContestActivity) context;
     }
 
     @Override
@@ -376,6 +378,14 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
             getContestApi(true, "");
         } else {
             getContestApi(false, "");
+        }
+    }
+
+    @Override
+    public void onProductItemClick(Product product) {
+
+        if (mHostActivity != null) {
+            mHostActivity.saveContest(product);
         }
     }
 }
