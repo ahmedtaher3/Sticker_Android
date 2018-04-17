@@ -38,7 +38,7 @@ public class CorporateContestAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean isLoadingAdded = false;
     private boolean retryPageLoad = false;
 
-    private PaginationAdapterCallback mCallback;
+
     private OnProductItemClickListener productItemClickListener;
     private String errorMsg;
     private int selectedPosition = -1;
@@ -55,9 +55,7 @@ public class CorporateContestAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.productList = productList;
     }
 
-    public void setCorporateActionListener(PaginationAdapterCallback actionListener) {
-        this.mCallback = actionListener;
-    }
+
 
     public void setOnProductClickListener(OnProductItemClickListener productClickListener) {
         this.productItemClickListener = productClickListener;
@@ -268,8 +266,6 @@ public class CorporateContestAdapter extends RecyclerView.Adapter<RecyclerView.V
                 case R.id.loadmore_errorlayout:
 
                     showRetry(false, null);
-                    mCallback.retryPageLoad();
-
                     break;
             }
         }

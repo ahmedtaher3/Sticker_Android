@@ -6,10 +6,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,11 +19,7 @@ import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.ContestAdaptor;
 import com.sticker_android.controller.fragment.corporate.contest.CorporateContestAdsFragment;
 import com.sticker_android.controller.fragment.corporate.contest.CorporateContestProductFragment;
-import com.sticker_android.controller.fragment.designer.EmojiFragment;
-import com.sticker_android.controller.fragment.designer.GIFFragment;
-import com.sticker_android.controller.fragment.designer.StickerFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -32,7 +28,7 @@ import java.util.ArrayList;
 /**
  * Class is used for the notification
  */
-public class ApplyContestActivity extends AppBaseActivity {
+public class ApplyContestActivity extends AppBaseActivity implements View.OnClickListener{
     private RecyclerView recNotification;
     ArrayList<String> strings = new ArrayList<>();
     private AppPref appPref;
@@ -44,6 +40,7 @@ public class ApplyContestActivity extends AppBaseActivity {
 
     private FragmentManager mFragmentManager;
     private FrameLayout contarinerContest;
+    private Button btnPostContest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,18 +116,6 @@ public class ApplyContestActivity extends AppBaseActivity {
     }
 
 
-    /**
-     * Method is used to set the layout on recycler view
-     */
-    private void recyclerViewLayout() {
-        recNotification.hasFixedSize();
-
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
-        recNotification.setLayoutManager(mLayoutManager);
-    }
 
     public void addTabsDynamically() {
 
@@ -151,6 +136,7 @@ public class ApplyContestActivity extends AppBaseActivity {
     @Override
     protected void setViewListeners() {
         tabLayout.addOnTabSelectedListener(new TabListeners());
+        btnPostContest.setOnClickListener(this);
     }
 
     @Override
@@ -159,11 +145,21 @@ public class ApplyContestActivity extends AppBaseActivity {
         tabLayout = (TabLayout) findViewById(R.id.act_landing_tab);
         rlTabLayoutContainer = (RelativeLayout) findViewById(R.id.rlTabLayoutContainer);
         contarinerContest = (FrameLayout) findViewById(R.id.container_contest);
+        btnPostContest=(Button)findViewById(R.id.btnPostContest);
     }
 
     @Override
     protected boolean isValidData() {
         return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btnPostContest:
+
+                break;
+        }
     }
 
 

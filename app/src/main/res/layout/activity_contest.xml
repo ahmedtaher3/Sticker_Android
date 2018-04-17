@@ -42,7 +42,7 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <Button
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/btnPostContest"
         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
         android:layout_width="match_parent"
