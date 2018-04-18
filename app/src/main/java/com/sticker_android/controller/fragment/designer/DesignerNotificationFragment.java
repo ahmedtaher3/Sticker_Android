@@ -2,6 +2,7 @@ package com.sticker_android.controller.fragment.designer;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.common.contest.ApplyDesignerContestActivity;
+import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.notification.NotificationApp;
@@ -42,6 +44,7 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
     private ArrayList<NotificationApp> mNotificationList = new ArrayList<>();
     private NotificationAdaptor notificationAdaptor;
     private SwipeRefreshLayout swipeRefreshNotification;
+    private DesignerHomeActivity mHostActivity;
 
     public DesignerNotificationFragment() {
         // Required empty public constructor
@@ -68,6 +71,9 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
        */
         setAdaptor();
         getNotificationApi();
+        appPref.saveNewMessagesCount(0);
+        if(mHostActivity!=null)
+            mHostActivity.updateCallbackMessage();
         return view;
     }
 
@@ -87,6 +93,7 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
                 if (apiResponse.status) {
 
                     mNotificationList = apiResponse.paylpad.notificationArrayList;
+                    if(mNotificationList!=null)
                     notificationAdaptor.setData(mNotificationList);
                 }
             }
@@ -245,5 +252,18 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
                     break;
             }
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mHostActivity=(DesignerHomeActivity)context;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mHostActivity!=null)
+            mHostActivity.updateCallbackMessage();
     }
 }

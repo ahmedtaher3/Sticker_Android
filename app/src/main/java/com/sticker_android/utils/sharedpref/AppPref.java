@@ -159,4 +159,11 @@ public class AppPref {
         return sp.getInt("messageCount", defVal);
     }
 
+    public void userLogout(){
+
+        saveUserObject(new User());
+        setLoginFlag(false);
+        saveNewMessagesCount(0);
+    }
+
 }

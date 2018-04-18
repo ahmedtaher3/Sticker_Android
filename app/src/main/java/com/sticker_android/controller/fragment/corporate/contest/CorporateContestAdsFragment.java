@@ -76,8 +76,7 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
         PAGE_LIMIT = mHostActivity.getResources().getInteger(R.integer.designed_item_page_limit);
         ;
         // Inflate the layout for this fragment
-        if (view == null) {
-            view = inflater.inflate(R.layout.fragment_corporate_contest_ads, container, false);
+        view = inflater.inflate(R.layout.fragment_corporate_contest_ads, container, false);
             init();
             getuserInfo();
             setViewReferences(view);
@@ -87,14 +86,12 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
             llNoDataFound.setVisibility(View.GONE);
             mProductList = new ArrayList<>();
             mCurrentPage = 0;
-            getContestApi(false, "");
+            getContestApi(false);
             recAdsAndProductList.setAdapter(mAdapter);
             recyclerViewLayout();
             recListener();
-        }
-        if (view.getParent() != null)
-            ((ViewGroup) view.getParent()).removeView(view);
-        updateTheFragment();
+
+
         return view;
     }
 
@@ -105,7 +102,7 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
                 AppLogger.debug(TAG, "Load more items");
 
                 if (mProductList.size() >= PAGE_LIMIT) {
-                    getContestApi(false, "");
+                    getContestApi(false);
                     mAdapter.addLoader();
                 }
             }
@@ -192,7 +189,7 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getContestApi(true, "");
+            getContestApi(true);
         } else {
             swipeRefreshLayout.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
@@ -200,7 +197,7 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
 
     }
 
-    private void getContestApi(final boolean isRefreshing, final String searchKeyword) {
+    private void getContestApi(final boolean isRefreshing) {
 
         //remove wi-fi symbol when response got
         if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
@@ -226,7 +223,7 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
         }
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
-                index, limit, "ads", "product_list", searchKeyword);
+                index, limit, "ads", "product_list", "");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -252,7 +249,9 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
                                     if (payload.productList != null && payload.productList.size() != 0) {
                                         mProductList.clear();
                                         mProductList.addAll(payload.productList);
-
+                                        if (mHostActivity != null) {
+                                            mHostActivity.disablePost(true);
+                                        }
                                         llNoDataFound.setVisibility(View.GONE);
                                         recAdsAndProductList.setVisibility(View.VISIBLE);
                                         mAdapter.setData(mProductList);
@@ -262,10 +261,9 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
                                     } else {
                                         mProductList.clear();
                                         mAdapter.setData(mProductList);
-                                        if (searchKeyword.length() != 0) {
-                                            txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                        } else {
-                                            txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
+                                        txtNoDataFoundContent.setText(R.string.no_ads_uploaded_yet);
+                                        if (mHostActivity != null) {
+                                            mHostActivity.disablePost(false);
                                         }
                                         showNoDataFound();
                                     }
@@ -281,13 +279,13 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
                                             llNoDataFound.setVisibility(View.GONE);
                                             recAdsAndProductList.setVisibility(View.VISIBLE);
                                             mAdapter.setData(mProductList);
+                                            if (mHostActivity != null) {
+                                                mHostActivity.disablePost(true);
+                                            }
                                         } else {
                                             showNoDataFound();
-                                            if (searchKeyword.length() != 0) {
-                                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                            } else {
-                                                txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
-                                            }
+
+                                            txtNoDataFoundContent.setText(R.string.no_ads_uploaded_yet);
                                             recAdsAndProductList.setVisibility(View.GONE);
                                         }
                                     } else {
@@ -296,6 +294,9 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
                                         if (payload.productList != null && payload.productList.size() != 0) {
                                             mProductList.addAll(payload.productList);
                                             mAdapter.setData(mProductList);
+                                            if (mHostActivity != null) {
+                                                mHostActivity.disablePost(true);
+                                            }
                                         }
                                     }
 
@@ -306,12 +307,11 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
                                 AppLogger.error(TAG, "item list size => " + mProductList.size());
 
                             } else if (mProductList == null || (mProductList != null && mProductList.size() == 0)) {
-                                if (searchKeyword.length() != 0) {
-                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                } else {
-                                    txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
-                                }
+                                txtNoDataFoundContent.setText(R.string.no_ads_uploaded_yet);
                                 showNoDataFound();
+                                if (mHostActivity != null) {
+                                    mHostActivity.disablePost(false);
+                                }
                             }
                         }
                     } catch (Exception ex) {
@@ -346,6 +346,9 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
                             t instanceof java.net.UnknownHostException)) {
 
                         if (mCurrentPage == 0) {
+                            if (mHostActivity != null) {
+                                mHostActivity.disablePost(false);
+                            }
                             mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
                                 @Override
                                 public void onOkClickListener(int reqCode) {
@@ -354,11 +357,14 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
 
                                 @Override
                                 public void onRetryClickListener(int reqCode) {
-                                    getContestApi(isRefreshing, searchKeyword);
+                                    getContestApi(isRefreshing);
                                 }
                             }, 0);
                         } else {
                             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                            if (mHostActivity != null) {
+                                mHostActivity.disablePost(false);
+                            }
                         }
                     }
                 }
@@ -375,9 +381,9 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
 
         if (mProductList != null && mProductList.size() != 0) {
             swipeRefreshLayout.setRefreshing(true);
-            getContestApi(true, "");
+            getContestApi(true);
         } else {
-            getContestApi(false, "");
+            getContestApi(false);
         }
     }
 

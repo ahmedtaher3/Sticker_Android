@@ -52,6 +52,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import retrofit2.Call;
@@ -82,6 +83,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     ProgressBar pgrImage;
     private boolean isUpdated;
     private ImageView imvProductImage2;
+    private int categoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,20 +175,21 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     }
 
     private Set<Category> setCategory() {
-
-        Set<Category> temp = new HashSet<>();
+Category category=new Category();
+        Set<Category> temp = new LinkedHashSet<>();
         ArrayList<Product> tempPro = new ArrayList<>();
         if (productObj != null) {
             for (int i = 0; i < corporateCategories.size(); i++) {
                 if (corporateCategories.get(i).categoryId == productObj.getCategoryId()) {
-                    temp.add(corporateCategories.get(i));
+                //    temp.add(corporateCategories.get(i));
+                    category=corporateCategories.get(i);
                     break;
                 }
             }
 
         }
-        temp.addAll(corporateCategories);
-
+      temp.add(category);
+ temp.addAll(corporateCategories);
         return temp;
     }
 
@@ -380,6 +383,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
      * @param imagePath
      */
     private void renewOrEditApi(String imagePath) {
+        int categoryId = getCategoryId();
         if (setDate != null)
             mExpireDate = setDate.getChosenDate();
         final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
@@ -387,7 +391,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         final String type = productObj.getType();
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
                 userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
-                , mExpireDate, imagePath, String.valueOf(productObj.getProductid()), productObj.getCategoryId());
+                , mExpireDate, imagePath, String.valueOf(productObj.getProductid()),categoryId );
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
@@ -567,4 +571,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         });
     }
 
+    public int getCategoryId() {
+        return corporateCategories.get(spnrCategory.getSelectedItemPosition()).categoryId;
+    }
 }

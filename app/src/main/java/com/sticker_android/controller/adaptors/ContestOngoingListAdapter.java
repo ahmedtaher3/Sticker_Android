@@ -35,6 +35,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.model.contest.OngoingContestList;
+import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 
 import java.util.ArrayList;
@@ -65,8 +66,8 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
 
         final OngoingContestList listItem = mItems.get(position);
 
-        holder.tvEndDate.setText(listItem.contestInfo.expireDate);
-        holder.checkboxLike.setText("0");
+        holder.tvEndDate.setText(Utils.dateModify(listItem.contestInfo.expireDate));
+        holder.checkboxLike.setText(Utils.format(0));
         if (listItem.productList.getImagePath() != null && !listItem.productList.getImagePath().isEmpty())
             Glide.with(context)
                     .load(listItem.productList.getImagePath()).fitCenter()
@@ -98,10 +99,11 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
     }
 
     public void setData(ArrayList<OngoingContestList> data) {
-        mItems = new ArrayList<>();
-        mItems.addAll(data);
-        notifyDataSetChanged();
-
+        if(data!=null) {
+            mItems = new ArrayList<>();
+            mItems.addAll(data);
+            notifyDataSetChanged();
+        }
     }
 
 

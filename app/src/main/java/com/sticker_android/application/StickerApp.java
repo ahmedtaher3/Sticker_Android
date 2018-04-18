@@ -1,5 +1,6 @@
 package com.sticker_android.application;
 
+import android.app.Activity;
 import android.app.Application;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
@@ -12,6 +13,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.sticker_android.controller.activities.base.AppBaseActivity;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -20,7 +22,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  */
 
 public class StickerApp extends Application {
-
+    private AppBaseActivity mCurrentActivity=null;
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -55,4 +57,14 @@ public class StickerApp extends Application {
         return mInstance;
     }
 
+    public AppBaseActivity getCurrentActivity()
+    {
+
+        return  this.mCurrentActivity;
+    }
+
+    public void setCurrentActivity(Activity currentActivity)
+    {
+        this.mCurrentActivity= (AppBaseActivity) currentActivity;
+    }
 }

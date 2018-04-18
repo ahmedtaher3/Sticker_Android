@@ -105,4 +105,7 @@
     <string name="txt_successfully_applied_for_contest">Successfully applied for contest</string>
     <string name="txt_no_contest_found">No Contest found.</string>
     <string name="txt_apply_for_context">Please apply for a contest.</string>
+    <string name="txt_no_onging_contest_found">No Ongoing contest found</string>
+    <string name="txt_pending_content">Pending Content</string>
+    <string name="txt_no_completed_contest">No Completed Contest Found.</string>
 </resources>

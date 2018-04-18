@@ -21,6 +21,7 @@ import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.contest.CorporateContestOngoingFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -168,6 +169,7 @@ public class DesignerContestOngingFragment extends BaseFragment implements Swipe
     }
 
     private void getContestApi() {
+
         swipeRefreshLayout.setRefreshing(true);
         Call<ApiResponse> apiResponseCall = RestClient.getService().getUserContestList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(), "contest_list");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
@@ -179,17 +181,41 @@ public class DesignerContestOngingFragment extends BaseFragment implements Swipe
                     txtNoDataFoundContent.setVisibility(View.GONE);
                     if(apiResponse.paylpad.ongoingContestLists!=null){
                     mAdapter.setData(apiResponse.paylpad.ongoingContestLists);
-                }else {
-                        txtNoDataFoundContent.setVisibility(View.VISIBLE);
-                        txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
-                    }
+                        if (apiResponse.paylpad.ongoingContestLists == null) {
+                            showNoDataFound();
+                            txtNoDataFoundContent.setText(R.string.txt_no_onging_contest_found);
+                        } else {
+                            llNoDataFound.setVisibility(View.GONE);
+                            rlContent.setVisibility(View.VISIBLE);
+                        }
+                }
                 }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
+
                 txtNoDataFoundContent.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
+                if (!call.isCanceled() && (t instanceof java.net.ConnectException ||
+                        t instanceof java.net.SocketTimeoutException ||
+                        t instanceof java.net.SocketException ||
+                        t instanceof java.net.UnknownHostException)) {
+
+                    mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
+                        @Override
+                        public void onOkClickListener(int reqCode) {
+                            rlContent.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onRetryClickListener(int reqCode) {
+                            getContestApi();
+                        }
+                    }, 0);
+                } else {
+                    Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                }
             }
         });
     }

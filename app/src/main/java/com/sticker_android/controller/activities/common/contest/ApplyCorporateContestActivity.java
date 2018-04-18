@@ -201,6 +201,13 @@ public class ApplyCorporateContestActivity extends AppBaseActivity implements Vi
         }
     }
 
+    public void disablePost(boolean isVisible) {
+        if(isVisible)
+            btnPostContest.setVisibility(View.VISIBLE);
+        else
+    btnPostContest.setVisibility(View.GONE);
+    }
+
 
     public class TabListeners implements TabLayout.OnTabSelectedListener {
 

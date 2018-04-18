@@ -53,8 +53,6 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
     private LinearLayoutManager mLayoutManager;
 
     private Context mContext;
-    private int mCurrentPage = 0;
-    private int PAGE_LIMIT;
     private ContestOngoingListAdapter mAdapter;
     private RelativeLayout rlContent;
     private LinearLayout llLoaderView;
@@ -75,7 +73,6 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
         View view = inflater.inflate(R.layout.fragment_corporate_contest_ongoing, container, false);
         init();
         getuserInfo();
@@ -84,7 +81,6 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
         mAdapter = new ContestOngoingListAdapter(getActivity());
         llNoDataFound.setVisibility(View.GONE);
         mProductList = new ArrayList<>();
-        mCurrentPage = 0;
         getContestApi();
         recOngoingContestCorp.setAdapter(mAdapter);
         recyclerViewLayout();
@@ -167,21 +163,50 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
     }
 
     private void getContestApi() {
-
-        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserContestList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),"contest_list" );
+        swipeRefreshLayout.setRefreshing(true);
+        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserContestList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(), "contest_list");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-               if(apiResponse.status){
-
-                   mAdapter.setData(apiResponse.paylpad.ongoingContestLists);
-               }
+                swipeRefreshLayout.setRefreshing(false);
+                if (apiResponse.status) {
+                    mAdapter.setData(apiResponse.paylpad.ongoingContestLists);
+                if(apiResponse.paylpad.ongoingContestLists==null){
+                    showNoDataFound();
+                    txtNoDataFoundContent.setText(R.string.txt_no_onging_contest_found);
+                }else{
+                    llNoDataFound.setVisibility(View.GONE);
+                    rlContent.setVisibility(View.VISIBLE);
+                }
+                }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
+                txtNoDataFoundContent.setVisibility(View.GONE);
+                llNoDataFound.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+                if (!call.isCanceled() && (t instanceof java.net.ConnectException ||
+                        t instanceof java.net.SocketTimeoutException ||
+                        t instanceof java.net.SocketException ||
+                        t instanceof java.net.UnknownHostException)) {
 
-            }
+                    mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
+                            @Override
+                            public void onOkClickListener(int reqCode) {
+                                rlContent.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onRetryClickListener(int reqCode) {
+                                getContestApi();
+                            }
+                        }, 0);
+                    } else {
+                        Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                    }
+                }
+
         });
     }
 

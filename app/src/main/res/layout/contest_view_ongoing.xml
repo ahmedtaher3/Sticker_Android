@@ -68,7 +68,7 @@
                     android:textSize="@dimen/txt_size_home_12sp" />
 
                 <TextView
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_centerInParent="true"
                     fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
                     android:maxLines="1"

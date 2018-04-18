@@ -88,7 +88,7 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
         super.onCreateView(inflater, container, savedInstanceState);
         AppLogger.error(TAG, "Inside onCreateView() method");
 
-        PAGE_LIMIT = mHostActivity.getResources().getInteger(R.integer.designed_item_page_limit);
+        PAGE_LIMIT = 3;//mHostActivity.getResources().getInteger(R.integer.designed_item_page_limit);
 
         if (inflatedView == null) {
             inflatedView = LayoutInflater.from(mContext).inflate(R.layout.layout_design_item_list, container, false);
@@ -201,6 +201,7 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 AppLogger.debug(TAG, "Load more items");
 
                 if (mStickerList.size() >= PAGE_LIMIT) {
+                    AppLogger.debug(TAG, "page limit"+PAGE_LIMIT+" list size"+mStickerList.size());
                     getDesignFromServer(false, "");
                     mAdapter.addLoader();
                 }

@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sticker_android.R;
+import com.sticker_android.application.StickerApp;
 import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.utils.AppConstants;
@@ -50,6 +51,7 @@ public abstract class AppBaseActivity extends AppCompatActivity {
                 .cacheOnDisk(true)
                 .considerExifParams(true)
                 .build();
+        StickerApp.getInstance().setCurrentActivity(this);
     }
 
     /**
@@ -232,4 +234,12 @@ public abstract class AppBaseActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void updateCallbackMessage() {
+
+    }
+
+
+
+
 }

@@ -2,6 +2,7 @@ package com.sticker_android.controller.fragment.corporate.notification;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,17 +13,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.common.contest.ApplyCorporateContestActivity;
+import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.model.notification.NotificationApp;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
@@ -39,6 +45,9 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
     private ArrayList<NotificationApp> mNotificationList = new ArrayList<>();
     private NotificationAdaptor notificationAdaptor;
     private SwipeRefreshLayout swipeRefreshNotification;
+    private CorporateHomeActivity mHostActivity;
+    private LinearLayout llLoaderView;
+    private RelativeLayout rlConnectionContainer;
 
     public CorporateNotificationFragment() {
     }
@@ -62,11 +71,11 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
         setViewReferences(view);
         setViewListeners();
         recyclerViewLayout();
-       /* LocalNotification localNotification = new LocalNotification();
-        localNotification.setNotification(getActivity(), "sdcdscdc", "dscdscdc");
-       */
         setAdaptor();
         getNotificationApi();
+        appPref.saveNewMessagesCount(0);
+        if (mHostActivity != null)
+            mHostActivity.updateCallbackMessage();
         return view;
     }
 
@@ -86,14 +95,29 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
                 if (apiResponse.status) {
 
                     mNotificationList = apiResponse.paylpad.notificationArrayList;
-                    notificationAdaptor.setData(mNotificationList);
+                    if (mNotificationList != null)
+                        notificationAdaptor.setData(mNotificationList);
                 }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
                 swipeRefreshNotification.setRefreshing(false);
+
+                if (mHostActivity != null)
+                    mHostActivity.manageNoInternetConnectionLayout(getActivity(), rlConnectionContainer, new NetworkPopupEventListener() {
+                        @Override
+                        public void onOkClickListener(int reqCode) {
+
+                        }
+
+                        @Override
+                        public void onRetryClickListener(int reqCode) {
+                            getNotificationApi();
+                        }
+                    }, 0);
             }
+
         });
     }
 
@@ -107,6 +131,10 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
 
         recNotification = (RecyclerView) view.findViewById(R.id.recNotification);
         swipeRefreshNotification = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshNotification);
+        rlConnectionContainer = (RelativeLayout) view.findViewById(R.id.rlConnectionContainer);
+        llLoaderView = (LinearLayout) view.findViewById(R.id.llLoader);
+
+
     }
 
     @Override
@@ -244,5 +272,18 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
                     break;
             }
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mHostActivity = (CorporateHomeActivity) context;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mHostActivity != null)
+            mHostActivity.updateCallbackMessage();
     }
 }

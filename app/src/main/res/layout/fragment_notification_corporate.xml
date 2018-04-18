@@ -15,4 +15,19 @@
             android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <include layout="@layout/layout_loader_view" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlConnectionContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:paddingBottom="60dp" />
+
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.sticker_android.controller.notification;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,6 +9,8 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.sticker_android.R;
+import com.sticker_android.application.StickerApp;
+import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 public class LocalNotification {
@@ -15,20 +18,21 @@ public class LocalNotification {
     private AppPref mAppPref;
     private String message;
 
-   public LocalNotification (){
+
+    public LocalNotification() {
 
     }
 
-    public void setNotification(Context context,String notificationTitle,String textContent){
-        mAppPref=new AppPref(context);
+    public void setNotification(Context context, String notificationTitle, String textContent) {
+        mAppPref = new AppPref(context);
 
-        NotificationCompat.Builder notificationCompat=new NotificationCompat.Builder(context);
+        NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(context);
         notificationCompat.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(notificationTitle)
                 .setContentText(textContent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT).setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND);
 
-        int messageCount=mAppPref.getNewMessagesCount(0)+1;
+        int messageCount = mAppPref.getNewMessagesCount(0) + 1;
         mAppPref.saveNewMessagesCount(messageCount);
         if (messageCount > 1) {
             message = "You have received " + messageCount + " messages.";
@@ -37,7 +41,7 @@ public class LocalNotification {
 
         NotificationManager notificationManager = (NotificationManager) context.
                 getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent intent =new Intent();
+        Intent intent = new Intent();
         intent.putExtra("data here", true);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
@@ -46,6 +50,10 @@ public class LocalNotification {
         notificationCompat.setContentIntent(pendingIntent);
         notificationManager.notify(0,
                 notificationCompat.build());
+        if (StickerApp.getInstance().getCurrentActivity() instanceof AppBaseActivity) {
+            StickerApp.getInstance().getCurrentActivity().updateCallbackMessage();
+        }
     }
+
 
 }

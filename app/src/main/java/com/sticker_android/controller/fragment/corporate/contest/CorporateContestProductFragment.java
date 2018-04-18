@@ -82,7 +82,7 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
             llNoDataFound.setVisibility(View.GONE);
             mProductList = new ArrayList<>();
             mCurrentPage = 0;
-            getContestApi(false, "");
+            getContestApi(false);
             recAdsAndProductList.setAdapter(mAdapter);
             recyclerViewLayout();
             recListener();
@@ -96,7 +96,7 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                 AppLogger.debug(TAG, "Load more items");
 
                 if (mProductList.size() >= PAGE_LIMIT) {
-                    getContestApi(false, "");
+                    getContestApi(false);
                     mAdapter.addLoader();
                 }
             }
@@ -183,7 +183,7 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getContestApi(true, "");
+            getContestApi(true);
         } else {
             swipeRefreshLayout.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
@@ -191,7 +191,7 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
 
     }
 
-    private void getContestApi(final boolean isRefreshing, final String searchKeyword) {
+    private void getContestApi(final boolean isRefreshing) {
 
         //remove wi-fi symbol when response got
         if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
@@ -217,7 +217,7 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
         }
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
-                index, limit,"product", "product_list", searchKeyword);
+                index, limit,"product", "product_list", "");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -253,12 +253,8 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                                     } else {
                                         mProductList.clear();
                                         mAdapter.setData(mProductList);
-                                        if(searchKeyword.length() != 0){
-                                            txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                        }
-                                        else{
-                                            txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
-                                        }
+                                        txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
+
                                         showNoDataFound();
                                     }
                                 } else {
@@ -275,12 +271,8 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                                             mAdapter.setData(mProductList);
                                         } else {
                                             showNoDataFound();
-                                            if(searchKeyword.length() != 0){
-                                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                            }
-                                            else{
-                                                txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
-                                            }
+                                            txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
+
                                             recAdsAndProductList.setVisibility(View.GONE);
                                         }
                                     } else {
@@ -299,12 +291,9 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                                 AppLogger.error(TAG, "item list size => " + mProductList.size());
 
                             } else if (mProductList == null || (mProductList != null && mProductList.size() == 0)) {
-                                if(searchKeyword.length() != 0){
-                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                }
-                                else{
-                                    txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
-                                }
+
+                                txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
+
                                 showNoDataFound();
                             }
                         }
@@ -348,7 +337,7 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
 
                                 @Override
                                 public void onRetryClickListener(int reqCode) {
-                                    getContestApi(isRefreshing, searchKeyword);
+                                    getContestApi(isRefreshing);
                                 }
                             }, 0);
                         } else {
@@ -368,10 +357,10 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
 
         if(mProductList != null && mProductList.size() != 0){
             swipeRefreshLayout.setRefreshing(true);
-            getContestApi(true, "");
+            getContestApi(true);
         }
         else{
-            getContestApi(false, "");
+            getContestApi(false);
         }
     }
 

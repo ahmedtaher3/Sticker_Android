@@ -45,6 +45,7 @@ import com.sticker_android.controller.fragment.ProfileFragment;
 import com.sticker_android.controller.fragment.corporate.notification.CorporateNotificationFragment;
 import com.sticker_android.controller.fragment.designer.DesignerNotificationFragment;
 import com.sticker_android.controller.fragment.designer.DesignerPendingContentFragment;
+import com.sticker_android.controller.fragment.designer.contentapproval.DesignerContentApprovalFragment;
 import com.sticker_android.controller.fragment.designer.contest.DesignerContestFragment;
 import com.sticker_android.controller.fragment.designer.DesignerHomeFragment;
 import com.sticker_android.controller.fragment.designer.DesignerReportFragment;
@@ -95,7 +96,17 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         mFragmentManager = getSupportFragmentManager();
         replaceFragment(mFragmentManager, new DesignerHomeFragment());
         setToolBarTitle(getResources().getString(R.string.txt_home));
-        //initializeCountDrawer(10);
+        setBadgeCount();
+        initializeCountDrawer(appPref.getNewMessagesCount(0));
+    }
+    /**
+     * Humberg notification dot visibility
+     */
+    private void setBadgeCount() {
+        if (appPref.getNewMessagesCount(0) > 0)
+            toolbar.findViewById(R.id.tv_nav_menu_badge).setVisibility(View.VISIBLE);
+        else
+            toolbar.findViewById(R.id.tv_nav_menu_badge).setVisibility(View.GONE);
     }
 
     private void setUserDataIntoNaviagtion() {
@@ -268,8 +279,8 @@ public class DesignerHomeActivity extends AppBaseActivity implements
             fragmentClass = new DesignerHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
         } else if (id == R.id.nav_content_for_appproval) {
-            fragmentClass = new DesignerPendingContentFragment();
-            textView.setText("Content Approval");
+            fragmentClass = new DesignerContentApprovalFragment();
+          //  textView.setText("Content Approval");
         } else if (id == R.id.nav_report) {
             fragmentClass = new DesignerReportFragment();
             textView.setText("Report");
@@ -486,4 +497,17 @@ public class DesignerHomeActivity extends AppBaseActivity implements
 
     }
 
+    @Override
+    public void updateCallbackMessage() {
+        super.updateCallbackMessage();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setBadgeCount();
+                initializeCountDrawer(appPref.getNewMessagesCount(0));
+
+            }
+        });
+
+    }
 }

@@ -1,4 +1,4 @@
-package com.sticker_android.controller.fragment.corporate.contentapproval;
+package com.sticker_android.controller.fragment.designer.contentapproval;
 
 
 import android.app.Activity;
@@ -14,7 +14,9 @@ import android.view.ViewGroup;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.controller.fragment.corporate.contest.CorporateContestOngoingFragment;
+import com.sticker_android.controller.fragment.corporate.contentapproval.CorporateContentApprovalAdsFragment;
+import com.sticker_android.controller.fragment.corporate.contentapproval.CorporateContentApprovalFragment;
+import com.sticker_android.controller.fragment.corporate.contentapproval.CorporateContentApprovalProductFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.fragmentinterface.UpdateToolbarTitle;
@@ -23,14 +25,14 @@ import com.sticker_android.utils.sharedpref.AppPref;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CorporateContentApprovalFragment extends BaseFragment {
-
+public class DesignerContentApprovalFragment extends BaseFragment {
     private AppPref appPref;
     private User userdata;
 
     private TabLayout tabLayout;
     private UpdateToolbarTitle mUpdateToolbarCallback;
-    public CorporateContentApprovalFragment() {
+
+    public DesignerContentApprovalFragment() {
         // Required empty public constructor
     }
 
@@ -45,7 +47,7 @@ public class CorporateContentApprovalFragment extends BaseFragment {
                 mUpdateToolbarCallback.updateToolbarTitle(getResources().getString(R.string.txt_pending_content));
             }
         }, 300);
-        View view= inflater.inflate(R.layout.fragment_corporate_content_approval, container, false);
+        View view= inflater.inflate(R.layout.fragment_designer_content_approval, container, false);
         init();
         getuserInfo();
         setViewReferences(view);
@@ -59,7 +61,7 @@ public class CorporateContentApprovalFragment extends BaseFragment {
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setSelectedTabColor();
 
-    return view;
+        return view;
     }
     private void setSelectedTabColor() {
         tabLayout.setTabTextColors(Color.parseColor("#AAFFFFFF"), Color.WHITE);
@@ -71,7 +73,7 @@ public class CorporateContentApprovalFragment extends BaseFragment {
     }
 
     private void setBackground() {
-        tabLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_corporate));
+        tabLayout.setBackground(getResources().getDrawable(R.drawable.side_nav_designer));
     }
 
     private void getuserInfo() {
@@ -80,13 +82,18 @@ public class CorporateContentApprovalFragment extends BaseFragment {
 
     public void addTabsDynamically() {
 
-        TabLayout.Tab adsTab = tabLayout.newTab();
-        adsTab.setText(getString(R.string.txt_ads_frag)); // set the Text for the first Tab
-        tabLayout.addTab(adsTab);
+        TabLayout.Tab stickerTab = tabLayout.newTab();
+        stickerTab.setText(getString(R.string.stickers)); // set the Text for the first Tab
+        tabLayout.addTab(stickerTab);
 
-        TabLayout.Tab productTab = tabLayout.newTab();
-        productTab.setText(getString(R.string.txt_products_frag)); // set the Text for the Second Tab
-        tabLayout.addTab(productTab);
+        TabLayout.Tab gifTab = tabLayout.newTab();
+        gifTab.setText(getString(R.string.gif)); // set the Text for the Second Tab
+        tabLayout.addTab(gifTab);
+
+        TabLayout.Tab emojiTab = tabLayout.newTab();
+        emojiTab.setText(getString(R.string.emoji)); // set the Text for the Second Tab
+        tabLayout.addTab(emojiTab);
+
         Utils.setTabLayoutDivider(tabLayout, getActivity());
     }
 
@@ -131,12 +138,15 @@ public class CorporateContentApprovalFragment extends BaseFragment {
 
             switch (tab.getPosition()) {
                 case 0:
-                    replaceFragment(new CorporateContentApprovalAdsFragment());
+                    replaceFragment(new DesignerContentApprStickFragment());
                     break;
                 case 1:
-                    replaceFragment(new CorporateContentApprovalProductFragment());
+                    replaceFragment(new DesignerContentApprGifFragment());
                     break;
+                case 2:
+                    replaceFragment(new DesignerContentApprEmojiFragment());
 
+                    break;
             }
         }
 
@@ -165,4 +175,5 @@ public class CorporateContentApprovalFragment extends BaseFragment {
 
 
     }
+
 }
