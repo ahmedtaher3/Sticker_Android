@@ -49,7 +49,7 @@
                     android:layout_width="@dimen/signup_image_logo_width"
                     android:layout_height="@dimen/signup_image_logo_height"
                     android:layout_centerInParent="true"
-                    app:srcCompat="@drawable/football" />
+                    android:src="@drawable/logo_hdpi" />
             </RelativeLayout>
             <RelativeLayout
                 android:gravity="center"

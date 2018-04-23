@@ -167,16 +167,16 @@ public class ApplyCorporateContestActivity extends AppBaseActivity implements Vi
             case R.id.btnPostContest:
                 if (selectedProduct != null) {
                     saveContestApiCall();
-                }else {
-                    Utils.showToast(this,getString(R.string.txt_apply_for_context));
+                } else {
+                    Utils.showToast(this, getString(R.string.txt_apply_for_context));
                 }
                 break;
         }
     }
 
     private void saveContestApiCall() {
-        if(progressBarSave!=null)
-        progressBarSave.setVisibility(View.VISIBLE);
+        if (progressBarSave != null)
+            progressBarSave.setVisibility(View.VISIBLE);
 
         if (notificationObj != null) {
 
@@ -184,8 +184,8 @@ public class ApplyCorporateContestActivity extends AppBaseActivity implements Vi
             apiResponseCall.enqueue(new ApiCall(this) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
-                    if(progressBarSave!=null)
-                    progressBarSave.setVisibility(View.GONE);
+                    if (progressBarSave != null)
+                        progressBarSave.setVisibility(View.GONE);
                     if (apiResponse.status) {
                         Utils.showToast(ApplyCorporateContestActivity.this, getString(R.string.txt_successfully_applied_for_contest));
                         onBackPressed();
@@ -194,18 +194,18 @@ public class ApplyCorporateContestActivity extends AppBaseActivity implements Vi
 
                 @Override
                 public void onFail(Call<ApiResponse> call, Throwable t) {
-                    if(progressBarSave!=null)
-                    progressBarSave.setVisibility(View.GONE);
+                    if (progressBarSave != null)
+                        progressBarSave.setVisibility(View.GONE);
                 }
             });
         }
     }
 
     public void disablePost(boolean isVisible) {
-        if(isVisible)
+        if (isVisible)
             btnPostContest.setVisibility(View.VISIBLE);
         else
-    btnPostContest.setVisibility(View.GONE);
+            btnPostContest.setVisibility(View.GONE);
     }
 
 
@@ -217,7 +217,7 @@ public class ApplyCorporateContestActivity extends AppBaseActivity implements Vi
 
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
-            selectedProduct=null;
+            selectedProduct = null;
             switch (tab.getPosition()) {
                 case 0:
                     replaceFragment(new CorporateContestAdsFragment());

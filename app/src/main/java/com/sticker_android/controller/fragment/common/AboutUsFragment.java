@@ -1,4 +1,4 @@
-package com.sticker_android.controller.fragment;
+package com.sticker_android.controller.fragment.common;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

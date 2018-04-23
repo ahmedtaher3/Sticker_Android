@@ -221,6 +221,12 @@ public class ApplyDesignerContestActivity extends AppBaseActivity implements Vie
         }
     }
 
+    public void disablePost(boolean isVisible) {
+        if (isVisible)
+            btnPostContest.setVisibility(View.VISIBLE);
+        else
+            btnPostContest.setVisibility(View.GONE);
+    }
 
     /**
      * replace existing fragment of container

@@ -20,16 +20,12 @@ import com.sticker_android.controller.adaptors.ContestOngoingListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
-import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
-import com.sticker_android.model.payload.Payload;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.fragmentinterface.UpdateToolbarTitle;
-import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
@@ -170,8 +166,9 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
             public void onSuccess(ApiResponse apiResponse) {
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
-                    mAdapter.setData(apiResponse.paylpad.ongoingContestLists);
-                if(apiResponse.paylpad.ongoingContestLists==null){
+                    mAdapter.setData(apiResponse.paylpad.ongoingContests);
+                if(apiResponse.paylpad.ongoingContests ==null){
+                    llNoDataFound.setVisibility(View.VISIBLE);
                     showNoDataFound();
                     txtNoDataFoundContent.setText(R.string.txt_no_onging_contest_found);
                 }else{

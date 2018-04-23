@@ -188,7 +188,7 @@ public class DesignerContestCompletedFragment extends BaseFragment implements Sw
                 if (apiResponse.status) {
                     if(apiResponse.paylpad.completedArrayList!=null)
                     mAdapter.setData(apiResponse.paylpad.completedArrayList);
-                    if (apiResponse.paylpad.ongoingContestLists == null) {
+                    if (apiResponse.paylpad.ongoingContests == null) {
                         showNoDataFound();
                         txtNoDataFoundContent.setText(R.string.txt_no_completed_contest);
                     } else {

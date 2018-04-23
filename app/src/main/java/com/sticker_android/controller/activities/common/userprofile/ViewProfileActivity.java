@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
-import com.sticker_android.controller.fragment.ProfileFragment;
+import com.sticker_android.controller.fragment.common.ProfileFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;

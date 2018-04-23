@@ -29,5 +29,7 @@ public class ApiConstant {
 
     public static final String API_SAVE_USER_CONTEST = "SaveUserContest/";
     public static final String API_GET_USER_CONTEST_LISt = "getUserContestList/";
+    public static final String API_GET_FAN_PRODUCT_LIST = "getFanHomeProductList/";
+    public static final String API_SAVE_PRODUCT_LIKE = "SaveContestProductLike/";
 
 }

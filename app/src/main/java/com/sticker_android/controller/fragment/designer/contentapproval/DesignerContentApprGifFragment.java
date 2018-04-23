@@ -19,7 +19,8 @@ import com.sticker_android.controller.adaptors.CorporateContentApproval;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.contentapproval.CorporateContentApprovalAdsFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.contest.OngoingContestList;
+import com.sticker_android.model.contest.OngoingContest;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class DesignerContentApprGifFragment extends BaseFragment {
     private LinearLayout llLoaderView;
     private RelativeLayout rlConnectionContainer;
     private TextView txtNoDataFoundTitle, txtNoDataFoundContent;
-    private ArrayList<OngoingContestList> mProductList;
+    private ArrayList<Product> mProductList;
     private static final String TAG = CorporateContentApprovalAdsFragment.class.getSimpleName();
     private View view;
 
@@ -72,7 +73,7 @@ public class DesignerContentApprGifFragment extends BaseFragment {
 
     private void getContentApi() {
 
-        mProductList.add(new OngoingContestList());
+        mProductList.add(new Product());
         mAdapter.setData(mProductList);
     }
 

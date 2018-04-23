@@ -7,7 +7,7 @@ import com.sticker_android.model.corporateproduct.Product;
  * Created by user on 17/4/18.
  */
 
-public class OngoingContestList {
+public class OngoingContest {
     @SerializedName("user_contest_id")
     public int userContestId;
     @SerializedName("user_id")

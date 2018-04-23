@@ -1,4 +1,4 @@
-package com.sticker_android.controller.fragment;
+package com.sticker_android.controller.fragment.common;
 
 import android.content.Context;
 import android.content.Intent;

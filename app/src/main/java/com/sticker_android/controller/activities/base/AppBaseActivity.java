@@ -21,7 +21,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sticker_android.R;
 import com.sticker_android.application.StickerApp;
-import com.sticker_android.controller.fragment.ProfileFragment;
+import com.sticker_android.controller.fragment.common.ProfileFragment;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.Utils;

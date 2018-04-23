@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.sticker_android.R;
-import com.sticker_android.model.contest.OngoingContestList;
+import com.sticker_android.model.contest.OngoingContest;
 import com.sticker_android.utils.helper.TimeUtility;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
-import com.sticker_android.model.contest.OngoingContestList;
+import com.sticker_android.model.contest.OngoingContest;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 
@@ -47,7 +47,7 @@ import java.util.ArrayList;
 public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoingListAdapter.OngoingListViewHolder> {
 
     Context context;
-    private ArrayList<OngoingContestList> mItems = new ArrayList<>();
+    private ArrayList<OngoingContest> mItems = new ArrayList<>();
     private TimeUtility timeUtility = new TimeUtility();
 
     public ContestOngoingListAdapter(Context context) {
@@ -64,7 +64,7 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
     @Override
     public void onBindViewHolder(final OngoingListViewHolder holder, int position) {
 
-        final OngoingContestList listItem = mItems.get(position);
+        final OngoingContest listItem = mItems.get(position);
 
         holder.tvEndDate.setText(Utils.dateModify(listItem.contestInfo.expireDate));
         holder.checkboxLike.setText(Utils.format(0));
@@ -98,7 +98,7 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
         return mItems.size();
     }
 
-    public void setData(ArrayList<OngoingContestList> data) {
+    public void setData(ArrayList<OngoingContest> data) {
         if(data!=null) {
             mItems = new ArrayList<>();
             mItems.addAll(data);
@@ -122,7 +122,7 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
             imvOfContest = (ImageView) view.findViewById(R.id.imvOfContest);
             imvProductImage = (ImageView) view.findViewById(R.id.imvProductImage);
             pgrImage = (ProgressBar) view.findViewById(R.id.pgrImage);
-            tvEndDate = (TextView) view.findViewById(R.id.tv_end_date);
+            tvEndDate = (TextView) view.findViewById(R.id.tv_name);
             checkboxLike = (CheckBox) view.findViewById(R.id.checkboxLike);
         }
 

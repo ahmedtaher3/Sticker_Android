@@ -1,4 +1,4 @@
-package com.sticker_android.controller.fragment;
+package com.sticker_android.controller.fragment.common;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
+import com.sticker_android.controller.fragment.TermsAndConditionFragment;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;

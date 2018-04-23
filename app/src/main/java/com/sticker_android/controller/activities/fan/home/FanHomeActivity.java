@@ -3,37 +3,37 @@ package com.sticker_android.controller.activities.fan.home;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
-import com.sticker_android.controller.fragment.AccountSettingFragment;
-import com.sticker_android.controller.fragment.ProfileFragment;
-import com.sticker_android.controller.fragment.fancustomization.FanCustomizationFragment;
-import com.sticker_android.controller.fragment.fandownloads.FanDownloadFragment;
-import com.sticker_android.controller.fragment.fanhome.FanHomeFragment;
+import com.sticker_android.controller.fragment.common.AccountSettingFragment;
+import com.sticker_android.controller.fragment.common.ProfileFragment;
+import com.sticker_android.controller.fragment.fan.fancustomization.FanCustomizationFragment;
+import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.FanHomeFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
-
-import java.util.List;
 
 public class FanHomeActivity extends AppBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener ,ProfileFragment.OnFragmentProfileListener{
@@ -48,6 +48,8 @@ public class FanHomeActivity extends AppBaseActivity
     private TextView tvUserName;
     private TextView tvEmail;
     private AlertDialog languageDialog;
+    private MenuItem mSelectedMenu;
+    boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,8 @@ public class FanHomeActivity extends AppBaseActivity
         actionBarToggle(toolbar);
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
         setUserDataIntoNaviagtion();
-        showFragmentManually();
+       // showFragmentManually();
+        replaceFragment(new FanHomeFragment());
     }
     private void setUserDataIntoNaviagtion() {
         View header= navigationView.getHeaderView(0);
@@ -141,7 +144,44 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
     private void actionBarToggle(Toolbar toolbar) {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+
+        final ImageView imageView = toolbar.findViewById(R.id.imv_nav_drawer_menu);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawer != null) {
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+        drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+                mainView.setTranslationX(slideOffset * drawerView.getWidth());
+                drawer.bringChildToFront(drawerView);
+                drawer.requestLayout();
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+                supportInvalidateOptionsMenu();
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                supportInvalidateOptionsMenu();
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_humberg));
+                manageNavigationClickItem(mSelectedMenu);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+      /*  ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
             public void onDrawerClosed(View view) {
                 supportInvalidateOptionsMenu();
@@ -160,10 +200,51 @@ public class FanHomeActivity extends AppBaseActivity
             }
         };
         drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState();*/
         drawer.setScrimColor(Color.TRANSPARENT);
     }
+    private void manageNavigationClickItem(MenuItem item) {
+        if (item == null) {
+            return;
+        }
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
 
+        TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        Fragment fragmentClass=null;
+        if (id == R.id.nav_home && !(f instanceof FanHomeFragment)) {
+            textView.setText("Home");
+            fragmentClass = new FanHomeFragment();
+        } else if (id == R.id.nav_downloads && !(f instanceof FanDownloadFragment)) {
+            textView.setText("Downloads");
+            fragmentClass = new FanDownloadFragment();
+        } else if (id == R.id.nav_customization && !(f instanceof FanCustomizationFragment)) {
+            textView.setText("Customization");
+            fragmentClass = new FanCustomizationFragment();
+
+        } else if (id == R.id.nav_profile && !(f instanceof ProfileFragment)) {
+            textView.setText("Home");
+            //  startNewActivity(ViewProfileActivity.class);
+            fragmentClass = new ProfileFragment();
+            textView.setText(getResources().getString(R.string.txt_myprofile));
+            overridePendingTransition(R.anim.activity_animation_enter,
+                    R.anim.activity_animation_exit);
+        }
+        else if (id == R.id.nav_account_setting && !(f instanceof AccountSettingFragment)) {
+            textView.setText(getString(R.string.txt_account_setting));
+            fragmentClass = AccountSettingFragment.newInstance("","");
+        }
+        else if (id == R.id.nav_logout) {
+            userLogout();
+        }
+
+        // Insert the fragment by replacing any existing fragment
+        if(fragmentClass!=null) {
+            replaceFragment(fragmentClass);        }
+        drawer.closeDrawer(GravityCompat.START);
+
+    }
     @Override
     protected void setViewListeners() {
         navigationView.setNavigationItemSelectedListener(this);
@@ -187,57 +268,57 @@ public class FanHomeActivity extends AppBaseActivity
 
     @Override
     public void onBackPressed() {
-        TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(getResources().getString(R.string.txt_home));
-        toolbar.setTitle("");
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if(getFragmentManager().getBackStackEntryCount()>0){
-            getFragmentManager().popBackStack();
-        }else{
-            super.onBackPressed();
+        } else if (f instanceof FanHomeFragment) {
+            exitOnBack();
+        } else {
+            setToolBarTitle();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.container_home, new FanHomeFragment(), getResources().getString(R.string.txt_home));
+            transaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
+                    R.anim.activity_animation_enter, R.anim.activity_animation_exit);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
+    }
+
+    private void exitOnBack() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent objEvent) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onBackPressed();
+            return true;
+        }
+        return super.onKeyUp(keyCode, objEvent);
     }
 
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        Fragment fragmentClass=null;
-        if (id == R.id.nav_home) {
-            textView.setText("Home");
-            fragmentClass = new FanHomeFragment();
-        } else if (id == R.id.nav_downloads) {
-            textView.setText("Downloads");
-            fragmentClass = new FanDownloadFragment();
-        } else if (id == R.id.nav_customization) {
-            textView.setText("Customization");
-            fragmentClass = new FanCustomizationFragment();
-
-        } else if (id == R.id.nav_profile) {
-            textView.setText("Home");
-          //  startNewActivity(ViewProfileActivity.class);
-            fragmentClass = new ProfileFragment();
-            textView.setText(getResources().getString(R.string.txt_myprofile));
-            overridePendingTransition(R.anim.activity_animation_enter,
-                    R.anim.activity_animation_exit);
-        }
-        else if (id == R.id.nav_account_setting) {
-            textView.setText(getString(R.string.txt_account_setting));
-            fragmentClass = AccountSettingFragment.newInstance("","");
-        }
-        else if (id == R.id.nav_logout) {
-            userLogout();
-        }
-
-        // Insert the fragment by replacing any existing fragment
-        if(fragmentClass!=null) {
-            replaceFragment(fragmentClass);        }
+        this.mSelectedMenu = item;
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+             return true;
     }
 
     private void userLogout() {
@@ -251,47 +332,20 @@ public class FanHomeActivity extends AppBaseActivity
         finish();
     }
 
-    public void replaceFragment(Fragment fragmentClass){
+    public void replaceFragment(final Fragment fragmentClass) {
+        final String tag=fragmentClass.getClass().getSimpleName();
+                FragmentTransaction fragmentTransaction =
+                        getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.container_home,
+                        fragmentClass, tag);
+                int count = getFragmentManager().getBackStackEntryCount();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
 
-        FragmentTransaction fragmentTransaction =
-                getSupportFragmentManager().beginTransaction();
 
-        fragmentTransaction.setCustomAnimations(R.anim.activity_animation_enter,
-                R.anim.activity_animation_exit,
-                R.anim.activity_animation_enter, R.anim.activity_animation_exit);
-
-        fragmentTransaction.replace(R.id.container_home,
-                fragmentClass);
-
-            fragmentTransaction.addToBackStack(null);
-
-        fragmentTransaction.commit();
     }
 
 
-    private boolean onBackPressed(FragmentManager fm) {
-        if (fm != null) {
-            if (fm.getBackStackEntryCount() > 0) {
-                fm.popBackStack();
-                return true;
-            }
-
-            List<Fragment> fragList = fm.getFragments();
-            if (fragList != null && fragList.size() > 0) {
-                for (Fragment frag : fragList) {
-                    if (frag == null) {
-                        continue;
-                    }
-                    if (frag.isVisible()) {
-                        if (onBackPressed(frag.getChildFragmentManager())) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
     private void showFragmentManually() {
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +87,7 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
         super.onCreateView(inflater, container, savedInstanceState);
         AppLogger.error(TAG, "Inside onCreateView() method");
 
-        PAGE_LIMIT = 3;//mHostActivity.getResources().getInteger(R.integer.designed_item_page_limit);
+        PAGE_LIMIT = mHostActivity.getResources().getInteger(R.integer.designed_item_page_limit);
 
         if (inflatedView == null) {
             inflatedView = LayoutInflater.from(mContext).inflate(R.layout.layout_design_item_list, container, false);

@@ -5,6 +5,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="com.sticker_android.controller.fragment.AccountSettingFragment">
+    tools:context="com.sticker_android.controller.fragment.common.AccountSettingFragment">
     <include layout="@layout/tab_layout"/>
 </LinearLayout>

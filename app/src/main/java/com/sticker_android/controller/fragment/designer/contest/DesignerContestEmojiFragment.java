@@ -250,7 +250,9 @@ return view;
                                     if (payload.productList != null && payload.productList.size() != 0) {
                                         mProductList.clear();
                                         mProductList.addAll(payload.productList);
-
+                                        if (mHostActivity != null) {
+                                            mHostActivity.disablePost(true);
+                                        }
                                         llNoDataFound.setVisibility(View.GONE);
                                         rcItemList.setVisibility(View.VISIBLE);
                                         mAdapter.setData(mProductList);
@@ -260,10 +262,9 @@ return view;
                                     } else {
                                         mProductList.clear();
                                         mAdapter.setData(mProductList);
-                                        if (searchKeyword.length() != 0) {
-                                            txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                        } else {
-                                            txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
+                                         txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
+                                        if (mHostActivity != null) {
+                                            mHostActivity.disablePost(false);
                                         }
                                         showNoDataFound();
                                     }
@@ -279,13 +280,16 @@ return view;
                                             llNoDataFound.setVisibility(View.GONE);
                                             rcItemList.setVisibility(View.VISIBLE);
                                             mAdapter.setData(mProductList);
+                                            if (mHostActivity != null) {
+                                                mHostActivity.disablePost(true);
+                                            }
                                         } else {
                                             showNoDataFound();
-                                            if (searchKeyword.length() != 0) {
-                                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                            } else {
-                                                txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
+                                            if (mHostActivity != null) {
+                                                mHostActivity.disablePost(false);
                                             }
+                                            txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
+
                                             rcItemList.setVisibility(View.GONE);
                                         }
                                     } else {
@@ -294,6 +298,9 @@ return view;
                                         if (payload.productList != null && payload.productList.size() != 0) {
                                             mProductList.addAll(payload.productList);
                                             mAdapter.setData(mProductList);
+                                            if (mHostActivity != null) {
+                                                mHostActivity.disablePost(true);
+                                            }
                                         }
                                     }
 
@@ -304,10 +311,10 @@ return view;
                                 AppLogger.error(TAG, "item list size => " + mProductList.size());
 
                             } else if (mProductList == null || (mProductList != null && mProductList.size() == 0)) {
-                                if (searchKeyword.length() != 0) {
-                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                } else {
+
                                     txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
+                                if (mHostActivity != null) {
+                                    mHostActivity.disablePost(false);
                                 }
                                 showNoDataFound();
                             }
@@ -344,6 +351,9 @@ return view;
                             t instanceof java.net.UnknownHostException)) {
 
                         if (mCurrentPage == 0) {
+                            if (mHostActivity != null) {
+                                mHostActivity.disablePost(false);
+                            }
                             mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
                                 @Override
                                 public void onOkClickListener(int reqCode) {
@@ -356,6 +366,9 @@ return view;
                                 }
                             }, 0);
                         } else {
+                            if (mHostActivity != null) {
+                                mHostActivity.disablePost(false);
+                            }
                             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
                         }
                     }

@@ -24,7 +24,7 @@ import android.widget.ImageView;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.corporate.addnew.AddNewCorporateActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
-import com.sticker_android.controller.fragment.ChangePasswordFragment;
+import com.sticker_android.controller.fragment.common.ChangePasswordFragment;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.controller.fragment.corporate.product.ProductsFragment;

@@ -20,16 +20,12 @@ import com.sticker_android.controller.adaptors.ContestCompletedListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
-import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
-import com.sticker_android.model.payload.Payload;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.fragmentinterface.UpdateToolbarTitle;
-import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
@@ -190,7 +186,7 @@ public class CorporateContestCompletedFragment extends BaseFragment implements S
                 if (apiResponse.status) {
                     if(apiResponse.paylpad.completedArrayList!=null)
                     mAdapter.setData(apiResponse.paylpad.completedArrayList);
-                    if(apiResponse.paylpad.ongoingContestLists==null){
+                    if(apiResponse.paylpad.ongoingContests ==null){
                         showNoDataFound();
                         txtNoDataFoundContent.setText(R.string.txt_no_completed_contest);
                     }else{

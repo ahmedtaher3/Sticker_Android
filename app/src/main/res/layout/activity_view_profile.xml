@@ -14,7 +14,7 @@
         android:layout_height="1dp"/>
 
     <fragment
-        android:name="com.sticker_android.controller.fragment.ProfileFragment"
+        android:name="com.sticker_android.controller.fragment.common.ProfileFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

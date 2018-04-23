@@ -243,7 +243,9 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                                     if (payload.productList != null && payload.productList.size() != 0) {
                                         mProductList.clear();
                                         mProductList.addAll(payload.productList);
-
+                                        if (mHostActivity != null) {
+                                            mHostActivity.disablePost(true);
+                                        }
                                         llNoDataFound.setVisibility(View.GONE);
                                         recAdsAndProductList.setVisibility(View.VISIBLE);
                                         mAdapter.setData(mProductList);
@@ -254,7 +256,9 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                                         mProductList.clear();
                                         mAdapter.setData(mProductList);
                                         txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
-
+                                        if (mHostActivity != null) {
+                                            mHostActivity.disablePost(false);
+                                        }
                                         showNoDataFound();
                                     }
                                 } else {
@@ -269,6 +273,9 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                                             llNoDataFound.setVisibility(View.GONE);
                                             recAdsAndProductList.setVisibility(View.VISIBLE);
                                             mAdapter.setData(mProductList);
+                                            if (mHostActivity != null) {
+                                                mHostActivity.disablePost(true);
+                                            }
                                         } else {
                                             showNoDataFound();
                                             txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
@@ -281,6 +288,9 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                                         if (payload.productList != null && payload.productList.size() != 0) {
                                             mProductList.addAll(payload.productList);
                                             mAdapter.setData(mProductList);
+                                            if (mHostActivity != null) {
+                                                mHostActivity.disablePost(true);
+                                            }
                                         }
                                     }
 
@@ -293,7 +303,9 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                             } else if (mProductList == null || (mProductList != null && mProductList.size() == 0)) {
 
                                 txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
-
+                                if (mHostActivity != null) {
+                                    mHostActivity.disablePost(false);
+                                }
                                 showNoDataFound();
                             }
                         }
@@ -329,6 +341,9 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                             t instanceof java.net.UnknownHostException)) {
 
                         if (mCurrentPage == 0) {
+                            if (mHostActivity != null) {
+                                mHostActivity.disablePost(false);
+                            }
                             mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
                                 @Override
                                 public void onOkClickListener(int reqCode) {
@@ -342,6 +357,9 @@ public class CorporateContestProductFragment extends BaseFragment implements Swi
                             }, 0);
                         } else {
                             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                            if (mHostActivity != null) {
+                                mHostActivity.disablePost(false);
+                            }
                         }
                     }
                 }

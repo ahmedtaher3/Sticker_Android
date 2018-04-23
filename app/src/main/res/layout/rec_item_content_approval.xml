@@ -90,7 +90,7 @@
                 fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                 android:gravity="end"
                 android:text="Pending"
-                android:textColor="@android:color/holo_green_light"
+                android:textColor="@color/colorHomeGreen"
                 android:textSize="@dimen/txt_size_home_12sp" />
         </LinearLayout>
 

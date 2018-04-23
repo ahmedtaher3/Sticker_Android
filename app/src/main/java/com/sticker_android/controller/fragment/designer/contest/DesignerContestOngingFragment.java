@@ -178,10 +178,9 @@ public class DesignerContestOngingFragment extends BaseFragment implements Swipe
 
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
-                    txtNoDataFoundContent.setVisibility(View.GONE);
-                    if(apiResponse.paylpad.ongoingContestLists!=null){
-                    mAdapter.setData(apiResponse.paylpad.ongoingContestLists);
-                        if (apiResponse.paylpad.ongoingContestLists == null) {
+                    if(apiResponse.paylpad.ongoingContests !=null){
+                    mAdapter.setData(apiResponse.paylpad.ongoingContests);
+                        if (apiResponse.paylpad.ongoingContests == null) {
                             showNoDataFound();
                             txtNoDataFoundContent.setText(R.string.txt_no_onging_contest_found);
                         } else {

@@ -17,7 +17,9 @@ import com.sticker_android.controller.activities.corporate.home.CorporateHomeAct
 import com.sticker_android.controller.adaptors.CorporateContentApproval;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.contest.OngoingContestList;
+import com.sticker_android.model.contest.OngoingContest;
+import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.model.interfaces.DesignerActionListener;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ import java.util.ArrayList;
  * Created by user on 18/4/18.
  */
 
-public class CorporateContentApprovalAdsFragment extends BaseFragment {
+public class CorporateContentApprovalAdsFragment extends BaseFragment implements DesignerActionListener{
 
     private CorporateHomeActivity mHostActivity;
 
@@ -43,7 +45,7 @@ public class CorporateContentApprovalAdsFragment extends BaseFragment {
     private LinearLayout llLoaderView;
     private RelativeLayout rlConnectionContainer;
     private TextView txtNoDataFoundTitle, txtNoDataFoundContent;
-    private ArrayList<OngoingContestList> mProductList;
+    private ArrayList<Product> mProductList;
     private static final String TAG = CorporateContentApprovalAdsFragment.class.getSimpleName();
     private View view;
 
@@ -58,6 +60,7 @@ public class CorporateContentApprovalAdsFragment extends BaseFragment {
         setViewReferences(view);
         setViewListeners();
         mAdapter     =    new CorporateContentApproval(getActivity());
+        mAdapter.setDesignerActionListener(this);
         llNoDataFound.setVisibility(View.GONE);
         mProductList = new ArrayList<>();
         getContentApi();
@@ -68,7 +71,7 @@ public class CorporateContentApprovalAdsFragment extends BaseFragment {
 
     private void getContentApi() {
 
-        mProductList.add(new OngoingContestList());
+        mProductList.add(new Product());
         mAdapter.setData(mProductList);
     }
 
@@ -121,4 +124,18 @@ public class CorporateContentApprovalAdsFragment extends BaseFragment {
     }
 
 
+    @Override
+    public void onEdit(Product product) {
+
+    }
+
+    @Override
+    public void onRemove(Product product) {
+
+    }
+
+    @Override
+    public void onResubmit(Product product) {
+
+    }
 }

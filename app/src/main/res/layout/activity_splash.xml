@@ -6,5 +6,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg_fan_hdpi"
     tools:context="com.sticker_android.controller.activities.common.splash.SplashActivity">
-
+<ImageView
+    android:src="@drawable/logo_hdpi"
+    android:layout_centerInParent="true"
+    android:layout_width="300dp"
+    android:layout_height="150dp" />
 </RelativeLayout>

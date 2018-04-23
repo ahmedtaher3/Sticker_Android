@@ -195,6 +195,12 @@
     <string name="txt_no_onging_contest_found">No Ongoing contest found</string>
     <string name="txt_pending_content">Pending Content</string>
     <string name="txt_no_completed_contest">No Completed Contest Found.</string>
+    <string name="most_downloaded">Most Downloaded</string>
+    <string name="recent_upload">Recent Upload</string>
+    <string name="by_championship">By Championship</string>
+    <string name="txt_all">All</string>
+    <string name="txt_apply">Apply</string>
+    <string name="txt_filter">Filter</string>
 
 
 </resources>

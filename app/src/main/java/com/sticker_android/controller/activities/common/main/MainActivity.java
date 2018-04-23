@@ -9,8 +9,8 @@ import android.support.v7.widget.Toolbar;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
-import com.sticker_android.controller.fragment.SignInFragment;
-import com.sticker_android.controller.fragment.SignUpFragment;
+import com.sticker_android.controller.fragment.common.SignInFragment;
+import com.sticker_android.controller.fragment.common.SignUpFragment;
 
 /**
  * Class is used as a landing activity for all the users
