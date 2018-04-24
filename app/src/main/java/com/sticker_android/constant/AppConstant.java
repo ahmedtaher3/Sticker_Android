@@ -11,6 +11,8 @@ public class AppConstant {
     /*Intent Constant*/
     public static final String PRODUCT_OBJ_KEY="productObj";
     public static final String PRODUCT = "product";
+    public static final String FAN_CONTEST_OBJ= "fanContest";
+
     public static final String DATA_REFRESH_NEEDED = "data_refresh_needed";
     public static final String NOTIFICATION_OBJ="notificationObj";
 

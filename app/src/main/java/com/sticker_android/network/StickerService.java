@@ -110,7 +110,7 @@ public interface StickerService {
 
 
     @FormUrlEncoded
-    @POST(ApiConstant.API_GET_USER_CONTEST_LISt)
+    @POST(ApiConstant.API_GET_USER_CONTEST_LIST)
     public Call<ApiResponse> getUserContestList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
                                                 @Field("user_id") String userId, @Field("key_name") String name);
 
@@ -127,6 +127,18 @@ public interface StickerService {
             (@Field("language_id") String languageId, @Field("authrized_key") String authKey,
              @Field("user_id") String userId, @Field("user_contest_id") String userContestId,
              @Field("product_id") int productId, @Field("status") String status, @Field("key_name") String name, @Field("type") String type);
+
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_GET_FAN_CONTEST_LIST)
+    public Call<ApiResponse> getFanContestList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                                @Field("user_id") String userId,@Field("key_name")String keyName);
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_GET_FAN_ALL_CONTEST_LIST)
+    public Call<ApiResponse> getFanAllContestList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                               @Field("user_id") String userId,@Field("contest_id")long contestId,@Field("index") int index,
+                                                  @Field("limit") int limit,@Field("key_name")String keyName);
 
 
 }

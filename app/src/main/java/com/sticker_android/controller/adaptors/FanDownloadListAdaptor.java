@@ -1,6 +1,5 @@
 package com.sticker_android.controller.adaptors;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -37,12 +36,12 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 
-
 /**
- * Created by user on 19/4/18.
+ * Created by user on 24/4/18.
  */
 
-public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final String TAG = FanListAdaptor.class.getSimpleName();
     private ArrayList<Product> mItems;
@@ -61,7 +60,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
         void onProductItemClick(Product product);
     }
 
-    private DesignListAdapter.OnProductItemClickListener productItemClickListener;
+    private OnProductItemClickListener productItemClickListener;
     private DesignerActionListener designerActionListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -101,7 +100,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public FanListAdaptor(Context cnxt) {
+    public FanDownloadListAdaptor(Context cnxt) {
         mItems = new ArrayList<>();
         context = cnxt;
         appPref = new AppPref(context);
@@ -112,12 +111,12 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.designerActionListener = actionListener;
     }
 
-    public void setOnProductClickListener(DesignListAdapter.OnProductItemClickListener productClickListener) {
+    public void setOnProductClickListener(OnProductItemClickListener productClickListener) {
         this.productItemClickListener = productClickListener;
     }
 
     public void setData(ArrayList<Product> data) {
-        if (data != null) {
+        if(data!=null) {
             mItems = new ArrayList<>();
             mItems.addAll(data);
             notifyDataSetChanged();
@@ -207,50 +206,9 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     // productItemClickListener.onProductItemClick(product);
                 }
             });
-            likeListener(vh);
-            downloadListener(vh);
+
             return vh;
         }
-    }
-
-    private void downloadListener(final ViewHolder vh) {
-
-        vh.tvDownloads.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = vh.getAdapterPosition();
-                Product product = mItems.get(position);
-                downloadApi(product, 1, position);
-            }
-        });
-
-    }
-
-    private void likeListener(final ViewHolder vh) {
-
-        vh.checkboxLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int position = vh.getAdapterPosition();
-                Product product = mItems.get(position);
-                boolean checked = isChecked;
-                if (buttonView.isPressed())
-                    if (product.isLike > 0) {
-                        likeApi(product, 0, position);
-                        product.isLike = 0;
-                    } else {
-                        likeApi(product, 1, position);
-                        product.isLike = 1;
-                    }
-              /*  if (product.isLike==1) {
-                    likeApi(product, 0, position);
-                } else if(product.isLike==0){
-                    likeApi(product, 1, position);
-
-                }*/
-
-            }
-        });
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -269,7 +227,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             if (productItem.getType().equals("product") || productItem.getType().equals("ads")) {
                 itemHolder.tvDownloads.setVisibility(View.GONE);
-            } else {
+            }else {
                 itemHolder.tvDesciption.setVisibility(View.GONE);
             }
             itemHolder.tvName.setText(productItem.userName);
@@ -309,14 +267,11 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             } else {
                 itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
             }
-            if (productItem.isLike > 0) {
+            if(productItem.isLike>0){
                 itemHolder.checkboxLike.setChecked(true);
-                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
-            } else {
+            }else
                 itemHolder.checkboxLike.setChecked(false);
-                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
-            }
         }
 
 
@@ -346,29 +301,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
-                    mItems.get(position).statics.likeCount = apiResponse.paylpad.statics.likeCount;
-                    notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFail(Call<ApiResponse> call, Throwable t) {
-
-            }
-        });
-
-
-    }
-
-    private void downloadApi(final Product product, int i, final int position) {
-
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
-                , "", product.getProductid(), "" + i, "", "download_count");
-        apiResponseCall.enqueue(new ApiCall((Activity) context) {
-            @Override
-            public void onSuccess(ApiResponse apiResponse) {
-                if (apiResponse.status) {
-                    mItems.get(position).statics.downloadCount++;
+                    mItems.get(position).statics.likeCount=apiResponse.paylpad.statics.likeCount;
                     notifyDataSetChanged();
                 }
             }

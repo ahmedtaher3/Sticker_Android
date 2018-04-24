@@ -433,6 +433,7 @@
     <dimen name="card_height_notification">120dp</dimen>
 
     <dimen name="padding_like_8dp">14dp</dimen>
+    <dimen name="padding_fan_contest">30dp</dimen>
 
 
 </resources>

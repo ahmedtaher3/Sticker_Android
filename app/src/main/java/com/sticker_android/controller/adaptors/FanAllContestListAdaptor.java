@@ -1,6 +1,5 @@
 package com.sticker_android.controller.adaptors;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -23,6 +22,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.model.User;
+import com.sticker_android.model.contest.FanContestAll;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.DesignerActionListener;
 import com.sticker_android.network.ApiCall;
@@ -37,15 +37,14 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 
-
 /**
- * Created by user on 19/4/18.
+ * Created by user on 24/4/18.
  */
 
-public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final String TAG = FanListAdaptor.class.getSimpleName();
-    private ArrayList<Product> mItems;
+    private final String TAG = FanAllContestListAdaptor.class.getSimpleName();
+    private ArrayList<FanContestAll> mItems;
     private Context context;
     public boolean isLoaderVisible;
 
@@ -101,7 +100,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public FanListAdaptor(Context cnxt) {
+    public FanAllContestListAdaptor(Context cnxt) {
         mItems = new ArrayList<>();
         context = cnxt;
         appPref = new AppPref(context);
@@ -116,8 +115,8 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.productItemClickListener = productClickListener;
     }
 
-    public void setData(ArrayList<Product> data) {
-        if (data != null) {
+    public void setData(ArrayList<FanContestAll> data) {
+        if(data!=null) {
             mItems = new ArrayList<>();
             mItems.addAll(data);
             notifyDataSetChanged();
@@ -125,15 +124,15 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    public void updateAdapterData(ArrayList<Product> data) {
+    public void updateAdapterData(ArrayList<FanContestAll> data) {
         mItems = new ArrayList<>();
         mItems.addAll(data);
     }
 
     public void addLoader() {
         AppLogger.error(TAG, "Add loader... in adapter");
-        Product postItem = new Product();
-        postItem.setProductid(-1);
+        FanContestAll postItem = new FanContestAll();
+        postItem.dummyId=-1;
         mItems.add(postItem);
         new Handler().post(new Runnable() {
             @Override
@@ -146,8 +145,8 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void removeLoader() {
         AppLogger.error(TAG, "Remove loader... from adapter");
-        Product postItem = new Product();
-        postItem.setProductid(-1);
+        FanContestAll postItem = new FanContestAll();
+        postItem.dummyId=-1;
         int index = mItems.indexOf(postItem);
         AppLogger.error(TAG, "Loader index => " + index);
         if (index != -1) {
@@ -176,7 +175,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    public void updateModifiedItem(Product postItem) {
+    public void updateModifiedItem(FanContestAll postItem) {
         int index = mItems.indexOf(postItem);
         if (index != -1) {
             mItems.set(index, postItem);
@@ -203,12 +202,13 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 @Override
                 public void onClick(View view) {
                     int position = vh.getAdapterPosition();
-                    Product product = mItems.get(position);
+                    FanContestAll product = mItems.get(position);
                     // productItemClickListener.onProductItemClick(product);
                 }
             });
             likeListener(vh);
             downloadListener(vh);
+
             return vh;
         }
     }
@@ -219,7 +219,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             public void onClick(View v) {
                 int position = vh.getAdapterPosition();
-                Product product = mItems.get(position);
+                FanContestAll product = mItems.get(position);
                 downloadApi(product, 1, position);
             }
         });
@@ -227,21 +227,20 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void likeListener(final ViewHolder vh) {
-
         vh.checkboxLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 int position = vh.getAdapterPosition();
-                Product product = mItems.get(position);
-                boolean checked = isChecked;
-                if (buttonView.isPressed())
-                    if (product.isLike > 0) {
-                        likeApi(product, 0, position);
-                        product.isLike = 0;
-                    } else {
-                        likeApi(product, 1, position);
-                        product.isLike = 1;
-                    }
+                FanContestAll product = mItems.get(position);
+                boolean checked=isChecked;
+
+                if(product.product.isLike>0){
+                    likeApi(product.product, 0, position);
+                    product.product.isLike=0;
+                }else {
+                    likeApi(product.product, 1, position);
+                    product.product.isLike=1;
+                }
               /*  if (product.isLike==1) {
                     likeApi(product, 0, position);
                 } else if(product.isLike==0){
@@ -264,12 +263,12 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         } else {
             final ViewHolder itemHolder = (ViewHolder) holder;
-            final Product productItem = mItems.get(position);
+            final Product productItem = mItems.get(position).product;
 
 
             if (productItem.getType().equals("product") || productItem.getType().equals("ads")) {
                 itemHolder.tvDownloads.setVisibility(View.GONE);
-            } else {
+            }else {
                 itemHolder.tvDesciption.setVisibility(View.GONE);
             }
             itemHolder.tvName.setText(productItem.userName);
@@ -309,10 +308,10 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             } else {
                 itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
             }
-            if (productItem.isLike > 0) {
+            if(productItem.isLike>0){
                 itemHolder.checkboxLike.setChecked(true);
                 itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
-            } else {
+            }else {
                 itemHolder.checkboxLike.setChecked(false);
                 itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
@@ -330,7 +329,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if (mItems.get(position).getProductid() == -1) {
+        if (mItems.get(position).dummyId == -1) {
             return ITEM_FOOTER;
         } else {
             return ITEM_PRODUCT;
@@ -341,12 +340,12 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void likeApi(final Product product, final int i, final int position) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
-                , "", product.getProductid(), "" + i, "statics", "like_count");
+                , ""+product.contestId, product.getProductid(), "" + i, "statics", "like_count");
         apiResponseCall.enqueue(new ApiCall((Activity) context) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
-                    mItems.get(position).statics.likeCount = apiResponse.paylpad.statics.likeCount;
+                    mItems.get(position).product.statics.likeCount=apiResponse.paylpad.statics.likeCount;
                     notifyDataSetChanged();
                 }
             }
@@ -360,15 +359,15 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
-    private void downloadApi(final Product product, int i, final int position) {
+    private void downloadApi(final FanContestAll product, int i, final int position) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
-                , "", product.getProductid(), "" + i, "", "download_count");
+                , ""+product.contestId, product.product.getProductid(), "" + i, "", "download_count");
         apiResponseCall.enqueue(new ApiCall((Activity) context) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
-                    mItems.get(position).statics.downloadCount++;
+                    mItems.get(position).product.statics.downloadCount++;
                     notifyDataSetChanged();
                 }
             }
@@ -383,6 +382,4 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
 }
-
-
 

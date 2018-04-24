@@ -126,6 +126,7 @@
     <dimen name="divider_padding">15dp</dimen>
 
     <dimen name="padding_like_8dp">8dp</dimen>
+    <dimen name="padding_fan_contest">10dp</dimen>
 
 
 </resources>

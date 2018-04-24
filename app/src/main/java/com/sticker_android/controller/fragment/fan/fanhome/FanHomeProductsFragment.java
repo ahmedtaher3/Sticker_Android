@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.adaptors.FanListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
@@ -56,7 +55,7 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
 
     private View inflatedView;
     private LinearLayoutManager mLinearLayoutManager;
-    private ArrayList<Product> mStickerList;
+    private ArrayList<Product> mProductList;
     private User mLoggedUser;
 
     private int mCurrentPage = 0;
@@ -69,16 +68,16 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fan_home_common, container, false);
         init();
-        // PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
+         PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
         setViewReferences(view);
         setViewListeners();
         initRecyclerView();
         mAdapter = new FanListAdaptor(getActivity());
         rcDesignList.setAdapter(mAdapter);
         llNoDataFound.setVisibility(View.GONE);
-        mStickerList = new ArrayList<>();
+        mProductList = new ArrayList<>();
         mCurrentPage = 0;
-        getDesignFromServer(false, "");
+        getProductFromServer(false, "");
         setRecScrollListener();
 
         return view;
@@ -138,7 +137,7 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getDesignFromServer(true, "");
+            getProductFromServer(true, "");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
@@ -152,9 +151,9 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
             protected void loadMoreItems() {
                 AppLogger.debug(TAG, "Load more items");
 
-                if (mStickerList.size() >= PAGE_LIMIT) {
-                    AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mStickerList.size());
-                    getDesignFromServer(false, "");
+                if (mProductList.size() >= PAGE_LIMIT) {
+                    AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mProductList.size());
+                    getProductFromServer(false, "");
                     mAdapter.addLoader();
                 }
             }
@@ -182,7 +181,7 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
     }
 
 
-    private void getDesignFromServer(final boolean isRefreshing, final String searchKeyword) {
+    private void getProductFromServer(final boolean isRefreshing, final String searchKeyword) {
 
         //remove wi-fi symbol when response got
         if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
@@ -207,7 +206,7 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                0, 100, "product", "all_product_list", searchKeyword);
+                index, limit, "product", "all_product_list", searchKeyword);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
@@ -235,18 +234,18 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
                                 if (isRefreshing) {
 
                                     if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                        mStickerList.clear();
-                                        mStickerList.addAll(payload.productListAll);
+                                        mProductList.clear();
+                                        mProductList.addAll(payload.productListAll);
 
                                         llNoDataFound.setVisibility(View.GONE);
                                         rcDesignList.setVisibility(View.VISIBLE);
-                                        mAdapter.setData(mStickerList);
+                                        mAdapter.setData(mProductList);
 
                                         mCurrentPage = 0;
                                         mCurrentPage++;
                                     } else {
-                                        mStickerList.clear();
-                                        mAdapter.setData(mStickerList);
+                                        mProductList.clear();
+                                        mAdapter.setData(mProductList);
                                         if (searchKeyword.length() != 0) {
                                             txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                         } else {
@@ -257,15 +256,15 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
                                 } else {
 
                                     if (mCurrentPage == 0) {
-                                        mStickerList.clear();
+                                        mProductList.clear();
                                         if (payload.productListAll != null) {
-                                            mStickerList.addAll(payload.productListAll);
+                                            mProductList.addAll(payload.productListAll);
                                         }
 
-                                        if (mStickerList.size() != 0) {
+                                        if (mProductList.size() != 0) {
                                             llNoDataFound.setVisibility(View.GONE);
                                             rcDesignList.setVisibility(View.VISIBLE);
-                                            mAdapter.setData(mStickerList);
+                                            mAdapter.setData(mProductList);
                                         } else {
                                             showNoDataFound();
                                             if (searchKeyword.length() != 0) {
@@ -279,8 +278,8 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
                                         AppLogger.error(TAG, "Remove loader...");
                                         mAdapter.removeLoader();
                                         if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                            mStickerList.addAll(payload.productListAll);
-                                            mAdapter.setData(mStickerList);
+                                            mProductList.addAll(payload.productListAll);
+                                            mAdapter.setData(mProductList);
                                         }
                                     }
 
@@ -288,9 +287,9 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
                                         mCurrentPage++;
                                     }
                                 }
-                                AppLogger.error(TAG, "item list size => " + mStickerList.size());
+                                AppLogger.error(TAG, "item list size => " + mProductList.size());
 
-                            } else if (mStickerList == null || (mStickerList != null && mStickerList.size() == 0)) {
+                            } else if (mProductList == null || (mProductList != null && mProductList.size() == 0)) {
                                 if (searchKeyword.length() != 0) {
                                     txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                 } else {
@@ -339,7 +338,7 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
 
                                 @Override
                                 public void onRetryClickListener(int reqCode) {
-                                    getDesignFromServer(isRefreshing, searchKeyword);
+                                    getProductFromServer(isRefreshing, searchKeyword);
                                 }
                             }, 0);
                         } else {

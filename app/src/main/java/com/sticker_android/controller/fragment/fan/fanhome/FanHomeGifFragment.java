@@ -40,7 +40,7 @@ import retrofit2.Call;
  * Created by user on 19/4/18.
  */
 
-public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLayout.OnRefreshListener{
+public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
 
     private RecyclerView rcDesignList;
@@ -57,7 +57,7 @@ public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLay
 
     private View inflatedView;
     private LinearLayoutManager mLinearLayoutManager;
-    private ArrayList<Product> mStickerList;
+    private ArrayList<Product> mGifList;
     private User mLoggedUser;
 
     private int mCurrentPage = 0;
@@ -68,23 +68,21 @@ public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLay
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_fan_home_common, container, false);
+        View view = inflater.inflate(R.layout.fragment_fan_home_common, container, false);
         init();
-        // PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
+        PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
         setViewReferences(view);
         setViewListeners();
         initRecyclerView();
         mAdapter = new FanListAdaptor(getActivity());
         rcDesignList.setAdapter(mAdapter);
         llNoDataFound.setVisibility(View.GONE);
-        mStickerList = new ArrayList<>();
+        mGifList = new ArrayList<>();
         mCurrentPage = 0;
-        getDesignFromServer(false, "");
+        getGifFromServer(false, "");
         setRecScrollListener();
-    return view;
+        return view;
     }
-
-
 
 
     private void init() {
@@ -141,7 +139,7 @@ public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLay
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getDesignFromServer(true, "");
+            getGifFromServer(true, "");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
@@ -155,9 +153,9 @@ public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLay
             protected void loadMoreItems() {
                 AppLogger.debug(TAG, "Load more items");
 
-                if (mStickerList.size() >= PAGE_LIMIT) {
-                    AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mStickerList.size());
-                    getDesignFromServer(false, "");
+                if (mGifList.size() >= PAGE_LIMIT) {
+                    AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mGifList.size());
+                    getGifFromServer(false, "");
                     mAdapter.addLoader();
                 }
             }
@@ -185,7 +183,7 @@ public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLay
     }
 
 
-    private void getDesignFromServer(final boolean isRefreshing, final String searchKeyword) {
+    private void getGifFromServer(final boolean isRefreshing, final String searchKeyword) {
 
         //remove wi-fi symbol when response got
         if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
@@ -210,7 +208,7 @@ public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLay
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                0, 100, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
+                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
@@ -238,18 +236,18 @@ public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLay
                                 if (isRefreshing) {
 
                                     if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                        mStickerList.clear();
-                                        mStickerList.addAll(payload.productListAll);
+                                        mGifList.clear();
+                                        mGifList.addAll(payload.productListAll);
 
                                         llNoDataFound.setVisibility(View.GONE);
                                         rcDesignList.setVisibility(View.VISIBLE);
-                                        mAdapter.setData(mStickerList);
+                                        mAdapter.setData(mGifList);
 
                                         mCurrentPage = 0;
                                         mCurrentPage++;
                                     } else {
-                                        mStickerList.clear();
-                                        mAdapter.setData(mStickerList);
+                                        mGifList.clear();
+                                        mAdapter.setData(mGifList);
                                         if (searchKeyword.length() != 0) {
                                             txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                         } else {
@@ -260,15 +258,15 @@ public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLay
                                 } else {
 
                                     if (mCurrentPage == 0) {
-                                        mStickerList.clear();
+                                        mGifList.clear();
                                         if (payload.productListAll != null) {
-                                            mStickerList.addAll(payload.productListAll);
+                                            mGifList.addAll(payload.productListAll);
                                         }
 
-                                        if (mStickerList.size() != 0) {
+                                        if (mGifList.size() != 0) {
                                             llNoDataFound.setVisibility(View.GONE);
                                             rcDesignList.setVisibility(View.VISIBLE);
-                                            mAdapter.setData(mStickerList);
+                                            mAdapter.setData(mGifList);
                                         } else {
                                             showNoDataFound();
                                             if (searchKeyword.length() != 0) {
@@ -282,8 +280,8 @@ public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLay
                                         AppLogger.error(TAG, "Remove loader...");
                                         mAdapter.removeLoader();
                                         if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                            mStickerList.addAll(payload.productListAll);
-                                            mAdapter.setData(mStickerList);
+                                            mGifList.addAll(payload.productListAll);
+                                            mAdapter.setData(mGifList);
                                         }
                                     }
 
@@ -291,9 +289,9 @@ public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLay
                                         mCurrentPage++;
                                     }
                                 }
-                                AppLogger.error(TAG, "item list size => " + mStickerList.size());
+                                AppLogger.error(TAG, "item list size => " + mGifList.size());
 
-                            } else if (mStickerList == null || (mStickerList != null && mStickerList.size() == 0)) {
+                            } else if (mGifList == null || (mGifList != null && mGifList.size() == 0)) {
                                 if (searchKeyword.length() != 0) {
                                     txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                 } else {
@@ -342,7 +340,7 @@ public class FanHomeGifFragment extends BaseFragment  implements SwipeRefreshLay
 
                                 @Override
                                 public void onRetryClickListener(int reqCode) {
-                                    getDesignFromServer(isRefreshing, searchKeyword);
+                                    getGifFromServer(isRefreshing, searchKeyword);
                                 }
                             }, 0);
                         } else {

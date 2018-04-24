@@ -70,7 +70,7 @@ public class FanHomeFragment extends BaseFragment {
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setHasOptionsMenu(true);
-        replaceFragment(new FanHomeStickerFragment());
+        replaceFragment(new FanFilter());
         return view;
     }
 
@@ -96,7 +96,7 @@ public class FanHomeFragment extends BaseFragment {
                         replaceFragment(new FanFilter());
                         break;
                     case 1:
-                        replaceFragment(new FanContest());
+                        replaceFragment(new FanContestFragment());
                         break;
                     case 2:
                         replaceFragment(new FanHomeStickerFragment());

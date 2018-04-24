@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.adaptors.FanListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
@@ -77,7 +76,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.layout_design_item_list, container, false);
         init();
-        // PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
+         PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
         setViewReferences(view);
         setViewListeners();
         initRecyclerView();
@@ -214,7 +213,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                0, 100, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
+                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);

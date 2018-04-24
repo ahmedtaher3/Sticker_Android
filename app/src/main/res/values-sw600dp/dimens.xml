@@ -129,5 +129,6 @@
 
 
     <dimen name="padding_like_8dp">10dp</dimen>
+    <dimen name="padding_fan_contest">10dp</dimen>
 
 </resources>

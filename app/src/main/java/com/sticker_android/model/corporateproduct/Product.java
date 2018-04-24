@@ -35,6 +35,12 @@ public class Product implements Parcelable {
     @SerializedName("user_name")
     public String userName;
 
+
+    @SerializedName("user_contest_id")
+    public long userContestId;
+    @SerializedName("contest_id")
+    public long contestId;
+
     public int getIsExpired() {
         return isExpired;
     }
@@ -151,6 +157,8 @@ public class Product implements Parcelable {
         dest.writeString(this.imagePath);
         dest.writeInt(this.isLike);
         dest.writeString(this.userName);
+        dest.writeLong(this.userContestId);
+        dest.writeLong(this.contestId);
         dest.writeInt(this.isExpired);
         dest.writeString(this.createdTime);
         dest.writeInt(this.categoryId);
@@ -168,6 +176,8 @@ public class Product implements Parcelable {
         this.imagePath = in.readString();
         this.isLike = in.readInt();
         this.userName = in.readString();
+        this.userContestId = in.readLong();
+        this.contestId = in.readLong();
         this.isExpired = in.readInt();
         this.createdTime = in.readString();
         this.categoryId = in.readInt();

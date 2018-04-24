@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,25 +15,27 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.controller.fragment.fan.fanhome.FanHomeAdsFragment;
-import com.sticker_android.controller.fragment.fan.fanhome.FanHomeEmojiFragment;
-import com.sticker_android.controller.fragment.fan.fanhome.FanHomeProductsFragment;
+import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
+import com.sticker_android.controller.fragment.corporate.product.ProductsFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeStickerFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
+import java.lang.reflect.Field;
+
 import retrofit2.Call;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FanDownloadFragment extends BaseFragment {
+public class FanDownloadFragment extends BaseFragment implements SearchView.OnQueryTextListener{
 
     private TabLayout tabLayout;
     private AppPref appPref;
@@ -67,11 +70,11 @@ public class FanDownloadFragment extends BaseFragment {
         addTabsDynamically();
         setSelectedTabColor();
         setBackground();
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setHasOptionsMenu(true);
-        replaceFragment(new FanHomeStickerFragment());
+        replaceFragment(new FanDownloadStickerFragment());
         return view;
     }
 
@@ -92,22 +95,14 @@ public class FanDownloadFragment extends BaseFragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        replaceFragment(new FanHomeStickerFragment());
+                        replaceFragment(new FanDownloadStickerFragment());
                         break;
                     case 1:
-                        replaceFragment(new FanHomeEmojiFragment());
+                        replaceFragment(new FanDownloadGifFragment());
                         break;
                     case 2:
-                        replaceFragment(new FanHomeEmojiFragment());
+                        replaceFragment(new FanDownloadEmojiFragment());
                         break;
-                    case 3:
-                        replaceFragment(new FanHomeAdsFragment());
-                        break;
-                    case 4:
-                        replaceFragment(new FanHomeProductsFragment());
-                        break;
-
-
                 }
             }
 
@@ -140,6 +135,28 @@ public class FanDownloadFragment extends BaseFragment {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.corporate_menu, menu);
+        searchView = (SearchView) MenuItemCompat.getActionView(item);
+
+        //  setSearchTextColour(searchView);
+        setSearchIcons(searchView);
+        searchView.setOnQueryTextListener(this);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              //  searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
+
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+
+                return false;
+            }
+        });
+
+        searchViewExpandListener(item);
     }
 
     private void setSelectedTabColor() {
@@ -163,15 +180,6 @@ public class FanDownloadFragment extends BaseFragment {
         TabLayout.Tab emojiTab = tabLayout.newTab();
         emojiTab.setText(getString(R.string.emoji)); // set the Text for the first Tab
         tabLayout.addTab(emojiTab);
-
-        TabLayout.Tab AdsTab = tabLayout.newTab();
-        AdsTab.setText(getString(R.string.txt_ads_frag)); // set the Text for the first Tab
-        tabLayout.addTab(AdsTab);
-
-        TabLayout.Tab productsTab = tabLayout.newTab();
-        productsTab.setText(getString(R.string.txt_products_frag)); // set the Text for the first Tab
-        tabLayout.addTab(productsTab);
-
         Utils.setTabLayoutDivider(tabLayout, getActivity());
     }
 
@@ -186,6 +194,72 @@ public class FanDownloadFragment extends BaseFragment {
         fragmentTransaction.replace(R.id.container_fan_home,
                 fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search:
+
+                break;
+
+        }
+        return true;
+    }
+
+
+
+
+
+    private void searchViewExpandListener(MenuItem item) {
+
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Write your code here
+                 return true;
+
+            }
+        });
+    }
+
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+    private void setSearchIcons(SearchView searchView) {
+        try {
+            Field searchField = SearchView.class.getDeclaredField("mCloseButton");
+            searchField.setAccessible(true);
+            ImageView closeBtn = (ImageView) searchField.get(searchView);
+            closeBtn.setImageResource(R.drawable.close_search);
+
+        } catch (NoSuchFieldException e) {
+
+        } catch (IllegalAccessException e) {
+        }
+
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        //   Toast.makeText(getApplicationContext(),"wjcj",Toast.LENGTH_SHORT).show();
+        if (query.isEmpty()) {
+            Utils.showToast(getActivity(), "Search cannot be empty.");
+        } else
+           // searchResult(query);
+        searchView.setIconified(false);
+        searchView.clearFocus();
+        //   MenuItemCompat.collapseActionView(item);
+        return true;
     }
 
 

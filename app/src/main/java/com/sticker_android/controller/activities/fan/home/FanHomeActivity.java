@@ -2,6 +2,7 @@ package com.sticker_android.controller.activities.fan.home;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -10,9 +11,11 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +32,7 @@ import com.sticker_android.controller.fragment.common.ProfileFragment;
 import com.sticker_android.controller.fragment.fan.fancustomization.FanCustomizationFragment;
 import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeFragment;
+import com.sticker_android.controller.fragment.fan.notification.FanNotification;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.utils.UserTypeEnum;
@@ -68,7 +72,34 @@ public class FanHomeActivity extends AppBaseActivity
         setUserDataIntoNaviagtion();
        // showFragmentManually();
         replaceFragment(new FanHomeFragment());
+        setBadgeCount();
+        initializeCountDrawer(appPref.getNewMessagesCount(0));
     }
+
+    /**
+     * Humberg notification dot visibility
+     */
+    private void setBadgeCount() {
+        if (appPref.getNewMessagesCount(0) > 0)
+            toolbar.findViewById(R.id.tv_nav_menu_badge).setVisibility(View.VISIBLE);
+        else
+            toolbar.findViewById(R.id.tv_nav_menu_badge).setVisibility(View.GONE);
+    }
+
+    /**
+     * Method is used to set the counter in notification tab
+     *
+     * @param count
+     */
+    private void initializeCountDrawer(int count) {
+        int itemId = MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.nav_notification)).getId();
+        TextView notificationCounter = (TextView) navigationView.getMenu().findItem(itemId).getActionView();
+        notificationCounter.setGravity(Gravity.CENTER);
+        notificationCounter.setTypeface(null, Typeface.BOLD);
+        notificationCounter.setTextColor(getResources().getColor(R.color.colorFloatingCorporate));
+        notificationCounter.setText(count > 0 ? String.valueOf(count) : null);
+    }
+
     private void setUserDataIntoNaviagtion() {
         View header= navigationView.getHeaderView(0);
         TextView   tvUserName=(TextView)header.findViewById(R.id.tvUserName);
@@ -234,6 +265,10 @@ public class FanHomeActivity extends AppBaseActivity
         else if (id == R.id.nav_account_setting && !(f instanceof AccountSettingFragment)) {
             textView.setText(getString(R.string.txt_account_setting));
             fragmentClass = AccountSettingFragment.newInstance("","");
+        }
+        else if (id == R.id.nav_notification && !(f instanceof FanNotification)) {
+            textView.setText(getString(R.string.txt_notifications));
+            fragmentClass = new FanNotification();
         }
         else if (id == R.id.nav_logout) {
             userLogout();

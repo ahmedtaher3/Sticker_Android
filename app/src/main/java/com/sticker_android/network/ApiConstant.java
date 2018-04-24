@@ -28,8 +28,11 @@ public class ApiConstant {
     public static final String API_FETCH_NOTIFICATION_LIST = "getNotificationList/";
 
     public static final String API_SAVE_USER_CONTEST = "SaveUserContest/";
-    public static final String API_GET_USER_CONTEST_LISt = "getUserContestList/";
+    public static final String API_GET_USER_CONTEST_LIST = "getUserContestList/";
     public static final String API_GET_FAN_PRODUCT_LIST = "getFanHomeProductList/";
     public static final String API_SAVE_PRODUCT_LIKE = "SaveContestProductLike/";
+    public static final String API_GET_FAN_CONTEST_LIST = "getContestList/";
+    public static final String API_GET_FAN_ALL_CONTEST_LIST = "getContestProductList/";
+
 
 }
