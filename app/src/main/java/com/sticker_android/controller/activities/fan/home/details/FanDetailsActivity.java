@@ -264,8 +264,29 @@ public class FanDetailsActivity extends AppBaseActivity {
 
             }
         });
+       checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+           @Override
+           public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               share();
+           }
+       });
     }
+    private void share() {
 
+        checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody = "Image url "+mProduct.getImagePath();
+                String shareSub = "Share data";
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Share using"));
+
+            }
+        });
+    }
     private void likeApi(final int i) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId()
@@ -276,7 +297,7 @@ public class FanDetailsActivity extends AppBaseActivity {
                 if (apiResponse.status) {
                     mProduct.isLike = i;
                     mProduct.statics.likeCount = apiResponse.paylpad.statics.likeCount;
-                    checkboxLike.setText(mProduct.statics.likeCount);
+                    checkboxLike.setText(""+mProduct.statics.likeCount);
                 }
             }
 
@@ -310,7 +331,7 @@ public class FanDetailsActivity extends AppBaseActivity {
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
                     mProduct.statics.downloadCount++;
-                    checkboxLike.setText(mProduct.statics.downloadCount);
+                    checkboxLike.setText(""+mProduct.statics.downloadCount);
                 }
             }
 
