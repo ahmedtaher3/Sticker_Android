@@ -488,7 +488,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             if (getItemViewType(position) == TYPE_PRODUCT) {
                 final Product product = productLists.get(position);
 
-                ((ProductAdaptor.ProductHolder) holder).checkboxLike.setText(Utils.format(0));
+                ((ProductAdaptor.ProductHolder) holder).checkboxLike.setText(Utils.format(product.statics.likeCount));
                 ((ProductAdaptor.ProductHolder) holder).checkboxShare.setText(Utils.format(0));
                 ((ProductAdaptor.ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
                     @Override

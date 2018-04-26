@@ -19,6 +19,8 @@ import com.sticker_android.controller.adaptors.FanDownloadListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeStickerFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.contest.FanContestAll;
+import com.sticker_android.model.contest.FanContestDownload;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.model.interfaces.MessageEventListener;
@@ -57,7 +59,7 @@ public class FanDownloadStickerFragment extends BaseFragment implements SwipeRef
 
     private View inflatedView;
     private LinearLayoutManager mLinearLayoutManager;
-    private ArrayList<Product> mStickerList;
+    private ArrayList<FanContestDownload> mStickerList;
     private User mLoggedUser;
 
     private int mCurrentPage = 0;
@@ -71,11 +73,12 @@ public class FanDownloadStickerFragment extends BaseFragment implements SwipeRef
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.layout_design_item_list, container, false);
         init();
-         PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
+        PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
         setViewReferences(view);
         setViewListeners();
         initRecyclerView();
         mAdapter = new FanDownloadListAdaptor(getActivity());
+
         rcDesignList.setAdapter(mAdapter);
         llNoDataFound.setVisibility(View.GONE);
         mStickerList = new ArrayList<>();
@@ -127,8 +130,12 @@ public class FanDownloadStickerFragment extends BaseFragment implements SwipeRef
         rcDesignList.setNestedScrollingEnabled(true);
     }
 
-    public void filterData() {
-        Toast.makeText(getActivity(), "filter data called", Toast.LENGTH_SHORT).show();
+    public void filterData(String query) {
+
+        mStickerList.clear();
+        mAdapter.setData(mStickerList);
+        mCurrentPage = 0;
+        getDesignFromServer(false, query);
     }
 
     private void showNoDataFound() {
@@ -184,6 +191,7 @@ public class FanDownloadStickerFragment extends BaseFragment implements SwipeRef
 
 
     private void getDesignFromServer(final boolean isRefreshing, final String searchKeyword) {
+     //   Toast.makeText(getActivity(), "inside defigner", Toast.LENGTH_SHORT).show();
 
         //remove wi-fi symbol when response got
         if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
@@ -207,8 +215,8 @@ public class FanDownloadStickerFragment extends BaseFragment implements SwipeRef
         if (PAGE_LIMIT != -1) {
             limit = PAGE_LIMIT;
         }
-        Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
+        Call<ApiResponse> apiResponseCall = RestClient.getService().getFanDownloads(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
+                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "fan_download_list", searchKeyword);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
@@ -216,6 +224,7 @@ public class FanDownloadStickerFragment extends BaseFragment implements SwipeRef
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
+
 
                 if (isAdded() && getActivity() != null) {
                     llLoaderView.setVisibility(View.GONE);
@@ -230,15 +239,13 @@ public class FanDownloadStickerFragment extends BaseFragment implements SwipeRef
                     try {
                         if (apiResponse.status) {
                             Payload payload = apiResponse.paylpad;
-
                             if (payload != null) {
 
                                 if (isRefreshing) {
 
-                                    if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                    if (payload.fanDownloadList != null && payload.fanDownloadList.size() != 0) {
                                         mStickerList.clear();
-                                        mStickerList.addAll(payload.productListAll);
-
+                                        mStickerList.addAll(payload.fanDownloadList);
                                         llNoDataFound.setVisibility(View.GONE);
                                         rcDesignList.setVisibility(View.VISIBLE);
                                         mAdapter.setData(mStickerList);
@@ -251,7 +258,7 @@ public class FanDownloadStickerFragment extends BaseFragment implements SwipeRef
                                         if (searchKeyword.length() != 0) {
                                             txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                         } else {
-                                            txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                            txtNoDataFoundContent.setText(R.string.txt_no_downloaded_stickers_found);
                                         }
                                         showNoDataFound();
                                     }
@@ -259,8 +266,8 @@ public class FanDownloadStickerFragment extends BaseFragment implements SwipeRef
 
                                     if (mCurrentPage == 0) {
                                         mStickerList.clear();
-                                        if (payload.productListAll != null) {
-                                            mStickerList.addAll(payload.productListAll);
+                                        if (payload.fanDownloadList != null) {
+                                            mStickerList.addAll(payload.fanDownloadList);
                                         }
 
                                         if (mStickerList.size() != 0) {
@@ -272,20 +279,20 @@ public class FanDownloadStickerFragment extends BaseFragment implements SwipeRef
                                             if (searchKeyword.length() != 0) {
                                                 txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                             } else {
-                                                txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                                txtNoDataFoundContent.setText(R.string.txt_no_downloaded_stickers_found);
                                             }
                                             rcDesignList.setVisibility(View.GONE);
                                         }
                                     } else {
                                         AppLogger.error(TAG, "Remove loader...");
                                         mAdapter.removeLoader();
-                                        if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                            mStickerList.addAll(payload.productListAll);
+                                        if (payload.fanDownloadList != null && payload.fanDownloadList.size() != 0) {
+                                            mStickerList.addAll(payload.fanDownloadList);
                                             mAdapter.setData(mStickerList);
                                         }
                                     }
 
-                                    if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                    if (payload.fanDownloadList != null && payload.fanDownloadList.size() != 0) {
                                         mCurrentPage++;
                                     }
                                 }
@@ -295,7 +302,7 @@ public class FanDownloadStickerFragment extends BaseFragment implements SwipeRef
                                 if (searchKeyword.length() != 0) {
                                     txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                 } else {
-                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                    txtNoDataFoundContent.setText(R.string.txt_no_downloaded_stickers_found);
                                 }
                                 showNoDataFound();
                             }

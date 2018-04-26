@@ -119,7 +119,7 @@ public interface StickerService {
     public Call<ApiResponse> getFanHomeProductList
             (@Field("language_id") String languageId, @Field("authrized_key") String authKey,
              @Field("user_id") String userId, @Field("index") int index,
-             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search);
+             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search,@Field("category_id")String categoryId);
 
     @FormUrlEncoded
     @POST(ApiConstant.API_SAVE_PRODUCT_LIKE)
@@ -139,6 +139,27 @@ public interface StickerService {
     public Call<ApiResponse> getFanAllContestList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
                                                @Field("user_id") String userId,@Field("contest_id")long contestId,@Field("index") int index,
                                                   @Field("limit") int limit,@Field("key_name")String keyName);
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_GET_FAN_DOWNLOAD_LIST)
+    public Call<ApiResponse> getFanDownloads
+            (@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+             @Field("user_id") String userId, @Field("index") int index,
+             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search);
+
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_GET_USER_PENDING_LIST)
+    public Call<ApiResponse> getUserPendingList
+            (@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+             @Field("user_id") String userId, @Field("index") int index,
+             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name);
+
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_GET_USER_COMPLETED_LIST)
+    public Call<ApiResponse> getUserCompletedList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                                @Field("user_id") String userId, @Field("key_name") String name);
 
 
 }

@@ -77,7 +77,7 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
         mAdapter = new ContestOngoingListAdapter(getActivity());
         llNoDataFound.setVisibility(View.GONE);
         mProductList = new ArrayList<>();
-        getContestApi();
+        getContestApi(false);
         recOngoingContestCorp.setAdapter(mAdapter);
         recyclerViewLayout();
         mUpdateToolbarCallback.updateToolbarTitle(getString(R.string.txt_ongoing_contest));
@@ -150,7 +150,7 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getContestApi();
+            getContestApi(true);
         } else {
             swipeRefreshLayout.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
@@ -158,51 +158,64 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
 
     }
 
-    private void getContestApi() {
-        swipeRefreshLayout.setRefreshing(true);
+    private void getContestApi(final boolean isRefresh) {
+        if (isRefresh)
+            swipeRefreshLayout.setRefreshing(true);
+        else
+            llLoaderView.setVisibility(View.VISIBLE);
+
         Call<ApiResponse> apiResponseCall = RestClient.getService().getUserContestList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(), "contest_list");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
+                if (isRefresh)
+                    swipeRefreshLayout.setRefreshing(true);
+                else
+                    llLoaderView.setVisibility(View.GONE);
+
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     mAdapter.setData(apiResponse.paylpad.ongoingContests);
-                if(apiResponse.paylpad.ongoingContests ==null){
-                    llNoDataFound.setVisibility(View.VISIBLE);
-                    showNoDataFound();
-                    txtNoDataFoundContent.setText(R.string.txt_no_onging_contest_found);
-                }else{
-                    llNoDataFound.setVisibility(View.GONE);
-                    rlContent.setVisibility(View.VISIBLE);
-                }
+                    if (apiResponse.paylpad.ongoingContests == null) {
+                        llNoDataFound.setVisibility(View.VISIBLE);
+                        showNoDataFound();
+                        txtNoDataFoundContent.setText(R.string.txt_no_onging_contest_found);
+                    } else {
+                        llNoDataFound.setVisibility(View.GONE);
+                        rlContent.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
+                if (isRefresh)
+                    swipeRefreshLayout.setRefreshing(false);
+                else
+                    llLoaderView.setVisibility(View.GONE);
+
                 txtNoDataFoundContent.setVisibility(View.GONE);
                 llNoDataFound.setVisibility(View.GONE);
-                swipeRefreshLayout.setRefreshing(false);
                 if (!call.isCanceled() && (t instanceof java.net.ConnectException ||
                         t instanceof java.net.SocketTimeoutException ||
                         t instanceof java.net.SocketException ||
                         t instanceof java.net.UnknownHostException)) {
 
                     mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
-                            @Override
-                            public void onOkClickListener(int reqCode) {
-                                rlContent.setVisibility(View.VISIBLE);
-                            }
+                        @Override
+                        public void onOkClickListener(int reqCode) {
+                            rlContent.setVisibility(View.VISIBLE);
+                        }
 
-                            @Override
-                            public void onRetryClickListener(int reqCode) {
-                                getContestApi();
-                            }
-                        }, 0);
-                    } else {
-                        Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
-                    }
+                        @Override
+                        public void onRetryClickListener(int reqCode) {
+                            getContestApi(false);
+                        }
+                    }, 0);
+                } else {
+                    Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
                 }
+            }
 
         });
     }

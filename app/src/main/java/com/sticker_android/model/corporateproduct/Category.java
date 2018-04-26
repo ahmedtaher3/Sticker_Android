@@ -12,6 +12,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Category implements Parcelable{
 
+    public boolean isChecked;
     @SerializedName("category_id")
     public int  categoryId;
 
@@ -35,23 +36,6 @@ public class Category implements Parcelable{
         this.categoryName = name;
     }
 
-    protected Category(Parcel in) {
-        categoryId = in.readInt();
-        categoryName = in.readString();
-    }
-
-    public static final Creator<Category> CREATOR = new Creator<Category>() {
-        @Override
-        public Category createFromParcel(Parcel in) {
-            return new Category(in);
-        }
-
-        @Override
-        public Category[] newArray(int size) {
-            return new Category[size];
-        }
-    };
-
     @Override
     public String toString() {
         return categoryName;
@@ -64,7 +48,26 @@ public class Category implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(categoryId);
-        dest.writeString(categoryName);
+        dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.categoryId);
+        dest.writeString(this.categoryName);
     }
+
+    protected Category(Parcel in) {
+        this.isChecked = in.readByte() != 0;
+        this.categoryId = in.readInt();
+        this.categoryName = in.readString();
+    }
+
+    public static final Creator<Category> CREATOR = new Creator<Category>() {
+        @Override
+        public Category createFromParcel(Parcel source) {
+            return new Category(source);
+        }
+
+        @Override
+        public Category[] newArray(int size) {
+            return new Category[size];
+        }
+    };
 }

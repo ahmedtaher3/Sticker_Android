@@ -104,10 +104,11 @@
     <dimen name="act_product_details_padding">20dp</dimen>
     <dimen name="margin_spinner_top">25dp</dimen>
 
-    <dimen name="card_height_notification">120dp</dimen>
+    <dimen name="card_height_notification">150dp</dimen>
 
     <dimen name="padding_like_8dp">8dp</dimen>
     <dimen name="padding_fan_contest">35dp</dimen>
+    <dimen name="dimen_fan_filter_header">70dp</dimen>
 
 
 </resources>

@@ -2,6 +2,7 @@ package com.sticker_android.controller.adaptors;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -116,7 +117,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
     }
 
     public void setData(ArrayList<FanContestAll> data) {
-        if(data!=null) {
+        if (data != null) {
             mItems = new ArrayList<>();
             mItems.addAll(data);
             notifyDataSetChanged();
@@ -132,7 +133,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
     public void addLoader() {
         AppLogger.error(TAG, "Add loader... in adapter");
         FanContestAll postItem = new FanContestAll();
-        postItem.dummyId=-1;
+        postItem.dummyId = -1;
         mItems.add(postItem);
         new Handler().post(new Runnable() {
             @Override
@@ -146,7 +147,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
     public void removeLoader() {
         AppLogger.error(TAG, "Remove loader... from adapter");
         FanContestAll postItem = new FanContestAll();
-        postItem.dummyId=-1;
+        postItem.dummyId = -1;
         int index = mItems.indexOf(postItem);
         AppLogger.error(TAG, "Loader index => " + index);
         if (index != -1) {
@@ -208,9 +209,29 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
             });
             likeListener(vh);
             downloadListener(vh);
-
+            share(vh);
             return vh;
         }
+    }
+
+    private void share(final ViewHolder vh) {
+
+        vh.checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int position = vh.getAdapterPosition();
+                final FanContestAll product = mItems.get(position);
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody = "Image url "+product.product.getImagePath();
+                String shareSub = "Share data";
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                context.startActivity(Intent.createChooser(sharingIntent, "Share using"));
+
+            }
+        });
     }
 
     private void downloadListener(final ViewHolder vh) {
@@ -232,15 +253,17 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 int position = vh.getAdapterPosition();
                 FanContestAll product = mItems.get(position);
-                boolean checked=isChecked;
-
-                if(product.product.isLike>0){
-                    likeApi(product.product, 0, position);
-                    product.product.isLike=0;
-                }else {
-                    likeApi(product.product, 1, position);
-                    product.product.isLike=1;
+                boolean checked = isChecked;
+                if (buttonView.isPressed()) {
+                    if (product.product.isLike > 0) {
+                        likeApi(product.product, 0, position);
+                    } else {
+                        likeApi(product.product, 1, position);
+                    }
                 }
+
+
+
               /*  if (product.isLike==1) {
                     likeApi(product, 0, position);
                 } else if(product.isLike==0){
@@ -268,7 +291,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
 
             if (productItem.getType().equals("product") || productItem.getType().equals("ads")) {
                 itemHolder.tvDownloads.setVisibility(View.GONE);
-            }else {
+            } else {
                 itemHolder.tvDesciption.setVisibility(View.GONE);
             }
             itemHolder.tvName.setText(productItem.userName);
@@ -308,17 +331,15 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
             } else {
                 itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
             }
-            if(productItem.isLike>0){
+            if (productItem.isLike > 0) {
                 itemHolder.checkboxLike.setChecked(true);
                 itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
-            }else {
+            } else {
                 itemHolder.checkboxLike.setChecked(false);
                 itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
             }
         }
-
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -340,12 +361,13 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
     private void likeApi(final Product product, final int i, final int position) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
-                , ""+product.contestId, product.getProductid(), "" + i, "statics", "like_count");
+                , "" + product.contestId, product.getProductid(), "" + i, "statics", "like_count");
         apiResponseCall.enqueue(new ApiCall((Activity) context) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
-                    mItems.get(position).product.statics.likeCount=apiResponse.paylpad.statics.likeCount;
+                    product.isLike = i;
+                    mItems.get(position).product.statics.likeCount = apiResponse.paylpad.statics.likeCount;
                     notifyDataSetChanged();
                 }
             }
@@ -362,7 +384,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
     private void downloadApi(final FanContestAll product, int i, final int position) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
-                , ""+product.contestId, product.product.getProductid(), "" + i, "", "download_count");
+                , "" + product.contestId, product.product.getProductid(), "" + i, "", "download_count");
         apiResponseCall.enqueue(new ApiCall((Activity) context) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

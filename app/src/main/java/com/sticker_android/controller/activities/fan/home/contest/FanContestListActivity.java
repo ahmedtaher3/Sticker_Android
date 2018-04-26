@@ -22,6 +22,7 @@ import com.sticker_android.model.contest.FanContest;
 import com.sticker_android.model.contest.FanContestAll;
 import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
+import com.sticker_android.model.notification.NotificationApp;
 import com.sticker_android.model.payload.Payload;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -57,6 +58,7 @@ public class FanContestListActivity extends AppBaseActivity implements SwipeRefr
     private FanAllContestListAdaptor mAdapter;
     private FanContest mContestObj;
     private Toolbar toolbar;
+    private NotificationApp notificationObj;
 
 
     @Override
@@ -86,7 +88,7 @@ public class FanContestListActivity extends AppBaseActivity implements SwipeRefr
         llNoDataFound.setVisibility(View.GONE);
         mContestList = new ArrayList<>();
         mCurrentPage = 0;
-        getContestListFromServer(true,"");
+        getContestListFromServer(true, "");
         setListenerOnRecview();
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
 
@@ -98,6 +100,13 @@ public class FanContestListActivity extends AppBaseActivity implements SwipeRefr
         Intent intent = getIntent();
         if (intent != null) {
             mContestObj = intent.getParcelableExtra(AppConstant.FAN_CONTEST_OBJ);
+        }
+        if (getIntent().getExtras() != null) {
+            notificationObj = getIntent().getExtras().getParcelable(AppConstant.NOTIFICATION_OBJ);
+            if (notificationObj != null) {
+                mContestObj = new FanContest();
+                mContestObj.contestId = notificationObj.contestObj.contestId;
+            }
         }
     }
 
@@ -120,7 +129,7 @@ public class FanContestListActivity extends AppBaseActivity implements SwipeRefr
                 AppLogger.debug(TAG, "Load more items");
 
                 if (mContestList.size() >= PAGE_LIMIT) {
-                    AppLogger.debug(TAG, "page limit"+PAGE_LIMIT+" list size"+mContestList.size());
+                    AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mContestList.size());
                     getContestListFromServer(false, "");
                     mAdapter.addLoader();
                 }
@@ -147,17 +156,18 @@ public class FanContestListActivity extends AppBaseActivity implements SwipeRefr
             }
         });
     }
+
     @Override
     protected void setViewReferences() {
 
-        rcItemListContest     =     (RecyclerView) findViewById(R.id.rcItemListContest);
-        swipeRefresh          =     (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
-        rlContent             =     (RelativeLayout) findViewById(R.id.rlContent);
-        llNoDataFound         =     (LinearLayout) findViewById(R.id.llNoDataFound);
-        txtNoDataFoundTitle   =     (TextView) findViewById(R.id.txtNoDataFoundTitle);
-        txtNoDataFoundContent =     (TextView) findViewById(R.id.txtNoDataFoundContent);
-        rlConnectionContainer =     (RelativeLayout) findViewById(R.id.rlConnectionContainer);
-        llLoaderView          =     (LinearLayout) findViewById(R.id.llLoader);
+        rcItemListContest = (RecyclerView) findViewById(R.id.rcItemListContest);
+        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        rlContent = (RelativeLayout) findViewById(R.id.rlContent);
+        llNoDataFound = (LinearLayout) findViewById(R.id.llNoDataFound);
+        txtNoDataFoundTitle = (TextView) findViewById(R.id.txtNoDataFoundTitle);
+        txtNoDataFoundContent = (TextView) findViewById(R.id.txtNoDataFoundContent);
+        rlConnectionContainer = (RelativeLayout) findViewById(R.id.rlConnectionContainer);
+        llLoaderView = (LinearLayout) findViewById(R.id.llLoader);
 
     }
 
@@ -226,101 +236,99 @@ public class FanContestListActivity extends AppBaseActivity implements SwipeRefr
             @Override
             public void onSuccess(ApiResponse apiResponse) {
 
-                if (getActivity() != null) {
-                    llLoaderView.setVisibility(View.GONE);
+                /*llLoaderView.setVisibility(View.GONE);
                     rlContent.setVisibility(View.VISIBLE);
                     swipeRefresh.setRefreshing(false);
+*/
+                //remove wi-fi symbol when response got
+                if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
+                    rlConnectionContainer.removeAllViews();
+                }
 
-                    //remove wi-fi symbol when response got
-                    if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
-                        rlConnectionContainer.removeAllViews();
-                    }
+                try {
+                    if (apiResponse.status) {
+                        Payload payload = apiResponse.paylpad;
 
-                    try {
-                        if (apiResponse.status) {
-                            Payload payload = apiResponse.paylpad;
+                        if (payload != null) {
 
-                            if (payload != null) {
+                            if (isRefreshing) {
 
-                                if (isRefreshing) {
+                                if (payload.fanContestAllArrayList != null && payload.fanContestAllArrayList.size() != 0) {
+                                    mContestList.clear();
+                                    mContestList.addAll(payload.fanContestAllArrayList);
 
-                                    if (payload.fanContestAllArrayList != null && payload.fanContestAllArrayList.size() != 0) {
-                                        mContestList.clear();
+                                    llNoDataFound.setVisibility(View.GONE);
+                                    rcItemListContest.setVisibility(View.VISIBLE);
+                                    mAdapter.setData(mContestList);
+
+                                    mCurrentPage = 0;
+                                    mCurrentPage++;
+                                } else {
+                                    mContestList.clear();
+                                    mAdapter.setData(mContestList);
+                                    if (searchKeyword.length() != 0) {
+                                        txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                    } else {
+                                        txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
+                                    }
+                                    showNoDataFound();
+                                }
+                            } else {
+
+                                if (mCurrentPage == 0) {
+                                    mContestList.clear();
+                                    if (payload.fanContestAllArrayList != null) {
                                         mContestList.addAll(payload.fanContestAllArrayList);
+                                    }
 
+                                    if (mContestList.size() != 0) {
                                         llNoDataFound.setVisibility(View.GONE);
                                         rcItemListContest.setVisibility(View.VISIBLE);
                                         mAdapter.setData(mContestList);
-
-                                        mCurrentPage = 0;
-                                        mCurrentPage++;
                                     } else {
-                                        mContestList.clear();
-                                        mAdapter.setData(mContestList);
+                                        showNoDataFound();
                                         if (searchKeyword.length() != 0) {
                                             txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                         } else {
                                             txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
                                         }
-                                        showNoDataFound();
+                                        rcItemListContest.setVisibility(View.GONE);
                                     }
                                 } else {
-
-                                    if (mCurrentPage == 0) {
-                                        mContestList.clear();
-                                        if (payload.fanContestAllArrayList != null) {
-                                            mContestList.addAll(payload.fanContestAllArrayList);
-                                        }
-
-                                        if (mContestList.size() != 0) {
-                                            llNoDataFound.setVisibility(View.GONE);
-                                            rcItemListContest.setVisibility(View.VISIBLE);
-                                            mAdapter.setData(mContestList);
-                                        } else {
-                                            showNoDataFound();
-                                            if (searchKeyword.length() != 0) {
-                                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                            } else {
-                                                txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
-                                            }
-                                            rcItemListContest.setVisibility(View.GONE);
-                                        }
-                                    } else {
-                                        AppLogger.error(TAG, "Remove loader...");
-                                        mAdapter.removeLoader();
-                                        if (payload.fanContestAllArrayList != null && payload.fanContestAllArrayList.size() != 0) {
-                                            mContestList.addAll(payload.fanContestAllArrayList);
-                                            mAdapter.setData(mContestList);
-                                        }
-                                    }
-
+                                    AppLogger.error(TAG, "Remove loader...");
+                                    mAdapter.removeLoader();
                                     if (payload.fanContestAllArrayList != null && payload.fanContestAllArrayList.size() != 0) {
-                                        mCurrentPage++;
+                                        mContestList.addAll(payload.fanContestAllArrayList);
+                                        mAdapter.setData(mContestList);
                                     }
                                 }
-                                AppLogger.error(TAG, "item list size => " + mContestList.size());
 
-                            } else if (mContestList == null || (mContestList != null && mContestList.size() == 0)) {
-                                if (searchKeyword.length() != 0) {
-                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                } else {
-                                    txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
+                                if (payload.fanContestAllArrayList != null && payload.fanContestAllArrayList.size() != 0) {
+                                    mCurrentPage++;
                                 }
-                                showNoDataFound();
                             }
+                            AppLogger.error(TAG, "item list size => " + mContestList.size());
+
+                        } else if (mContestList == null || (mContestList != null && mContestList.size() == 0)) {
+                            if (searchKeyword.length() != 0) {
+                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                            } else {
+                                txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
+                            }
+                            showNoDataFound();
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        Utils.showAlertMessage(mContext, new MessageEventListener() {
-                            @Override
-                            public void onOkClickListener(int reqCode) {
-
-                            }
-                        }, getString(R.string.server_unreachable), getString(R.string.oops), 0);
                     }
-                }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    Utils.showAlertMessage(mContext, new MessageEventListener() {
+                        @Override
+                        public void onOkClickListener(int reqCode) {
 
+                        }
+                    }, getString(R.string.server_unreachable), getString(R.string.oops), 0);
+                }
             }
+
 
             @Override
             public void onFail(final Call<ApiResponse> call, Throwable t) {

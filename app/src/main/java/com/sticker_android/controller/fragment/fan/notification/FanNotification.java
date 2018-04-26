@@ -18,11 +18,9 @@ import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
-import com.sticker_android.controller.activities.common.contest.ApplyCorporateContestActivity;
-import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.controller.activities.fan.home.contest.FanContestListActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.controller.fragment.corporate.notification.CorporateNotificationFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.model.notification.NotificationApp;
@@ -39,7 +37,7 @@ import retrofit2.Call;
  * Created by user on 24/4/18.
  */
 
-public class FanNotification extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener{
+public class FanNotification extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView recNotification;
     ArrayList<String> strings = new ArrayList<>();
@@ -51,6 +49,10 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
     private FanHomeActivity mHostActivity;
     private LinearLayout llLoaderView;
     private RelativeLayout rlConnectionContainer;
+    private RelativeLayout rlContent;
+    private LinearLayout llNoDataFound;
+    private TextView txtNoDataFoundTitle;
+    private TextView txtNoDataFoundContent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,7 +64,8 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
         setViewListeners();
         recyclerViewLayout();
         setAdaptor();
-        getNotificationApi();
+        getNotificationApi(false);
+        llNoDataFound.setVisibility(View.GONE);
         appPref.saveNewMessagesCount(0);
         if (mHostActivity != null)
             mHostActivity.updateCallbackMessage();
@@ -74,25 +77,41 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
         user = appPref.getUserInfo();
     }
 
-    private void getNotificationApi() {
-        if (swipeRefreshNotification != null)
+    private void getNotificationApi(final boolean isRefresh) {
+        if (isRefresh)
             swipeRefreshNotification.setRefreshing(true);
+        else
+            llLoaderView.setVisibility(View.VISIBLE);
+
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiNotificationList(user.getLanguageId(), user.getAuthrizedKey(), user.getId(), "notification_list");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                swipeRefreshNotification.setRefreshing(false);
+                if (isRefresh)
+                    swipeRefreshNotification.setRefreshing(false);
+                else
+                    llLoaderView.setVisibility(View.GONE);
+
                 if (apiResponse.status) {
 
                     mNotificationList = apiResponse.paylpad.notificationArrayList;
-                    if (mNotificationList != null)
-                        notificationAdaptor.setData(mNotificationList);
+                    if (mNotificationList != null) {
+                        notificationAdaptor.setData(filterData(mNotificationList));
+                        llNoDataFound.setVisibility(View.GONE);
+                    }
+                    if(mNotificationList!=null&&mNotificationList.size()==0){
+                        txtNoDataFoundContent.setText(R.string.txt_no_notification_found);
+                        showNoDataFound();
+                    }
                 }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-                swipeRefreshNotification.setRefreshing(false);
+                if (isRefresh)
+                    swipeRefreshNotification.setRefreshing(false);
+                else
+                    llLoaderView.setVisibility(View.GONE);
 
                 if (mHostActivity != null)
                     mHostActivity.manageNoInternetConnectionLayout(getActivity(), rlConnectionContainer, new NetworkPopupEventListener() {
@@ -103,12 +122,27 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
 
                         @Override
                         public void onRetryClickListener(int reqCode) {
-                            getNotificationApi();
+                            getNotificationApi(false);
                         }
                     }, 0);
             }
 
         });
+    }
+    private void showNoDataFound() {
+        llNoDataFound.setVisibility(View.VISIBLE);
+        txtNoDataFoundTitle.setText("");
+    }
+    private ArrayList<NotificationApp> filterData(ArrayList<NotificationApp> mNotificationList) {
+
+        ArrayList<NotificationApp> tempList = new ArrayList<>();
+        for (NotificationApp notificationApp :
+                mNotificationList) {
+            if (notificationApp.contestObj.status == 5) {
+                tempList.add(notificationApp);
+            }
+        }
+        return tempList;
     }
 
     @Override
@@ -123,6 +157,10 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
         swipeRefreshNotification = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshNotification);
         rlConnectionContainer = (RelativeLayout) view.findViewById(R.id.rlConnectionContainer);
         llLoaderView = (LinearLayout) view.findViewById(R.id.llLoader);
+        rlContent = (RelativeLayout) view.findViewById(R.id.rlContent);
+        llNoDataFound = (LinearLayout) view.findViewById(R.id.llNoDataFound);
+        txtNoDataFoundTitle = (TextView) view.findViewById(R.id.txtNoDataFoundTitle);
+        txtNoDataFoundContent = (TextView) view.findViewById(R.id.txtNoDataFoundContent);
 
 
     }
@@ -153,7 +191,7 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
 
     @Override
     public void onRefresh() {
-        getNotificationApi();
+        getNotificationApi(true);
     }
 
       /*NotificationApp adaptor*/
@@ -193,7 +231,7 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
                 @Override
                 public void onClick(View v) {
                     if (contestId == 5) {
-                        Intent intent = new Intent(getActivity(), ApplyCorporateContestActivity.class);
+                        Intent intent = new Intent(getActivity(), FanContestListActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putParcelable(AppConstant.NOTIFICATION_OBJ, notification);
                         intent.putExtras(bundle);

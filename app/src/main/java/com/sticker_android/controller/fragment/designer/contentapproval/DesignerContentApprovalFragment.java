@@ -54,7 +54,7 @@ public class DesignerContentApprovalFragment extends BaseFragment {
         setViewListeners();
         setBackground();
         addTabsDynamically();
-        replaceFragment(new CorporateContentApprovalAdsFragment());
+        replaceFragment(new DesignerContentApprStickFragment());
         // Inflate the layout for this fragment
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);

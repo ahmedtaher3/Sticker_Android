@@ -1,6 +1,5 @@
 package com.sticker_android.controller.adaptors;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -22,19 +20,15 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.model.User;
+import com.sticker_android.model.contest.FanContestDownload;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.DesignerActionListener;
-import com.sticker_android.network.ApiCall;
-import com.sticker_android.network.ApiResponse;
-import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
-
-import retrofit2.Call;
 
 /**
  * Created by user on 24/4/18.
@@ -44,7 +38,7 @@ import retrofit2.Call;
 public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final String TAG = FanListAdaptor.class.getSimpleName();
-    private ArrayList<Product> mItems;
+    private ArrayList<FanContestDownload> mItems;
     private Context context;
     public boolean isLoaderVisible;
 
@@ -105,7 +99,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
         context = cnxt;
         appPref = new AppPref(context);
         mUserdata = appPref.getUserInfo();
-    }
+     }
 
     public void setDesignerActionListener(DesignerActionListener actionListener) {
         this.designerActionListener = actionListener;
@@ -115,7 +109,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
         this.productItemClickListener = productClickListener;
     }
 
-    public void setData(ArrayList<Product> data) {
+    public void setData(ArrayList<FanContestDownload> data) {
         if(data!=null) {
             mItems = new ArrayList<>();
             mItems.addAll(data);
@@ -124,15 +118,15 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    public void updateAdapterData(ArrayList<Product> data) {
+    public void updateAdapterData(ArrayList<FanContestDownload> data) {
         mItems = new ArrayList<>();
         mItems.addAll(data);
     }
 
     public void addLoader() {
         AppLogger.error(TAG, "Add loader... in adapter");
-        Product postItem = new Product();
-        postItem.setProductid(-1);
+        FanContestDownload postItem = new FanContestDownload();
+        postItem.dummyId=-1;
         mItems.add(postItem);
         new Handler().post(new Runnable() {
             @Override
@@ -145,8 +139,8 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
 
     public void removeLoader() {
         AppLogger.error(TAG, "Remove loader... from adapter");
-        Product postItem = new Product();
-        postItem.setProductid(-1);
+        FanContestDownload postItem = new FanContestDownload();
+        postItem.dummyId=-1;
         int index = mItems.indexOf(postItem);
         AppLogger.error(TAG, "Loader index => " + index);
         if (index != -1) {
@@ -175,7 +169,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    public void updateModifiedItem(Product postItem) {
+    public void updateModifiedItem(FanContestDownload postItem) {
         int index = mItems.indexOf(postItem);
         if (index != -1) {
             mItems.set(index, postItem);
@@ -202,7 +196,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
                 @Override
                 public void onClick(View view) {
                     int position = vh.getAdapterPosition();
-                    Product product = mItems.get(position);
+                    FanContestDownload product = mItems.get(position);
                     // productItemClickListener.onProductItemClick(product);
                 }
             });
@@ -222,34 +216,34 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
 
         } else {
             final ViewHolder itemHolder = (ViewHolder) holder;
-            final Product productItem = mItems.get(position);
+            final FanContestDownload productItem = mItems.get(position);
 
 
-            if (productItem.getType().equals("product") || productItem.getType().equals("ads")) {
+            if (productItem.productInfo.getType().equals("product") || productItem.productInfo.getType().equals("ads")) {
                 itemHolder.tvDownloads.setVisibility(View.GONE);
             }else {
                 itemHolder.tvDesciption.setVisibility(View.GONE);
             }
-            itemHolder.tvName.setText(productItem.userName);
-            itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
-            itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
-            itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
+            itemHolder.tvName.setText(productItem.productInfo.userName);
+            itemHolder.checkboxLike.setText(Utils.format(productItem.productInfo.statics.likeCount));
+            itemHolder.checkboxShare.setText(Utils.format(productItem.productInfo.statics.shareCount));
+            itemHolder.tvDownloads.setText(Utils.format(productItem.productInfo.statics.downloadCount));
 
-            itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));
+            itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.productInfo.getProductname()));
 
-            if (productItem.getDescription() != null && productItem.getDescription().trim().length() != 0) {
+            if (productItem.productInfo.getDescription() != null && productItem.productInfo.getDescription().trim().length() != 0) {
                 itemHolder.tvDesciption.setVisibility(View.VISIBLE);
-                itemHolder.tvDesciption.setText(Utils.capitlizeText(productItem.getDescription()));
+                itemHolder.tvDesciption.setText(Utils.capitlizeText(productItem.productInfo.getDescription()));
             } else {
                 itemHolder.tvDesciption.setVisibility(View.GONE);
             }
-            itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context).replaceAll("about", "").trim());
+            itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.productInfo.getCreatedTime()), context).replaceAll("about", "").trim());
 
 
-            if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
+            if (productItem.productInfo.getImagePath() != null && !productItem.productInfo.getImagePath().isEmpty()) {
                 itemHolder.pbLoader.setVisibility(View.VISIBLE);
                 Glide.with(context)
-                        .load(productItem.getImagePath())
+                        .load(productItem.productInfo.getImagePath())
                         .listener(new RequestListener<String, GlideDrawable>() {
                             @Override
                             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -267,7 +261,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
             } else {
                 itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
             }
-            if(productItem.isLike>0){
+            if(productItem.productInfo.isLike>0){
                 itemHolder.checkboxLike.setChecked(true);
             }else
                 itemHolder.checkboxLike.setChecked(false);
@@ -285,34 +279,11 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemViewType(int position) {
-        if (mItems.get(position).getProductid() == -1) {
+        if (mItems.get(position).dummyId == -1) {
             return ITEM_FOOTER;
         } else {
             return ITEM_PRODUCT;
         }
-    }
-
-
-    private void likeApi(final Product product, final int i, final int position) {
-
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
-                , "", product.getProductid(), "" + i, "statics", "like_count");
-        apiResponseCall.enqueue(new ApiCall((Activity) context) {
-            @Override
-            public void onSuccess(ApiResponse apiResponse) {
-                if (apiResponse.status) {
-                    mItems.get(position).statics.likeCount=apiResponse.paylpad.statics.likeCount;
-                    notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFail(Call<ApiResponse> call, Throwable t) {
-
-            }
-        });
-
-
     }
 
 }

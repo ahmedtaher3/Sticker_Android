@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
@@ -127,10 +126,13 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
         rcDesignList.setNestedScrollingEnabled(true);
     }
 
-    public void filterData() {
-        Toast.makeText(getActivity(), "filter data called", Toast.LENGTH_SHORT).show();
-    }
+    public void searchData(String query) {
 
+        mGifList.clear();
+        mAdapter.setData(mGifList);
+        mCurrentPage=0;
+        getGifFromServer(false,query );
+    }
     private void showNoDataFound() {
         llNoDataFound.setVisibility(View.VISIBLE);
         txtNoDataFoundTitle.setText("");
@@ -208,7 +210,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
+                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword,"");
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
@@ -251,7 +253,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
                                         if (searchKeyword.length() != 0) {
                                             txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                         } else {
-                                            txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                            txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
                                         }
                                         showNoDataFound();
                                     }
@@ -272,7 +274,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
                                             if (searchKeyword.length() != 0) {
                                                 txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                             } else {
-                                                txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                                txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
                                             }
                                             rcDesignList.setVisibility(View.GONE);
                                         }
@@ -295,7 +297,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
                                 if (searchKeyword.length() != 0) {
                                     txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                 } else {
-                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                    txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
                                 }
                                 showNoDataFound();
                             }

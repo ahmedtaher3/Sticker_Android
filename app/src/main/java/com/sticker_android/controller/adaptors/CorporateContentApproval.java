@@ -22,7 +22,6 @@ import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
 import com.sticker_android.controller.activities.designer.addnew.DesignDetailActivity;
 import com.sticker_android.model.User;
-import com.sticker_android.model.contest.OngoingContest;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.DesignerActionListener;
 import com.sticker_android.network.ApiCall;
@@ -191,6 +190,7 @@ public class CorporateContentApproval extends RecyclerView.Adapter<CorporateCont
                     case editId:
                         AppLogger.error(TAG, "Edit item");
                         designerActionListener.onEdit(product);
+                        moveToDetails(product);
                         break;
                     case removeId:
                         AppLogger.error(TAG, "Remove item");

@@ -80,7 +80,7 @@ public class DesignerContestCompletedFragment extends BaseFragment implements Sw
         llNoDataFound.setVisibility(View.GONE);
         mProductList = new ArrayList<>();
         mCurrentPage = 0;
-        getContestApi();
+        getContestApi(false);
         recOngoingContestCorp.setAdapter(mAdapter);
         recyclerViewLayout();
         mUpdateToolbarCallback.updateToolbarTitle(getString(R.string.txt_completed_contest));
@@ -152,7 +152,7 @@ public class DesignerContestCompletedFragment extends BaseFragment implements Sw
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getContestApi();
+            getContestApi(true);
         } else {
             swipeRefreshLayout.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
@@ -166,29 +166,25 @@ public class DesignerContestCompletedFragment extends BaseFragment implements Sw
         txtNoDataFoundTitle.setText("");
     }
 
-    public void updateTheFragment() {
 
-        if (mProductList != null && mProductList.size() != 0) {
+
+    private void getContestApi(final boolean isRefresh) {
+        if (isRefresh)
             swipeRefreshLayout.setRefreshing(true);
-            getContestApi();
-        } else {
-            getContestApi();
-        }
-    }
-
-
-    private void getContestApi() {
-
-        swipeRefreshLayout.setRefreshing(true);
-        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserContestList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(), "completed_contest_list");
+        else
+            llLoaderView.setVisibility(View.GONE);
+        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserCompletedList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(), "completed_contest_list");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                swipeRefreshLayout.setRefreshing(false);
+                if (isRefresh)
+                    swipeRefreshLayout.setRefreshing(false);
+                else
+                    llLoaderView.setVisibility(View.GONE);
                 if (apiResponse.status) {
                     if(apiResponse.paylpad.completedArrayList!=null)
                     mAdapter.setData(apiResponse.paylpad.completedArrayList);
-                    if (apiResponse.paylpad.ongoingContests == null) {
+                    if (apiResponse.paylpad.completedArrayList == null) {
                         showNoDataFound();
                         txtNoDataFoundContent.setText(R.string.txt_no_completed_contest);
                     } else {
@@ -200,6 +196,10 @@ public class DesignerContestCompletedFragment extends BaseFragment implements Sw
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
+                if (isRefresh)
+                    swipeRefreshLayout.setRefreshing(false);
+                else
+                    llLoaderView.setVisibility(View.GONE);
                 txtNoDataFoundContent.setVisibility(View.GONE);
                 llNoDataFound.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
@@ -216,7 +216,7 @@ public class DesignerContestCompletedFragment extends BaseFragment implements Sw
 
                         @Override
                         public void onRetryClickListener(int reqCode) {
-                            getContestApi();
+                            getContestApi(false);
                         }
                     }, 0);
                 } else {

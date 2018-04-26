@@ -6,6 +6,7 @@ import com.sticker_android.model.User;
 import com.sticker_android.model.contest.ContestCompleted;
 import com.sticker_android.model.contest.FanContest;
 import com.sticker_android.model.contest.FanContestAll;
+import com.sticker_android.model.contest.FanContestDownload;
 import com.sticker_android.model.contest.OngoingContest;
 import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.corporateproduct.Product;
@@ -61,6 +62,12 @@ public class Payload {
 
     @SerializedName("fan_contest_list_all")
     public ArrayList<FanContestAll> fanContestAllArrayList;
+
+
+    @SerializedName("fan_download_list")
+    public ArrayList<FanContestDownload> fanDownloadList;
+
+
 }
 
 

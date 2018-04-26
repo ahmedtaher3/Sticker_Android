@@ -7,6 +7,7 @@
             android:id="@+id/nav_home"
             android:title="Home" />
         <item
+            android:visible="false"
             android:id="@+id/nav_report"
             android:title="Report" />
         <item

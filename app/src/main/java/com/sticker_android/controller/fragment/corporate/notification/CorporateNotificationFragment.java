@@ -29,6 +29,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
@@ -48,6 +49,11 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
     private CorporateHomeActivity mHostActivity;
     private LinearLayout llLoaderView;
     private RelativeLayout rlConnectionContainer;
+    private RelativeLayout rlContent;
+    private LinearLayout llNoDataFound;
+    private TextView txtNoDataFoundTitle;
+    private TextView txtNoDataFoundContent;
+    TimeUtility timeUtility = new TimeUtility();
 
     public CorporateNotificationFragment() {
     }
@@ -72,7 +78,7 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
         setViewListeners();
         recyclerViewLayout();
         setAdaptor();
-        getNotificationApi();
+        getNotificationApi(false);
         appPref.saveNewMessagesCount(0);
         if (mHostActivity != null)
             mHostActivity.updateCallbackMessage();
@@ -84,25 +90,44 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
         user = appPref.getUserInfo();
     }
 
-    private void getNotificationApi() {
-        if (swipeRefreshNotification != null)
+    private void getNotificationApi(final boolean isRefresh) {
+        if (isRefresh)
             swipeRefreshNotification.setRefreshing(true);
+        else
+            llLoaderView.setVisibility(View.VISIBLE);
+
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiNotificationList(user.getLanguageId(), user.getAuthrizedKey(), user.getId(), "notification_list");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                swipeRefreshNotification.setRefreshing(false);
+                if (isRefresh)
+                    swipeRefreshNotification.setRefreshing(false);
+                else
+                    llLoaderView.setVisibility(View.GONE);
                 if (apiResponse.status) {
 
                     mNotificationList = apiResponse.paylpad.notificationArrayList;
                     if (mNotificationList != null)
                         notificationAdaptor.setData(mNotificationList);
+
+                    if (mNotificationList == null) {
+                        txtNoDataFoundContent.setText(R.string.txt_no_notification_found);
+                        showNoDataFound();
+                    }
+                    if (mNotificationList != null && mNotificationList.size() == 0) {
+                        txtNoDataFoundContent.setText(R.string.txt_no_notification_found);
+                        showNoDataFound();
+                    }
+
                 }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-                swipeRefreshNotification.setRefreshing(false);
+                if (isRefresh)
+                    swipeRefreshNotification.setRefreshing(false);
+                else
+                    llLoaderView.setVisibility(View.GONE);
 
                 if (mHostActivity != null)
                     mHostActivity.manageNoInternetConnectionLayout(getActivity(), rlConnectionContainer, new NetworkPopupEventListener() {
@@ -113,12 +138,17 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
 
                         @Override
                         public void onRetryClickListener(int reqCode) {
-                            getNotificationApi();
+                            getNotificationApi(false);
                         }
                     }, 0);
             }
 
         });
+    }
+
+    private void showNoDataFound() {
+        llNoDataFound.setVisibility(View.VISIBLE);
+        txtNoDataFoundTitle.setText("");
     }
 
     @Override
@@ -133,6 +163,10 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
         swipeRefreshNotification = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshNotification);
         rlConnectionContainer = (RelativeLayout) view.findViewById(R.id.rlConnectionContainer);
         llLoaderView = (LinearLayout) view.findViewById(R.id.llLoader);
+        rlContent = (RelativeLayout) view.findViewById(R.id.rlContent);
+        llNoDataFound = (LinearLayout) view.findViewById(R.id.llNoDataFound);
+        txtNoDataFoundTitle = (TextView) view.findViewById(R.id.txtNoDataFoundTitle);
+        txtNoDataFoundContent = (TextView) view.findViewById(R.id.txtNoDataFoundContent);
 
 
     }
@@ -163,7 +197,7 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
 
     @Override
     public void onRefresh() {
-        getNotificationApi();
+        getNotificationApi(true);
     }
 
       /*NotificationApp adaptor*/
@@ -197,6 +231,7 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
                 holder.imvNotification.setImageResource(R.drawable.ic_side_image_blue);
 
             }
+            holder.tvTimeNotification.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(notification.cratedDate),getActivity()));
             holder.tvNotification.setText(notification.contestObj.msg);
             showData(holder, contestId);
             holder.cardView.setOnClickListener(new View.OnClickListener() {

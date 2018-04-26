@@ -16,19 +16,15 @@ import android.widget.Toast;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.adaptors.ContestListAdaptor;
-import com.sticker_android.controller.adaptors.FanDownloadListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.contest.FanContest;
 import com.sticker_android.model.corporateproduct.Product;
-import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
-import com.sticker_android.model.payload.Payload;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
@@ -211,4 +207,19 @@ public class FanContestFragment extends BaseFragment implements SwipeRefreshLayo
         mHostActivity = (FanHomeActivity) context;
     }
 
+    public void searchData(String trim) {
+        if (mStickerList != null) {
+            ArrayList<FanContest> tempList = mAdapter.filter(trim);
+            if (tempList != null) {
+                if (tempList.size() == 0) {
+                    llNoDataFound.setVisibility(View.VISIBLE);
+                    showNoDataFound();
+                    txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
+
+                }
+            }
+
+        }
+
+    }
 }

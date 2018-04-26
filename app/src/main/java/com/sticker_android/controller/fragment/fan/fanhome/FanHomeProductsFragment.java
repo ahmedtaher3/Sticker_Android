@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
@@ -125,10 +124,13 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
         rcDesignList.setNestedScrollingEnabled(true);
     }
 
-    public void filterData() {
-        Toast.makeText(getActivity(), "filter data called", Toast.LENGTH_SHORT).show();
-    }
+    public void searchData(String query) {
 
+        mProductList.clear();
+        mAdapter.setData(mProductList);
+        mCurrentPage=0;
+        getProductFromServer(false,query );
+    }
     private void showNoDataFound() {
         llNoDataFound.setVisibility(View.VISIBLE);
         txtNoDataFoundTitle.setText("");
@@ -206,7 +208,7 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, "product", "all_product_list", searchKeyword);
+                index, limit, "product", "all_product_list", searchKeyword,"");
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);

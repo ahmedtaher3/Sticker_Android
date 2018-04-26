@@ -98,7 +98,7 @@
     <string name="txt_onging">Ongoing</string>
     <string name="txt_completed">Completed</string>
     <string name="end_date">End Date-</string>
-    <string name="total_count">Total Count-</string>
+    <string name="total_count">Total Likes-</string>
     <string name="txt_ongoing_contest">Ongoing Contest</string>
     <string name="txt_completed_contest">Completed Contest</string>
     <string name="txt_won">Won</string>
@@ -114,4 +114,8 @@
     <string name="txt_all">All</string>
     <string name="txt_apply">Apply</string>
     <string name="txt_filter">Filter</string>
+    <string name="txt_no_downloaded_stickers_found">No downloaded stickers found.</string>
+    <string name="txt_no_downloaded_emoji_found">No downloaded Emoji found.</string>
+    <string name="txt_no_downloaded_gif_found">No downloaded GIF found</string>
+    <string name="txt_no_notification_found">No notification found.</string>
 </resources>

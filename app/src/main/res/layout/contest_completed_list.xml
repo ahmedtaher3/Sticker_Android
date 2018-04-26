@@ -59,7 +59,7 @@
                 <TextView
                     android:drawablePadding="@dimen/padding_like_8dp"
                     android:gravity="center"
-                    android:drawableLeft="@drawable/ic_trophy_notification"
+                    android:drawableLeft="@drawable/trophy_selector"
                     android:id="@+id/tv_total_count"
                     android:layout_alignParentStart="true"
                     android:layout_marginEnd="5dp"

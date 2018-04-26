@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class ContestListAdaptor extends RecyclerView.Adapter<ContestListAdaptor.
 
     private final Context context;
     private ArrayList<FanContest> mFanList = new ArrayList<>();
+    private ArrayList<FanContest> mFilterList = new ArrayList<>();
 
     public ContestListAdaptor(Context context) {
         this.context = context;
@@ -45,10 +47,10 @@ public class ContestListAdaptor extends RecyclerView.Adapter<ContestListAdaptor.
             @Override
             public void onClick(View v) {
 
-                Intent intent=new Intent(context, FanContestListActivity.class);
+                Intent intent = new Intent(context, FanContestListActivity.class);
                 int position = holder.getAdapterPosition();
                 intent.putExtra(AppConstant.FAN_CONTEST_OBJ, mFanList.get(position));
-                ((Activity)context).startActivityForResult(intent, 31);
+                ((Activity) context).startActivityForResult(intent, 31);
 
             }
         });
@@ -79,4 +81,43 @@ public class ContestListAdaptor extends RecyclerView.Adapter<ContestListAdaptor.
             imbNext = (ImageButton) view.findViewById(R.id.imbNext);
         }
     }
+
+    // Do Search...
+    public ArrayList<FanContest> filter(final String text) {
+        final ArrayList<FanContest> tempList = new ArrayList<>();
+        if(mFanList!=null)
+        tempList.addAll(mFanList);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                mFanList.clear();
+                if (TextUtils.isEmpty(text)) {
+                    mFanList.clear();
+                    mFanList.addAll(tempList);
+
+                } else {
+                    for (FanContest item : tempList) {
+                        if (item.contestName.toLowerCase().contains(text.toLowerCase())) {
+                            // Adding Matched items
+                            mFanList.add(item);
+                        }
+                    }
+                }
+
+                // Set on UI Thread
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Notify the List that the DataSet has changed...
+                        notifyDataSetChanged();
+                    }
+                });
+
+            }
+        }).start();
+
+        return mFanList;
+    }
+
 }

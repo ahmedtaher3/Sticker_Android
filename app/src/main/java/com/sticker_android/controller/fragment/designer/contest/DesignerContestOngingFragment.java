@@ -81,7 +81,7 @@ public class DesignerContestOngingFragment extends BaseFragment implements Swipe
         llNoDataFound.setVisibility(View.GONE);
         mProductList = new ArrayList<>();
         mCurrentPage = 0;
-        getContestApi();
+        getContestApi(false);
         recOngoingContestCorp.setAdapter(mAdapter);
         recyclerViewLayout();
         mUpdateToolbarCallback.updateToolbarTitle(getString(R.string.txt_ongoing_contest));
@@ -154,7 +154,7 @@ public class DesignerContestOngingFragment extends BaseFragment implements Swipe
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getContestApi();
+            getContestApi(true);
         } else {
             swipeRefreshLayout.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
@@ -168,32 +168,41 @@ public class DesignerContestOngingFragment extends BaseFragment implements Swipe
         txtNoDataFoundTitle.setText("");
     }
 
-    private void getContestApi() {
-
-        swipeRefreshLayout.setRefreshing(true);
+    private void getContestApi(final boolean isRefresh ) {
+        if (isRefresh)
+            swipeRefreshLayout.setRefreshing(true);
+        else
+            llLoaderView.setVisibility(View.GONE);
         Call<ApiResponse> apiResponseCall = RestClient.getService().getUserContestList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(), "contest_list");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
 
-                swipeRefreshLayout.setRefreshing(false);
+                if (isRefresh)
+                    swipeRefreshLayout.setRefreshing(false);
+                else
+                    llLoaderView.setVisibility(View.GONE);
                 if (apiResponse.status) {
                     if(apiResponse.paylpad.ongoingContests !=null){
                     mAdapter.setData(apiResponse.paylpad.ongoingContests);
-                        if (apiResponse.paylpad.ongoingContests == null) {
-                            showNoDataFound();
-                            txtNoDataFoundContent.setText(R.string.txt_no_onging_contest_found);
-                        } else {
-                            llNoDataFound.setVisibility(View.GONE);
-                            rlContent.setVisibility(View.VISIBLE);
-                        }
+
                 }
+                    if (apiResponse.paylpad.ongoingContests == null) {
+                        showNoDataFound();
+                        txtNoDataFoundContent.setText(R.string.txt_no_onging_contest_found);
+                    } else {
+                        llNoDataFound.setVisibility(View.GONE);
+                        rlContent.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-
+                if (isRefresh)
+                    swipeRefreshLayout.setRefreshing(false);
+                else
+                    llLoaderView.setVisibility(View.GONE);
                 txtNoDataFoundContent.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
                 if (!call.isCanceled() && (t instanceof java.net.ConnectException ||
@@ -209,7 +218,7 @@ public class DesignerContestOngingFragment extends BaseFragment implements Swipe
 
                         @Override
                         public void onRetryClickListener(int reqCode) {
-                            getContestApi();
+                            getContestApi(false);
                         }
                     }, 0);
                 } else {

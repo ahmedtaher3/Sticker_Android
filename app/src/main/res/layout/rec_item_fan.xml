@@ -70,7 +70,7 @@
                         android:gravity="end"
                         android:maxLines="1"
                         android:text="Vivek Singh"
-                        android:textColor="@color/colorCorporateText"
+                        android:textColor="@color/colorFanText"
                         android:textSize="@dimen/txt_size_home_12sp" />
 
 

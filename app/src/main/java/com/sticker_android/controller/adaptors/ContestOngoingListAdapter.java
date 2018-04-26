@@ -67,7 +67,7 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
         final OngoingContest listItem = mItems.get(position);
 
         holder.tvEndDate.setText(Utils.dateModify(listItem.contestInfo.expireDate));
-        holder.checkboxLike.setText(Utils.format(0));
+        holder.checkboxLike.setText(Utils.format(listItem.productList.statics.likeCount));
         if (listItem.productList.getImagePath() != null && !listItem.productList.getImagePath().isEmpty())
             Glide.with(context)
                     .load(listItem.productList.getImagePath()).fitCenter()

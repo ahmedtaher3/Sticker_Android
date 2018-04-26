@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
@@ -19,6 +18,8 @@ import com.sticker_android.controller.adaptors.FanDownloadListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeStickerFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.contest.FanContestAll;
+import com.sticker_android.model.contest.FanContestDownload;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.model.interfaces.MessageEventListener;
@@ -57,7 +58,7 @@ public class FanDownloadGifFragment extends BaseFragment implements SwipeRefresh
 
     private View inflatedView;
     private LinearLayoutManager mLinearLayoutManager;
-    private ArrayList<Product> mStickerList;
+    private ArrayList<FanContestDownload> mGifList;
     private User mLoggedUser;
 
     private int mCurrentPage = 0;
@@ -78,7 +79,7 @@ public class FanDownloadGifFragment extends BaseFragment implements SwipeRefresh
         mAdapter = new FanDownloadListAdaptor(getActivity());
         rcDesignList.setAdapter(mAdapter);
         llNoDataFound.setVisibility(View.GONE);
-        mStickerList = new ArrayList<>();
+        mGifList = new ArrayList<>();
         mCurrentPage = 0;
         getDesignFromServer(false, "");
         setRecScrollListener();
@@ -127,8 +128,13 @@ public class FanDownloadGifFragment extends BaseFragment implements SwipeRefresh
         rcDesignList.setNestedScrollingEnabled(true);
     }
 
-    public void filterData() {
-        Toast.makeText(getActivity(), "filter data called", Toast.LENGTH_SHORT).show();
+    public void filterData(String query) {
+        mGifList.clear();
+        mAdapter.setData(mGifList);
+        mCurrentPage=0;
+        getDesignFromServer(false,query );
+
+
     }
 
     private void showNoDataFound() {
@@ -153,8 +159,8 @@ public class FanDownloadGifFragment extends BaseFragment implements SwipeRefresh
             protected void loadMoreItems() {
                 AppLogger.debug(TAG, "Load more items");
 
-                if (mStickerList.size() >= PAGE_LIMIT) {
-                    AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mStickerList.size());
+                if (mGifList.size() >= PAGE_LIMIT) {
+                    AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mGifList.size());
                     getDesignFromServer(false, "");
                     mAdapter.addLoader();
                 }
@@ -207,8 +213,8 @@ public class FanDownloadGifFragment extends BaseFragment implements SwipeRefresh
         if (PAGE_LIMIT != -1) {
             limit = PAGE_LIMIT;
         }
-        Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
+        Call<ApiResponse> apiResponseCall = RestClient.getService().getFanDownloads(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
+                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "fan_download_list", searchKeyword);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
@@ -235,67 +241,67 @@ public class FanDownloadGifFragment extends BaseFragment implements SwipeRefresh
 
                                 if (isRefreshing) {
 
-                                    if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                        mStickerList.clear();
-                                        mStickerList.addAll(payload.productListAll);
+                                    if (payload.fanDownloadList != null && payload.fanDownloadList.size() != 0) {
+                                        mGifList.clear();
+                                        mGifList.addAll(payload.fanDownloadList);
 
                                         llNoDataFound.setVisibility(View.GONE);
                                         rcDesignList.setVisibility(View.VISIBLE);
-                                        mAdapter.setData(mStickerList);
+                                        mAdapter.setData(mGifList);
 
                                         mCurrentPage = 0;
                                         mCurrentPage++;
                                     } else {
-                                        mStickerList.clear();
-                                        mAdapter.setData(mStickerList);
+                                        mGifList.clear();
+                                        mAdapter.setData(mGifList);
                                         if (searchKeyword.length() != 0) {
                                             txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                         } else {
-                                            txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                            txtNoDataFoundContent.setText(R.string.txt_no_downloaded_gif_found);
                                         }
                                         showNoDataFound();
                                     }
                                 } else {
 
                                     if (mCurrentPage == 0) {
-                                        mStickerList.clear();
-                                        if (payload.productListAll != null) {
-                                            mStickerList.addAll(payload.productListAll);
+                                        mGifList.clear();
+                                        if (payload.fanDownloadList != null) {
+                                            mGifList.addAll(payload.fanDownloadList);
                                         }
 
-                                        if (mStickerList.size() != 0) {
+                                        if (mGifList.size() != 0) {
                                             llNoDataFound.setVisibility(View.GONE);
                                             rcDesignList.setVisibility(View.VISIBLE);
-                                            mAdapter.setData(mStickerList);
+                                            mAdapter.setData(mGifList);
                                         } else {
                                             showNoDataFound();
                                             if (searchKeyword.length() != 0) {
                                                 txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                             } else {
-                                                txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                                txtNoDataFoundContent.setText(R.string.txt_no_downloaded_gif_found);
                                             }
                                             rcDesignList.setVisibility(View.GONE);
                                         }
                                     } else {
                                         AppLogger.error(TAG, "Remove loader...");
                                         mAdapter.removeLoader();
-                                        if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                            mStickerList.addAll(payload.productListAll);
-                                            mAdapter.setData(mStickerList);
+                                        if (payload.fanDownloadList != null && payload.fanDownloadList.size() != 0) {
+                                            mGifList.addAll(payload.fanDownloadList);
+                                            mAdapter.setData(mGifList);
                                         }
                                     }
 
-                                    if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                    if (payload.fanDownloadList != null && payload.fanDownloadList.size() != 0) {
                                         mCurrentPage++;
                                     }
                                 }
-                                AppLogger.error(TAG, "item list size => " + mStickerList.size());
+                                AppLogger.error(TAG, "item list size => " + mGifList.size());
 
-                            } else if (mStickerList == null || (mStickerList != null && mStickerList.size() == 0)) {
+                            } else if (mGifList == null || (mGifList != null && mGifList.size() == 0)) {
                                 if (searchKeyword.length() != 0) {
                                     txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                 } else {
-                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                    txtNoDataFoundContent.setText(R.string.txt_no_downloaded_gif_found);
                                 }
                                 showNoDataFound();
                             }

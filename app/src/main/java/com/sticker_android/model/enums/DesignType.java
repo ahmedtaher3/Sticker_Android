@@ -8,7 +8,11 @@ public enum DesignType {
 
     stickers("Stickers"),
     gif("GIF"),
-    emoji("Emoji"),;
+    emoji("Emoji"),
+    ads("Ads"),
+    filter("Filter"),
+    contest("Contest"),
+    products("Product"),;
 
     private String mType;
     DesignType(String type){

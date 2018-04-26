@@ -17,6 +17,11 @@ public class NotificationApp implements Parcelable {
     public int userId;
     @SerializedName("text_json")
     public ContestObj contestObj;
+    @SerializedName("created_date")
+    public String cratedDate;
+
+    public NotificationApp() {
+    }
 
     @Override
     public int describeContents() {
@@ -28,18 +33,17 @@ public class NotificationApp implements Parcelable {
         dest.writeInt(this.notificatinId);
         dest.writeInt(this.userId);
         dest.writeParcelable(this.contestObj, flags);
-    }
-
-    public NotificationApp() {
+        dest.writeString(this.cratedDate);
     }
 
     protected NotificationApp(Parcel in) {
         this.notificatinId = in.readInt();
         this.userId = in.readInt();
         this.contestObj = in.readParcelable(ContestObj.class.getClassLoader());
+        this.cratedDate = in.readString();
     }
 
-    public static final Parcelable.Creator<NotificationApp> CREATOR = new Parcelable.Creator<NotificationApp>() {
+    public static final Creator<NotificationApp> CREATOR = new Creator<NotificationApp>() {
         @Override
         public NotificationApp createFromParcel(Parcel source) {
             return new NotificationApp(source);

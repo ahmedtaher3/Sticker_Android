@@ -124,11 +124,12 @@
     <dimen name="margin_spinner_top">25dp</dimen>
 
 
-    <dimen name="card_height_notification">130dp</dimen>
+    <dimen name="card_height_notification">120dp</dimen>
 
 
 
     <dimen name="padding_like_8dp">10dp</dimen>
     <dimen name="padding_fan_contest">10dp</dimen>
+    <dimen name="dimen_fan_filter_header">50dp</dimen>
 
 </resources>

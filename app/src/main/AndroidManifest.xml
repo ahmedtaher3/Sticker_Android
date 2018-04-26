@@ -136,10 +136,12 @@
             android:name=".controller.activities.common.contest.ApplyDesignerContestActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity   android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustPan" android:name=".controller.activities.fan.home.contest.FanContestListActivity">
-
-        </activity>
+        <activity
+            android:name=".controller.activities.fan.home.contest.FanContestListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".controller.activities.fan.home.details.FanDetailsActivity" />
+        <activity android:name=".controller.activities.common.contentapprovaldetails.ContentApprovalDetails"></activity>
     </application>
 
 </manifest>

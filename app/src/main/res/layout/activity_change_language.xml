@@ -18,7 +18,7 @@
            android:layout_gravity="center"
            android:id="@+id/imvLogoChangeLanguage"
            android:layout_marginTop="@dimen/logo_margin_top"
-           android:src="@drawable/football"
+           android:src="@drawable/logo_hdpi"
            android:layout_width="@dimen/change_lang_logo_width"
            android:layout_height="@dimen/change_lang_logo_height" />
 

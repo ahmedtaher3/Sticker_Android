@@ -224,9 +224,9 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             final ViewHolder itemHolder = (ViewHolder) holder;
             final Product productItem = mItems.get(position);
 
-            itemHolder.checkboxLike.setText(Utils.format(0));
+            itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
             itemHolder.checkboxShare.setText(Utils.format(0));
-            itemHolder.tvDownloads.setText(Utils.format(0));
+            itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
             itemHolder.imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

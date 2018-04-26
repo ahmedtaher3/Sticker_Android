@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
@@ -22,6 +24,7 @@ import com.sticker_android.controller.activities.common.contest.ApplyDesignerCon
 import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.model.notification.NotificationApp;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -45,6 +48,12 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
     private NotificationAdaptor notificationAdaptor;
     private SwipeRefreshLayout swipeRefreshNotification;
     private DesignerHomeActivity mHostActivity;
+    private LinearLayout llLoaderView;
+    private RelativeLayout rlConnectionContainer;
+    private RelativeLayout rlContent;
+    private LinearLayout llNoDataFound;
+    private TextView txtNoDataFoundTitle;
+    private TextView txtNoDataFoundContent;
 
     public DesignerNotificationFragment() {
         // Required empty public constructor
@@ -70,9 +79,9 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
         localNotification.setNotification(getActivity(), "sdcdscdc", "dscdscdc");
        */
         setAdaptor();
-        getNotificationApi();
+        getNotificationApi(false);
         appPref.saveNewMessagesCount(0);
-        if(mHostActivity!=null)
+        if (mHostActivity != null)
             mHostActivity.updateCallbackMessage();
         return view;
     }
@@ -82,27 +91,64 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
         user = appPref.getUserInfo();
     }
 
-    private void getNotificationApi() {
-        if (swipeRefreshNotification != null)
+    private void getNotificationApi(final boolean isRefresh) {
+        if (isRefresh)
             swipeRefreshNotification.setRefreshing(true);
+        else
+            llLoaderView.setVisibility(View.VISIBLE);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiNotificationList(user.getLanguageId(), user.getAuthrizedKey(), user.getId(), "notification_list");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
+                if (isRefresh)
+                    swipeRefreshNotification.setRefreshing(false);
+                else
+                    llLoaderView.setVisibility(View.GONE);
+
                 swipeRefreshNotification.setRefreshing(false);
                 if (apiResponse.status) {
 
                     mNotificationList = apiResponse.paylpad.notificationArrayList;
-                    if(mNotificationList!=null)
-                    notificationAdaptor.setData(mNotificationList);
+                    if (mNotificationList != null)
+                        notificationAdaptor.setData(mNotificationList);
+
+                    if (mNotificationList == null) {
+                        txtNoDataFoundContent.setText(R.string.txt_no_notification_found);
+                        showNoDataFound();
+                    }
+                    if (mNotificationList != null && mNotificationList.size() == 0) {
+                        txtNoDataFoundContent.setText(R.string.txt_no_notification_found);
+                        showNoDataFound();
+                    }
                 }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-                swipeRefreshNotification.setRefreshing(false);
+                if (isRefresh)
+                    swipeRefreshNotification.setRefreshing(false);
+                else
+                    llLoaderView.setVisibility(View.GONE);
+
+                if (mHostActivity != null)
+                    mHostActivity.manageNoInternetConnectionLayout(getActivity(), rlConnectionContainer, new NetworkPopupEventListener() {
+                        @Override
+                        public void onOkClickListener(int reqCode) {
+
+                        }
+
+                        @Override
+                        public void onRetryClickListener(int reqCode) {
+                            getNotificationApi(false);
+                        }
+                    }, 0);
             }
         });
+    }
+
+    private void showNoDataFound() {
+        llNoDataFound.setVisibility(View.VISIBLE);
+        txtNoDataFoundTitle.setText("");
     }
 
     @Override
@@ -115,6 +161,13 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
 
         recNotification = (RecyclerView) view.findViewById(R.id.recNotification);
         swipeRefreshNotification = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshNotification);
+        llLoaderView = (LinearLayout) view.findViewById(R.id.llLoader);
+        rlConnectionContainer = (RelativeLayout) view.findViewById(R.id.rlConnectionContainer);
+        rlContent = (RelativeLayout) view.findViewById(R.id.rlContent);
+        llNoDataFound = (LinearLayout) view.findViewById(R.id.llNoDataFound);
+        txtNoDataFoundTitle = (TextView) view.findViewById(R.id.txtNoDataFoundTitle);
+        txtNoDataFoundContent = (TextView) view.findViewById(R.id.txtNoDataFoundContent);
+
     }
 
     @Override
@@ -143,7 +196,7 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
 
     @Override
     public void onRefresh() {
-        getNotificationApi();
+        getNotificationApi(true);
     }
 
       /*NotificationApp adaptor*/
@@ -257,13 +310,13 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mHostActivity=(DesignerHomeActivity)context;
+        mHostActivity = (DesignerHomeActivity) context;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(mHostActivity!=null)
+        if (mHostActivity != null)
             mHostActivity.updateCallbackMessage();
     }
 }

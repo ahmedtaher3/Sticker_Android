@@ -96,7 +96,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
     private void setProductDetails() {
 
-        checkboxLike.setText(Utils.format(0));
+        checkboxLike.setText(Utils.format(productObj.statics.likeCount));
         checkboxShare.setText(Utils.format(0));
         String status = "Ongoing";
         if (productObj.getIsExpired() > 0) {

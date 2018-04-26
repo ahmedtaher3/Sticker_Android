@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
@@ -125,9 +124,12 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
         //rcDesignList.addItemDecoration(new VerticalSpaceItemDecoration((int) getResources().getDimension(R.dimen.margin_5)));
         rcDesignList.setNestedScrollingEnabled(true);
     }
+    public void searchData(String query) {
 
-    public void filterData() {
-        Toast.makeText(getActivity(), "filter data called", Toast.LENGTH_SHORT).show();
+        mEmojiList.clear();
+        mAdapter.setData(mEmojiList);
+        mCurrentPage=0;
+        getEmojiFromServer(false,query );
     }
 
     private void showNoDataFound() {
@@ -207,7 +209,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
+                index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword,"");
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);

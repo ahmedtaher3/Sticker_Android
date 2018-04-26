@@ -19,7 +19,7 @@ public class FanFilter extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fan_home_common, container, false);
+        View view = inflater.inflate(R.layout.frag_filter_dummy, container, false);
         return view;
     }
 

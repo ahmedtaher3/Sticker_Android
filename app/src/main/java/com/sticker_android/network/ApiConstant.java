@@ -7,7 +7,8 @@ package com.sticker_android.network;
 
 public class ApiConstant {
     // public static final String BASE_API_URL = "http://localhost/vivek/index.php/";
-    public static final String BASE_API_URL = "http://18.188.13.98/web/index.php/mobile/";
+   // public static final String BASE_API_URL = "http://18.188.13.98/web/index.php/mobile/";
+ public static final String BASE_API_URL = "http://18.188.13.98/v1/index.php/mobile/";
 
     public static final String API_LOGIN_URL = "userLogin/";
     public static final String API_REGISTER = "userRegistration/";
@@ -33,6 +34,9 @@ public class ApiConstant {
     public static final String API_SAVE_PRODUCT_LIKE = "SaveContestProductLike/";
     public static final String API_GET_FAN_CONTEST_LIST = "getContestList/";
     public static final String API_GET_FAN_ALL_CONTEST_LIST = "getContestProductList/";
+    public static final String API_GET_FAN_DOWNLOAD_LIST = "fanMyDownloads/";
+    public static final String API_GET_USER_PENDING_LIST = "userPendingProduct/";
 
+    public static final String API_GET_USER_COMPLETED_LIST = "getUserCompleteContestList/";
 
 }
