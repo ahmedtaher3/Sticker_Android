@@ -12,7 +12,6 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.DisplayMetrics;
-import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,14 +19,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.sticker_android.R;
 import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.utils.AppLogger;
@@ -41,10 +44,13 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     private ArrayList<Category> categoryArrayList = new ArrayList<>();
     private View contentView;
     private ImageView imageClose;
-    private ImageView imvSave, imvMostDownload, imvRecentUpload;
+    private ImageView imvSave;
+    private RadioButton chkMostDownload, chkRecentUpload;
     private ListView listFilter;
     IFilter iFilter;
     private ArrayAdapter<String> adapter;
+    private RadioGroup radioGroup;
+    private CheckBox chkSelectAll;
 
     public BottomSheetFragment(ArrayList<Category> categoryArrayList, IFilter iFilter, Context context) {
         // Required empty public constructor
@@ -134,15 +140,45 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         imvSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SparseBooleanArray checked = listFilter.getCheckedItemPositions();
+
+                ArrayList<Integer> categoryArray = new ArrayList<>();
+                AppLogger.debug("vfdjvnjf", "nvd,fv");
+
+                for (Category category : categoryArrayList
+                        ) {
+                    if (category.isChecked) {
+                        categoryArray.add(category.categoryId);
+                    }
+                }
+                Gson gson = new Gson();
+                String jsonNames = gson.toJson(categoryArray);
+                AppLogger.debug("data is :",jsonNames.toString());
+
+              /*  int selectedId = radioGroup.getCheckedRadioButtonId();
+
+                // find the radiobutton by returned id
+                chkMostDownload = (RadioButton) contentView.findViewById(selectedId);
+             */   String filterDataName="most_download";
+
+                if(chkRecentUpload.isChecked()){
+                    filterDataName="recent_upload";
+                }else if(chkMostDownload.isChecked()){
+                    filterDataName="most_download";
+                }
+                iFilter.selectedCategory(jsonNames,filterDataName);
+                dismiss();
+               /* SparseBooleanArray checked = listFilter.getCheckedItemPositions();
 
                 ArrayList<String> selectedItems = new ArrayList<String>();
                 for (int i = 0; i < checked.size(); i++) {
                     // Item position in adapter
                     int position2 = checked.keyAt(i);
                     // Add sport if it is checked i.e.) == TRUE!
-                    if (checked.valueAt(i))
+                    if (checked.valueAt(i)){
                         selectedItems.add(adapter.getItem(position2));
+                        AppLogger.debug("vfdjvnjf", "nvd,fv" +adapter.getItem(position2));
+
+                    }
                 }
 
                 String[] outputStrArr = new String[selectedItems.size()];
@@ -152,7 +188,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                     AppLogger.debug("vfdjvnjf", "nvd,fv" + outputStrArr[i]);
 
                 }
-                // iFilter.selectedCategory();
+*/                // iFilter.selectedCategory();
             }
         });
         listFilter.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
@@ -181,21 +217,36 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
             }
         });
+
+        chkSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(buttonView.isPressed()){
+                    if(isChecked){
+
+                    }
+                }
+            }
+        });
     }
 
 
     public void references() {
 
+
         imageClose = (ImageView) contentView.findViewById(R.id.imageClose);
         imvSave = (ImageView) contentView.findViewById(R.id.imvSave);
-        imvMostDownload = (ImageView) contentView.findViewById(R.id.imvMostDownload);
-        imvRecentUpload = (ImageView) contentView.findViewById(R.id.imvRecentUpload);
+        chkMostDownload = (RadioButton) contentView.findViewById(R.id.chkMostDownload);
+        chkRecentUpload = (RadioButton) contentView.findViewById(R.id.chkRecentUpload);
         listFilter = (ListView) contentView.findViewById(R.id.listFilter);
+        radioGroup = (RadioGroup) contentView.findViewById(R.id.radio_group);
+        chkSelectAll = (CheckBox) contentView.findViewById(R.id.chkSelectAll);
     }
 
 
     public interface IFilter {
-        void selectedCategory(Category[] categories);
+        void selectedCategory(String categories,String selectedData);
     }
 
 
@@ -213,8 +264,9 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
 
         /*private view holder class*/
         private class ViewHolder {
-            CheckBox checkBox;
+            CheckBox checkBoxMultipleSelect;
             TextView txtTitle;
+
         }
 
         @Override
@@ -238,7 +290,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             ViewHolder holder = null;
-            Category rowItem = categoryArrayList.get(position);
+            final Category rowItem = categoryArrayList.get(position);
 
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -246,12 +298,31 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                 convertView = mInflater.inflate(R.layout.item_list_filter, null);
                 holder = new ViewHolder();
                 holder.txtTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-                holder.checkBox = (CheckBox) convertView.findViewById(R.id.chkSelectItem);
+
+                holder.checkBoxMultipleSelect = (CheckBox) convertView.findViewById(R.id.chkSelectItem);
                 convertView.setTag(holder);
             } else
                 holder = (ViewHolder) convertView.getTag();
 
+           // holder.checkBoxMultipleSelect.setText(rowItem.categoryName);
             holder.txtTitle.setText(rowItem.categoryName);
+
+
+            final ViewHolder finalHolder = holder;
+
+            holder.checkBoxMultipleSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (buttonView.isPressed()) {
+                        if (isChecked) {
+                            rowItem.isChecked = true;
+                        } else {
+                            rowItem.isChecked = false;
+
+                        }
+                    }
+                }
+            });
 
             return convertView;
         }

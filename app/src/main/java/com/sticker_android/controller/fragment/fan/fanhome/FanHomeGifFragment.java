@@ -62,6 +62,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
     private FanListAdaptor mAdapter;
+    String filterdata="";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -210,7 +211,8 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword,"");
+                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword,""
+        , filterdata);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);

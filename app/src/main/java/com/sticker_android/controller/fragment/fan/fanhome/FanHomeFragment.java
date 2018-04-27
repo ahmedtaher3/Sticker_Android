@@ -2,6 +2,7 @@ package com.sticker_android.controller.fragment.fan.fanhome;
 
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.filter.FanFilterActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Category;
@@ -34,6 +36,7 @@ import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -302,7 +305,9 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                 break;
             case R.id.filter:
 
-                showBottomSheetDialogFragment();
+                startActivityForResult(new Intent(getActivity(), FanFilterActivity.class),131);
+
+              //  showBottomSheetDialogFragment();
 
                 Toast.makeText(getActivity(), "Under development", Toast.LENGTH_SHORT).show();
 
@@ -325,11 +330,35 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
 
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment(categoryList, new BottomSheetFragment.IFilter() {
             @Override
-            public void selectedCategory(Category[] categories) {
-
+            public void selectedCategory(String categories,String filterdata) {
+                AppLogger.debug("vfdjvnjf", "nvd,fv=== "+categories);
+                filterData(categories,filterdata);
             }
         }, getActivity());
         bottomSheetFragment.show(getChildFragmentManager(), "filter data");
+    }
+
+    private void filterData(String categories, String filterdata) {
+
+        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
+        if (fragment instanceof FanHomeStickerFragment) {
+            ((FanHomeStickerFragment) fragment).filterData(categories,filterdata);
+        }
+       /* if (fragment instanceof FanHomeEmojiFragment) {
+            ((FanHomeEmojiFragment) fragment).searchData(query.trim());
+        }
+        if (fragment instanceof FanHomeGifFragment) {
+            ((FanHomeGifFragment) fragment).searchData(query.trim());
+        }
+        if (fragment instanceof FanHomeAdsFragment) {
+            ((FanHomeAdsFragment) fragment).searchData(query.trim());
+        }
+        if (fragment instanceof FanHomeProductsFragment) {
+            ((FanHomeProductsFragment) fragment).searchData(query.trim());
+        }
+        if (fragment instanceof FanContestFragment) {
+            ((FanContestFragment) fragment).searchData(query.trim());
+        }*/
     }
 
     private void setSelectedTabColor() {

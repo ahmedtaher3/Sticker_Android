@@ -15,6 +15,7 @@
             android:background="@drawable/fan_header_hdpi">
 
             <ImageView
+                android:paddingRight="10dp"
                 android:id="@+id/imageClose"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,6 +33,7 @@
                 android:textSize="@dimen/text_size_18sp" />
 
             <ImageView
+                android:paddingStart="10dp"
                 android:id="@+id/imvSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,48 +48,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerInParent="true"
-                android:layout_margin="20dp"
-                android:text="@string/most_downloaded"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/text_size_tv_13sp" />
+                android:orientation="vertical"
+                android:padding="10dp">
 
-            <ImageView
-                android:id="@+id/imvMostDownload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="20dp"
-                app:srcCompat="@drawable/ic_right_tick" />
-        </RelativeLayout>
+                <RadioButton
+                    android:checked="true"
+                    android:id="@+id/chkMostDownload"
+                    style="@style/checkBoxSingleSelection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_margin="5dp"
+                    android:layoutDirection="rtl"
+                    android:text="@string/most_downloaded"
+                    android:textAlignment="textStart"
+                    android:textSize="14sp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerInParent="true"
-                android:layout_margin="20dp"
-                android:text="@string/recent_upload"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/text_size_tv_13sp" />
-
-            <ImageView
-                android:id="@+id/imvRecentUpload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="20dp"
-                app:srcCompat="@drawable/ic_right_tick" />
+                <RadioButton
+                    android:id="@+id/chkRecentUpload"
+                    style="@style/checkBoxSingleSelection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_margin="5dp"
+                    android:layoutDirection="rtl"
+                    android:text="@string/recent_upload"
+                    android:textAlignment="textStart"
+                    android:textSize="14sp" />
+            </RadioGroup>
         </RelativeLayout>
 
         <TextView
@@ -97,51 +89,55 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:background="@color/edt_background_tint">
 
             <TextView
+                android:layout_marginStart="25dp"
+                android:layout_centerInParent="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
                 android:text="@string/by_championship"
                 android:textColor="@color/colorFanText"
                 android:textSize="@dimen/text_size_tv_13sp" />
         </RelativeLayout>
 
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ListView
-                android:layout_above="@+id/rlAll"
-                android:id="@+id/listFilter"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"></ListView>
-
             <RelativeLayout
-                android:visibility="gone"
-                android:id="@+id/rlAll"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:padding="10dp">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/txt_all"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/text_size_tv_13sp" />
+                <com.sticker_android.view.NonScrollListView
+                    android:id="@+id/listFilter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></com.sticker_android.view.NonScrollListView>
 
-                <ImageView
-                    app:srcCompat="@drawable/ic_right_tick"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_marginBottom="20dp"
+                    android:id="@+id/rlAll"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_below="@+id/listFilter"
+                    android:layout_marginLeft="10dp"
+                    android:padding="10dp"
+                    android:visibility="visible">
+
+                    <CheckBox
+                        android:id="@+id/chkSelectAll"
+                        style="@style/checkBoxSingleSelection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:checked="true"
+                        android:text="@string/text_all" />
+                </RelativeLayout>
+
             </RelativeLayout>
-        </RelativeLayout>
+        </ScrollView>
     </LinearLayout>
 
 </RelativeLayout>

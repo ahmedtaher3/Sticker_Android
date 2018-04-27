@@ -141,7 +141,8 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".controller.activities.fan.home.details.FanDetailsActivity" />
-        <activity android:name=".controller.activities.common.contentapprovaldetails.ContentApprovalDetails"></activity>
+        <activity android:name=".controller.activities.common.contentapprovaldetails.ContentApprovalDetails" />
+        <activity android:name=".controller.activities.filter.FanFilterActivity"></activity>
     </application>
 
 </manifest>

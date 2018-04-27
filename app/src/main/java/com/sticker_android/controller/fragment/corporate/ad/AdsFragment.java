@@ -532,6 +532,15 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     })
                     .into(((ProductHolder) holder).imvOfAds);
 
+            if (product.isLike > 0) {
+                ((ProductHolder) holder).checkboxLike.setChecked(true);
+                ((ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+            } else {
+                ((ProductHolder) holder).checkboxLike.setChecked(false);
+                ((ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+
+            }
+
         }
 
 

@@ -27,6 +27,8 @@ import com.sticker_android.model.notification.NotificationApp;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
@@ -53,7 +55,7 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
     private LinearLayout llNoDataFound;
     private TextView txtNoDataFoundTitle;
     private TextView txtNoDataFoundContent;
-
+    TimeUtility timeUtility = new TimeUtility();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -226,6 +228,8 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
 
             }
             holder.tvNotification.setText(notification.contestObj.msg);
+            holder.tvTimeNotification.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(notification.cratedDate),getActivity()));
+
             showData(holder, contestId);
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override

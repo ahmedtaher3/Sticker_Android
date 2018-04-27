@@ -119,7 +119,7 @@ public interface StickerService {
     public Call<ApiResponse> getFanHomeProductList
             (@Field("language_id") String languageId, @Field("authrized_key") String authKey,
              @Field("user_id") String userId, @Field("index") int index,
-             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search,@Field("category_id")String categoryId);
+             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search,@Field("category_id")String categoryId,@Field("filter")String filter);
 
     @FormUrlEncoded
     @POST(ApiConstant.API_SAVE_PRODUCT_LIKE)

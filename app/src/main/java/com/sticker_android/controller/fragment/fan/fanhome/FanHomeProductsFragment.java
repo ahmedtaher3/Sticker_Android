@@ -60,6 +60,7 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
     private FanListAdaptor mAdapter;
+    String filterData="";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -208,7 +209,7 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, "product", "all_product_list", searchKeyword,"");
+                index, limit, "product", "all_product_list", searchKeyword,"", filterData);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);

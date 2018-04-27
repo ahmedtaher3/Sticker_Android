@@ -62,6 +62,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
     private int PAGE_LIMIT;
     private FanListAdaptor mAdapter;
 
+    String filterdata="";
 
 
     @Override
@@ -209,7 +210,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword,"");
+                index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword,"", filterdata);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);

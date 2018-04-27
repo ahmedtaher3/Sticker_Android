@@ -29,6 +29,8 @@ import com.sticker_android.model.notification.NotificationApp;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
     private LinearLayout llNoDataFound;
     private TextView txtNoDataFoundTitle;
     private TextView txtNoDataFoundContent;
+    TimeUtility timeUtility = new TimeUtility();
 
     public DesignerNotificationFragment() {
         // Required empty public constructor
@@ -230,6 +233,8 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
                 holder.imvNotification.setImageResource(R.drawable.ic_side_image_blue);
 
             }
+            holder.tvTimeNotification.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(notification.cratedDate),getActivity()));
+
             holder.tvNotification.setText(notification.contestObj.msg);
             showData(holder, contestId);
             holder.cardView.setOnClickListener(new View.OnClickListener() {

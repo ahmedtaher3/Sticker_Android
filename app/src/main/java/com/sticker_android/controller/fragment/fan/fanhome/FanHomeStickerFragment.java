@@ -63,6 +63,9 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
     private FanListAdaptor mAdapter;
+    private String categories;
+    String filterData="";
+
 
     public FanHomeStickerFragment() {
         // Required empty public constructor
@@ -75,7 +78,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.layout_design_item_list, container, false);
         init();
-         PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
+        PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
         setViewReferences(view);
         setViewListeners();
         initRecyclerView();
@@ -84,7 +87,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
         llNoDataFound.setVisibility(View.GONE);
         mStickerList = new ArrayList<>();
         mCurrentPage = 0;
-        getDesignFromServer(false, "");
+        getDesignFromServer(false, "", "");
         setRecScrollListener();
         return view;
     }
@@ -135,9 +138,10 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
 
         mStickerList.clear();
         mAdapter.setData(mStickerList);
-        mCurrentPage=0;
-        getDesignFromServer(false,query );
+        mCurrentPage = 0;
+        getDesignFromServer(false, query, "");
     }
+
     private void showNoDataFound() {
         llNoDataFound.setVisibility(View.VISIBLE);
         txtNoDataFoundTitle.setText("");
@@ -146,7 +150,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getDesignFromServer(true, "");
+            getDesignFromServer(true, "", "");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
@@ -162,7 +166,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
 
                 if (mStickerList.size() >= PAGE_LIMIT) {
                     AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mStickerList.size());
-                    getDesignFromServer(false, "");
+                    getDesignFromServer(false, "", categories);
                     mAdapter.addLoader();
                 }
             }
@@ -190,7 +194,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
     }
 
 
-    private void getDesignFromServer(final boolean isRefreshing, final String searchKeyword) {
+    private void getDesignFromServer(final boolean isRefreshing, final String searchKeyword, final String categories) {
 
         //remove wi-fi symbol when response got
         if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
@@ -215,7 +219,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword,"");
+                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword, categories, filterData);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
@@ -347,7 +351,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
 
                                 @Override
                                 public void onRetryClickListener(int reqCode) {
-                                    getDesignFromServer(isRefreshing, searchKeyword);
+                                    getDesignFromServer(isRefreshing, searchKeyword, categories);
                                 }
                             }, 0);
                         } else {
@@ -367,4 +371,17 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
     }
 
 
+    public void filterData(String categories, String filterdata) {
+        this.categories = categories;
+        mCurrentPage=0;
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            mStickerList.clear();
+            this.filterData=filterdata;
+            getDesignFromServer(false, "", categories);
+        } else {
+            swipeRefresh.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
+
+    }
 }

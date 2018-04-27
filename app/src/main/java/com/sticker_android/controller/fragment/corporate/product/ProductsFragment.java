@@ -536,6 +536,14 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                         })
                         .into(((ProductAdaptor.ProductHolder) holder).imvOfAds);
 
+                if (product.isLike > 0) {
+                    ((ProductAdaptor.ProductHolder) holder).checkboxLike.setChecked(true);
+                    ((ProductAdaptor.ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+                } else {
+                    ((ProductAdaptor.ProductHolder) holder).checkboxLike.setChecked(false);
+                    ((ProductAdaptor.ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+
+                }
 
             }
 

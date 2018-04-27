@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
@@ -17,6 +18,10 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -498,6 +503,7 @@ public class Utils {
         return convertStringToDate(dt);
     }
 
+    //Set the radius of the Blur. Supported range 0 < radius <= 25
 
 
 }

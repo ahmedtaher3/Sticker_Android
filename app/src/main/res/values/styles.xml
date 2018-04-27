@@ -201,5 +201,10 @@
         <item name="colorAccent">@color/colorFanText</item>
         <item name="colorPrimaryDark">@color/colorFanText</item>
     </style>
-
+    <style name="checkBoxSingleSelection">
+        <item name="android:button">@null</item>
+        <item name="android:checked">false</item>
+        <item name="android:drawableRight">@drawable/selector_filter_view</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>
