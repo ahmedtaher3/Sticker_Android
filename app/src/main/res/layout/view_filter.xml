@@ -2,6 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingPrefix"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -15,16 +17,17 @@
             android:background="@drawable/fan_header_hdpi">
 
             <ImageView
-                android:paddingRight="10dp"
                 android:id="@+id/imageClose"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
                 android:layout_marginStart="10dp"
+                android:padding="10dp"
                 app:srcCompat="@drawable/close" />
 
             <TextView
+                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -33,13 +36,13 @@
                 android:textSize="@dimen/text_size_18sp" />
 
             <ImageView
-                android:paddingStart="10dp"
                 android:id="@+id/imvSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
                 android:layout_marginEnd="10dp"
+                android:padding="10dp"
                 app:srcCompat="@drawable/ic_tick" />
         </RelativeLayout>
 
@@ -56,19 +59,21 @@
                 android:padding="10dp">
 
                 <RadioButton
-                    android:checked="true"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:id="@+id/chkMostDownload"
                     style="@style/checkBoxSingleSelection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:layout_margin="5dp"
+                    android:checked="true"
                     android:layoutDirection="rtl"
                     android:text="@string/most_downloaded"
                     android:textAlignment="textStart"
                     android:textSize="14sp" />
 
                 <RadioButton
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:id="@+id/chkRecentUpload"
                     style="@style/checkBoxSingleSelection"
                     android:layout_width="match_parent"
@@ -93,10 +98,11 @@
             android:background="@color/edt_background_tint">
 
             <TextView
-                android:layout_marginStart="25dp"
-                android:layout_centerInParent="true"
+                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="25dp"
                 android:text="@string/by_championship"
                 android:textColor="@color/colorFanText"
                 android:textSize="@dimen/text_size_tv_13sp" />
@@ -110,29 +116,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <ProgressBar
+                    android:visibility="gone"
+                    android:id="@+id/progressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
                 <com.sticker_android.view.NonScrollListView
                     android:id="@+id/listFilter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"></com.sticker_android.view.NonScrollListView>
 
                 <RelativeLayout
-                    android:layout_marginBottom="20dp"
                     android:id="@+id/rlAll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/listFilter"
+                    android:layout_marginBottom="20dp"
                     android:layout_marginLeft="10dp"
                     android:padding="10dp"
                     android:visibility="visible">
 
                     <CheckBox
+                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                         android:id="@+id/chkSelectAll"
                         style="@style/checkBoxSingleSelection"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
-                        android:checked="true"
+                        android:checked="false"
                         android:text="@string/text_all" />
                 </RelativeLayout>
 

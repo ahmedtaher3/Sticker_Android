@@ -4,11 +4,12 @@
     android:layout_height="match_parent"
     tools:context=".controller.fragment.fan.fancustomization.FanCustomizationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:gravity="center"
+    <include android:id="@id/toolbar"  layout="@layout/tab_layout_without_viewpager"/>
+
+    <RelativeLayout
+        android:layout_below="@+id/toolbar"
+        android:id="@+id/container_fan_home"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent"></RelativeLayout>
 
 </FrameLayout>

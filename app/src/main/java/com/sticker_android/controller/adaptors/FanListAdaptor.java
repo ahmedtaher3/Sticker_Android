@@ -76,20 +76,22 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public CardView cardItem;
         public ProgressBar pbLoader;
         public TextView tvName;
+        public TextView tvFeatured;
 
         public ViewHolder(View view) {
             super(view);
-            imvOfAds = (ImageView) view.findViewById(R.id.imvOfAds);
-            tvProductTitle = (TextView) view.findViewById(R.id.tv_add_product_title);
-            tvStatus = (TextView) view.findViewById(R.id.tv_add_product_status);
-            tvDesciption = (TextView) view.findViewById(R.id.tv_add_product_item_description);
-            checkboxLike = (CheckBox) view.findViewById(R.id.checkboxLike);
-            checkboxShare = (CheckBox) view.findViewById(R.id.checkboxShare);
-            tvTime = (TextView) view.findViewById(R.id.tvTime);
-            tvDownloads = (TextView) view.findViewById(R.id.tvDownloads);
-            cardItem = (CardView) view.findViewById(R.id.card_view);
-            pbLoader = (ProgressBar) view.findViewById(R.id.pgrImage);
-            tvName = (TextView) view.findViewById(R.id.tv_name);
+            imvOfAds            =    (ImageView) view.findViewById(R.id.imvOfAds);
+            tvProductTitle      =    (TextView) view.findViewById(R.id.tv_add_product_title);
+            tvStatus            =    (TextView) view.findViewById(R.id.tv_add_product_status);
+            tvDesciption        =    (TextView) view.findViewById(R.id.tv_add_product_item_description);
+            checkboxLike        =    (CheckBox) view.findViewById(R.id.checkboxLike);
+            checkboxShare       =    (CheckBox) view.findViewById(R.id.checkboxShare);
+            tvTime              =    (TextView) view.findViewById(R.id.tvTime);
+            tvDownloads         =    (TextView) view.findViewById(R.id.tvDownloads);
+            cardItem            =    (CardView) view.findViewById(R.id.card_view);
+            pbLoader            =    (ProgressBar) view.findViewById(R.id.pgrImage);
+            tvName              =    (TextView) view.findViewById(R.id.tv_name);
+            tvFeatured          =    (TextView) view.findViewById(R.id.tvFeatured);
         }
     }
 
@@ -209,7 +211,10 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Product product = mItems.get(position);
                     Intent intent = new Intent(context, FanDetailsActivity.class);
                     intent.putExtra(AppConstant.PRODUCT, product);
-                    ((Activity)context).startActivityForResult(intent, 0);
+                    ((Activity) context).startActivityForResult(intent, 0);
+                    ((Activity)context).overridePendingTransition(R.anim.activity_animation_enter,
+                            R.anim.activity_animation_exit);
+
 
                     // productItemClickListener.onProductItemClick(product);
                 }
@@ -224,20 +229,20 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void share(final ViewHolder vh) {
 
         vh.checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            int position = vh.getAdapterPosition();
-            final Product product = mItems.get(position);
-            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-            sharingIntent.setType("text/plain");
-            String shareBody = "Image url "+product.getImagePath();
-            String shareSub = "Share data";
-            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-            context.startActivity(Intent.createChooser(sharingIntent, "Share using"));
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int position = vh.getAdapterPosition();
+                final Product product = mItems.get(position);
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody = "Image url " + product.getImagePath();
+                String shareSub = "Share data";
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                context.startActivity(Intent.createChooser(sharingIntent, "Share using"));
 
-        }
-    });
+            }
+        });
     }
 
     private void downloadListener(final ViewHolder vh) {
@@ -296,13 +301,15 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (productItem.getType().equals("product") || productItem.getType().equals("ads")) {
                 itemHolder.tvDesciption.setVisibility(View.VISIBLE);
                 itemHolder.tvDownloads.setVisibility(View.GONE);
+                itemHolder.tvFeatured.setVisibility(View.VISIBLE);
             } else {
                 itemHolder.tvDownloads.setVisibility(View.VISIBLE);
                 itemHolder.tvDesciption.setVisibility(View.GONE);
+                itemHolder.tvFeatured.setVisibility(View.GONE);
             }
             itemHolder.tvName.setText(productItem.userName);
             itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
-            itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
+            //   itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
             itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
 
             itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));
@@ -315,6 +322,10 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context).replaceAll("about", "").trim());
 
+            if(productItem.isFeatured>0){
+                itemHolder.tvFeatured.setVisibility(View.VISIBLE);
+            }else
+                itemHolder.tvFeatured.setVisibility(View.GONE);
 
             if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
                 itemHolder.pbLoader.setVisibility(View.VISIBLE);

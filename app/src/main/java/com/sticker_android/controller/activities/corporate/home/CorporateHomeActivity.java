@@ -386,8 +386,6 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     }
 
     private void userLogout() {
-        appPref.saveUserObject(new User());
-        appPref.setLoginFlag(false);
         appPref.userLogout();
         Intent intent = new Intent(getActivity(), SigninActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

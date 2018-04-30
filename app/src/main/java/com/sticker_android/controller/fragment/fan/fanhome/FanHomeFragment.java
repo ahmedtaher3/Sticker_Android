@@ -27,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.nostra13.universalimageloader.utils.L;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.filter.FanFilterActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
@@ -63,7 +65,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
     private MenuItem item;
     private FragmentManager mFragmentManager;
     private MenuItem itemFilter;
-    private ArrayList<Category> categoryList=new ArrayList<>();
+    private ArrayList<Category> categoryList = new ArrayList<>();
 
 
     public FanHomeFragment() {
@@ -148,6 +150,9 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
 
                     case 0:
                         replaceFragment(new FanFilter());
+                        if (itemFilter != null) {
+                            itemFilter.setVisible(false);
+                        }
                         break;
                     case 1:
                         if (itemFilter != null) {
@@ -206,6 +211,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         inflater.inflate(R.menu.fan_home_screen, menu);
         item = menu.findItem(R.id.search);
         itemFilter = menu.findItem(R.id.filter);
+        itemFilter.setVisible(false);
         searchView = (SearchView) MenuItemCompat.getActionView(item);
         //  setSearchTextColour(searchView);
         setSearchIcons(searchView);
@@ -305,11 +311,12 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                 break;
             case R.id.filter:
 
-                startActivityForResult(new Intent(getActivity(), FanFilterActivity.class),131);
+                startActivityForResult(new Intent(getActivity(), FanFilterActivity.class), 131);
+                getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                        R.anim.activity_animation_exit);
 
-              //  showBottomSheetDialogFragment();
+                //  showBottomSheetDialogFragment();
 
-                Toast.makeText(getActivity(), "Under development", Toast.LENGTH_SHORT).show();
 
                 if (tabLayout.getSelectedTabPosition() == 0) {
                     Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
@@ -330,9 +337,9 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
 
         BottomSheetFragment bottomSheetFragment = new BottomSheetFragment(categoryList, new BottomSheetFragment.IFilter() {
             @Override
-            public void selectedCategory(String categories,String filterdata) {
-                AppLogger.debug("vfdjvnjf", "nvd,fv=== "+categories);
-                filterData(categories,filterdata);
+            public void selectedCategory(String categories, String filterdata) {
+                AppLogger.debug("vfdjvnjf", "nvd,fv=== " + categories);
+                filterData(categories, filterdata);
             }
         }, getActivity());
         bottomSheetFragment.show(getChildFragmentManager(), "filter data");
@@ -342,23 +349,21 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
 
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
         if (fragment instanceof FanHomeStickerFragment) {
-            ((FanHomeStickerFragment) fragment).filterData(categories,filterdata);
+            ((FanHomeStickerFragment) fragment).filterData(categories, filterdata);
         }
-       /* if (fragment instanceof FanHomeEmojiFragment) {
-            ((FanHomeEmojiFragment) fragment).searchData(query.trim());
+       if (fragment instanceof FanHomeEmojiFragment) {
+            ((FanHomeEmojiFragment) fragment).filterData(categories,filterdata);
         }
         if (fragment instanceof FanHomeGifFragment) {
-            ((FanHomeGifFragment) fragment).searchData(query.trim());
+            ((FanHomeGifFragment) fragment).filterData(categories,filterdata);
         }
         if (fragment instanceof FanHomeAdsFragment) {
-            ((FanHomeAdsFragment) fragment).searchData(query.trim());
+            ((FanHomeAdsFragment) fragment).filterData(categories,filterdata);
         }
         if (fragment instanceof FanHomeProductsFragment) {
-            ((FanHomeProductsFragment) fragment).searchData(query.trim());
+            ((FanHomeProductsFragment) fragment).filterData(categories,filterdata);
         }
-        if (fragment instanceof FanContestFragment) {
-            ((FanContestFragment) fragment).searchData(query.trim());
-        }*/
+
     }
 
     private void setSelectedTabColor() {
@@ -458,6 +463,44 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
             ((FanContestFragment) fragment).searchData(query.trim());
         }
 
+
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == getActivity().RESULT_OK) {
+            if (requestCode == 131) {
+                if (data.getExtras() != null) {
+                    Bundle b = data.getExtras();
+                    String filterByName =b.getString("filterBy");
+                    ArrayList<Category> categoryList = b.getParcelableArrayList("categoryList");
+                    if (categoryList != null) {
+                        filterData(filterListdata(categoryList), filterByName);
+                    }
+                }
+
+
+
+            }
+        }
+
+    }
+
+    private String filterListdata(ArrayList<Category> categoryList) {
+        ArrayList<Integer> categoryArray = new ArrayList<>();
+        AppLogger.debug("vfdjvnjf", "nvd,fv");
+
+        for (Category category : categoryList
+                ) {
+            if (category.isChecked) {
+                categoryArray.add(category.categoryId);
+            }
+        }
+        Gson gson = new Gson();
+        String jsonNames = gson.toJson(categoryArray);
+        return jsonNames;
 
     }
 }

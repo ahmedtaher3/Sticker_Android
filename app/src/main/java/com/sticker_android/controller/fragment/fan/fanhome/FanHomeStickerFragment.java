@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
@@ -149,6 +150,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
 
     @Override
     public void onRefresh() {
+        categories="";
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getDesignFromServer(true, "", "");
         } else {
@@ -377,6 +379,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
         if (Utils.isConnectedToInternet(mHostActivity)) {
             mStickerList.clear();
             this.filterData=filterdata;
+            Toast.makeText(getActivity(),"filterdata",Toast.LENGTH_SHORT).show();
             getDesignFromServer(false, "", categories);
         } else {
             swipeRefresh.setRefreshing(false);

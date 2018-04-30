@@ -224,9 +224,17 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
             }else {
                 itemHolder.tvDesciption.setVisibility(View.GONE);
             }
+            if(productItem.productInfo.isLike>0){
+                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+                itemHolder.checkboxLike.setChecked(true);
+                AppLogger.debug(FanDownloadListAdaptor.class.getSimpleName(),"like is "+productItem.productInfo.isLike );
+
+            }else {
+                itemHolder.checkboxLike.setChecked(false);
+                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+            }
             itemHolder.tvName.setText(productItem.productInfo.userName);
             itemHolder.checkboxLike.setText(Utils.format(productItem.productInfo.statics.likeCount));
-            itemHolder.checkboxShare.setText(Utils.format(productItem.productInfo.statics.shareCount));
             itemHolder.tvDownloads.setText(Utils.format(productItem.productInfo.statics.downloadCount));
 
             itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.productInfo.getProductname()));
@@ -261,13 +269,8 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
             } else {
                 itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
             }
-            if(productItem.productInfo.isLike>0){
-                itemHolder.checkboxLike.setChecked(true);
-            }else
-                itemHolder.checkboxLike.setChecked(false);
 
         }
-
 
     }
 

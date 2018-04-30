@@ -18,13 +18,14 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.changelanguage.ChangeLanguageActivity;
 import com.sticker_android.controller.activities.common.signup.SignUpActivity;
 import com.sticker_android.controller.activities.corporate.CorporateProfileActivity;
-import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
+import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
@@ -162,11 +163,11 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
      * Method is used for login api
      */
     private void loginApiCall() {
-
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         String deviceId = Utils.getDeviceId(this);
         final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
         progressDialogHandler.show();
-        Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(edtEmail.getText().toString(),edtPassword.getText().toString(),"android","1233",deviceId,selectedOption);
+        Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(edtEmail.getText().toString(),edtPassword.getText().toString(),"android",refreshedToken,deviceId,selectedOption);
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

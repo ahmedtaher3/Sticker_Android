@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -50,6 +51,7 @@ public class CorporateContestListAdapter extends RecyclerView.Adapter<RecyclerVi
         ImageView imvSelected, imvOfContest, imvProductImage;
         CardView cardItem;
         ProgressBar pgrImage;
+        TextView tvFeatured;
 
         public ViewHolder(View view) {
             super(view);
@@ -58,6 +60,7 @@ public class CorporateContestListAdapter extends RecyclerView.Adapter<RecyclerVi
             imvOfContest = (ImageView) itemView.findViewById(R.id.imvOfContest);
             imvProductImage = (ImageView) itemView.findViewById(R.id.imvProductImage);
             pgrImage = (ProgressBar) itemView.findViewById(R.id.pgrImage);
+            tvFeatured = (TextView) itemView.findViewById(R.id.tvFeatured);
         }
     }
 
@@ -193,7 +196,10 @@ public class CorporateContestListAdapter extends RecyclerView.Adapter<RecyclerVi
 
                 ((ViewHolder) holder).imvSelected.setVisibility(View.GONE);
             }
-
+            if (productItem.isFeatured > 0)
+                ((ViewHolder) holder).tvFeatured.setVisibility(View.VISIBLE);
+            else
+                ((ViewHolder) holder).tvFeatured.setVisibility(View.GONE);
             Glide.with(context)
                     .load(productItem.getImagePath()).fitCenter()
                     .listener(new RequestListener<String, GlideDrawable>() {

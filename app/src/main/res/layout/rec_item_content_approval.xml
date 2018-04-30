@@ -38,6 +38,22 @@
                     android:layout_width="@dimen/sticker_progress_loader_size"
                     android:layout_height="@dimen/sticker_progress_loader_size"
                     android:layout_centerInParent="true" />
+                <TextView
+                    android:visibility="visible"
+                    android:alpha=".75"
+                    android:textSize="15sp"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:id="@+id/tvFeatured"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/drawable_featured"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/dp_5"
+                    android:paddingRight="@dimen/dp_5"
+                    android:text="Featured"
+                    android:textColor="@android:color/white" />
+
             </RelativeLayout>
 
             <RelativeLayout

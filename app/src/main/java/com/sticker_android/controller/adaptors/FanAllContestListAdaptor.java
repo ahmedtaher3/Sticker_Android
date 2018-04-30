@@ -296,7 +296,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
             }
             itemHolder.tvName.setText(productItem.userName);
             itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
-            itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
+     //       itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
             itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
 
             itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
@@ -61,7 +62,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
     private FanListAdaptor mAdapter;
-
+    private String categories;
     String filterdata="";
 
 
@@ -80,7 +81,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
         llNoDataFound.setVisibility(View.GONE);
         mEmojiList = new ArrayList<>();
         mCurrentPage = 0;
-        getEmojiFromServer(false, "");
+        getEmojiFromServer(false, "","");
         setRecScrollListener();
    return view;
     }
@@ -130,7 +131,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
         mEmojiList.clear();
         mAdapter.setData(mEmojiList);
         mCurrentPage=0;
-        getEmojiFromServer(false,query );
+        getEmojiFromServer(false,query,"" );
     }
 
     private void showNoDataFound() {
@@ -140,8 +141,9 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
 
     @Override
     public void onRefresh() {
+        categories="";
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getEmojiFromServer(true, "");
+            getEmojiFromServer(true, "","");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
@@ -157,7 +159,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
 
                 if (mEmojiList.size() >= PAGE_LIMIT) {
                     AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mEmojiList.size());
-                    getEmojiFromServer(false, "");
+                    getEmojiFromServer(false, "",categories);
                     mAdapter.addLoader();
                 }
             }
@@ -185,7 +187,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
     }
 
 
-    private void getEmojiFromServer(final boolean isRefreshing, final String searchKeyword) {
+    private void getEmojiFromServer(final boolean isRefreshing, final String searchKeyword,final String categories) {
 
         //remove wi-fi symbol when response got
         if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
@@ -210,7 +212,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword,"", filterdata);
+                index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword,categories, filterdata);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
@@ -253,7 +255,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
                                         if (searchKeyword.length() != 0) {
                                             txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                         } else {
-                                            txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                            txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
                                         }
                                         showNoDataFound();
                                     }
@@ -274,7 +276,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
                                             if (searchKeyword.length() != 0) {
                                                 txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                             } else {
-                                                txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                                txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
                                             }
                                             rcDesignList.setVisibility(View.GONE);
                                         }
@@ -297,7 +299,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
                                 if (searchKeyword.length() != 0) {
                                     txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                 } else {
-                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                    txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
                                 }
                                 showNoDataFound();
                             }
@@ -342,7 +344,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
 
                                 @Override
                                 public void onRetryClickListener(int reqCode) {
-                                    getEmojiFromServer(isRefreshing, searchKeyword);
+                                    getEmojiFromServer(isRefreshing, searchKeyword,categories);
                                 }
                             }, 0);
                         } else {
@@ -361,4 +363,17 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
         mHostActivity = (FanHomeActivity) context;
     }
 
+    public void filterData(String categories, String filterdata) {
+        this.categories = categories;
+        mCurrentPage=0;
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            mEmojiList.clear();
+            this.filterdata=filterdata;
+            getEmojiFromServer(false, "", categories);
+        } else {
+            swipeRefresh.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
+
+    }
 }

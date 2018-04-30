@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -26,11 +27,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
-import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
-import com.sticker_android.controller.activities.designer.addnew.AddNewDesignActivity;
+import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
-import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.model.enums.ProductStatus;
 import com.sticker_android.model.interfaces.DesignerActionListener;
 import com.sticker_android.network.ApiCall;
@@ -46,12 +45,12 @@ import java.util.ArrayList;
 import retrofit2.Call;
 
 /**
- * Created by user on 26/4/18.
+ * Created by user on 30/4/18.
  */
 
-public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CorporateListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final String TAG = ContentForApprovalAdapter.class.getSimpleName();
+    private final String TAG = DesignListAdapter.class.getSimpleName();
     private ArrayList<Product> mItems;
     private Context context;
     public boolean isLoaderVisible;
@@ -70,24 +69,26 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView imvContainer;
-        public CardView cardItem;
-        public ProgressBar pgrImage;
-        public TextView tvStatus, tvDesciption;
+        public ImageView imvOfAds;
+        public TextView tvProductTitle, tvStatus, tvDesciption, tvTime, tvDownloads;
+        public CheckBox checkboxLike, checkboxShare;
         public ImageButton imvBtnEditRemove;
-        TextView tvTitle;
-        TextView tvFeatured;
+        public CardView cardItem;
+        public ProgressBar pbLoader;
 
         public ViewHolder(View view) {
             super(view);
-            tvDesciption = (TextView) view.findViewById(R.id.tv_add_product_item_description);
-            cardItem = (CardView) view.findViewById(R.id.card_view);
-            imvContainer = (ImageView) view.findViewById(R.id.imvContainer);
-            pgrImage = (ProgressBar) view.findViewById(R.id.pgrImage);
+            imvOfAds = (ImageView) view.findViewById(R.id.imvOfAds);
+            tvProductTitle = (TextView) view.findViewById(R.id.tv_add_product_title);
             tvStatus = (TextView) view.findViewById(R.id.tv_add_product_status);
+            tvDesciption = (TextView) view.findViewById(R.id.tv_add_product_item_description);
+            checkboxLike = (CheckBox) view.findViewById(R.id.checkboxLike);
+            checkboxShare = (CheckBox) view.findViewById(R.id.checkboxShare);
             imvBtnEditRemove = (ImageButton) view.findViewById(R.id.imvBtnEditRemove);
-            tvTitle = (TextView) view.findViewById(R.id.tv_add_product_title);
-            tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
+            tvTime = (TextView) view.findViewById(R.id.tvTime);
+            tvDownloads = (TextView) view.findViewById(R.id.tvDownloads);
+            cardItem = (CardView) view.findViewById(R.id.card_view);
+            pbLoader = (ProgressBar) view.findViewById(R.id.pgrImage);
         }
     }
 
@@ -102,7 +103,7 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ContentForApprovalAdapter(Context cnxt) {
+    public CorporateListAdaptor(Context cnxt) {
         mItems = new ArrayList<>();
         context = cnxt;
     }
@@ -192,7 +193,7 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
             return vh;
         } else {
             // create a new view
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rec_item_content_approval, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_design_items, parent, false);
             // set the view's size, margins, paddings and layout parameters
             final ViewHolder vh = new ViewHolder(v);
 
@@ -201,36 +202,23 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                 public void onClick(View view) {
                     int position = vh.getAdapterPosition();
                     Product product = mItems.get(position);
-                    //moveToDetails(product);
+                    productItemClickListener.onProductItemClick(product);
+                    Bundle bundle = new Bundle();
+
+                    bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
+
+                    Intent intent = new Intent(context, ProductDetailsActivity.class);
+
+                    intent.putExtras(bundle);
+
+                    ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
+
+                    ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
+                            R.anim.activity_animation_exit);
+
                 }
             });
             return vh;
-        }
-    }
-
-    private void moveToDetails(Product product, String type) {
-        Bundle bundle = new Bundle();
-
-        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
-
-        if (product.getType().equals("ads") || product.getType().equals("product")) {
-
-            Intent intent = new Intent(context, RenewAdandProductActivity.class);
-            bundle.putString("edit", type);
-            intent.putExtras(bundle);
-            ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
-
-            ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
-                    R.anim.activity_animation_exit);
-        } else {
-            Intent intent = new Intent(context, AddNewDesignActivity.class);
-            bundle.putString("edit", type);
-            intent.putExtras(bundle);
-            ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
-
-            ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
-                    R.anim.activity_animation_exit);
-
         }
     }
 
@@ -246,12 +234,24 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
         } else {
             final ViewHolder itemHolder = (ViewHolder) holder;
             final Product productItem = mItems.get(position);
+            if (productItem.isLike > 0) {
+                itemHolder.checkboxLike.setChecked(true);
+                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+            } else {
+                itemHolder.checkboxLike.setChecked(false);
+                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+
+            }
+
+            itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
+            itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
             itemHolder.imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showPopup(v, position, "pending", productItem);
                 }
             });
+            itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));
 
             if (productItem.getDescription() != null && productItem.getDescription().trim().length() != 0) {
                 itemHolder.tvDesciption.setVisibility(View.VISIBLE);
@@ -259,11 +259,7 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
             } else {
                 itemHolder.tvDesciption.setVisibility(View.GONE);
             }
-//            itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context).replaceAll("about", "").trim());
-            if (productItem.isFeatured > 0) {
-                itemHolder.tvFeatured.setVisibility(View.VISIBLE);
-            } else
-                itemHolder.tvFeatured.setVisibility(View.GONE);
+            itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context).replaceAll("about", "").trim());
 
             int status = productItem.productStatus;
             AppLogger.error(TAG, "Status => " + status);
@@ -280,30 +276,27 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                 itemHolder.tvStatus.setTextColor(Color.parseColor("#1D93FB"));
                 itemHolder.tvStatus.setText(R.string.pending);
             }
-            if (productItem.getType().equalsIgnoreCase(DesignType.ads.getType().toLowerCase()) || productItem.getType().equalsIgnoreCase(DesignType.products.getType().toLowerCase())) {
-                ((ViewHolder) holder).tvStatus.setTextColor(context.getResources().getColor(R.color.colorCorporateText));
-            }
 
             if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
-                itemHolder.pgrImage.setVisibility(View.VISIBLE);
+                itemHolder.pbLoader.setVisibility(View.VISIBLE);
                 Glide.with(context)
                         .load(productItem.getImagePath())
                         .listener(new RequestListener<String, GlideDrawable>() {
                             @Override
                             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                itemHolder.pgrImage.setVisibility(View.GONE);
+                                itemHolder.pbLoader.setVisibility(View.GONE);
                                 return false;
                             }
 
                             @Override
                             public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                itemHolder.pgrImage.setVisibility(View.GONE);
+                                itemHolder.pbLoader.setVisibility(View.GONE);
                                 return false;
                             }
                         })
-                        .into(itemHolder.imvContainer);
+                        .into(itemHolder.imvOfAds);
             } else {
-                itemHolder.imvContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
+                itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
             }
         }
     }
@@ -350,7 +343,6 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                     case editId:
                         AppLogger.error(TAG, "Edit item");
                         designerActionListener.onEdit(product);
-                        moveToDetails(product, "Edit");
                         break;
                     case removeId:
                         AppLogger.error(TAG, "Remove item");
@@ -368,7 +360,6 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                     case reSubmitId:
                         AppLogger.error(TAG, "Re submit item");
                         designerActionListener.onResubmit(product);
-                        moveToDetails(product, "Repost");
                         break;
                 }
                 return false;
@@ -398,3 +389,4 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
         });
     }
 }
+

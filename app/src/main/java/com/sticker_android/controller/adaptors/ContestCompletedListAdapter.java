@@ -50,10 +50,10 @@ public class ContestCompletedListAdapter extends RecyclerView.Adapter<ContestCom
 
         final ContestCompleted listItem = mItems.get(position);
 
-        if(listItem.isWinner>0) {
+        if (listItem.isWinner > 0) {
             holder.tvContestStatus.setText("Winner");
-        holder.tvContestStatus.setTextColor(context.getResources().getColor(R.color.colorHomeGreen));
-        }else {
+            holder.tvContestStatus.setTextColor(context.getResources().getColor(R.color.colorHomeGreen));
+        } else {
             holder.tvContestStatus.setTextColor(Color.RED);
             holder.tvContestStatus.setText("Loose");
         }
@@ -79,7 +79,10 @@ public class ContestCompletedListAdapter extends RecyclerView.Adapter<ContestCom
                         }
                     })
                     .into(holder.imvOfContest);
-
+        if (listItem.productList.isFeatured > 0)
+            holder.tvFeatured.setVisibility(View.VISIBLE);
+        else
+            holder.tvFeatured.setVisibility(View.GONE);
 
     }
 
@@ -100,18 +103,20 @@ public class ContestCompletedListAdapter extends RecyclerView.Adapter<ContestCom
         ImageView imvSelected, imvOfContest, imvProductImage;
         CardView cardItem;
         ProgressBar pgrImage;
-        TextView totalNumberOfCount,tvContestStatus;
+        TextView totalNumberOfCount, tvContestStatus;
+        TextView tvFeatured;
 
         public CompletedListViewHolder(View view) {
 
             super(view);
-            cardItem           =     (CardView) itemView.findViewById(R.id.card_view);
-            imvSelected        =     (ImageView) itemView.findViewById(R.id.imvSelected);
-            imvOfContest       =     (ImageView) itemView.findViewById(R.id.imvOfContest);
-            imvProductImage    =     (ImageView) itemView.findViewById(R.id.imvProductImage);
-            pgrImage           =     (ProgressBar) itemView.findViewById(R.id.pgrImage);
-            totalNumberOfCount =    (TextView) itemView.findViewById(R.id.tv_total_count_number);
-            tvContestStatus    =    (TextView)itemView.findViewById(R.id.tv_contest_status);
+            cardItem = (CardView) itemView.findViewById(R.id.card_view);
+            imvSelected = (ImageView) itemView.findViewById(R.id.imvSelected);
+            imvOfContest = (ImageView) itemView.findViewById(R.id.imvOfContest);
+            imvProductImage = (ImageView) itemView.findViewById(R.id.imvProductImage);
+            pgrImage = (ProgressBar) itemView.findViewById(R.id.pgrImage);
+            totalNumberOfCount = (TextView) itemView.findViewById(R.id.tv_total_count_number);
+            tvContestStatus = (TextView) itemView.findViewById(R.id.tv_contest_status);
+            tvFeatured = (TextView) itemView.findViewById(R.id.tvFeatured);
         }
 
 

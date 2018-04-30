@@ -224,7 +224,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
     private void productListApi(int index, final String search) {
         isLoading = true;
         if(swipeRefreshLayout!=null)
-        swipeRefreshLayout.setRefreshing(true);
+            swipeRefreshLayout.setRefreshing(true);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
                 index, 50, "ads", "product_list", search);
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
@@ -232,7 +232,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             public void onSuccess(ApiResponse apiResponse) {
                 isLoading = false;
                 if(swipeRefreshLayout!=null)
-                swipeRefreshLayout.setRefreshing(false);
+                    swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     if(productList!=null)
                         productList.clear();
@@ -270,7 +270,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
                 if(swipeRefreshLayout!=null)
-                swipeRefreshLayout.setRefreshing(false);
+                    swipeRefreshLayout.setRefreshing(false);
                 isLoading = false;
             }
         });
@@ -312,6 +312,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     case R.id.repost:
                         moveToActivity(position, "Repost");
                         break;
+
                 }
                 return false;
             }
@@ -484,8 +485,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             final Product product = productList.get(position);
 
             ((ProductHolder) holder).checkboxLike.setText(Utils.format(product.statics.likeCount));
-            ((ProductHolder) holder).checkboxShare.setText(Utils.format(0));
-            ((ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
+         /*   ((ProductHolder) holder).checkboxShare.setText(Utils.format(0));
+         */   ((ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showPopup(v, position, product);

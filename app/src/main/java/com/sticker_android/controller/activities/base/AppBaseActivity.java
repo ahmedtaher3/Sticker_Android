@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,7 +93,7 @@ public abstract class AppBaseActivity extends AppCompatActivity {
 
     protected void startNewActivityWithData(Intent intent){
         startActivity(intent);
-        overridePendingTransition(R.anim.activity_animation_enter,
+               overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
 
     }
@@ -241,5 +242,14 @@ public abstract class AppBaseActivity extends AppCompatActivity {
 
 
 
+    public void clearBackStack() {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry first = manager
+                    .getBackStackEntryAt(0);
+            manager.popBackStack(first.getId(),
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
 
 }

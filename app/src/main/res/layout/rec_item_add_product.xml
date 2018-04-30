@@ -24,7 +24,7 @@
                 android:background="@drawable/background_gray"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <ImageView
+               <ImageView
                     android:id="@+id/imvOfAds"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/image_height_add_product"
@@ -37,6 +37,21 @@
                     android:layout_width="@dimen/sticker_progress_loader_size"
                     android:layout_height="@dimen/sticker_progress_loader_size"
                     android:layout_centerInParent="true" />
+                <TextView
+                    android:alpha=".75"
+                    android:textSize="15sp"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:id="@+id/tvFeatured"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/drawable_featured"
+                    android:gravity="center"
+                    android:paddingRight="@dimen/dp_5"
+                    android:paddingLeft="@dimen/dp_5"
+                    android:text="Featured"
+                    android:textColor="@android:color/white" />
+
             </RelativeLayout>
 
             <RelativeLayout

@@ -13,7 +13,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,10 +35,8 @@ import com.sticker_android.controller.activities.corporate.RenewAdandProductActi
 import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
-import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
-import com.sticker_android.model.interfaces.CloseSearch;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -489,7 +486,6 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 final Product product = productLists.get(position);
 
                 ((ProductAdaptor.ProductHolder) holder).checkboxLike.setText(Utils.format(product.statics.likeCount));
-                ((ProductAdaptor.ProductHolder) holder).checkboxShare.setText(Utils.format(0));
                 ((ProductAdaptor.ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -513,6 +509,11 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                     ((ProductAdaptor.ProductHolder) holder).tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
 
                 }
+                if (product.isFeatured > 0) {
+                    ((ProductAdaptor.ProductHolder) holder).tvFeatured.setVisibility(View.VISIBLE);
+                } else
+                    ((ProductAdaptor.ProductHolder) holder).tvFeatured.setVisibility(View.GONE);
+
                 ((ProductAdaptor.ProductHolder) holder).tvStatus.setText(status);
            /*     Glide.with(context)
                         .load(product.getImagePath())
@@ -591,6 +592,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             public ImageButton imvBtnEditRemove;
             public CardView cardItem;
             public ProgressBar pgrImage;
+            public  TextView tvFeatured;
 
             public ProductHolder(View view) {
                 super(view);
@@ -603,7 +605,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 imvBtnEditRemove = (ImageButton) view.findViewById(R.id.imvBtnEditRemove);
                 tvTime = (TextView) view.findViewById(R.id.tvTime);
                 cardItem = (CardView) view.findViewById(R.id.card_view);
-                pgrImage = (ProgressBar) view.findViewById(R.id.pgrImage);
+                pgrImage  = (ProgressBar) view.findViewById(R.id.pgrImage);
+                tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
             }
         }
 

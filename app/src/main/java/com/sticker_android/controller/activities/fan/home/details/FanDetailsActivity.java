@@ -1,21 +1,15 @@
 package com.sticker_android.controller.activities.fan.home.details;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -28,18 +22,12 @@ import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
-import com.sticker_android.controller.activities.designer.addnew.AddNewDesignActivity;
-import com.sticker_android.controller.activities.designer.addnew.DesignDetailActivity;
-import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
-import com.sticker_android.controller.adaptors.FanListAdaptor;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.AppLogger;
-import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -64,6 +52,7 @@ public class FanDetailsActivity extends AppBaseActivity {
     private Product mProduct;
     private TimeUtility timeUtility = new TimeUtility();
     private TextView tvDescription;
+    private TextView tvFeatured;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +79,7 @@ public class FanDetailsActivity extends AppBaseActivity {
         if (mProduct != null) {
             setProductDetail();
         }
+        measureImageWidthHeight();
     }
 
     private void getIntentValues() {
@@ -99,17 +89,33 @@ public class FanDetailsActivity extends AppBaseActivity {
         }
     }
 
+    private void measureImageWidthHeight() {
+
+        ViewTreeObserver vto = imvProductImage.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                imvProductImage.getViewTreeObserver().removeOnPreDrawListener(this);
+                int finalWidth = imvProductImage.getMeasuredWidth();
+                int height = finalWidth * 3 /5;
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imvProductImage.getLayoutParams();
+
+                //      LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imvOfAds.getLayoutParams();
+                layoutParams.height = height;
+                imvProductImage.setLayoutParams(layoutParams);
+                return true;
+            }
+        });
+    }
+
     /**
      * will set the product detail
      */
     private void setProductDetail() {
 
         if (mProduct != null) {
-            if (mProduct.getType().equals(mProduct.getType().equalsIgnoreCase(DesignType.stickers.getType().toLowerCase()))
-                    || mProduct.getType().equalsIgnoreCase(DesignType.gif.getType()) || mProduct.getType().equalsIgnoreCase(DesignType.emoji.getType())) {
-                tvDownloads.setVisibility(View.VISIBLE);
+            if (mProduct.getType().equalsIgnoreCase(DesignType.stickers.getType().toLowerCase()) || mProduct.getType().equalsIgnoreCase(DesignType.gif.getType()) || mProduct.getType().equalsIgnoreCase(DesignType.emoji.getType())) {
                 tvDescription.setVisibility(View.GONE);
-
+                tvDownloads.setVisibility(View.VISIBLE);
             } else {
                 tvDownloads.setVisibility(View.GONE);
                 tvDescription.setVisibility(View.VISIBLE);
@@ -124,9 +130,11 @@ public class FanDetailsActivity extends AppBaseActivity {
                 checkboxLike.setButtonDrawable(getResources().getDrawable(R.drawable.ic_like));
 
             }
-
+            if (mProduct.isFeatured > 0) {
+                tvFeatured.setVisibility(View.VISIBLE);
+            } else
+                tvFeatured.setVisibility(View.GONE);
             checkboxLike.setText(Utils.format(mProduct.statics.likeCount));
-            checkboxShare.setText(Utils.format(mProduct.statics.shareCount));
             tvDownloads.setText(Utils.format(mProduct.statics.downloadCount));
             tvName.setText(mProduct.userName);
             tvProductTitle.setText(Utils.capitlizeText(mProduct.getProductname()));
@@ -236,6 +244,7 @@ public class FanDetailsActivity extends AppBaseActivity {
         cardItem = (CardView) findViewById(R.id.card_view);
         pbLoader = (ProgressBar) findViewById(R.id.pgrImage);
         tvDescription = (TextView) findViewById(R.id.tv_add_product_item_description);
+        tvFeatured = (TextView) findViewById(R.id.tvFeatured);
     }
 
     @Override
@@ -264,13 +273,14 @@ public class FanDetailsActivity extends AppBaseActivity {
 
             }
         });
-       checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-           @Override
-           public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-               share();
-           }
-       });
+        checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                share();
+            }
+        });
     }
+
     private void share() {
 
         checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -278,7 +288,7 @@ public class FanDetailsActivity extends AppBaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                String shareBody = "Image url "+mProduct.getImagePath();
+                String shareBody = "Image url " + mProduct.getImagePath();
                 String shareSub = "Share data";
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
@@ -287,6 +297,7 @@ public class FanDetailsActivity extends AppBaseActivity {
             }
         });
     }
+
     private void likeApi(final int i) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId()
@@ -297,7 +308,7 @@ public class FanDetailsActivity extends AppBaseActivity {
                 if (apiResponse.status) {
                     mProduct.isLike = i;
                     mProduct.statics.likeCount = apiResponse.paylpad.statics.likeCount;
-                    checkboxLike.setText(""+mProduct.statics.likeCount);
+                    checkboxLike.setText("" + mProduct.statics.likeCount);
                 }
             }
 
@@ -331,7 +342,7 @@ public class FanDetailsActivity extends AppBaseActivity {
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
                     mProduct.statics.downloadCount++;
-                    checkboxLike.setText(""+mProduct.statics.downloadCount);
+                    checkboxLike.setText("" + mProduct.statics.downloadCount);
                 }
             }
 

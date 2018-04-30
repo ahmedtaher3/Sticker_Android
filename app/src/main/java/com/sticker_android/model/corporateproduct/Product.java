@@ -19,7 +19,7 @@ public class Product implements Parcelable {
     private String productname;
 
     @SerializedName("type")
-    private String type="load";
+    private String type = "load";
 
     @SerializedName("description")
     private String description;
@@ -79,11 +79,12 @@ public class Product implements Parcelable {
 
     @SerializedName("statics")
     public Statics statics;
-
+    @SerializedName("is_feature")
+    public int isFeatured;
 
     @Override
     public boolean equals(Object obj) {
-        return productid == ((Product)obj).productid;
+        return productid == ((Product) obj).productid;
     }
 
     @Override
@@ -139,7 +140,8 @@ public class Product implements Parcelable {
         this.imagePath = imagePath;
     }
 
-    public Product() {}
+    public Product() {
+    }
 
     @Override
     public int describeContents() {
@@ -164,6 +166,7 @@ public class Product implements Parcelable {
         dest.writeInt(this.categoryId);
         dest.writeInt(this.productStatus);
         dest.writeParcelable(this.statics, flags);
+        dest.writeInt(this.isFeatured);
     }
 
     protected Product(Parcel in) {
@@ -183,6 +186,7 @@ public class Product implements Parcelable {
         this.categoryId = in.readInt();
         this.productStatus = in.readInt();
         this.statics = in.readParcelable(Statics.class.getClassLoader());
+        this.isFeatured = in.readInt();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {

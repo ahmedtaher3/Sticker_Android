@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -322,6 +323,7 @@ public class FanHomeActivity extends AppBaseActivity
 
     private void exitOnBack() {
         if (doubleBackToExitPressedOnce) {
+            clearBackStack();
             super.onBackPressed();
             return;
         }
@@ -348,6 +350,7 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -357,8 +360,7 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
     private void userLogout() {
-        appPref.saveUserObject(new User());
-        appPref.setLoginFlag(false);
+        appPref.userLogout();
         Intent intent = new Intent(getActivity(), SigninActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -396,6 +398,17 @@ public class FanHomeActivity extends AppBaseActivity
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
             mProfileFragment.onActivityResult(requestCode, resultCode, data);
+        }
+
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 131:
+                    for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                        fragment.onActivityResult(requestCode, resultCode, data);
+                    }
+                    break;
+            }
+
         }
     }
 

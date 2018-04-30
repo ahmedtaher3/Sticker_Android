@@ -60,6 +60,9 @@ public class FanHomeAdsFragment extends BaseFragment implements SwipeRefreshLayo
     private int PAGE_LIMIT;
     private FanListAdaptor mAdapter;
 String filterData="";
+    private String categories="";
+    private String filterdata="";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,7 +78,7 @@ String filterData="";
         llNoDataFound.setVisibility(View.GONE);
         mAdsList = new ArrayList<>();
         mCurrentPage = 0;
-        getAdsFromServer(false, "");
+        getAdsFromServer(false, "","");
         setRecScrollListener();
         return view;
     }
@@ -127,7 +130,7 @@ String filterData="";
         mAdsList.clear();
         mAdapter.setData(mAdsList);
         mCurrentPage=0;
-        getAdsFromServer(false,query );
+        getAdsFromServer(false,query,"" );
     }
     private void showNoDataFound() {
         llNoDataFound.setVisibility(View.VISIBLE);
@@ -136,8 +139,9 @@ String filterData="";
 
     @Override
     public void onRefresh() {
+        categories="";
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getAdsFromServer(true, "");
+            getAdsFromServer(true, "","");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
@@ -153,7 +157,7 @@ String filterData="";
 
                 if (mAdsList.size() >= PAGE_LIMIT) {
                     AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mAdsList.size());
-                    getAdsFromServer(false, "");
+                    getAdsFromServer(false, "",categories);
                     mAdapter.addLoader();
                 }
             }
@@ -181,7 +185,7 @@ String filterData="";
     }
 
 
-    private void getAdsFromServer(final boolean isRefreshing, final String searchKeyword) {
+    private void getAdsFromServer(final boolean isRefreshing, final String searchKeyword, final String categories) {
 
         //remove wi-fi symbol when response got
         if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
@@ -206,7 +210,7 @@ String filterData="";
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, "ads", "all_product_list", searchKeyword,"", filterData);
+                index, limit, "ads", "all_product_list", searchKeyword,categories, filterData);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
@@ -249,7 +253,7 @@ String filterData="";
                                         if (searchKeyword.length() != 0) {
                                             txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                         } else {
-                                            txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                            txtNoDataFoundContent.setText(R.string.no_ads_uploaded_yet);
                                         }
                                         showNoDataFound();
                                     }
@@ -270,7 +274,7 @@ String filterData="";
                                             if (searchKeyword.length() != 0) {
                                                 txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                             } else {
-                                                txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                                txtNoDataFoundContent.setText(R.string.no_ads_uploaded_yet);
                                             }
                                             rcDesignList.setVisibility(View.GONE);
                                         }
@@ -293,7 +297,7 @@ String filterData="";
                                 if (searchKeyword.length() != 0) {
                                     txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                 } else {
-                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                    txtNoDataFoundContent.setText(R.string.no_ads_uploaded_yet);
                                 }
                                 showNoDataFound();
                             }
@@ -338,7 +342,7 @@ String filterData="";
 
                                 @Override
                                 public void onRetryClickListener(int reqCode) {
-                                    getAdsFromServer(isRefreshing, searchKeyword);
+                                    getAdsFromServer(isRefreshing, searchKeyword,categories);
                                 }
                             }, 0);
                         } else {
@@ -357,4 +361,17 @@ String filterData="";
         mHostActivity = (FanHomeActivity) context;
     }
 
+    public void filterData(String categories, String filterdata) {
+        this.categories = categories;
+        mCurrentPage=0;
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            mAdsList.clear();
+            this.filterdata=filterdata;
+            getAdsFromServer(false, "", categories);
+        } else {
+            swipeRefresh.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
+
+    }
 }

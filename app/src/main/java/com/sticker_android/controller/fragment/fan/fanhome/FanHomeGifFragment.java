@@ -63,6 +63,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
     private int PAGE_LIMIT;
     private FanListAdaptor mAdapter;
     String filterdata="";
+    private String categories="";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,7 +80,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
         llNoDataFound.setVisibility(View.GONE);
         mGifList = new ArrayList<>();
         mCurrentPage = 0;
-        getGifFromServer(false, "");
+        getGifFromServer(false, "","");
         setRecScrollListener();
         return view;
     }
@@ -132,7 +133,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
         mGifList.clear();
         mAdapter.setData(mGifList);
         mCurrentPage=0;
-        getGifFromServer(false,query );
+        getGifFromServer(false,query ,"");
     }
     private void showNoDataFound() {
         llNoDataFound.setVisibility(View.VISIBLE);
@@ -141,8 +142,9 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
 
     @Override
     public void onRefresh() {
+        categories="";
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getGifFromServer(true, "");
+            getGifFromServer(true, "","");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
@@ -158,7 +160,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
 
                 if (mGifList.size() >= PAGE_LIMIT) {
                     AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mGifList.size());
-                    getGifFromServer(false, "");
+                    getGifFromServer(false, "",categories);
                     mAdapter.addLoader();
                 }
             }
@@ -186,7 +188,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
     }
 
 
-    private void getGifFromServer(final boolean isRefreshing, final String searchKeyword) {
+    private void getGifFromServer(final boolean isRefreshing, final String searchKeyword, final String categories) {
 
         //remove wi-fi symbol when response got
         if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
@@ -211,7 +213,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword,""
+                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword,categories
         , filterdata);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
@@ -344,7 +346,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
 
                                 @Override
                                 public void onRetryClickListener(int reqCode) {
-                                    getGifFromServer(isRefreshing, searchKeyword);
+                                    getGifFromServer(isRefreshing, searchKeyword,categories);
                                 }
                             }, 0);
                         } else {
@@ -364,4 +366,17 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
     }
 
 
+    public void filterData(String categories, String filterdata) {
+        this.categories = categories;
+        mCurrentPage=0;
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            mGifList.clear();
+            this.filterdata=filterdata;
+            getGifFromServer(false, "", categories);
+        } else {
+            swipeRefresh.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
+
+    }
 }

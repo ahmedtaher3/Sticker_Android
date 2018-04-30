@@ -89,7 +89,10 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
                         }
                     })
                     .into(holder.imvOfContest);
-
+        if (listItem.productList.isFeatured > 0)
+            holder.tvFeatured.setVisibility(View.VISIBLE);
+        else
+            holder.tvFeatured.setVisibility(View.GONE);
 
     }
 
@@ -99,7 +102,7 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
     }
 
     public void setData(ArrayList<OngoingContest> data) {
-        if(data!=null) {
+        if (data != null) {
             mItems = new ArrayList<>();
             mItems.addAll(data);
             notifyDataSetChanged();
@@ -113,6 +116,7 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
         public ProgressBar pgrImage;
         public TextView tvEndDate;
         public CheckBox checkboxLike;
+        public TextView tvFeatured;
 
         public OngoingListViewHolder(View view) {
 
@@ -124,6 +128,7 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
             pgrImage = (ProgressBar) view.findViewById(R.id.pgrImage);
             tvEndDate = (TextView) view.findViewById(R.id.tv_name);
             checkboxLike = (CheckBox) view.findViewById(R.id.checkboxLike);
+            tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
         }
 
 

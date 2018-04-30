@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.terms.TermsActivity;
@@ -137,7 +138,7 @@ public class SignUpActivity extends AppBaseActivity {
      * Method is used to register the user
      */
     private void apiSignUp() {
-
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         String deviceId = Utils.getDeviceId(this);
         int language = getSelectedLanguage();
 
@@ -146,7 +147,7 @@ public class SignUpActivity extends AppBaseActivity {
 
         Call<ApiResponse> apiResponseCall= RestClient.getService().userRegistration(language,edtEmail.getText().toString(),
                 edtPassword.getText().toString(),edtFirstName.getText().toString(),edtLastName.getText().toString(),
-                type,"android","111",deviceId);
+                type,"android",refreshedToken,deviceId);
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

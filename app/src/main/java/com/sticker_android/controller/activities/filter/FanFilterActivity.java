@@ -1,17 +1,9 @@
 package com.sticker_android.controller.activities.filter;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
-import android.util.DisplayMetrics;
 import android.view.ActionMode;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -37,7 +30,6 @@ import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.sharedpref.AppPref;
-import com.sticker_android.view.BottomSheetFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +44,6 @@ public class FanFilterActivity extends AppBaseActivity {
     private RadioButton chkMostDownload, chkRecentUpload;
     private ListView listFilter;
     com.sticker_android.view.BottomSheetFragment.IFilter iFilter;
-    private ArrayAdapter<String> adapter;
-    private RadioGroup radioGroup;
     private User mUserdata;
 //    this.categoryArrayList = categoryArrayList;
 
@@ -61,6 +51,8 @@ public class FanFilterActivity extends AppBaseActivity {
     private AppPref appPref;
     private ArrayList<Category> categoryList = new ArrayList<>();
     private CustomListViewAdapter customListViewAdapter;
+    ProgressBar progressBar;
+    private RadioGroup radioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +76,12 @@ public class FanFilterActivity extends AppBaseActivity {
 
     @Override
     protected void setViewListeners() {
+
         imageClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(RESULT_OK);
+                setResult(RESULT_CANCELED);
+                onBackPressed();
             }
         });
 
@@ -98,7 +92,7 @@ public class FanFilterActivity extends AppBaseActivity {
                 ArrayList<Integer> categoryArray = new ArrayList<>();
                 AppLogger.debug("vfdjvnjf", "nvd,fv");
 
-                for (Category category : categoryArrayList
+                for (Category category : categoryList
                         ) {
                     if (category.isChecked) {
                         categoryArray.add(category.categoryId);
@@ -120,9 +114,13 @@ public class FanFilterActivity extends AppBaseActivity {
                 } else if (chkMostDownload.isChecked()) {
                     filterDataName = "most_download";
                 }
-                Intent intent=new Intent();
-                intent.putExtra("categoryList")
-               setResult(RESULT_OK,);
+                Bundle b = new Bundle();
+                b.putParcelableArrayList("categoryList", categoryList);
+                b.putString("filterBy", filterDataName);
+                Intent intent = new Intent();
+                intent.putExtras(b);
+                setResult(RESULT_OK, intent);
+                onBackPressed();
 
             }
         });
@@ -159,21 +157,51 @@ public class FanFilterActivity extends AppBaseActivity {
 
                 if (buttonView.isPressed()) {
                     if (isChecked) {
-
+                        if (categoryList != null) {
+                            //  selectAll();
+                            AppLogger.debug("djncdc", "xmdvndmv" + customListViewAdapter.getCount());
+                            for (int i = 0; i < customListViewAdapter.getCount(); i++) {
+                                listFilter.setItemChecked(i, true);
+                            }
+                            customListViewAdapter.notifyDataSetChanged();
+                        }
+                    }else {
+                        for (int i = 0; i < customListViewAdapter.getCount(); i++) {
+                            listFilter.setItemChecked(i, false);
+                        }
+                        customListViewAdapter.notifyDataSetChanged();
                     }
                 }
             }
         });
     }
 
-    private void fetchCategoryApi() {
+    private void selectAll() {
 
+        for (Category category :
+                categoryList) {
+            category.isChecked = true;
+        }
+        if (categoryList != null) {
+            ArrayList<Category> tempList = new ArrayList<>();
+            tempList.addAll(categoryList);
+            categoryList.clear();
+            customListViewAdapter.setData(tempList);
+        }
+    }
+
+    private void fetchCategoryApi() {
+        if (progressBar != null)
+            progressBar.setVisibility(View.VISIBLE);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiCorporateCategoryList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey()
                 , mUserdata.getId(), "corporate_category");
 
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
+                if (progressBar != null)
+                    progressBar.setVisibility(View.GONE);
+
                 if (apiResponse.status) {
                     categoryList = apiResponse.paylpad.corporateCategories;
                     customListViewAdapter.setData(categoryList);
@@ -183,7 +211,10 @@ public class FanFilterActivity extends AppBaseActivity {
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-
+                if (progressBar != null)
+                    progressBar.setVisibility(View.GONE);
+                setResult(RESULT_CANCELED);
+                onBackPressed();
             }
         });
 
@@ -206,6 +237,7 @@ public class FanFilterActivity extends AppBaseActivity {
         listFilter = (ListView) findViewById(R.id.listFilter);
         radioGroup = (RadioGroup) findViewById(R.id.radio_group);
         chkSelectAll = (CheckBox) findViewById(R.id.chkSelectAll);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
     }
 
     @Override
@@ -267,16 +299,18 @@ public class FanFilterActivity extends AppBaseActivity {
 
 
             final CustomListViewAdapter.ViewHolder finalHolder = holder;
-
+            holder.checkBoxMultipleSelect.setChecked(listFilter.isItemChecked(position));
+            rowItem.isChecked = listFilter.isItemChecked(position);
             holder.checkBoxMultipleSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (buttonView.isPressed()) {
                         if (isChecked) {
+                            chkSelectAll.setChecked(false);
                             rowItem.isChecked = true;
                         } else {
                             rowItem.isChecked = false;
-
+                            chkSelectAll.setChecked(false);
                         }
                     }
                 }
