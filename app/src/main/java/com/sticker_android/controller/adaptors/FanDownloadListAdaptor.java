@@ -66,6 +66,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
         public CardView cardItem;
         public ProgressBar pbLoader;
         public TextView tvName;
+        public TextView tvFeatured;
 
         public ViewHolder(View view) {
             super(view);
@@ -80,6 +81,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
             cardItem = (CardView) view.findViewById(R.id.card_view);
             pbLoader = (ProgressBar) view.findViewById(R.id.pgrImage);
             tvName = (TextView) view.findViewById(R.id.tv_name);
+            tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
         }
     }
 
@@ -99,7 +101,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
         context = cnxt;
         appPref = new AppPref(context);
         mUserdata = appPref.getUserInfo();
-     }
+    }
 
     public void setDesignerActionListener(DesignerActionListener actionListener) {
         this.designerActionListener = actionListener;
@@ -110,7 +112,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public void setData(ArrayList<FanContestDownload> data) {
-        if(data!=null) {
+        if (data != null) {
             mItems = new ArrayList<>();
             mItems.addAll(data);
             notifyDataSetChanged();
@@ -126,7 +128,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
     public void addLoader() {
         AppLogger.error(TAG, "Add loader... in adapter");
         FanContestDownload postItem = new FanContestDownload();
-        postItem.dummyId=-1;
+        postItem.dummyId = -1;
         mItems.add(postItem);
         new Handler().post(new Runnable() {
             @Override
@@ -140,7 +142,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
     public void removeLoader() {
         AppLogger.error(TAG, "Remove loader... from adapter");
         FanContestDownload postItem = new FanContestDownload();
-        postItem.dummyId=-1;
+        postItem.dummyId = -1;
         int index = mItems.indexOf(postItem);
         AppLogger.error(TAG, "Loader index => " + index);
         if (index != -1) {
@@ -218,18 +220,18 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
             final ViewHolder itemHolder = (ViewHolder) holder;
             final FanContestDownload productItem = mItems.get(position);
 
-
+            ((ViewHolder) holder).tvFeatured.setVisibility(View.GONE);
             if (productItem.productInfo.getType().equals("product") || productItem.productInfo.getType().equals("ads")) {
                 itemHolder.tvDownloads.setVisibility(View.GONE);
-            }else {
+            } else {
                 itemHolder.tvDesciption.setVisibility(View.GONE);
             }
-            if(productItem.productInfo.isLike>0){
+            if (productItem.productInfo.isLike > 0) {
                 itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
                 itemHolder.checkboxLike.setChecked(true);
-                AppLogger.debug(FanDownloadListAdaptor.class.getSimpleName(),"like is "+productItem.productInfo.isLike );
+                AppLogger.debug(FanDownloadListAdaptor.class.getSimpleName(), "like is " + productItem.productInfo.isLike);
 
-            }else {
+            } else {
                 itemHolder.checkboxLike.setChecked(false);
                 itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
             }
