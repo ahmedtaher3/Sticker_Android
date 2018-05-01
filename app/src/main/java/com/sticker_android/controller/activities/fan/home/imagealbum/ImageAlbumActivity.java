@@ -13,11 +13,13 @@ import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.GridViewAdapter;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.model.filter.FanFilter;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -25,7 +27,7 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 
-public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshLayout.OnRefreshListener, GridViewAdapter.OnProductItemClickListener {
 
     ArrayList<String> stringArrayList = new ArrayList<>();
     private GridView gridView;
@@ -65,7 +67,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
         });
 
         setAdaptor();
-        getFilterApi();
+        getFilterApi(false);
 
     }
 
@@ -131,29 +133,48 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
 
     private void setAdaptor() {
         gridViewAdapter = new GridViewAdapter(this);
+        gridViewAdapter.setOnProductClickListener(this);
         gridView.setAdapter(gridViewAdapter);
     }
 
 
-    private void getFilterApi() {
+    private void getFilterApi(final boolean isRefresh) {
 
-
+        if (isRefresh) {
+            swipeRefresh.setRefreshing(true);
+        } else {
+            llLoaderView.setVisibility(View.VISIBLE);
+        }
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiFilterList(userdata.getLanguageId(), userdata.getAuthrizedKey(),
                 userdata.getId(), 0, 1000, "", "filter_list", "emoji");
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
+                if (isRefresh) {
+                    swipeRefresh.setRefreshing(false);
+                } else {
+                    llLoaderView.setVisibility(View.GONE);
+                }
                 if (apiResponse.status) {
                     if (apiResponse.paylpad.fanFilterArrayList != null) {
+
                         gridViewAdapter.setData(apiResponse.paylpad.fanFilterArrayList);
                     }
+                    if (apiResponse.paylpad.fanFilterArrayList == null) {
+                        showNoDataFound();
+                    }
                 }
+
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-
+                if (isRefresh) {
+                    swipeRefresh.setRefreshing(false);
+                } else {
+                    llLoaderView.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -166,7 +187,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(this)) {
-            getFilterApi();
+            getFilterApi(true);
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(this, getString(R.string.pls_check_ur_internet_connection));
@@ -174,4 +195,8 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
     }
 
 
+    @Override
+    public void onProductItemClick(FanFilter product) {
+
+    }
 }

@@ -82,14 +82,15 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
         return view;
     }
 
-  /*  @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem item = menu.findItem(R.id.action_settings);
-        item.setVisible(false);
-    }
+    /*  @Override
+      public void onPrepareOptionsMenu(Menu menu) {
+          MenuItem item = menu.findItem(R.id.action_settings);
+          item.setVisible(false);
+      }
 
 
-*/    private void init() {
+  */
+    private void init() {
         appPref = new AppPref(getActivity());
     }
 
@@ -179,9 +180,8 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
         String type = DesignType.stickers.getType();
         if (tabLayout.getSelectedTabPosition() == 0) {
             type = DesignType.stickers.getType();
+
         } else if (tabLayout.getSelectedTabPosition() == 1) {
-            type = DesignType.gif.getType().toUpperCase(Locale.US);
-        } else if (tabLayout.getSelectedTabPosition() == 2) {
             type = DesignType.emoji.getType();
         }
         return type;
@@ -200,11 +200,6 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
         TabLayout.Tab stickerTab = tabLayout.newTab();
         stickerTab.setText(getString(R.string.stickers)); // set the Text for the first Tab
         tabLayout.addTab(stickerTab);
-
-        TabLayout.Tab gifTab = tabLayout.newTab();
-        gifTab.setText(getString(R.string.gif)); // set the Text for the first Tab
-        tabLayout.addTab(gifTab);
-
         TabLayout.Tab emojiTab = tabLayout.newTab();
         emojiTab.setText(getString(R.string.emoji)); // set the Text for the first Tab
         tabLayout.addTab(emojiTab);
@@ -284,22 +279,20 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
         }
         searchView.setIconified(false);
         searchView.clearFocus();
-        MenuItemCompat.collapseActionView(item);
+      //  MenuItemCompat.collapseActionView(item);
 
         return true;
     }
 
     private void searchResult(String query) {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
-        if (fragment instanceof FanDownloadStickerFragment) {
-            ((FanDownloadStickerFragment) fragment).filterData(query.trim());
+        if (fragment instanceof FanCustomizationStickersFragment) {
+            ((FanCustomizationStickersFragment) fragment).filterData(query.trim());
         }
-        if (fragment instanceof FanDownloadGifFragment) {
-            ((FanDownloadGifFragment) fragment).filterData(query.trim());
+        if (fragment instanceof FanCustomizationEmojiFragment) {
+            ((FanCustomizationEmojiFragment) fragment).filterData(query.trim());
         }
-        if (fragment instanceof FanDownloadEmojiFragment) {
-            ((FanDownloadEmojiFragment) fragment).filterData(query.trim());
-        }
+
 
     }
 

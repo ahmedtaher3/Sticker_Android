@@ -81,7 +81,7 @@
     <!--text size-->
     <dimen name="size_20sp">20sp</dimen>
     <dimen name="login_cardview_left_right_margin">10dp</dimen>
-    <dimen name="login_cardview_width">410dp</dimen>
+    <dimen name="login_cardview_width">430dp</dimen>
     <dimen name="activit_margin_top_edit">0dp</dimen>
     <dimen name="navigation_view_width">250dp</dimen>
     <!--corporate profile-->

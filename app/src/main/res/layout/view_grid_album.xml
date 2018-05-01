@@ -4,13 +4,20 @@
     android:layout_marginTop="5dp"
     android:orientation="vertical"
     android:padding="5dp">
-
+    <RelativeLayout
+        android:layout_width="100dp"
+        android:layout_height="100dp">
+    <ProgressBar
+        android:id="@+id/progressImage"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     <ImageView
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         android:id="@+id/image"
-        android:layout_width="100dp"
-        android:layout_height="100dp" />
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    </RelativeLayout>
 
 </LinearLayout>
