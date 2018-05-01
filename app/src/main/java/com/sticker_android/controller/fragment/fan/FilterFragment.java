@@ -1,22 +1,27 @@
 package com.sticker_android.controller.fragment.fan;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +32,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.designer.addnew.AddNewDesignActivity;
@@ -50,6 +57,7 @@ import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.ImageFileFilter;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PaginationScrollListener;
+import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.StickerView;
 import com.sticker_android.view.imagezoom.ImageViewTouch;
@@ -59,12 +67,16 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Locale;
 
 import retrofit2.Call;
 
 import static android.app.Activity.RESULT_OK;
+import static com.sticker_android.utils.helper.PermissionManager.Constant.READ_STORAGE_ACCESS_RQ;
+import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_STORAGE_ACCESS_RQ;
 
 /**
  * Created by satyendra on 4/9/18.
@@ -79,7 +91,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
 
     private final String TAG = FilterFragment.class.getSimpleName();
     private Context mContext;
-    private Activity mHostActivity;
+    private FanHomeActivity mHostActivity;
 
     private View inflatedView;
     private User mLoggedUser;
@@ -91,7 +103,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
     private Button btnReset, btnSave;
 
     private SaveImageTask mSaveImageTask;
-    private LoadImageTask mLoadImageTask;
+    /*private LoadImageTask mLoadImageTask;*/
     private StickerView mStickerView;
 
     public String filePath;
@@ -101,6 +113,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
     private final int PROFILE_CAMERA_IMAGE = 0;
     private final int PROFILE_GALLERY_IMAGE = 1;
     private String mCapturedImageUrl;
+    private android.app.AlertDialog mPermissionDialog;
 
     @Override
     public void onAttach(Context context) {
@@ -128,8 +141,6 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
             setListenerOnViews();
 
             /*getFilterFromServer(false, "");*/
-
-            //loadImage(null);
 
         } else {
             if (inflatedView.getParent() != null)
@@ -210,6 +221,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
         llEmoji = (LinearLayout) inflatedView.findViewById(R.id.llEmoji);
         btnReset = (Button) inflatedView.findViewById(R.id.btnReset);
         btnSave = (Button) inflatedView.findViewById(R.id.btnSave);
+        rlPlaceHolderClick = (RelativeLayout) inflatedView.findViewById(R.id.rlPlaceHolderClick);
     }
 
     public void setListenerOnViews() {
@@ -218,13 +230,13 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
         llEmoji.setOnClickListener(this);
         btnReset.setOnClickListener(this);
         btnSave.setOnClickListener(this);
+        rlPlaceHolderClick.setOnClickListener(this);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         AppLogger.error(TAG, "Inside onActivityResult()");
-
         switch (requestCode) {
 
             case PROFILE_CAMERA_IMAGE:
@@ -252,6 +264,9 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
                     Uri resultUri = result.getUri();
                     mCapturedImageUrl = resultUri.getPath();
                     rlImageContainer.setVisibility(View.GONE);
+
+                    loadImageIntoView(mCapturedImageUrl);
+
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
                     error.printStackTrace();
@@ -268,6 +283,89 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
                 .start(mHostActivity);
     }
 
+    private void loadImageIntoView(String path){
+        mHostActivity.imageLoader.loadImage("file://" + path, new SimpleImageLoadingListener(){
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                super.onLoadingStarted(imageUri, view);
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                super.onLoadingFailed(imageUri, view, failReason);
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri, view, loadedImage);
+
+                if (mainBitmap != null) {
+                    mainBitmap.recycle();
+                    mainBitmap = null;
+                    System.gc();
+                }
+                mainBitmap = loadedImage;
+                mainImage.setImageBitmap(loadedImage);
+                mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+                originalBitmap = mainBitmap.copy(mainBitmap.getConfig(), true);
+                mStickerView.mainBitmap = mainBitmap;
+                mStickerView.mainImage = mainImage;
+                mStickerView.setVisibility(View.VISIBLE);
+
+                mStickerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        mStickerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        setSelectedStickerItem(BitmapFactory.decodeResource(getResources(),
+                                R.drawable.forgot_password_hdpi));
+                    }
+                });
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                super.onLoadingCancelled(imageUri, view);
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case WRITE_STORAGE_ACCESS_RQ:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    captureImage();
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    boolean isDenied = ActivityCompat.shouldShowRequestPermissionRationale(mHostActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                    if (!isDenied) {
+                        //If the user turned down the permission request in the past and chose the Don't ask again option in the permission request system dialog
+
+                        mPermissionDialog = PermissionManager.showCustomPermissionDialog(mHostActivity, getString(R.string.external_storage_permission_msg), new PermissionManager.CustomPermissionDialogCallback() {
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+
+                            @Override
+                            public void onOpenSettingClick() {
+
+                            }
+                        });
+                    }
+                }
+                break;
+        }
+    }
+
     private void setSelectedStickerItem(Bitmap bitmap){
         mStickerView.addBitImage(bitmap);
     }
@@ -277,11 +375,11 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
      * @param filepath The image to be loaded.
      */
     public void loadImage(String filepath) {
-        if (mLoadImageTask != null) {
+        /*if (mLoadImageTask != null) {
             mLoadImageTask.cancel(true);
         }
         mLoadImageTask = new LoadImageTask();
-        mLoadImageTask.execute(filepath);
+        mLoadImageTask.execute(filepath);*/
     }
 
     @Override
@@ -331,41 +429,30 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
         startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
     }
 
-    private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
+    /*private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... params) {
-
-            /*return BitmapUtils.getSampledBitmap(params[0], imageWidth,
-                    imageHeight);*/
-            return BitmapFactory.decodeResource(getResources(),
-                    R.drawable.gradient_bg_des_hdpi);
+            Log.e(TAG, "Path => " + mCapturedImageUrl);
+            try {
+                FileInputStream inputStream = new FileInputStream(new File(mCapturedImageUrl));//mHostActivity.openFileInput(getFileName(mCapturedImageUrl));
+                return BitmapFactory.decodeFile(mCapturedImageUrl);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
         protected void onPostExecute(Bitmap result) {
             super.onPostExecute(result);
-            if (mainBitmap != null) {
-                mainBitmap.recycle();
-                mainBitmap = null;
-                System.gc();
-            }
-            mainBitmap = result;
-            mainImage.setImageBitmap(result);
-            mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-            originalBitmap = mainBitmap.copy(mainBitmap.getConfig(), true);
-            mStickerView.mainBitmap = mainBitmap;
-            mStickerView.mainImage = mainImage;
-            mStickerView.setVisibility(View.VISIBLE);
 
-            mStickerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    mStickerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    setSelectedStickerItem(BitmapFactory.decodeResource(getResources(),
-                            R.drawable.forgot_password_hdpi));
-                }
-            });
         }
+    }*/
+
+    private String getFileName(String fileName){
+        String name = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length());
+        Log.e(TAG, "File name => " + name);
+        return name;
     }
 
     private final class SaveImageTask extends AsyncTask<Bitmap, Void, Boolean> {

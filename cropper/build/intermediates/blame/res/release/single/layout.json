@@ -40,12 +40,12 @@
         "source": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/layout/support_simple_spinner_dropdown_item.xml"
     },
     {
-        "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/release/layout/abc_action_bar_title_item.xml",
-        "source": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/layout/abc_action_bar_title_item.xml"
-    },
-    {
         "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/release/layout/abc_action_bar_up_container.xml",
         "source": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/layout/abc_action_bar_up_container.xml"
+    },
+    {
+        "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/release/layout/abc_action_bar_title_item.xml",
+        "source": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/layout/abc_action_bar_title_item.xml"
     },
     {
         "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/release/layout/abc_action_bar_view_list_nav_layout.xml",

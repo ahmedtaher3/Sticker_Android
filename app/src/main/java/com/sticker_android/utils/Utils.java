@@ -348,7 +348,7 @@ public class Utils {
                         pickerListener.captureFromCamera();
                     }
                 } else if (items[which].equals(activity.getString(R.string.pick_gallery))) {
-                    if (PermissionManager.checkReadPhoneStatePermissionInFragment(activity, fragment, READ_STORAGE_ACCESS_RQ)) {
+                    if (PermissionManager.checkWriteStoragePermissionInFragment(activity, fragment, WRITE_STORAGE_ACCESS_RQ)) {
                         pickerListener.pickFromGallery();
                     }
                 }

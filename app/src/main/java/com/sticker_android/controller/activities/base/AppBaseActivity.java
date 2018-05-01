@@ -23,6 +23,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sticker_android.R;
 import com.sticker_android.application.StickerApp;
 import com.sticker_android.controller.fragment.common.ProfileFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.FanHomeFragment;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.Utils;
@@ -38,6 +39,7 @@ public abstract class AppBaseActivity extends AppCompatActivity {
     public ImageLoader imageLoader = ImageLoader.getInstance();
     public DisplayImageOptions displayImageOptions;
     public ProfileFragment mProfileFragment;
+    public FanHomeFragment mFanHomeFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -164,10 +164,13 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
      */
     private void loginApiCall() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        refreshedToken = refreshedToken != null ? refreshedToken : "1234567890";
+
         String deviceId = Utils.getDeviceId(this);
         final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
         progressDialogHandler.show();
-        Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(edtEmail.getText().toString(),edtPassword.getText().toString(),"android",refreshedToken,deviceId,selectedOption);
+        Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(edtEmail.getText().toString(),
+                edtPassword.getText().toString(),"android",refreshedToken,deviceId,selectedOption);
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
