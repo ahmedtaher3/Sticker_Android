@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:ignore="MissingPrefix">
+
+    <RelativeLayout
+        android:id="@+id/rlBottomLayer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:id="@+id/llAction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="@dimen/filter_action_top_margin">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btnReset"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/filter_btn_size"
+                    android:background="@drawable/fan_btn_gray_background"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:elevation="@dimen/dp_5"
+                    android:paddingRight="@dimen/filter_btn_left_right_margin"
+                    android:paddingLeft="@dimen/filter_btn_left_right_margin"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/reset"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_contact_us" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <Button
+                    android:id="@+id/btnSave"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/filter_btn_size"
+                    android:background="@drawable/fan_btn_background"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:elevation="@dimen/dp_5"
+                    android:layout_centerInParent="true"
+                    android:paddingRight="@dimen/filter_btn_left_right_margin"
+                    android:paddingLeft="@dimen/filter_btn_left_right_margin"
+                    android:gravity="center"
+                    android:text="@string/save"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_contact_us" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rlFilterOptionContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/llAction"
+            android:layout_marginBottom="@dimen/filter_action_top_margin">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:id="@+id/llFilter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_centerHorizontal="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:paddingRight="@dimen/filter_action_top_margin"
+                    android:paddingLeft="@dimen/filter_action_top_margin">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/filter"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filter"
+                        android:layout_gravity="center_horizontal"
+                        android:textSize="@dimen/filter_action_text_size"
+                        android:textColor="@android:color/black"
+                        android:layout_marginTop="@dimen/filter_action_top_margin"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:id="@+id/llSticker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_centerHorizontal="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:paddingRight="@dimen/filter_action_top_margin"
+                    android:paddingLeft="@dimen/filter_action_top_margin">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/sticker"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stickers"
+                        android:layout_gravity="center_horizontal"
+                        android:textSize="@dimen/filter_action_text_size"
+                        android:textColor="@android:color/black"
+                        android:layout_marginTop="@dimen/filter_action_top_margin"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:id="@+id/llEmoji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_centerHorizontal="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:paddingRight="@dimen/filter_action_top_margin"
+                    android:paddingLeft="@dimen/filter_action_top_margin">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/emoji"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/emojis"
+                        android:layout_gravity="center_horizontal"
+                        android:textSize="@dimen/filter_action_text_size"
+                        android:textColor="@android:color/black"
+                        android:layout_marginTop="@dimen/filter_action_top_margin"/>
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlImageContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rlBottomLayer"
+        android:background="@drawable/filter_img_container_bg"
+        android:layout_marginLeft="@dimen/filter_action_top_margin"
+        android:layout_marginRight="@dimen/filter_action_top_margin"
+        android:layout_marginTop="@dimen/filter_action_top_margin">
+
+        <FrameLayout
+            android:id="@+id/work_space"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/control_area"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/white">
+
+            <com.sticker_android.view.imagezoom.ImageViewTouch
+                android:id="@+id/main_image"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center" />
+
+            <com.sticker_android.view.StickerView
+                android:id="@+id/sticker_panel"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlPlaceHolderClick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/imvProductImage"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/act_add_new_corp_imv_height"
+                android:adjustViewBounds="true"
+                android:background="@color/image_background_color"
+                android:scaleType="fitXY" />
+
+            <com.sticker_android.view.CustomAppCompatTextView
+                android:id="@+id/imgPlaceHolder"
+                fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:clickable="false"
+                android:gravity="center_horizontal"
+                android:longClickable="false"
+                android:text="@string/please_choose_image_to_apply_filter_sticker_emoji"
+                android:textColor="#babec1"
+                android:textSize="15sp"
+                app:drawableTopCompat="@drawable/upload_sticker_placeholder" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/progress_bar_edit"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

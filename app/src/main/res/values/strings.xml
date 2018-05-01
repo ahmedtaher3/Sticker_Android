@@ -207,5 +207,10 @@
     <string name="txt_no_notification_found">No notification found.</string>
     <string name="text_all">All</string>
 
+    <string name="save">Save</string>
+    <string name="reset">Reset</string>
+    <string name="filter">Filter</string>
+    <string name="emojis">Emojis</string>
+    <string name="please_choose_image_to_apply_filter_sticker_emoji">Please choose image to apply filter, sticker or emoji.</string>
 
 </resources>
