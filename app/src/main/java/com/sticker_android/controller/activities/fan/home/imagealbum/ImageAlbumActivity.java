@@ -2,6 +2,7 @@ package com.sticker_android.controller.activities.fan.home.imagealbum;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -12,6 +13,7 @@ import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.GridViewAdapter;
 import com.sticker_android.model.User;
+import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.model.filter.FanFilter;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -30,6 +32,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
     private GridViewAdapter gridViewAdapter;
     private AppPref appPref;
     private User userdata;
+    private Toolbar toolbar;
     private LinearLayout llNoDataFound;
     private SwipeRefreshLayout swipeRefresh;
     private RelativeLayout rlContent;
@@ -50,8 +53,19 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
         PAGE_LIMIT = getResources().getInteger(R.integer.designed_item_page_limit);
         setViewReferences();
         setViewListeners();
+        setToolbar();
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
+
+        toolbar.setNavigationIcon(R.drawable.back_arrow_small);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         setAdaptor();
-        getFilterApi(false, "");
+        getFilterApi();
 
     }
 
@@ -65,10 +79,36 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
         userdata = appPref.getUserInfo();
     }
 
+    /**
+     * Method is used to set the toolbar
+     */
+    private void setToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setToolbarBackground();
+        setToolBarTitle();
+        setSupportActionBar(toolbar);
+    }
+
+    /**
+     * Method is used to set the toolbar background
+     */
+    private void setToolbarBackground() {
+        toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_hdpi));
+    }
+
 
     @Override
     protected void setViewListeners() {
 
+    }
+
+    /**
+     * Method is used to set the toolbar title
+     */
+    private void setToolBarTitle() {
+        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
+        textView.setText("Filter");
+        toolbar.setTitle(" ");
     }
 
     @Override
@@ -95,11 +135,11 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
     }
 
 
-    private void getFilterApi(final boolean isRefreshing, final String searchKeyword) {
+    private void getFilterApi() {
 
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiFilterList(userdata.getLanguageId(), userdata.getAuthrizedKey(),
-                userdata.getId(), 0, 1000, "", "filter_list", "stickers");
+                userdata.getId(), 0, 1000, "", "filter_list", "emoji");
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
@@ -126,7 +166,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(this)) {
-            getFilterApi(true, "");
+            getFilterApi();
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(this, getString(R.string.pls_check_ur_internet_connection));
