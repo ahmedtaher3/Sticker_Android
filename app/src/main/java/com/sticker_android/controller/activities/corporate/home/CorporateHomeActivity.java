@@ -184,7 +184,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
 
     private void actionBarToggle(Toolbar toolbar) {
 
-        final ImageView imageView = toolbar.findViewById(R.id.imv_nav_drawer_menu);
+        final ImageView imageView = (ImageView) toolbar.findViewById(R.id.imv_nav_drawer_menu);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

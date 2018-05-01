@@ -32,6 +32,7 @@ import com.nostra13.universalimageloader.utils.L;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.filter.FanFilterActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.fragment.fan.FilterFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.enums.DesignType;
@@ -96,7 +97,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setHasOptionsMenu(true);
-        replaceFragment(new FanFilter());
+        replaceFragment(new FilterFragment());
         fetchCategoryApi();
         return view;
     }
@@ -149,7 +150,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                 switch (tab.getPosition()) {
 
                     case 0:
-                        replaceFragment(new FanFilter());
+                        replaceFragment(new FilterFragment());
                         if (itemFilter != null) {
                             itemFilter.setVisible(false);
                         }
@@ -480,9 +481,6 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                         filterData(filterListdata(categoryList), filterByName);
                     }
                 }
-
-
-
             }
         }
 
