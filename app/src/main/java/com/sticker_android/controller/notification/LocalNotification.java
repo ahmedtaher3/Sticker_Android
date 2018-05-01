@@ -12,6 +12,7 @@ import com.sticker_android.R;
 import com.sticker_android.application.StickerApp;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.BadgeUtils;
 
 public class LocalNotification {
 
@@ -39,6 +40,7 @@ public class LocalNotification {
             notificationCompat.setContentText(message);
         }
 
+        BadgeUtils.setBadge(context,messageCount);
         NotificationManager notificationManager = (NotificationManager) context.
                 getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent();
@@ -48,11 +50,13 @@ public class LocalNotification {
                 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
         notificationCompat.setContentIntent(pendingIntent);
-        notificationManager.notify(0,
-                notificationCompat.build());
+       /* notificationManager.notify(0,
+                notificationCompat.build());*/
         if (StickerApp.getInstance().getCurrentActivity() instanceof AppBaseActivity) {
             StickerApp.getInstance().getCurrentActivity().updateCallbackMessage();
         }
+
+
     }
 
 

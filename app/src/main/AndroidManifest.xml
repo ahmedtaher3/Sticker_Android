@@ -142,7 +142,8 @@
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".controller.activities.fan.home.details.FanDetailsActivity" />
         <activity android:name=".controller.activities.common.contentapprovaldetails.ContentApprovalDetails" />
-        <activity android:name=".controller.activities.filter.FanFilterActivity"></activity>
+        <activity android:name=".controller.activities.filter.FanFilterActivity" />
+        <activity android:name=".controller.activities.fan.home.imagealbum.ImageAlbumActivity"></activity>
     </application>
 
 </manifest>

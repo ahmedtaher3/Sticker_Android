@@ -417,4 +417,18 @@ public class FanHomeActivity extends AppBaseActivity
         init();
         setUserDataIntoNaviagtion();
     }
+
+    @Override
+    public void updateCallbackMessage() {
+        super.updateCallbackMessage();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setBadgeCount();
+                initializeCountDrawer(appPref.getNewMessagesCount(0));
+
+            }
+        });
+
+    }
 }

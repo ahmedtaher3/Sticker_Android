@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -28,9 +29,11 @@ import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.model.enums.ProductStatus;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
@@ -82,7 +85,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
             public boolean onPreDraw() {
                 imvOfAds.getViewTreeObserver().removeOnPreDrawListener(this);
                 int finalWidth = imvOfAds.getMeasuredWidth();
-                int height = finalWidth * 3 /5;
+                int height = finalWidth * 3 / 5;
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imvOfAds.getLayoutParams();
 
                 //      LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imvOfAds.getLayoutParams();
@@ -98,15 +101,38 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
         checkboxLike.setText(Utils.format(productObj.statics.likeCount));
 
-        String status = "Ongoing";
+        int status = productObj.productStatus;
+        if (status == ProductStatus.REJECTED.getStatus()) {
+            tvStatus.setTextColor(Color.RED);
+            tvStatus.setText(R.string.rejected);
+        } else if (status == ProductStatus.EXPIRED.getStatus()) {
+            tvStatus.setTextColor(Color.RED);
+            tvStatus.setText(R.string.expired);
+        } else if (status == ProductStatus.APPROVED.getStatus()) {
+            tvStatus.setTextColor(ContextCompat.getColor(this, R.color.colorHomeGreen));
+            tvStatus.setText(R.string.approved);
+        } else {
+            tvStatus.setTextColor(ContextCompat.getColor(this, R.color.colorCorporateText));
+            tvStatus.setText(R.string.pending);
+        }
+       /* String status = "Ongoing";
         if (productObj.getIsExpired() > 0) {
             tvStatus.setTextColor(Color.RED);
             status = "Expired";
         } else {
             tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
 
+        }*/
+
+        if (productObj.statics.likeCount > 0) {
+            checkboxLike.setChecked(true);
+            checkboxLike.setButtonDrawable(getResources().getDrawable(R.drawable.ic_hand));
+        } else {
+            checkboxLike.setChecked(false);
+            checkboxLike.setButtonDrawable(getResources().getDrawable(R.drawable.ic_like));
+
         }
-        tvStatus.setText(status);
+      //  tvStatus.setText(status);
         imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,7 +188,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
         if (getIntent().getExtras() != null) {
 
             productObj = getIntent().getExtras().getParcelable(AppConstant.PRODUCT_OBJ_KEY);
-            if(productObj!=null)
+            if (productObj != null)
                 setToolBarTitle(productObj.getType());
         }
     }
@@ -306,10 +332,8 @@ public class ProductDetailsActivity extends AppBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK)
-        {
-            switch (requestCode)
-            {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
                 case 1011:
                     setResult(RESULT_OK);
                     onBackPressed();
@@ -317,7 +341,6 @@ public class ProductDetailsActivity extends AppBaseActivity {
             }
         }
     }
-
 
 
 }

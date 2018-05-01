@@ -201,7 +201,7 @@ public class DesignerContentApprGifFragment extends BaseFragment implements Swip
                                         mProductList.clear();
                                         mAdapter.setData(mProductList);
 
-                                        txtNoDataFoundContent.setText(R.string.no_ads_uploaded_yet);
+                                        txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
 
                                         showNoDataFound();
                                     }
@@ -220,7 +220,7 @@ public class DesignerContentApprGifFragment extends BaseFragment implements Swip
                                         } else {
                                             showNoDataFound();
 
-                                            txtNoDataFoundContent.setText(R.string.no_ads_uploaded_yet);
+                                            txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
 
                                             recContentApproval.setVisibility(View.GONE);
                                         }
@@ -241,7 +241,7 @@ public class DesignerContentApprGifFragment extends BaseFragment implements Swip
 
                             } else if (mProductList == null || (mProductList != null && mProductList.size() == 0)) {
 
-                                txtNoDataFoundContent.setText(R.string.no_ads_uploaded_yet);
+                                txtNoDataFoundContent.setText(R.string.no_gif_uploaded_yet);
 
                                 showNoDataFound();
                             }

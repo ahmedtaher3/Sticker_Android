@@ -309,6 +309,15 @@ public class FanDetailsActivity extends AppBaseActivity {
                     mProduct.isLike = i;
                     mProduct.statics.likeCount = apiResponse.paylpad.statics.likeCount;
                     checkboxLike.setText("" + mProduct.statics.likeCount);
+
+                    if (mProduct.isLike > 0) {
+                        checkboxLike.setChecked(true);
+                        checkboxLike.setButtonDrawable(getResources().getDrawable(R.drawable.ic_hand));
+                    } else {
+                        checkboxLike.setChecked(false);
+                        checkboxLike.setButtonDrawable(getResources().getDrawable(R.drawable.ic_like));
+
+                    }
                 }
             }
 

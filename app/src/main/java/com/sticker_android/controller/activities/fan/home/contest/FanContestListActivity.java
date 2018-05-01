@@ -88,7 +88,7 @@ public class FanContestListActivity extends AppBaseActivity implements SwipeRefr
         llNoDataFound.setVisibility(View.GONE);
         mContestList = new ArrayList<>();
         mCurrentPage = 0;
-        getContestListFromServer(true, "");
+        getContestListFromServer(false, "");
         setListenerOnRecview();
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
 
@@ -236,10 +236,10 @@ public class FanContestListActivity extends AppBaseActivity implements SwipeRefr
             @Override
             public void onSuccess(ApiResponse apiResponse) {
 
-                /*llLoaderView.setVisibility(View.GONE);
+                llLoaderView.setVisibility(View.GONE);
                     rlContent.setVisibility(View.VISIBLE);
-                    swipeRefresh.setRefreshing(false);
-*/
+                swipeRefresh.setRefreshing(false);
+
                 //remove wi-fi symbol when response got
                 if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
                     rlConnectionContainer.removeAllViews();
@@ -256,11 +256,9 @@ public class FanContestListActivity extends AppBaseActivity implements SwipeRefr
                                 if (payload.fanContestAllArrayList != null && payload.fanContestAllArrayList.size() != 0) {
                                     mContestList.clear();
                                     mContestList.addAll(payload.fanContestAllArrayList);
-
                                     llNoDataFound.setVisibility(View.GONE);
                                     rcItemListContest.setVisibility(View.VISIBLE);
                                     mAdapter.setData(mContestList);
-
                                     mCurrentPage = 0;
                                     mCurrentPage++;
                                 } else {

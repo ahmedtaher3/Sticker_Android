@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,8 +36,10 @@ import com.sticker_android.controller.activities.corporate.RenewAdandProductActi
 import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
+import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.model.enums.ProductStatus;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -509,6 +512,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                     ((ProductAdaptor.ProductHolder) holder).tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
 
                 }
+
                 if (product.isFeatured > 0) {
                     ((ProductAdaptor.ProductHolder) holder).tvFeatured.setVisibility(View.VISIBLE);
                 } else
@@ -518,7 +522,6 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
            /*     Glide.with(context)
                         .load(product.getImagePath())
                         .into(((ProductAdaptor.ProductHolder) holder).imvOfAds);*/
-
                 ((ProductAdaptor.ProductHolder) holder).pgrImage.setVisibility(View.VISIBLE);
                 Glide.with(context)
                         .load(product.getImagePath()).fitCenter()

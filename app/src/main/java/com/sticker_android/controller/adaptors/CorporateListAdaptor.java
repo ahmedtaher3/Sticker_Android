@@ -273,7 +273,7 @@ public class CorporateListAdaptor extends RecyclerView.Adapter<RecyclerView.View
                 itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorHomeGreen));
                 itemHolder.tvStatus.setText(R.string.approved);
             } else {
-                itemHolder.tvStatus.setTextColor(Color.parseColor("#1D93FB"));
+                itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context,R.color.colorCorporateText));
                 itemHolder.tvStatus.setText(R.string.pending);
             }
 

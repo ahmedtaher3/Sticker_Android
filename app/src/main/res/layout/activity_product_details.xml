@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true" />
             <TextView
+                android:visibility="gone"
                 android:alpha=".75"
                 android:textSize="15sp"
                 fontPath="fonts/SanFranciscoText-Regular_0.ttf"
@@ -43,6 +44,7 @@
                 android:layout_alignParentStart="true"
                 android:background="@drawable/drawable_featured"
                 android:gravity="center"
+                android:paddingLeft="5dp"
                 android:paddingRight="@dimen/dp_5"
                 android:text="Featured"
                 android:textColor="@android:color/white" />

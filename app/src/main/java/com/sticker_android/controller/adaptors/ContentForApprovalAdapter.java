@@ -264,6 +264,9 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                 itemHolder.tvFeatured.setVisibility(View.VISIBLE);
             } else
                 itemHolder.tvFeatured.setVisibility(View.GONE);
+            if (productItem.getType().equalsIgnoreCase(DesignType.ads.getType().toLowerCase()) || productItem.getType().equalsIgnoreCase(DesignType.products.getType().toLowerCase())) {
+                ((ViewHolder) holder).tvStatus.setTextColor(context.getResources().getColor(R.color.colorCorporateText));
+            }
 
             int status = productItem.productStatus;
             AppLogger.error(TAG, "Status => " + status);
@@ -277,13 +280,15 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                 itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorHomeGreen));
                 itemHolder.tvStatus.setText(R.string.approved);
             } else {
-                itemHolder.tvStatus.setTextColor(Color.parseColor("#1D93FB"));
+                if (productItem.getType().equalsIgnoreCase(DesignType.ads.getType().toLowerCase()) || productItem.getType().equalsIgnoreCase(DesignType.products.getType().toLowerCase())) {
+                    itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context,R.color.colorCorporateText));
+                }
+                    else {
+                    itemHolder.tvStatus.setTextColor(Color.parseColor("#1D93FB"));
+                }
                 itemHolder.tvStatus.setText(R.string.pending);
             }
-            if (productItem.getType().equalsIgnoreCase(DesignType.ads.getType().toLowerCase()) || productItem.getType().equalsIgnoreCase(DesignType.products.getType().toLowerCase())) {
-                ((ViewHolder) holder).tvStatus.setTextColor(context.getResources().getColor(R.color.colorCorporateText));
-            }
-
+            itemHolder.tvTitle.setText(productItem.getProductname());
             if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
                 itemHolder.pgrImage.setVisibility(View.VISIBLE);
                 Glide.with(context)
@@ -388,6 +393,7 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                 if (apiResponse.status) {
                     Utils.showToast(context, context.getString(R.string.deleted_successfully));
                     designerActionListener.onRemove(product);
+
                 }
             }
 

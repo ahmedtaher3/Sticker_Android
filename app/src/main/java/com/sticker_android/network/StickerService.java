@@ -1,6 +1,8 @@
 package com.sticker_android.network;
 
 
+import java.util.StringTokenizer;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -160,6 +162,12 @@ public interface StickerService {
     @POST(ApiConstant.API_GET_USER_COMPLETED_LIST)
     public Call<ApiResponse> getUserCompletedList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
                                                 @Field("user_id") String userId, @Field("key_name") String name);
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_FILTER_LIST)
+    public Call<ApiResponse> apiFilterList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                           @Field("user_id") String userId, @Field("index") int index,
+                                           @Field("limit") int limit, @Field("search")String search, @Field("key_name") String name);
 
 
 }

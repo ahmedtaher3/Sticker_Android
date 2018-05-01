@@ -194,7 +194,7 @@
     <string name="txt_apply_for_context">Please apply for a contest.</string>
     <string name="txt_no_onging_contest_found">No Ongoing contest found</string>
     <string name="txt_pending_content">Pending Content</string>
-    <string name="txt_no_completed_contest">No Completed Contest Found.</string>
+    <string name="txt_no_completed_contest">No Completed contest Found.</string>
     <string name="most_downloaded">Most Downloaded</string>
     <string name="recent_upload">Recent Upload</string>
     <string name="by_championship">By Championship</string>

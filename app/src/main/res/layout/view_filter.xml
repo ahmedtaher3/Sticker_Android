@@ -98,11 +98,12 @@
             android:background="@color/edt_background_tint">
 
             <TextView
+                android:padding="10dp"
                 fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_marginStart="25dp"
+                android:layout_margin="5dp"
                 android:text="@string/by_championship"
                 android:textColor="@color/colorFanText"
                 android:textSize="@dimen/text_size_tv_13sp" />
@@ -133,7 +134,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/listFilter"
                     android:layout_marginBottom="20dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:padding="10dp"
                     android:visibility="visible">
 

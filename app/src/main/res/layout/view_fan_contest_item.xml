@@ -7,26 +7,27 @@
     android:layout_marginLeft="@dimen/padding_fan_contest"
     android:layout_marginRight="@dimen/padding_fan_contest"
     android:layout_marginTop="@dimen/padding_fan_contest"
+    app:cardElevation="2dp"
     tools:ignore="MissingPrefix">
 
     <RelativeLayout
-        android:background="@drawable/btn_shadow_corner"
         android:layout_width="match_parent"
         android:layout_height="100dp">
 
         <ImageView
-            android:scaleType="fitXY"
             android:id="@+id/imvBackground"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></ImageView>
-
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/contest_hdpi"></ImageView>
 
         <RelativeLayout
-            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_10"
             android:gravity="center"
+            android:padding="5dp"
             app:contentPadding="8dp">
 
             <TextView

@@ -31,6 +31,7 @@ import com.sticker_android.controller.activities.designer.home.DesignerHomeActiv
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
+import com.sticker_android.model.enums.ProductStatus;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -102,7 +103,7 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
         if(mProduct != null){
 
             checkboxLike.setText(Utils.format(mProduct.statics.likeCount));
-            checkboxShare.setText(Utils.format(0));
+          //  checkboxShare.setText(Utils.format(0));
             tvDownloads.setText(Utils.format(mProduct.statics.downloadCount));
             imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,7 +114,26 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
             tvProductTitle.setText(Utils.capitlizeText(mProduct.getProductname()));
             tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(mProduct.getCreatedTime()), mContext).replaceAll("about", "").trim());
 
-            String status = "pending";
+
+            int status = mProduct.productStatus;
+            AppLogger.error(TAG, "Status => " + status);
+            if (status == ProductStatus.REJECTED.getStatus()) {
+                tvStatus.setTextColor(Color.RED);
+                tvStatus.setText(R.string.rejected);
+            }
+            else if(status == ProductStatus.EXPIRED.getStatus()){
+                tvStatus.setTextColor(Color.RED);
+                tvStatus.setText(R.string.expired);
+            }else if(status == ProductStatus.APPROVED.getStatus()){
+                tvStatus.setTextColor(ContextCompat.getColor(this, R.color.colorHomeGreen));
+                tvStatus.setText(R.string.approved);
+            }
+            else{
+                tvStatus.setTextColor(Color.parseColor("#1D93FB"));
+                tvStatus.setText(R.string.pending);
+            }
+
+            /*String status = "pending";
             if (status.equalsIgnoreCase("rejected")) {
                 tvStatus.setTextColor(Color.RED);
                 tvStatus.setText("Rejected");
@@ -124,7 +144,7 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
             else{
                 tvStatus.setTextColor(Color.parseColor("#1D93FB"));
                 tvStatus.setText("Pending");
-            }
+            }*/
 
             if(mProduct.getImagePath() != null && !mProduct.getImagePath().isEmpty()){
                 pbLoader.setVisibility(View.VISIBLE);

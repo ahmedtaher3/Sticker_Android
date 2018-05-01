@@ -197,7 +197,7 @@ public class CorporateContentApprovalAdsFragment extends BaseFragment implements
 
                             } else if (mProductList == null || (mProductList != null && mProductList.size() == 0)) {
 
-                                    txtNoDataFoundContent.setText(R.string.no_ads_uploaded_yet);
+                                txtNoDataFoundContent.setText(R.string.no_ads_uploaded_yet);
 
                                 showNoDataFound();
                             }
@@ -286,7 +286,7 @@ public class CorporateContentApprovalAdsFragment extends BaseFragment implements
 
     @Override
     protected void setViewListeners() {
-swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
@@ -326,12 +326,12 @@ swipeRefreshLayout.setOnRefreshListener(this);
 
     @Override
     public void onEdit(Product product) {
-
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onRemove(Product product) {
-
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

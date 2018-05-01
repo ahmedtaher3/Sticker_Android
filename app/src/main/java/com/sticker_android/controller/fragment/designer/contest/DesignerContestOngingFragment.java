@@ -20,6 +20,7 @@ import com.sticker_android.controller.adaptors.ContestOngoingListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.contest.CorporateContestOngoingFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.contest.OngoingContest;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.network.ApiCall;
@@ -172,7 +173,7 @@ public class DesignerContestOngingFragment extends BaseFragment implements Swipe
         if (isRefresh)
             swipeRefreshLayout.setRefreshing(true);
         else
-            llLoaderView.setVisibility(View.GONE);
+            llLoaderView.setVisibility(View.VISIBLE);
         Call<ApiResponse> apiResponseCall = RestClient.getService().getUserContestList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(), "contest_list");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
@@ -188,6 +189,8 @@ public class DesignerContestOngingFragment extends BaseFragment implements Swipe
 
                 }
                     if (apiResponse.paylpad.ongoingContests == null) {
+                        ArrayList<OngoingContest> ongoingContests=new ArrayList<OngoingContest>();
+                        mAdapter.setData(ongoingContests);
                         showNoDataFound();
                         txtNoDataFoundContent.setText(R.string.txt_no_onging_contest_found);
                     } else {

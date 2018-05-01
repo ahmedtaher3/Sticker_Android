@@ -19,6 +19,7 @@ import com.sticker_android.controller.activities.corporate.home.CorporateHomeAct
 import com.sticker_android.controller.adaptors.ContestOngoingListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.contest.OngoingContest;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.network.ApiCall;
@@ -177,6 +178,8 @@ public class CorporateContestOngoingFragment extends BaseFragment implements Swi
                 if (apiResponse.status) {
                     mAdapter.setData(apiResponse.paylpad.ongoingContests);
                     if (apiResponse.paylpad.ongoingContests == null) {
+                       ArrayList<OngoingContest> ongoingContests=new ArrayList<OngoingContest>();
+                        mAdapter.setData(ongoingContests);
                         llNoDataFound.setVisibility(View.VISIBLE);
                         showNoDataFound();
                         txtNoDataFoundContent.setText(R.string.txt_no_onging_contest_found);

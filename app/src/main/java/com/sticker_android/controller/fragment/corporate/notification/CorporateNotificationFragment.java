@@ -107,9 +107,10 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
                 if (apiResponse.status) {
 
                     mNotificationList = apiResponse.paylpad.notificationArrayList;
-                    if (mNotificationList != null)
+                    if (mNotificationList != null) {
                         notificationAdaptor.setData(mNotificationList);
-
+                        txtNoDataFoundContent.setVisibility(View.GONE);
+                    }
                     if (mNotificationList == null) {
                         txtNoDataFoundContent.setText(R.string.txt_no_notification_found);
                         showNoDataFound();

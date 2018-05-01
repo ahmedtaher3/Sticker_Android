@@ -294,6 +294,14 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
             } else {
                 itemHolder.tvDesciption.setVisibility(View.GONE);
             }
+            if (productItem.isLike > 0) {
+                itemHolder.checkboxLike.setChecked(true);
+                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+            } else {
+                itemHolder.checkboxLike.setChecked(false);
+                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+
+            }
             itemHolder.tvName.setText(productItem.userName);
             itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
      //       itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
@@ -331,14 +339,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
             } else {
                 itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
             }
-            if (productItem.isLike > 0) {
-                itemHolder.checkboxLike.setChecked(true);
-                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
-            } else {
-                itemHolder.checkboxLike.setChecked(false);
-                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
-            }
         }
     }
 

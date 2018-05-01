@@ -3,10 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <RelativeLayout
         android:id="@+id/rlContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
 
         <LinearLayout
             android:id="@+id/llNoDataFound"
@@ -52,19 +57,23 @@
         </LinearLayout>
 
         <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshAds"
+            android:id="@+id/swiperefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recAds"
+            <GridView
+                android:id="@+id/gridView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="@dimen/dp_5"
-                android:paddingBottom="48dp"
-                android:clipToPadding="false"
-                android:scrollbars="none" />
-
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:clickable="true"
+                android:columnWidth="100dp"
+                android:drawSelectorOnTop="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:numColumns="auto_fit"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="5dp" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
     </RelativeLayout>
@@ -73,6 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
+
         <include layout="@layout/layout_loader_view" />
     </RelativeLayout>
 
@@ -82,12 +92,5 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:paddingBottom="60dp" />
-    <TextView
-        android:visibility="gone"
-        android:textSize="@dimen/text_size_contact_us"
-        android:id="@+id/tvNoAdsUploaded"
-        android:gravity="center"
-        android:text="@string/no_ads_uploaded_yet"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
 </RelativeLayout>

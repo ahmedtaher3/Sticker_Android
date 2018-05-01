@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -23,7 +22,6 @@ import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.fan.home.contest.FanContestListActivity;
 import com.sticker_android.model.contest.FanContest;
-import com.sticker_android.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -51,11 +49,12 @@ public class ContestListAdaptor extends RecyclerView.Adapter<ContestListAdaptor.
     public void onBindViewHolder(final ContestViewHolder holder, int position) {
         FanContest fanContest = mFanList.get(position);
         holder.tvDescription.setText(fanContest.contestName);
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.contest_defaul);
+      /*  Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.contest_defaul);
         Bitmap blurredBitmap = blur(bitmap,context);
         holder.imvBackground.setImageBitmap(blurredBitmap);
-
+*/
      //   holder.cardView.setBackgroundResource(R.drawable.contest_defaul);
+        holder.imvBackground.setImageResource(R.drawable.contest_hdpi);
         holder.imvBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

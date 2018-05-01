@@ -19,6 +19,7 @@ import com.sticker_android.controller.activities.corporate.home.CorporateHomeAct
 import com.sticker_android.controller.adaptors.ContestCompletedListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.contest.ContestCompleted;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.network.ApiCall;
@@ -60,6 +61,7 @@ public class CorporateContestCompletedFragment extends BaseFragment implements S
     private static final String TAG = CorporateContestOngoingFragment.class.getSimpleName();
     private View view;
     private UpdateToolbarTitle mUpdateToolbarCallback;
+
     public CorporateContestCompletedFragment() {
         // Required empty public constructor
     }
@@ -69,8 +71,8 @@ public class CorporateContestCompletedFragment extends BaseFragment implements S
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_corporate_contest_won, container, false);
-        PAGE_LIMIT = getActivity() .getResources().getInteger(R.integer.designed_item_page_limit);
+        View view = inflater.inflate(R.layout.fragment_corporate_contest_won, container, false);
+        PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
         init();
         getuserInfo();
         setViewReferences(view);
@@ -84,7 +86,7 @@ public class CorporateContestCompletedFragment extends BaseFragment implements S
         recyclerViewLayout();
 
         mUpdateToolbarCallback.updateToolbarTitle(getString(R.string.txt_completed_contest));
-    return view;
+        return view;
     }
 
 
@@ -181,12 +183,14 @@ public class CorporateContestCompletedFragment extends BaseFragment implements S
                 else
                     llLoaderView.setVisibility(View.GONE);
                 if (apiResponse.status) {
-                    if(apiResponse.paylpad.completedArrayList!=null)
-                    mAdapter.setData(apiResponse.paylpad.completedArrayList);
-                    if(apiResponse.paylpad.completedArrayList ==null){
+                    if (apiResponse.paylpad.completedArrayList != null)
+                        mAdapter.setData(apiResponse.paylpad.completedArrayList);
+                    if (apiResponse.paylpad.completedArrayList == null) {
+                        ArrayList<ContestCompleted> contestCompleteds = new ArrayList<ContestCompleted>();
+                        mAdapter.setData(contestCompleteds);
                         showNoDataFound();
                         txtNoDataFoundContent.setText(R.string.txt_no_completed_contest);
-                    }else{
+                    } else {
                         llNoDataFound.setVisibility(View.GONE);
                         rlContent.setVisibility(View.VISIBLE);
                     }

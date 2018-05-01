@@ -432,7 +432,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         }
         searchView.setIconified(false);
         searchView.clearFocus();
-        MenuItemCompat.collapseActionView(item);
+    //    MenuItemCompat.collapseActionView(item);
 
         return true;
     }

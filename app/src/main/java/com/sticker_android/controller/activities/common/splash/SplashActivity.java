@@ -18,6 +18,7 @@ import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.BadgeUtils;
 
 import java.util.Locale;
 
@@ -33,6 +34,7 @@ public class SplashActivity extends AppBaseActivity {
         waitForFewSecond();
         setSelectedLangage();
         changeStatusBarColor(getResources().getColor(R.color.colorFanText));
+        BadgeUtils.setBadge(this,0);
     }
 
     private void init() {
