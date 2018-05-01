@@ -11,6 +11,7 @@ import com.sticker_android.model.contest.OngoingContest;
 import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.corporateproduct.Statics;
+import com.sticker_android.model.filter.FanFilter;
 import com.sticker_android.model.notification.NotificationApp;
 
 import java.util.ArrayList;
@@ -66,7 +67,8 @@ public class Payload {
 
     @SerializedName("fan_download_list")
     public ArrayList<FanContestDownload> fanDownloadList;
-
+    @SerializedName("filter_list")
+    public ArrayList<FanFilter> fanFilterArrayList = new ArrayList<>();
 
 }
 

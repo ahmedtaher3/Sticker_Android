@@ -1,6 +1,7 @@
 package com.sticker_android.controller.fragment.fan.fancustomization;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadEmojiFragment;
 import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadGifFragment;
@@ -76,7 +78,7 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setHasOptionsMenu(true);
         replaceFragment(new FanCustomizationStickersFragment());
-
+        startActivity(new Intent(getActivity(), ImageAlbumActivity.class));
         return view;
     }
 

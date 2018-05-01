@@ -167,7 +167,7 @@ public interface StickerService {
     @POST(ApiConstant.API_FILTER_LIST)
     public Call<ApiResponse> apiFilterList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
                                            @Field("user_id") String userId, @Field("index") int index,
-                                           @Field("limit") int limit, @Field("search")String search, @Field("key_name") String name);
+                                           @Field("limit") int limit, @Field("search")String search, @Field("key_name") String name,@Field("type")String type);
 
 
 }

@@ -1,14 +1,16 @@
 package com.sticker_android.controller.fragment.fan.fancustomization;
 
+import android.content.Intent;
 import android.view.View;
 
+import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 
 /**
  * Created by user on 30/4/18.
  */
 
-public class FanCustomizationStickersFragment  extends BaseFragment{
+public class FanCustomizationStickersFragment extends BaseFragment {
 
     @Override
     protected void setViewListeners() {
