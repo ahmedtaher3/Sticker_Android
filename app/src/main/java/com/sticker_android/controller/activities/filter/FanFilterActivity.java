@@ -64,6 +64,8 @@ public class FanFilterActivity extends AppBaseActivity {
         setViewListeners();
         fetchCategoryApi();
         setListViewAdaptor();
+        changeStatusBarColor(getResources().getColor(R.color.colorFanText));
+
     }
 
     private void init() {

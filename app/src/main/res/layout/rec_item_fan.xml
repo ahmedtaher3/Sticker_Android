@@ -40,7 +40,7 @@
                     android:layout_centerInParent="true" />
                 <TextView
                     android:alpha=".75"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:textSize="15sp"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:id="@+id/tvFeatured"

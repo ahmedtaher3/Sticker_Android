@@ -133,6 +133,14 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
                 tvStatus.setText(R.string.pending);
             }
 
+            if(mProduct.statics.likeCount>0){
+                checkboxLike.setChecked(true);
+                checkboxLike.setButtonDrawable(getResources().getDrawable(R.drawable.ic_hand));
+            } else {
+                checkboxLike.setChecked(false);
+                checkboxLike.setButtonDrawable(getResources().getDrawable(R.drawable.ic_like));
+
+            }
             /*String status = "pending";
             if (status.equalsIgnoreCase("rejected")) {
                 tvStatus.setTextColor(Color.RED);

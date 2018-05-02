@@ -61,7 +61,7 @@ import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_
  * Created by user on 30/4/18.
  */
 
-public class FanCustomizationStickersFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener{
+public class FanCustomizationStickersFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
 
     private RecyclerView rcDesignList;
@@ -120,10 +120,9 @@ public class FanCustomizationStickersFragment extends BaseFragment implements Sw
 
                     @Override
                     public void selectedItemPosition(int position) {
-                        if(position == 0){
+                        if (position == 0) {
                             mImageSource = PROFILE_CAMERA_IMAGE;
-                        }
-                        else if(position == 1){
+                        } else if (position == 1) {
                             mImageSource = PROFILE_GALLERY_IMAGE;
                         }
                     }
@@ -418,7 +417,6 @@ public class FanCustomizationStickersFragment extends BaseFragment implements Sw
         mHostActivity = (FanHomeActivity) context;
     }
 
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         AppLogger.error(TAG, "Inside onActivityResult()");
@@ -477,10 +475,9 @@ public class FanCustomizationStickersFragment extends BaseFragment implements Sw
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    if(mImageSource == PROFILE_GALLERY_IMAGE){
+                    if (mImageSource == PROFILE_GALLERY_IMAGE) {
                         pickGalleryImage();
-                    }
-                    else if(mImageSource == PROFILE_CAMERA_IMAGE){
+                    } else if (mImageSource == PROFILE_CAMERA_IMAGE) {
                         captureImage();
                     }
 
@@ -522,10 +519,11 @@ public class FanCustomizationStickersFragment extends BaseFragment implements Sw
         startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
     }
 
-    private void gotoImageEditActivity(String capturedImagePath){
+    private void gotoImageEditActivity(String capturedImagePath) {
         Intent intent = new Intent(mHostActivity, EditImageActivity.class);
         intent.putExtra(FilterFragment.STICKER_IMAGE_PATH, mSelectedItem.getImagePath());
         intent.putExtra(FilterFragment.IMAGE_PATH, capturedImagePath);
         startActivity(intent);
+
     }
 }

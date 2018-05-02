@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/home/satyendra/AndroidStudioProjects/sticker_android/cropper/src/main/jniLibs"/></dataSet><dataSet config="release"><source path="/home/satyendra/AndroidStudioProjects/sticker_android/cropper/src/release/jniLibs"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="/home/user/Sticker_Android/cropper/src/main/jniLibs"/></dataSet><dataSet config="release"><source path="/home/user/Sticker_Android/cropper/src/release/jniLibs"/></dataSet></merger>

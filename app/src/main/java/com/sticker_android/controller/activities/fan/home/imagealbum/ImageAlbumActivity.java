@@ -1,6 +1,8 @@
 package com.sticker_android.controller.activities.fan.home.imagealbum;
 
+
 import android.app.Activity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -57,9 +59,9 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
         getuserInfo();
         setContentView(R.layout.activity_image_album);
         PAGE_LIMIT = getResources().getInteger(R.integer.designed_item_page_limit);
+        getIntentData();
         setViewReferences();
         setViewListeners();
-        getIntentData();
         setToolbar();
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
 
@@ -76,7 +78,6 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
     }
 
     private void getIntentData() {
-
         if(getIntent() != null){
             mFilterImageType = getIntent().getStringExtra(FILTER_IMAGE_TYPE);
         }
@@ -192,6 +193,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
                         gridViewAdapter.setData(apiResponse.paylpad.fanFilterArrayList);
                     }
                     if (apiResponse.paylpad.fanFilterArrayList == null) {
+                        txtNoDataFoundContent.setText("No "+mFilterImageType+" Found.");
                         showNoDataFound();
                     }
                 }

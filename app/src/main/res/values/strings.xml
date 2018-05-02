@@ -212,6 +212,8 @@
     <string name="filter">Filter</string>
     <string name="emojis">Emojis</string>
     <string name="please_choose_image_to_apply_filter_sticker_emoji">Please choose image to apply filter, sticker or emoji.</string>
+
+    <string name="txt_your_comment">Your Comment</string>
     <string name="something_went_wrong">Something went wrong.</string>
     <string name="no_customization_alert">No customization done.</string>
     <string name="saved_successfully">Saved successfully.</string>

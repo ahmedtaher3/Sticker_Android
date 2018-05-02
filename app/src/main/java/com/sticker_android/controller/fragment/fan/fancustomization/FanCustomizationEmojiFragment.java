@@ -412,7 +412,12 @@ public class FanCustomizationEmojiFragment  extends BaseFragment implements Swip
         mHostActivity = (FanHomeActivity) context;
     }
 
-    @Override
+   /* @Override
+
+    public void onProductItemClick(FanContestDownload product) {
+        startActivity(new Intent(getActivity(), ImageAlbumActivity.class));
+    }*/
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         AppLogger.error(TAG, "Inside onActivityResult()");

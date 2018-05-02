@@ -71,6 +71,12 @@ import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_
 
 public class FilterFragment extends Fragment implements View.OnClickListener {
 
+
+    private RelativeLayout rlContent;
+    private LinearLayout llLoaderView;
+    private RelativeLayout rlConnectionContainer;
+    private TextView txtNoDataFoundTitle, txtNoDataFoundContent;
+
     private final String TAG = FilterFragment.class.getSimpleName();
     private Context mContext;
     private AppBaseActivity mHostActivity;
@@ -478,6 +484,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.llFilter:
                 openFilterGallery("filter");
+
                 break;
             case R.id.llSticker:
                 openFilterGallery("sticker");
@@ -510,7 +517,6 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-
     private void makeSaveButtonEnable(boolean enable){
         if(enable){
             btnSave.setEnabled(true);

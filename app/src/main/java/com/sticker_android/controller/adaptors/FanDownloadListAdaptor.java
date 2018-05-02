@@ -20,6 +20,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.model.User;
+import com.sticker_android.model.contest.FanContest;
 import com.sticker_android.model.contest.FanContestDownload;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.DesignerActionListener;
@@ -275,6 +276,13 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
                 itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
             }
 
+            itemHolder.cardItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   if (productItemClickListener != null)
+                       productItemClickListener.onProductItemClick(productItem.productInfo);
+                }
+            });
         }
 
     }
