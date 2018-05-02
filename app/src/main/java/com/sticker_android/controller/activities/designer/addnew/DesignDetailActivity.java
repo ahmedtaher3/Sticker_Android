@@ -80,6 +80,7 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
                 onBackPressed();
             }
         });
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
 
         setImageHeight();
 

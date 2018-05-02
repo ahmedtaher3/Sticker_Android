@@ -26,7 +26,6 @@
         android:background="@drawable/btn_shadow_corner"
         android:gravity="start"
         android:inputType="text|textCapSentences|textNoSuggestions|textMultiLine"
-        android:minHeight="@dimen/act_add_corp_write_des_edt_heigh"
         android:padding="5dp"
         android:textSize="@dimen/text_size_contact_us" />
 

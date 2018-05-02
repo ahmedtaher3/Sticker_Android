@@ -112,6 +112,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         measureImageWidthHeight();
         imvProductImage2.setVisibility(View.GONE);
         manageStatus();
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
     }
 
     private void manageStatus() {

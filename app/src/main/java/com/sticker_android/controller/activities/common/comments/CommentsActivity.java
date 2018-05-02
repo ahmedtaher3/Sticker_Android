@@ -106,10 +106,12 @@ public class CommentsActivity extends AppBaseActivity implements SwipeRefreshLay
      */
     private void setToolbarBackground() {
         if (productObj != null) {
-            if (productObj.getType().equalsIgnoreCase("ads") || productObj.getType().equalsIgnoreCase("product"))
+            if (productObj.getType().equalsIgnoreCase("ads") || productObj.getType().equalsIgnoreCase("product")) {
                 toolbar.setBackground(getResources().getDrawable(R.drawable.corporate_header_hdpi));
-            else {
+                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+            } else {
                 toolbar.setBackground(getResources().getDrawable(R.drawable.designer_header_hdpi));
+                changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
 
             }
         }
@@ -204,6 +206,7 @@ public class CommentsActivity extends AppBaseActivity implements SwipeRefreshLay
 
     @Override
     protected void setViewListeners() {
+        swiperefresh.setOnRefreshListener(this);
 
     }
 
@@ -227,7 +230,7 @@ public class CommentsActivity extends AppBaseActivity implements SwipeRefreshLay
 
     @Override
     public void onRefresh() {
-
+        commentsApiCall(true);
     }
 
 
@@ -266,15 +269,15 @@ public class CommentsActivity extends AppBaseActivity implements SwipeRefreshLay
                 holder.tvDescription.setText(reject.description);
 
             }
-            if (reject.description.equals("")&&reject.description.isEmpty()){
+           /* if (reject.description.equals("") && reject.description.isEmpty()) {
                 holder.tvCommentHeader.setVisibility(View.GONE);
                 holder.tvDescription.setVisibility(View.GONE);
 
-            }else {
+            } else {
                 holder.tvCommentHeader.setVisibility(View.VISIBLE);
                 holder.tvDescription.setVisibility(View.VISIBLE);
 
-            }
+            }*/
         }
 
         public void setData(ArrayList<Reject> data) {

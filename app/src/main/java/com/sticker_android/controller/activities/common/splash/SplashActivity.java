@@ -2,6 +2,7 @@ package com.sticker_android.controller.activities.common.splash;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -34,7 +35,7 @@ public class SplashActivity extends AppBaseActivity {
         init();
         waitForFewSecond();
         setSelectedLangage();
-        changeStatusBarColor(getResources().getColor(R.color.colorFanText));
+        changeStatusBarColor(Color.BLACK);
         BadgeUtils.setBadge(this,0);
     }
 

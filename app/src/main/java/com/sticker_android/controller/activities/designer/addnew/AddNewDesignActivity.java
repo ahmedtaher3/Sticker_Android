@@ -133,6 +133,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
 
         setImageHeight();
         getIntentValues();
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
