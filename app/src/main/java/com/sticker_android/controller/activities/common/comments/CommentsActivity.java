@@ -209,7 +209,7 @@ public class CommentsActivity extends AppBaseActivity implements SwipeRefreshLay
 
     @Override
     protected void setViewReferences() {
-        recComments = findViewById(R.id.recComments);
+        recComments = (RecyclerView) findViewById(R.id.recComments);
         swiperefresh = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         rlConnectionContainer = (RelativeLayout) findViewById(R.id.rlConnectionContainer);
         llLoaderView = (LinearLayout) findViewById(R.id.llLoader);
@@ -298,8 +298,8 @@ public class CommentsActivity extends AppBaseActivity implements SwipeRefreshLay
 
                 super(view);
 
-                tvCommentHeader = view.findViewById(R.id.tvCommentHeader);
-                tvDescription = view.findViewById(R.id.tvDescription);
+                tvCommentHeader = (TextView) view.findViewById(R.id.tvCommentHeader);
+                tvDescription = (TextView) view.findViewById(R.id.tvDescription);
 
             }
         }
