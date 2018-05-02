@@ -122,6 +122,15 @@
 
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:id="@+id/rlJustificationHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <include layout="@layout/layout_justification_content"/>
+                </RelativeLayout>
+
                 <Button
                     android:id="@+id/act_corp_add_new_btn_post"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"

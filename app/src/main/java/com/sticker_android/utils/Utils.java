@@ -143,7 +143,7 @@ public class Utils {
 
             String filePath = Environment.getExternalStorageDirectory().getPath();
 
-            File myDir = new File(filePath, "buddsup");
+            File myDir = new File(filePath, "sportwidget");
             myDir.mkdirs();
 
             String fname = null;

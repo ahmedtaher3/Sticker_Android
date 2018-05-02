@@ -406,6 +406,9 @@ public class FanHomeActivity extends AppBaseActivity
             if(f instanceof FanHomeFragment){
                 ((FanHomeFragment)f).onActivityResult(requestCode, resultCode, data);
             }
+            else if(f instanceof FanCustomizationFragment){
+                ((FanCustomizationFragment)f).onActivityResult(requestCode, resultCode, data);
+            }
         }
 
         if (resultCode == RESULT_OK) {

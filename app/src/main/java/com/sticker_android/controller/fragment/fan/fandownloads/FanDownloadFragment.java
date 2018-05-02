@@ -274,7 +274,7 @@ public class FanDownloadFragment extends BaseFragment implements SearchView.OnQu
         }
             searchView.setIconified(false);
             searchView.clearFocus();
-            MenuItemCompat.collapseActionView(item);
+            //MenuItemCompat.collapseActionView(item);
 
         return true;
     }

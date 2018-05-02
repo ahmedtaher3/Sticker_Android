@@ -1,23 +1,17 @@
 package com.sticker_android.controller.fragment.fan.fanhome;
 
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,7 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.utils.L;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.filter.FanFilterActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
@@ -41,7 +34,6 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
-import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.BottomSheetFragment;
@@ -162,26 +154,34 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                         if (itemFilter != null) {
                             itemFilter.setVisible(false);
                         }
+                        if(item!=null)
+                            item.setVisible(false);
                         break;
                     case 1:
                         if (itemFilter != null) {
                             itemFilter.setVisible(false);
                         }
+                        setItemVisible();
                         replaceFragment(new FanContestFragment());
                         break;
                     case 2:
+                        setItemVisible();
                         replaceFragment(new FanHomeStickerFragment());
                         break;
                     case 3:
+                        setItemVisible();
                         replaceFragment(new FanHomeGifFragment());
                         break;
                     case 4:
+                        setItemVisible();
                         replaceFragment(new FanHomeEmojiFragment());
                         break;
                     case 5:
+                        setItemVisible();
                         replaceFragment(new FanHomeAdsFragment());
                         break;
                     case 6:
+                        setItemVisible();
                         replaceFragment(new FanHomeProductsFragment());
                         break;
 
@@ -199,6 +199,11 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
 
             }
         });
+    }
+
+    private void setItemVisible() {
+        if(item!=null)
+            item.setVisible(true);
     }
 
     @Override
@@ -221,6 +226,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         item = menu.findItem(R.id.search);
         itemFilter = menu.findItem(R.id.filter);
         itemFilter.setVisible(false);
+        item.setVisible(false);
         searchView = (SearchView) MenuItemCompat.getActionView(item);
         //  setSearchTextColour(searchView);
         setSearchIcons(searchView);

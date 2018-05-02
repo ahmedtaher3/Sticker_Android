@@ -199,7 +199,10 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
                 public void onClick(View view) {
                     int position = vh.getAdapterPosition();
                     FanContestDownload product = mItems.get(position);
-                    // productItemClickListener.onProductItemClick(product);
+
+                    if(productItemClickListener != null){
+                        productItemClickListener.onProductItemClick(product.productInfo);
+                    }
                 }
             });
 

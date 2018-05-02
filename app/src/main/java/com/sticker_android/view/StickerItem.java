@@ -219,12 +219,6 @@ public class StickerItem {
     public void draw(Canvas canvas) {
         canvas.drawBitmap(this.bitmap, this.matrix, null);// Maps drawn elements
         // canvas.drawRect(this.dstRect, dstPaint);
-        if(bitmap != null){
-            Log.e("StickerItem", "Bitmap Item is drawn");
-        }
-        else{
-            Log.e("StickerItem", "Bitmap Item is null");
-        }
 
         if (this.isDrawHelpTool) {// Line drawing aids
             canvas.save();

@@ -8,4 +8,5 @@ public interface ImagePickerListener {
 
     void pickFromGallery();
     void captureFromCamera();
+    void selectedItemPosition(int position);
 }

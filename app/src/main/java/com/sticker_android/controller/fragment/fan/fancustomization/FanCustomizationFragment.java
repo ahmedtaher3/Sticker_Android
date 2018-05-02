@@ -1,6 +1,7 @@
 package com.sticker_android.controller.fragment.fan.fancustomization;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,17 +20,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.fragment.fan.FilterFragment;
 import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadEmojiFragment;
 import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadGifFragment;
 import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadStickerFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -76,18 +81,18 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setHasOptionsMenu(true);
         replaceFragment(new FanCustomizationStickersFragment());
-
         return view;
     }
 
-  /*  @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem item = menu.findItem(R.id.action_settings);
-        item.setVisible(false);
-    }
+    /*  @Override
+      public void onPrepareOptionsMenu(Menu menu) {
+          MenuItem item = menu.findItem(R.id.action_settings);
+          item.setVisible(false);
+      }
 
 
-*/    private void init() {
+  */
+    private void init() {
         appPref = new AppPref(getActivity());
     }
 
@@ -177,9 +182,8 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
         String type = DesignType.stickers.getType();
         if (tabLayout.getSelectedTabPosition() == 0) {
             type = DesignType.stickers.getType();
+
         } else if (tabLayout.getSelectedTabPosition() == 1) {
-            type = DesignType.gif.getType().toUpperCase(Locale.US);
-        } else if (tabLayout.getSelectedTabPosition() == 2) {
             type = DesignType.emoji.getType();
         }
         return type;
@@ -198,11 +202,6 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
         TabLayout.Tab stickerTab = tabLayout.newTab();
         stickerTab.setText(getString(R.string.stickers)); // set the Text for the first Tab
         tabLayout.addTab(stickerTab);
-
-        TabLayout.Tab gifTab = tabLayout.newTab();
-        gifTab.setText(getString(R.string.gif)); // set the Text for the first Tab
-        tabLayout.addTab(gifTab);
-
         TabLayout.Tab emojiTab = tabLayout.newTab();
         emojiTab.setText(getString(R.string.emoji)); // set the Text for the first Tab
         tabLayout.addTab(emojiTab);
@@ -282,23 +281,36 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
         }
         searchView.setIconified(false);
         searchView.clearFocus();
-        MenuItemCompat.collapseActionView(item);
+      //  MenuItemCompat.collapseActionView(item);
 
         return true;
     }
 
     private void searchResult(String query) {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
-        if (fragment instanceof FanDownloadStickerFragment) {
-            ((FanDownloadStickerFragment) fragment).filterData(query.trim());
+        if (fragment instanceof FanCustomizationStickersFragment) {
+            ((FanCustomizationStickersFragment) fragment).filterData(query.trim());
         }
-        if (fragment instanceof FanDownloadGifFragment) {
-            ((FanDownloadGifFragment) fragment).filterData(query.trim());
+        if (fragment instanceof FanCustomizationEmojiFragment) {
+            ((FanCustomizationEmojiFragment) fragment).filterData(query.trim());
         }
-        if (fragment instanceof FanDownloadEmojiFragment) {
-            ((FanDownloadEmojiFragment) fragment).filterData(query.trim());
-        }
+
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Fragment f = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
+
+        if (resultCode == getActivity().RESULT_OK) {
+            if(f instanceof FanCustomizationStickersFragment){
+                ((FanCustomizationStickersFragment)f).onActivityResult(requestCode, resultCode, data);
+            }
+            if(f instanceof FanCustomizationEmojiFragment){
+                ((FanCustomizationStickersFragment)f).onActivityResult(requestCode, resultCode, data);
+            }
+        }
+
+    }
 }

@@ -1,59 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_add_new_corporate"
     android:layout_width="match_parent"
-    android:id="@+id/parentLayout"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.sticker_android.controller.activities.corporate.addnew.AddNewCorporateActivity"
+    tools:ignore="MissingPrefix">
 
     <LinearLayout
-        android:id="@+id/control_area"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/transparent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/preview_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp" />
+        <include layout="@layout/toolbar" />
 
-        <FrameLayout
-            android:id="@+id/controls_container"
+        <include layout="@layout/view_white" />
+
+        <RelativeLayout
+            android:id="@+id/rlContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp" />
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/work_space"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/control_area"
-        android:layout_alignParentTop="true"
-        android:background="#000000">
-
-        <com.sticker_android.view.imagezoom.ImageViewTouch
-            android:id="@+id/main_image"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center" />
-
-        <com.sticker_android.view.StickerView
-            android:id="@+id/sticker_panel"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-
-    </FrameLayout>
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:id="@+id/progress_bar_edit"
-        android:visibility="gone" />
 
 </RelativeLayout>

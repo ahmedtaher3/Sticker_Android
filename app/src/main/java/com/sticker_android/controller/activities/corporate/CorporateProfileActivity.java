@@ -187,6 +187,11 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
                     public void captureFromCamera() {
                         captureImage();
                     }
+
+                    @Override
+                    public void selectedItemPosition(int position) {
+
+                    }
                 });
                 break;
         }

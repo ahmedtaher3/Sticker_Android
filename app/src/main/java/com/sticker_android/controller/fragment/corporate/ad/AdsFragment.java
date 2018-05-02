@@ -951,10 +951,12 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         }
 
         public void setData(ArrayList<Product> data) {
-            mItems = new ArrayList<>();
-            mItems.addAll(data);
-            notifyDataSetChanged();
-            isLoaderVisible = false;
+            if (data != null) {
+                mItems = new ArrayList<>();
+                mItems.addAll(data);
+                notifyDataSetChanged();
+                isLoaderVisible = false;
+            }
         }
 
         public void updateAdapterData(ArrayList<Product> data) {

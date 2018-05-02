@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +47,8 @@ import com.sticker_android.view.SetDate;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -73,9 +76,11 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private final int PROFILE_CAMERA_IMAGE = 0;
     private final int PROFILE_GALLERY_IMAGE = 1;
     private ImageView imvProductImage;
+    private RelativeLayout rlJustificationHolder;
     private String mCapturedImageUrl;
     private android.app.AlertDialog mPermissionDialog;
     private ImageView imvProductImage2;
+    private TextView txtViewMoreComment, txtRecentComments, edtJustification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +105,8 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setDate = new SetDate(edtExpireDate, this, R.style.AppThemeAddRenew);
+
+        txtViewMoreComment.setTextColor(ContextCompat.getColor(this, R.color.colorCorporateText));
 
         measureImageWidthHeight();
         fetchCategoryApi();
@@ -226,6 +233,10 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         spnrCategory = (Spinner) findViewById(R.id.spnrCategory);
         imvProductImage=(ImageView)findViewById(R.id.imvProductImage);
         imvProductImage2=(ImageView)findViewById(R.id.imvProductImage2);
+        rlJustificationHolder = (RelativeLayout) findViewById(R.id.rlJustificationHolder);
+        edtJustification = (TextView) findViewById(R.id.edtJustification);
+        txtViewMoreComment = (TextView) findViewById(R.id.txtViewMoreComment);
+        txtRecentComments = (TextView) findViewById(R.id.txtRecentComments);
     }
 
     @Override
@@ -290,6 +301,11 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                     @Override
                     public void captureFromCamera() {
                         captureImage();
+                    }
+
+                    @Override
+                    public void selectedItemPosition(int position) {
+
                     }
                 });
                 break;

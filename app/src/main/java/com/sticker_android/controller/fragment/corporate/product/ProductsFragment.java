@@ -14,6 +14,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +24,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -33,29 +36,44 @@ import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
+import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
+import com.sticker_android.controller.adaptors.DesignListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
 import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.model.enums.ProductStatus;
+import com.sticker_android.model.interfaces.DesignerActionListener;
+import com.sticker_android.model.interfaces.MessageEventListener;
+import com.sticker_android.model.interfaces.NetworkPopupEventListener;
+import com.sticker_android.model.payload.Payload;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.OnVerticalScrollListener;
 
+import java.net.ConnectException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 
 
 public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    private static final String TAG = ProductsFragment.class.getSimpleName();
     private RecyclerView recAd;
     private ProgressBar progressBarLoadMore;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -63,24 +81,28 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     private OnVerticalScrollListener scrollListener;
     private boolean loading = true;
     private boolean isLastPage = true;
+    private ProductAdaptor productAdaptor;
     protected Handler handler;
     private AppPref appPref;
     private User mUserdata;
     ArrayList<Product> productList = new ArrayList<>();
     private TimeUtility timeUtility = new TimeUtility();
-    private ProductAdaptor productAdaptor;
-
     private int index = 0;
     private boolean isLoading;
     private int currentPageNo;
-    private static final int PAGE_SIZE = 2;
-
-    private int indexIs;
-    private int limitIs;
     private String search = "";
-
-    private TextView tvNoProductUploaded;
+    private TextView tvNoAdsUploaded;
     private int scroll;
+    CorporateListAdaptor corporateListAdaptor;
+
+    private int mCurrentPage = 0;
+    private int PAGE_LIMIT;
+    private LinearLayout llNoDataFound;
+    private RelativeLayout rlContent;
+    private LinearLayout llLoaderView;
+    private RelativeLayout rlConnectionContainer;
+    private TextView txtNoDataFoundTitle, txtNoDataFoundContent;
+    private CorporateHomeActivity mHostActivity;
 
 
     public ProductsFragment() {
@@ -92,7 +114,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_products, container, false);
+        View view = inflater.inflate(R.layout.fragment_ads, container, false);
+        PAGE_LIMIT = mHostActivity.getResources().getInteger(R.integer.designed_item_page_limit);
         init();
         getuserInfo();
         setViewReferences(view);
@@ -100,10 +123,245 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         recyclerViewLayout();
         handler = new Handler();
         setAdaptor();
+
+        llNoDataFound.setVisibility(View.GONE);
+
+        corporateListAdaptor = new CorporateListAdaptor(getActivity());
         productList.clear();
-        productListApi(currentPageNo, search);
-        //  adaptorScrollListener();
+
+        recAd.setAdapter(corporateListAdaptor);
+
+        llNoDataFound.setVisibility(View.GONE);
+        productList = new ArrayList<>();
+        mCurrentPage = 0;
+        getProductFromServer(false, "");
+
+        //   productListApi(currentPageNo, search);
+        adaptorScrollListener();
         return view;
+    }
+
+    private void adaptorScrollListener() {
+
+
+        recAd.addOnScrollListener(new PaginationScrollListener(mLayoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                AppLogger.debug(TAG, "Load more items");
+
+                if (productList.size() >= PAGE_LIMIT) {
+                    AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + productList.size());
+                    getProductFromServer(false, "");
+                    corporateListAdaptor.addLoader();
+                }
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return 0;//not required
+            }
+
+            @Override
+            public int getThresholdValue() {
+                return PAGE_LIMIT / 2;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return false;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return corporateListAdaptor.isLoaderVisible;
+            }
+        });
+
+    }
+
+    private void getProductFromServer(final boolean isRefreshing, final String searchKeyword) {
+
+        //remove wi-fi symbol when response got
+        if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
+            rlConnectionContainer.removeAllViews();
+        }
+
+        if (mCurrentPage == 0 && !isRefreshing) {
+            llLoaderView.setVisibility(View.VISIBLE);
+        }
+
+        llNoDataFound.setVisibility(View.GONE);
+        int index = 0;
+        int limit = PAGE_LIMIT;
+
+        if (isRefreshing) {
+            index = 0;
+        } else if (mCurrentPage != -1) {
+            index = mCurrentPage * PAGE_LIMIT;
+        }
+
+        if (PAGE_LIMIT != -1) {
+            limit = PAGE_LIMIT;
+        }
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
+                index, limit, DesignType.products.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword);
+        apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+
+                if (isAdded() && getActivity() != null) {
+                    llLoaderView.setVisibility(View.GONE);
+                    rlContent.setVisibility(View.VISIBLE);
+                    swipeRefreshLayout.setRefreshing(false);
+
+                    //remove wi-fi symbol when response got
+                    if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
+                        rlConnectionContainer.removeAllViews();
+                    }
+
+                    try {
+                        if (apiResponse.status) {
+                            Payload payload = apiResponse.paylpad;
+
+                            if (payload != null) {
+
+                                if (isRefreshing) {
+
+                                    if (payload.productList != null && payload.productList.size() != 0) {
+                                        productList.clear();
+                                        productList.addAll(payload.productList);
+
+                                        llNoDataFound.setVisibility(View.GONE);
+                                        recAd.setVisibility(View.VISIBLE);
+                                        corporateListAdaptor.setData(productList);
+
+                                        mCurrentPage = 0;
+                                        mCurrentPage++;
+                                    } else {
+                                        productList.clear();
+                                        corporateListAdaptor.setData(productList);
+                                        if (searchKeyword.length() != 0) {
+                                            txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                        } else {
+                                            txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
+                                        }
+                                        showNoDataFound();
+                                    }
+                                } else {
+
+                                    if (mCurrentPage == 0) {
+                                        productList.clear();
+                                        if (payload.productList != null) {
+                                            productList.addAll(payload.productList);
+                                        }
+
+                                        if (productList.size() != 0) {
+                                            llNoDataFound.setVisibility(View.GONE);
+                                            recAd.setVisibility(View.VISIBLE);
+                                            corporateListAdaptor.setData(productList);
+                                        } else {
+                                            showNoDataFound();
+                                            if (searchKeyword.length() != 0) {
+                                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                            } else {
+                                                txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
+                                            }
+                                            recAd.setVisibility(View.GONE);
+                                        }
+                                    } else {
+                                        AppLogger.error(TAG, "Remove loader...");
+                                        corporateListAdaptor.removeLoader();
+                                        if (payload.productList != null && payload.productList.size() != 0) {
+                                            productList.addAll(payload.productList);
+                                            corporateListAdaptor.setData(productList);
+                                        }
+                                    }
+
+                                    if (payload.productList != null && payload.productList.size() != 0) {
+                                        mCurrentPage++;
+                                    }
+                                }
+                                AppLogger.error(TAG, "item list size => " + productList.size());
+
+                            } else if (productList == null || (productList != null && productList.size() == 0)) {
+                                if (searchKeyword.length() != 0) {
+                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                } else {
+                                    txtNoDataFoundContent.setText(R.string.no_product_uploaded_yet);
+                                }
+                                showNoDataFound();
+                            }
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        Utils.showAlertMessage(getActivity(), new MessageEventListener() {
+                            @Override
+                            public void onOkClickListener(int reqCode) {
+
+                            }
+                        }, getString(R.string.server_unreachable), getString(R.string.oops), 0);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFail(final Call<ApiResponse> call, Throwable t) {
+
+                if (isAdded() && getActivity() != null) {
+                    llLoaderView.setVisibility(View.GONE);
+                    corporateListAdaptor.removeLoader();
+                    swipeRefreshLayout.setRefreshing(false);
+
+                    if (mCurrentPage == 0) {
+                        rlContent.setVisibility(View.GONE);
+                    } else {
+                        rlContent.setVisibility(View.VISIBLE);
+                    }
+                    if (!call.isCanceled() && (t instanceof ConnectException ||
+                            t instanceof SocketTimeoutException ||
+                            t instanceof SocketException ||
+                            t instanceof UnknownHostException)) {
+
+                        if (mCurrentPage == 0) {
+                            mHostActivity.manageNoInternetConnectionLayout(getActivity(), rlConnectionContainer, new NetworkPopupEventListener() {
+                                @Override
+                                public void onOkClickListener(int reqCode) {
+                                    rlContent.setVisibility(View.VISIBLE);
+                                }
+
+                                @Override
+                                public void onRetryClickListener(int reqCode) {
+                                    getProductFromServer(isRefreshing, searchKeyword);
+                                }
+                            }, 0);
+                        } else {
+                            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void showNoDataFound() {
+        llNoDataFound.setVisibility(View.VISIBLE);
+        txtNoDataFoundTitle.setText("");
+    }
+
+    @Override
+    public void onRefresh() {
+        mCurrentPage = 0;
+        if (productList != null)
+            productList.clear();
+        corporateListAdaptor.setData(productList);
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            getProductFromServer(true, "");
+        } else {
+            swipeRefreshLayout.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
     }
 
     private void init() {
@@ -119,42 +377,6 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
         productAdaptor = new ProductAdaptor(getActivity(), productList);
         recAd.setAdapter(productAdaptor);
-    }
-
-
-    private void adaptorScrollListener() {
-
-        recAd.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                scroll = 1;
-                if (swipeRefreshLayout.isRefreshing())
-                    return;
-
-                int visibleItemCount = mLayoutManager.getChildCount();
-                int totalItemCount = mLayoutManager.getItemCount();
-                int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
-
-                if (!isLoading && !isLastPage) {
-                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                            && firstVisibleItemPosition >= 0
-                            && totalItemCount >= PAGE_SIZE) {
-                        // loadMoreItems();
-                        if (productList != null && productList.size() > 0) {
-                            currentPageNo++;
-                            productListApi(currentPageNo * 2, search);
-                        }
-                    }
-                }
-            }
-        });
-
     }
 
 
@@ -183,7 +405,14 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         recAd = (RecyclerView) view.findViewById(R.id.recAds);
         progressBarLoadMore = (ProgressBar) view.findViewById(R.id.progressBarLoadMore);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshAds);
-        tvNoProductUploaded = (TextView) view.findViewById(R.id.tvNoproductUploaded);
+        //  tvNoAdsUploaded = (TextView) view.findViewById(R.id.tvNoAdsUploaded);
+        rlContent = (RelativeLayout) view.findViewById(R.id.rlContent);
+        llNoDataFound = (LinearLayout) view.findViewById(R.id.llNoDataFound);
+        txtNoDataFoundTitle = (TextView) view.findViewById(R.id.txtNoDataFoundTitle);
+        txtNoDataFoundContent = (TextView) view.findViewById(R.id.txtNoDataFoundContent);
+        rlConnectionContainer = (RelativeLayout) view.findViewById(R.id.rlConnectionContainer);
+        llLoaderView = (LinearLayout) view.findViewById(R.id.llLoader);
+
     }
 
     @Override
@@ -191,28 +420,33 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         return false;
     }
 
-    @Override
+  /*  @Override
     public void onRefresh() {
-
         scroll = 0;
         search = "";
-
         currentPageNo = 0;
+
         if (productList != null)
             productList.clear();
         productListApi(0, search);
-
-        CorporateHomeFragment parentFrag = ((CorporateHomeFragment)ProductsFragment.this.getParentFragment());
+        CorporateHomeFragment parentFrag = ((CorporateHomeFragment) AdsFragment.this.getParentFragment());
         parentFrag.clearSearch();
-    }
+    }*/
 
     public void refreshApi() {
-        scroll = 0;
+       /* scroll = 0;
         search = "";
         currentPageNo = 0;
+
         if (productList != null)
             productList.clear();
         productListApi(0, search);
+   */
+        search = "";
+        if (productList != null)
+            productList.clear();
+        mCurrentPage = 0;
+        getProductFromServer(false, "");
     }
 
     /**
@@ -220,20 +454,20 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
      */
     private void productListApi(int index, final String search) {
         isLoading = true;
-        if(swipeRefreshLayout!=null)
-        swipeRefreshLayout.setRefreshing(true);
+        if (swipeRefreshLayout != null)
+            swipeRefreshLayout.setRefreshing(true);
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
-                index, 50, "product", "product_list", search);
+                index, 50, "ads", "product_list", search);
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 isLoading = false;
-                if(swipeRefreshLayout!=null)
-                swipeRefreshLayout.setRefreshing(false);
+                if (swipeRefreshLayout != null)
+                    swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
-                    if(productList!=null)
+                    if (productList != null)
                         productList.clear();
-                    ArrayList<Product> tempList = new ArrayList<>();
+                    ArrayList<Product> tempList = new ArrayList<Product>();
                     tempList = apiResponse.paylpad.productList;
                     if (tempList != null) {
                         isLastPage = false;
@@ -243,23 +477,22 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                         isLastPage = true;
                     }
                     if (tempList == null && search.isEmpty()) {
-                        tvNoProductUploaded.setText(R.string.no_product_uploaded_yet);
-                        tvNoProductUploaded.setVisibility(View.VISIBLE);
+                        tvNoAdsUploaded.setText(R.string.no_ads_uploaded_yet);
+                        tvNoAdsUploaded.setVisibility(View.VISIBLE);
                     } else if (tempList == null && !search.isEmpty()) {
-                        tvNoProductUploaded.setText(R.string.no_search_found);
-                        tvNoProductUploaded.setVisibility(View.VISIBLE);
+                        tvNoAdsUploaded.setText(R.string.no_search_found);
+                        tvNoAdsUploaded.setVisibility(View.VISIBLE);
                     } else {
-                        tvNoProductUploaded.setVisibility(View.GONE);
+                        tvNoAdsUploaded.setVisibility(View.GONE);
                     }
-
-                    /*if(scroll>0){
-                        tvNoProductUploaded.setVisibility(View.GONE);
-
-                    }*/
+              /*  if(scroll>0){
+                    tvNoAdsUploaded.setVisibility(View.GONE);
+                    tvNoAdsUploaded.setVisibility(View.GONE);
+                }*/
                     if (!search.isEmpty()) {
                         if (tempList == null && currentPageNo == 0) {
-                            tvNoProductUploaded.setText(R.string.no_search_found);
-                            tvNoProductUploaded.setVisibility(View.VISIBLE);
+                            tvNoAdsUploaded.setText(R.string.no_search_found);
+                            tvNoAdsUploaded.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -267,12 +500,12 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-                if(swipeRefreshLayout!=null)
-                swipeRefreshLayout.setRefreshing(false);
+                if (swipeRefreshLayout != null)
+                    swipeRefreshLayout.setRefreshing(false);
                 isLoading = false;
             }
         });
-        this.search="";
+        this.search = "";
     }
 
     /**
@@ -287,7 +520,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.edit_remove_product, popup.getMenu());
         popup.show();
-
+        popup.setGravity(Gravity.CENTER);
         showHideEdit(popup, product);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -305,8 +538,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                                 removeProductApi(position);
                             }
                         });
-
-                        //  removeProductApi(position);
+                        //   removeProductApi(position);
                         break;
                     case R.id.repost:
                         moveToActivity(position, "Repost");
@@ -317,50 +549,19 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         });
     }
 
-    private void moveToActivity(int position, String type) {
-
-        Bundle bundle = new Bundle();
-
-        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, productList.get(position));
-        bundle.putString("edit", type);
-        Intent intent = new Intent(getActivity(), RenewAdandProductActivity.class);
-        intent.putExtras(bundle);
-
-        startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
-
-        getActivity().overridePendingTransition(R.anim.activity_animation_enter,
-                R.anim.activity_animation_exit);
-
+    private void moveToRepost(int position) {
     }
 
+    private void showHideEdit(PopupMenu popup, Product product) {
 
-    public void searchProduct(ArrayList<Product> productList) {
-
-        if (this.productList != null) {
-            this.productList.clear();
-            productAdaptor.notifyDataChanged();
+        Menu popupMenu = popup.getMenu();
+        if (product.getIsExpired() > 0) {
+            popupMenu.findItem(R.id.repost).setVisible(true);
+            popupMenu.findItem(R.id.edit).setVisible(false);
+        } else {
+            popupMenu.findItem(R.id.edit).setVisible(true);
+            popupMenu.findItem(R.id.repost).setVisible(false);
         }
-        if (productAdaptor != null) {
-
-            productAdaptor.updateProductList(productList);
-        }
-
-    }
-
-
-    public void searchProduct(String query) {
-        if (productList != null)
-            productList.clear();
-        currentPageNo = 0;
-        productListApi(0, query);
-
-    }
-
-
-    public void refreshList() {
-        if (productList != null)
-            productList.clear();
-        onRefresh();
     }
 
     /**
@@ -379,10 +580,10 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             public void onSuccess(ApiResponse apiResponse) {
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
-                    Utils.showToast(getActivity(), "Deleted successfully.");
+                    Utils.showToast(getActivity(), "Deleted successfully");
                     productAdaptor.delete(position);
-                   /* productAdaptor.notifyDataChanged();
-                    refreshApi();*/
+                   /* refreshApi();
+               */
                 }
             }
 
@@ -391,39 +592,67 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-        search="";
+        scroll = 0;
+        search = "";
     }
 
-    private void showHideEdit(PopupMenu popup, Product product) {
+    private void moveToActivity(int position, String type) {
 
-        Menu popupMenu = popup.getMenu();
-        if (product.getIsExpired() > 0) {
-            popupMenu.findItem(R.id.repost).setVisible(true);
-            popupMenu.findItem(R.id.edit).setVisible(false);
-        } else {
-            popupMenu.findItem(R.id.edit).setVisible(true);
-            popupMenu.findItem(R.id.repost).setVisible(false);
-        }
+        Bundle bundle = new Bundle();
+
+        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, productList.get(position));
+        bundle.putString("edit", type);
+        Intent intent = new Intent(getActivity(), RenewAdandProductActivity.class);
+        intent.putExtras(bundle);
+
+        startActivityForResult(intent, AppConstant.INTENT_RENEW_CODE);
+
+        getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case AppConstant.INTENT_RENEW_CODE:
-                    onRefresh();
-                    break;
-                case AppConstant.INTENT_PRODUCT_DETAILS:
-                    if (productAdaptor != null) {
-                        productAdaptor.notifyDataChanged();
-                        productAdaptor.notifyDataSetChanged();
-                    }
-                    refreshApi();
-                    break;
-            }
+    public void searchProduct(ArrayList<Product> productList) {
 
+        if (this.productList != null) {
+            this.productList.clear();
+            productAdaptor.notifyDataChanged();
         }
+        if (productAdaptor != null) {
+
+            productAdaptor.updateProductList(productList);
+        }
+
+    }
+
+
+    /**
+     * @param query
+     */
+    public void searchProduct(String query) {
+      /*  scroll = 0;
+        if (productList != null)
+            productList.clear();
+        currentPageNo = 0;
+        productListApi(0, query);
+*/
+        mCurrentPage = 0;
+        if (productList != null)
+            productList.clear();
+        corporateListAdaptor.setData(productList);
+        getProductFromServer(false, query);
+    }
+
+
+    /**
+     * Method is used to refresh the list
+     */
+    public void refreshList() {
+        mCurrentPage = 0;
+        if (productList != null)
+            productList.clear();
+        corporateListAdaptor.setData(productList);
+        onRefresh();
+
     }
 
     private void moveToDetails(Product product) {
@@ -442,17 +671,34 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     }
 
 
-    /**
-     * Class is used to show the product data
-     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case AppConstant.INTENT_RENEW_CODE:
+                    onRefresh();
+                    break;
+                case AppConstant.INTENT_PRODUCT_DETAILS:
+                    if (productAdaptor != null)
+                        productAdaptor.notifyDataChanged();
+                    onRefresh();
+                    break;
+            }
+
+        }
+
+    }
+
+
+
+    /*New Code*/
+
     public class ProductAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        public final int TYPE_PRODUCT = 0;
-        public final int TYPE_LOAD = 1;
+        private ArrayList<Product> productList = new ArrayList<>();
 
         Context context;
-        List<Product> productLists;
-        OnLoadMoreListener loadMoreListener;
         boolean isLoading = false, isMoreDataAvailable = true;
 
     /*
@@ -462,131 +708,106 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     * */
 
 
-        public ProductAdaptor(Context context, List<Product> productLists) {
+        public ProductAdaptor(Context context, ArrayList<Product> productList) {
             this.context = context;
-            this.productLists = productLists;
+            this.productList = productList;
         }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            if (viewType == TYPE_PRODUCT) {
-                return new ProductAdaptor.ProductHolder(inflater.inflate(R.layout.rec_item_add_product, parent, false));
-            } else {
-                return new ProductAdaptor.LoadHolder(inflater.inflate(R.layout.progress_item, parent, false));
-            }
+            return new ProductAdaptor.ProductHolder(inflater.inflate(R.layout.rec_item_add_product, parent, false));
         }
 
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+            final Product product = productList.get(position);
 
-            if (position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
-                isLoading = true;
-                loadMoreListener.onLoadMore();
-            }
-
-            if (getItemViewType(position) == TYPE_PRODUCT) {
-                final Product product = productLists.get(position);
-
-                ((ProductAdaptor.ProductHolder) holder).checkboxLike.setText(Utils.format(product.statics.likeCount));
-                ((ProductAdaptor.ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showPopup(v, position, product);
-                    }
-                });
-                ((ProductAdaptor.ProductHolder) holder).tvProductTitle.setText(Utils.capitlizeText(product.getProductname()));
-                ((ProductAdaptor.ProductHolder) holder).tvDesciption.setText(Utils.capitlizeText(product.getDescription()));
-                ((ProductAdaptor.ProductHolder) holder).tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(product.getCreatedTime()), getActivity()));
-                ((ProductAdaptor.ProductHolder) holder).cardItem.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        moveToDetails(product);
-                    }
-                });
-                String status = "Ongoing";
-                if (product.getIsExpired() > 0) {
-                    ((ProductAdaptor.ProductHolder) holder).tvStatus.setTextColor(Color.RED);
-                    status = "Expired";
-                } else {
-                    ((ProductAdaptor.ProductHolder) holder).tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
-
+            ((ProductAdaptor.ProductHolder) holder).checkboxLike.setText(Utils.format(product.statics.likeCount));
+            ((ProductAdaptor.ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showPopup(v, position, product);
                 }
-
-                if (product.isFeatured > 0) {
-                    ((ProductAdaptor.ProductHolder) holder).tvFeatured.setVisibility(View.VISIBLE);
-                } else
-                    ((ProductAdaptor.ProductHolder) holder).tvFeatured.setVisibility(View.GONE);
-
-                ((ProductAdaptor.ProductHolder) holder).tvStatus.setText(status);
-           /*     Glide.with(context)
-                        .load(product.getImagePath())
-                        .into(((ProductAdaptor.ProductHolder) holder).imvOfAds);*/
-                ((ProductAdaptor.ProductHolder) holder).pgrImage.setVisibility(View.VISIBLE);
-                Glide.with(context)
-                        .load(product.getImagePath()).fitCenter()
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                ((ProductAdaptor.ProductHolder) holder).pgrImage.setVisibility(View.GONE);
-                                return false;
-                            }
-                        })
-                        .into(((ProductAdaptor.ProductHolder) holder).imvOfAds);
-
-                if (product.isLike > 0) {
-                    ((ProductAdaptor.ProductHolder) holder).checkboxLike.setChecked(true);
-                    ((ProductAdaptor.ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
-                } else {
-                    ((ProductAdaptor.ProductHolder) holder).checkboxLike.setChecked(false);
-                    ((ProductAdaptor.ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
-
+            });
+            ((ProductAdaptor.ProductHolder) holder).tvProductTitle.setText(Utils.capitlizeText(product.getProductname()));
+            ((ProductAdaptor.ProductHolder) holder).tvDesciption.setText(Utils.capitlizeText(product.getDescription()));
+            ((ProductAdaptor.ProductHolder) holder).tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(product.getCreatedTime()), getActivity()));
+            ((ProductAdaptor.ProductHolder) holder).cardItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    moveToDetails(product);
                 }
-
-            }
-
-
-            //No else part needed as load holder doesn't bind any data
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            if (productLists.get(position).getType().equals("ads") || productLists.get(position).getType().equals("product")) {
-                return TYPE_PRODUCT;
+            });
+            String status = "Ongoing";
+            if (product.getIsExpired() > 0) {
+                ((ProductAdaptor.ProductHolder) holder).tvStatus.setTextColor(Color.RED);
+                status = "Expired";
             } else {
-                return TYPE_LOAD;
+                ((ProductAdaptor.ProductHolder) holder).tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
+
             }
+            ((ProductAdaptor.ProductHolder) holder).tvStatus.setText(status);
+
+            if (product.getImagePath() != null && !product.getImagePath().isEmpty())
+          /*  Glide.with(context)
+                    .load(product.getImagePath())
+                    .into(((ProductHolder) holder).imvOfAds);*/
+                ((ProductAdaptor.ProductHolder) holder).pgrImage.setVisibility(View.VISIBLE);
+            Glide.with(context)
+                    .load(product.getImagePath()).fitCenter()
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            ((ProductAdaptor.ProductHolder) holder).pgrImage.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(((ProductAdaptor.ProductHolder) holder).imvOfAds);
+
+            if (product.isLike > 0) {
+                ((ProductAdaptor.ProductHolder) holder).checkboxLike.setChecked(true);
+                ((ProductAdaptor.ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+            } else {
+                ((ProductAdaptor.ProductHolder) holder).checkboxLike.setChecked(false);
+                ((ProductAdaptor.ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+
+            }
+            if (product.isFeatured > 0) {
+                ((ProductAdaptor.ProductHolder) holder).tvFeatured.setVisibility(View.VISIBLE);
+            } else
+                ((ProductAdaptor.ProductHolder) holder).tvFeatured.setVisibility(View.GONE);
+
         }
+
 
         @Override
         public int getItemCount() {
-            return productLists.size();
+            return productList.size();
         }
 
         public void delete(int position) { //removes the row
             productList.remove(position);
             productAdaptor.notifyDataSetChanged();
-          /*  notifyItemRemoved(position);*/
             if (productList != null)
                 if (productList.size() == 0)
-                    tvNoProductUploaded.setVisibility(View.VISIBLE);
+                    tvNoAdsUploaded.setVisibility(View.VISIBLE);
+            //   notifyItemRemoved(position);
         }
 
         public void updateProductList(ArrayList<Product> productLists) {
             if (productLists != null) {
-                Utils.showToast(getActivity(), "update call" + productLists.size());
-                this.productLists = productLists;
+                productList = productLists;
                 productAdaptor.notifyDataSetChanged();
             }
         }
 
-    /* VIEW HOLDERS */
 
         class ProductHolder extends RecyclerView.ViewHolder {
             public ImageView imvOfAds;
@@ -595,10 +816,11 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             public ImageButton imvBtnEditRemove;
             public CardView cardItem;
             public ProgressBar pgrImage;
-            public  TextView tvFeatured;
+            public TextView tvFeatured;
 
             public ProductHolder(View view) {
                 super(view);
+
                 imvOfAds = (ImageView) view.findViewById(R.id.imvOfAds);
                 tvProductTitle = (TextView) view.findViewById(R.id.tv_add_product_title);
                 tvStatus = (TextView) view.findViewById(R.id.tv_add_product_status);
@@ -608,43 +830,20 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 imvBtnEditRemove = (ImageButton) view.findViewById(R.id.imvBtnEditRemove);
                 tvTime = (TextView) view.findViewById(R.id.tvTime);
                 cardItem = (CardView) view.findViewById(R.id.card_view);
-                pgrImage  = (ProgressBar) view.findViewById(R.id.pgrImage);
+                pgrImage = (ProgressBar) view.findViewById(R.id.pgrImage);
                 tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
             }
         }
 
-        class LoadHolder extends RecyclerView.ViewHolder {
-            public LoadHolder(View itemView) {
-                super(itemView);
-            }
-        }
-
-        public void setMoreDataAvailable(boolean moreDataAvailable) {
-            isMoreDataAvailable = moreDataAvailable;
-        }
-
-        /* notifyDataSetChanged is final method so we can't override it
-             call adapter.notifyDataChanged(); after update the list
-             */
         public void notifyDataChanged() {
             notifyDataSetChanged();
             isLoading = false;
         }
 
-
-        public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
-            this.loadMoreListener = loadMoreListener;
-        }
-
-
-    }
-
-    interface OnLoadMoreListener {
-        void onLoadMore();
     }
 
     public void deleteDialog(final int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppThemeAddRenew);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Are you sure you want to delete this item?");
         builder.setCancelable(true);
 
@@ -652,7 +851,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 "Yes",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        removeProductApi(position);
+
                         dialog.cancel();
                     }
                 });
@@ -664,11 +863,320 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                         dialog.cancel();
                     }
                 });
+
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         alertDialog.getButton(alertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorCorporateText));
         alertDialog.getButton(alertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorCorporateText));
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mHostActivity = (CorporateHomeActivity) context;
+    }
+
+
+    public class CorporateListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        private final String TAG = DesignListAdapter.class.getSimpleName();
+        private ArrayList<Product> mItems;
+        private Context context;
+        public boolean isLoaderVisible;
+
+        private final int ITEM_FOOTER = 0;
+        private final int ITEM_PRODUCT = 1;
+
+        private TimeUtility timeUtility = new TimeUtility();
+
+
+        private com.sticker_android.controller.adaptors.CorporateListAdaptor.OnProductItemClickListener productItemClickListener;
+        private DesignerActionListener designerActionListener;
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+
+            public ImageView imvOfAds;
+            public TextView tvProductTitle, tvStatus, tvDesciption, tvTime, tvDownloads;
+            public CheckBox checkboxLike, checkboxShare;
+            public ImageButton imvBtnEditRemove;
+            public CardView cardItem;
+            public ProgressBar pbLoader;
+            public TextView tvFeatured;
+
+            public ViewHolder(View view) {
+                super(view);
+                imvOfAds = (ImageView) view.findViewById(R.id.imvOfAds);
+                tvProductTitle = (TextView) view.findViewById(R.id.tv_add_product_title);
+                tvStatus = (TextView) view.findViewById(R.id.tv_add_product_status);
+                tvDesciption = (TextView) view.findViewById(R.id.tv_add_product_item_description);
+                checkboxLike = (CheckBox) view.findViewById(R.id.checkboxLike);
+                checkboxShare = (CheckBox) view.findViewById(R.id.checkboxShare);
+                imvBtnEditRemove = (ImageButton) view.findViewById(R.id.imvBtnEditRemove);
+                tvTime = (TextView) view.findViewById(R.id.tvTime);
+                tvDownloads = (TextView) view.findViewById(R.id.tvDownloads);
+                cardItem = (CardView) view.findViewById(R.id.card_view);
+                pbLoader = (ProgressBar) view.findViewById(R.id.pgrImage);
+                tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
+            }
+        }
+
+        public class LoaderViewHolder extends RecyclerView.ViewHolder {
+            // each data item is just a string in this case
+            private ProgressBar progressBar;
+
+            public LoaderViewHolder(View v) {
+                super(v);
+                progressBar = (ProgressBar) v.findViewById(R.id.pbMore);
+            }
+        }
+
+        // Provide a suitable constructor (depends on the kind of dataset)
+        public CorporateListAdaptor(Context cnxt) {
+            mItems = new ArrayList<>();
+            context = cnxt;
+        }
+
+        public void setDesignerActionListener(DesignerActionListener actionListener) {
+            this.designerActionListener = actionListener;
+        }
+
+        public void setOnProductClickListener(com.sticker_android.controller.adaptors.CorporateListAdaptor.OnProductItemClickListener productClickListener) {
+            this.productItemClickListener = productClickListener;
+        }
+
+        public void setData(ArrayList<Product> data) {
+            mItems = new ArrayList<>();
+            mItems.addAll(data);
+            notifyDataSetChanged();
+            isLoaderVisible = false;
+        }
+
+        public void updateAdapterData(ArrayList<Product> data) {
+            mItems = new ArrayList<>();
+            mItems.addAll(data);
+        }
+
+        public void addLoader() {
+            AppLogger.error(TAG, "Add loader... in adapter");
+            Product postItem = new Product();
+            postItem.setProductid(-1);
+            mItems.add(postItem);
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemInserted(mItems.size() - 1);
+                }
+            });
+            isLoaderVisible = true;
+        }
+
+        public void removeLoader() {
+            AppLogger.error(TAG, "Remove loader... from adapter");
+            Product postItem = new Product();
+            postItem.setProductid(-1);
+            int index = mItems.indexOf(postItem);
+            AppLogger.error(TAG, "Loader index => " + index);
+            if (index != -1) {
+                mItems.remove(index);
+                //notifyDataSetChanged();
+                notifyItemRemoved(index);
+                notifyItemRangeChanged(index, mItems.size());
+                isLoaderVisible = false;
+            }
+        }
+
+        public void removeProductData(int index) {
+            if (index != -1) {
+                mItems.remove(index);
+                notifyItemRemoved(index);
+                notifyItemRangeChanged(index, mItems.size());
+            }
+        }
+
+        public void removeProductData(Product product) {
+            int index = mItems.indexOf(product);
+            if (index != -1) {
+                mItems.remove(index);
+                notifyItemRemoved(index);
+                notifyItemRangeChanged(index, mItems.size());
+            }
+        }
+
+        public void updateModifiedItem(Product postItem) {
+            int index = mItems.indexOf(postItem);
+            if (index != -1) {
+                mItems.set(index, postItem);
+                notifyDataSetChanged();
+            }
+        }
+
+        // Create new views (invoked by the layout manager)
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+            if (viewType == ITEM_FOOTER) {
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_loader_view, parent, false);
+                // set the view's size, margins, paddings and layout parameters
+                final LoaderViewHolder vh = new LoaderViewHolder(v);
+                return vh;
+            } else {
+                // create a new view
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_design_items, parent, false);
+                // set the view's size, margins, paddings and layout parameters
+                final CorporateListAdaptor.ViewHolder vh = new CorporateListAdaptor.ViewHolder(v);
+
+                vh.cardItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int position = vh.getAdapterPosition();
+                        Product product = mItems.get(position);
+                        Bundle bundle = new Bundle();
+
+                        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
+
+                        Intent intent = new Intent(context, ProductDetailsActivity.class);
+
+                        intent.putExtras(bundle);
+
+                        ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
+
+                        ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
+                                R.anim.activity_animation_exit);
+
+                    }
+                });
+                return vh;
+            }
+        }
+
+        // Replace the contents of a view (invoked by the layout manager)
+        @Override
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+            // - get element from your dataset at this position
+            // - replace the contents of the view with that element
+            final int itemType = getItemViewType(position);
+
+            if (itemType == ITEM_FOOTER) {
+
+            } else {
+                final ViewHolder itemHolder = (CorporateListAdaptor.ViewHolder) holder;
+                final Product productItem = mItems.get(position);
+                if (productItem.isLike > 0) {
+                    itemHolder.checkboxLike.setChecked(true);
+                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+                } else {
+                    itemHolder.checkboxLike.setChecked(false);
+                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+
+                }
+                if (productItem.statics.likeCount > 0) {
+                    itemHolder.checkboxLike.setChecked(true);
+                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+                } else {
+                    itemHolder.checkboxLike.setChecked(false);
+                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+
+                }
+                itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
+                itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
+                itemHolder.imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // showPopup(v, position, "pending", productItem);
+                        showPopup(v, position, productItem);
+                    }
+                });
+                itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));
+                itemHolder.tvDownloads.setVisibility(View.GONE);
+                if (productItem.getDescription() != null && productItem.getDescription().trim().length() != 0) {
+                    itemHolder.tvDesciption.setVisibility(View.VISIBLE);
+                    itemHolder.tvDesciption.setText(Utils.capitlizeText(productItem.getDescription()));
+                } else {
+                    itemHolder.tvDesciption.setVisibility(View.GONE);
+                }
+                itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context).replaceAll("about", "").trim());
+
+                if (productItem.isFeatured > 0) {
+                    itemHolder.tvFeatured.setVisibility(View.VISIBLE);
+                } else
+                    itemHolder.tvFeatured.setVisibility(View.GONE);
+
+                int status = productItem.productStatus;
+                AppLogger.error(TAG, "Status => " + status);
+                if (status == ProductStatus.REJECTED.getStatus()) {
+                    itemHolder.tvStatus.setTextColor(Color.RED);
+                    itemHolder.tvStatus.setText(R.string.rejected);
+                } else if (status == ProductStatus.EXPIRED.getStatus()) {
+                    itemHolder.tvStatus.setTextColor(Color.RED);
+                    itemHolder.tvStatus.setText(R.string.expired);
+                } else if (status == ProductStatus.APPROVED.getStatus()) {
+                    itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorHomeGreen));
+                    itemHolder.tvStatus.setText(R.string.approved);
+                } else {
+                    itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorCorporateText));
+                    itemHolder.tvStatus.setText(R.string.pending);
+                }
+
+                if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
+                    itemHolder.pbLoader.setVisibility(View.VISIBLE);
+                    Glide.with(context)
+                            .load(productItem.getImagePath())
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    itemHolder.pbLoader.setVisibility(View.GONE);
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    itemHolder.pbLoader.setVisibility(View.GONE);
+                                    return false;
+                                }
+                            })
+                            .into(itemHolder.imvOfAds);
+                } else {
+                    itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
+                }
+            }
+        }
+
+        // Return the size of your dataset (invoked by the layout manager)
+        @Override
+        public int getItemCount() {
+            return mItems.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (mItems.get(position).getProductid() == -1) {
+                return ITEM_FOOTER;
+            } else {
+                return ITEM_PRODUCT;
+            }
+        }
+
+        private void removeProductApi(final Product product) {
+            AppPref appPref = new AppPref(context);
+            User mUserdata = appPref.getUserInfo();
+            Call<ApiResponse> apiResponseCall = RestClient.getService().apiDeleteProduct(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
+                    String.valueOf(product.getProductid()));
+
+            apiResponseCall.enqueue(new ApiCall((Activity) context) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
+                    if (apiResponse.status) {
+                        Utils.showToast(context, context.getString(R.string.deleted_successfully));
+                    }
+                }
+
+                @Override
+                public void onFail(Call<ApiResponse> call, Throwable t) {
+
+                }
+            });
+        }
     }
 
 }
