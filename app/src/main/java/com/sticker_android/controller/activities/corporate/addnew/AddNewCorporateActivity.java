@@ -107,6 +107,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         setDate = new SetDate(edtExpireDate, this, R.style.AppThemeAddRenew);
 
         txtViewMoreComment.setTextColor(ContextCompat.getColor(this, R.color.colorCorporateText));
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
 
         measureImageWidthHeight();
         fetchCategoryApi();

@@ -76,6 +76,8 @@ public class ProductDetailsActivity extends AppBaseActivity {
             }
         });
         measureImageWidthHeight();
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+
     }
 
     private void measureImageWidthHeight() {
