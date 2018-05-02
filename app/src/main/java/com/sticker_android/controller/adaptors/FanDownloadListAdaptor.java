@@ -52,7 +52,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
     User mUserdata;
 
     public interface OnProductItemClickListener {
-        void onProductItemClick(FanContestDownload product);
+        void onProductItemClick(Product product);
     }
 
     private OnProductItemClickListener productItemClickListener;
@@ -200,7 +200,10 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
                 public void onClick(View view) {
                     int position = vh.getAdapterPosition();
                     FanContestDownload product = mItems.get(position);
-                    // productItemClickListener.onProductItemClick(product);
+
+                    if(productItemClickListener != null){
+                        productItemClickListener.onProductItemClick(product.productInfo);
+                    }
                 }
             });
 
@@ -276,8 +279,8 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
             itemHolder.cardItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (productItemClickListener != null)
-                        productItemClickListener.onProductItemClick(productItem);
+                   if (productItemClickListener != null)
+                       productItemClickListener.onProductItemClick(productItem.productInfo);
                 }
             });
         }

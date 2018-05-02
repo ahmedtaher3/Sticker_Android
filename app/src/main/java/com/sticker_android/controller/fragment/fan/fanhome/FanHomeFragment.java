@@ -1,6 +1,7 @@
 package com.sticker_android.controller.fragment.fan.fanhome;
 
-
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -63,6 +64,13 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
 
     public FanHomeFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+
     }
 
     @Override
@@ -477,6 +485,8 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Fragment f = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
+
         if (resultCode == getActivity().RESULT_OK) {
             if (requestCode == 131) {
                 if (data.getExtras() != null) {
@@ -487,6 +497,9 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                         filterData(filterListdata(categoryList), filterByName);
                     }
                 }
+            }
+            else if(f instanceof FilterFragment){
+                ((FilterFragment)f).onActivityResult(requestCode, resultCode, data);
             }
         }
 

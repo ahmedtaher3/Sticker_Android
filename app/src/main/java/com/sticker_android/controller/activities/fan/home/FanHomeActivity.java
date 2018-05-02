@@ -389,14 +389,26 @@ public class FanHomeActivity extends AppBaseActivity
         transaction.replace(R.id.container_home, fragment);
         transaction.commit();
     }
+
     public void setProfileFragmentReference(ProfileFragment profileFragmentReference){
         this.mProfileFragment = profileFragmentReference;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
-            mProfileFragment.onActivityResult(requestCode, resultCode, data);
+            if(mProfileFragment != null){
+                mProfileFragment.onActivityResult(requestCode, resultCode, data);
+            }
+
+            Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
+            if(f instanceof FanHomeFragment){
+                ((FanHomeFragment)f).onActivityResult(requestCode, resultCode, data);
+            }
+            else if(f instanceof FanCustomizationFragment){
+                ((FanCustomizationFragment)f).onActivityResult(requestCode, resultCode, data);
+            }
         }
 
         if (resultCode == RESULT_OK) {

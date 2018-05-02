@@ -1,5 +1,8 @@
 package com.sticker_android.controller.activities.fan.home.imagealbum;
 
+
+import android.app.Activity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 
-public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshLayout.OnRefreshListener, GridViewAdapter.OnProductItemClickListener {
+public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     ArrayList<String> stringArrayList = new ArrayList<>();
     private GridView gridView;
@@ -45,8 +48,9 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
     private ArrayList<FanFilter> mImageAlbumList = new ArrayList<>();
-    private String type="";
-
+    private String mFilterImageType;
+    public static final String FILTER_IMAGE_TYPE = "filter_image_type";
+    public static final String SELECTED_FILTER = "selected_filter";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,19 +75,15 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
 
         setAdaptor();
         getFilterApi(false);
-
     }
 
     private void getIntentData() {
-
-        if(getIntent().getExtras()!=null){
-         type=getIntent().getExtras().getString("type");
+        if(getIntent() != null){
+            mFilterImageType = getIntent().getStringExtra(FILTER_IMAGE_TYPE);
+        }
     }
-    }
-
 
     private void init() {
-
         appPref = new AppPref(getActivity());
     }
 
@@ -119,8 +119,21 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
      */
     private void setToolBarTitle() {
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(type);
+        textView.setText(getToolbarTitle());
         toolbar.setTitle(" ");
+    }
+
+    private String getToolbarTitle(){
+        if(mFilterImageType.contains("sticker")){
+            return "Choose Sticker";
+        }
+        else if(mFilterImageType.contains("filter")){
+            return "Choose Filter";
+        }
+        else if(mFilterImageType.contains("emoji")){
+            return "Choose Emoji";
+        }
+        return "";
     }
 
     @Override
@@ -143,7 +156,15 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
 
     private void setAdaptor() {
         gridViewAdapter = new GridViewAdapter(this);
-        gridViewAdapter.setOnProductClickListener(this);
+        gridViewAdapter.setOnItemClickListener(new GridViewAdapter.OnFilterItemClickListener() {
+            @Override
+            public void onItemClick(FanFilter product) {
+                Intent intent = new Intent();
+                intent.putExtra(SELECTED_FILTER, product);
+                setResult(Activity.RESULT_OK, intent);
+                finish();
+            }
+        });
         gridView.setAdapter(gridViewAdapter);
     }
 
@@ -156,7 +177,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
             llLoaderView.setVisibility(View.VISIBLE);
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiFilterList(userdata.getLanguageId(), userdata.getAuthrizedKey(),
-                userdata.getId(), 0, 1000, "", "filter_list", type);
+                userdata.getId(), 0, 1000, "", "filter_list", mFilterImageType);
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
@@ -172,7 +193,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
                         gridViewAdapter.setData(apiResponse.paylpad.fanFilterArrayList);
                     }
                     if (apiResponse.paylpad.fanFilterArrayList == null) {
-                        txtNoDataFoundContent.setText("No "+type+" Found.");
+                        txtNoDataFoundContent.setText("No "+mFilterImageType+" Found.");
                         showNoDataFound();
                     }
                 }
@@ -203,11 +224,5 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(this, getString(R.string.pls_check_ur_internet_connection));
         }
-    }
-
-
-    @Override
-    public void onProductItemClick(FanFilter product) {
-
     }
 }

@@ -357,6 +357,11 @@ Category category=new Category();
                     public void captureFromCamera() {
                         captureImage();
                     }
+
+                    @Override
+                    public void selectedItemPosition(int position) {
+
+                    }
                 });
                 break;
         }

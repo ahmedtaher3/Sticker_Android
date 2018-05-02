@@ -129,7 +129,7 @@
     <dimen name="padding_fan_contest">10dp</dimen>
     <dimen name="dimen_fan_filter_header">50dp</dimen>
 
-    <dimen name="edit_image_button_size">15dp</dimen>
+    <dimen name="edit_image_button_size">12dp</dimen>
     <dimen name="help_box_padding">25dp</dimen>
     <dimen name="margin_5">0dp</dimen>
     <dimen name="filter_btn_left_right_margin">50dp</dimen>

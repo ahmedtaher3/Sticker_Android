@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="MissingPrefix">
 
     <RelativeLayout
@@ -16,11 +16,14 @@
             android:id="@+id/llAction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginBottom="20dp"
-            android:layout_marginTop="@dimen/filter_action_top_margin">
+            android:paddingBottom="5dp"
+            android:clipToPadding="false"
+            android:layout_marginTop="@dimen/filter_action_top_margin"
+            android:orientation="horizontal">
 
             <RelativeLayout
+                android:id="@+id/rlResetButtonHolder"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
@@ -30,13 +33,13 @@
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/filter_btn_size"
-                    android:background="@drawable/fan_btn_gray_background"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:elevation="@dimen/dp_5"
-                    android:paddingRight="@dimen/filter_btn_left_right_margin"
-                    android:paddingLeft="@dimen/filter_btn_left_right_margin"
                     android:layout_centerInParent="true"
+                    android:background="@drawable/fan_btn_gray_background"
+                    android:elevation="@dimen/dp_5"
+                    android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
+                    android:paddingLeft="@dimen/filter_btn_left_right_margin"
+                    android:paddingRight="@dimen/filter_btn_left_right_margin"
                     android:text="@string/reset"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
@@ -54,13 +57,13 @@
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/filter_btn_size"
-                    android:background="@drawable/fan_btn_background"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:elevation="@dimen/dp_5"
                     android:layout_centerInParent="true"
-                    android:paddingRight="@dimen/filter_btn_left_right_margin"
-                    android:paddingLeft="@dimen/filter_btn_left_right_margin"
+                    android:background="@drawable/fan_btn_background"
+                    android:elevation="@dimen/dp_5"
+                    android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"
+                    android:paddingLeft="@dimen/filter_btn_left_right_margin"
+                    android:paddingRight="@dimen/filter_btn_left_right_margin"
                     android:text="@string/save"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
@@ -74,9 +77,9 @@
             android:id="@+id/rlFilterOptionContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_below="@id/llAction"
-            android:layout_marginBottom="@dimen/filter_action_top_margin">
+            android:layout_marginBottom="@dimen/filter_action_top_margin"
+            android:orientation="horizontal">
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -87,27 +90,27 @@
                     android:id="@+id/llFilter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_centerHorizontal="true"
                     android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:paddingRight="@dimen/filter_action_top_margin"
-                    android:paddingLeft="@dimen/filter_action_top_margin">
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/filter_action_top_margin"
+                    android:paddingRight="@dimen/filter_action_top_margin">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/filter"/>
+                        android:src="@drawable/filter" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/filter"
                         android:layout_gravity="center_horizontal"
-                        android:textSize="@dimen/filter_action_text_size"
+                        android:layout_marginTop="@dimen/filter_action_top_margin"
+                        android:text="@string/filter"
                         android:textColor="@android:color/black"
-                        android:layout_marginTop="@dimen/filter_action_top_margin"/>
+                        android:textSize="@dimen/filter_action_text_size" />
 
                 </LinearLayout>
 
@@ -122,27 +125,27 @@
                     android:id="@+id/llSticker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_centerHorizontal="true"
                     android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:paddingRight="@dimen/filter_action_top_margin"
-                    android:paddingLeft="@dimen/filter_action_top_margin">
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/filter_action_top_margin"
+                    android:paddingRight="@dimen/filter_action_top_margin">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/sticker"/>
+                        android:src="@drawable/sticker" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/stickers"
                         android:layout_gravity="center_horizontal"
-                        android:textSize="@dimen/filter_action_text_size"
+                        android:layout_marginTop="@dimen/filter_action_top_margin"
+                        android:text="@string/stickers"
                         android:textColor="@android:color/black"
-                        android:layout_marginTop="@dimen/filter_action_top_margin"/>
+                        android:textSize="@dimen/filter_action_text_size" />
 
                 </LinearLayout>
 
@@ -157,27 +160,27 @@
                     android:id="@+id/llEmoji"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_centerHorizontal="true"
                     android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:paddingRight="@dimen/filter_action_top_margin"
-                    android:paddingLeft="@dimen/filter_action_top_margin">
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/filter_action_top_margin"
+                    android:paddingRight="@dimen/filter_action_top_margin">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/emoji"/>
+                        android:src="@drawable/emoji" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/emojis"
                         android:layout_gravity="center_horizontal"
-                        android:textSize="@dimen/filter_action_text_size"
+                        android:layout_marginTop="@dimen/filter_action_top_margin"
+                        android:text="@string/emojis"
                         android:textColor="@android:color/black"
-                        android:layout_marginTop="@dimen/filter_action_top_margin"/>
+                        android:textSize="@dimen/filter_action_text_size" />
                 </LinearLayout>
 
             </RelativeLayout>
@@ -191,10 +194,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/rlBottomLayer"
-        android:background="@drawable/filter_img_container_bg"
+        android:padding="2dp"
         android:layout_marginLeft="@dimen/filter_action_top_margin"
         android:layout_marginRight="@dimen/filter_action_top_margin"
-        android:layout_marginTop="@dimen/filter_action_top_margin">
+        android:layout_marginTop="@dimen/filter_action_top_margin"
+        android:background="@drawable/filter_img_container_bg">
 
         <FrameLayout
             android:id="@+id/work_space"
@@ -251,10 +255,10 @@
         </RelativeLayout>
 
         <ProgressBar
+            android:id="@+id/progress_bar_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:id="@+id/progress_bar_edit"
             android:visibility="gone" />
 
     </RelativeLayout>

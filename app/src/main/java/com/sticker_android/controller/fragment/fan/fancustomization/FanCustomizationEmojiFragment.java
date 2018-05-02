@@ -1,8 +1,14 @@
 package com.sticker_android.controller.fragment.fan.fancustomization;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,14 +20,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.fan.home.EditImageActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
-import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.controller.adaptors.FanDownloadListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.fragment.fan.FilterFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeStickerFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.contest.FanContestDownload;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
+import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.model.payload.Payload;
@@ -31,18 +40,25 @@ import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PaginationScrollListener;
+import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
 import retrofit2.Call;
 
+import static android.app.Activity.RESULT_OK;
+import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_STORAGE_ACCESS_RQ;
+
 /**
  * Created by user on 30/4/18.
  */
 
-public class FanCustomizationEmojiFragment  extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,FanDownloadListAdaptor.OnProductItemClickListener{
+public class FanCustomizationEmojiFragment  extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener{
     private RecyclerView rcDesignList;
     private LinearLayout llNoDataFound;
     private SwipeRefreshLayout swipeRefresh;
@@ -59,11 +75,17 @@ public class FanCustomizationEmojiFragment  extends BaseFragment implements Swip
     private LinearLayoutManager mLinearLayoutManager;
     private ArrayList<FanContestDownload> mEmojiList;
     private User mLoggedUser;
+    private android.app.AlertDialog mPermissionDialog;
 
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
     private FanDownloadListAdaptor mAdapter;
 
+    private final int PROFILE_CAMERA_IMAGE = 0;
+    private final int PROFILE_GALLERY_IMAGE = 1;
+    private int mImageSource = -1;
+    private String mCapturedImageUrl;
+    private Product mSelectedItem;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,6 +98,34 @@ public class FanCustomizationEmojiFragment  extends BaseFragment implements Swip
         setViewListeners();
         initRecyclerView();
         mAdapter = new FanDownloadListAdaptor(getActivity());
+        mAdapter.setOnProductClickListener(new FanDownloadListAdaptor.OnProductItemClickListener() {
+            @Override
+            public void onProductItemClick(Product product) {
+                mSelectedItem = product;
+                Utils.showAlertDialogToGetPicFromFragment(mHostActivity, new ImagePickerListener() {
+                    @Override
+                    public void pickFromGallery() {
+                        pickGalleryImage();
+                    }
+
+                    @Override
+                    public void captureFromCamera() {
+                        captureImage();
+                    }
+
+                    @Override
+                    public void selectedItemPosition(int position) {
+                        if(position == 0){
+                            mImageSource = PROFILE_CAMERA_IMAGE;
+                        }
+                        else if(position == 1){
+                            mImageSource = PROFILE_GALLERY_IMAGE;
+                        }
+                    }
+                }, FanCustomizationEmojiFragment.this);
+            }
+        });
+
         rcDesignList.setAdapter(mAdapter);
         llNoDataFound.setVisibility(View.GONE);
         mEmojiList = new ArrayList<>();
@@ -362,8 +412,119 @@ public class FanCustomizationEmojiFragment  extends BaseFragment implements Swip
         mHostActivity = (FanHomeActivity) context;
     }
 
-    @Override
+   /* @Override
+
     public void onProductItemClick(FanContestDownload product) {
         startActivity(new Intent(getActivity(), ImageAlbumActivity.class));
+    }*/
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        AppLogger.error(TAG, "Inside onActivityResult()");
+        switch (requestCode) {
+
+            case PROFILE_CAMERA_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    if (mCapturedImageUrl != null) {
+                        openCropActivity(mCapturedImageUrl);
+                    }
+                }
+                break;
+
+            case PROFILE_GALLERY_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImage = data.getData();
+                    String sourceUrl = Utils.getGalleryImagePath(mHostActivity, selectedImage);
+                    File file = Utils.getCustomImagePath(mHostActivity, "temp");
+                    mCapturedImageUrl = file.getAbsolutePath();
+                    mCapturedImageUrl = sourceUrl;
+                    openCropActivity(sourceUrl);
+                }
+                break;
+
+            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    Uri resultUri = result.getUri();
+                    mCapturedImageUrl = resultUri.getPath();
+                    gotoImageEditActivity(mCapturedImageUrl);
+
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                    error.printStackTrace();
+                }
+                break;
+        }
+    }
+
+    private void openCropActivity(String url) {
+        CropImage.activity(Uri.fromFile(new File(url)))
+                .setGuidelines(CropImageView.Guidelines.OFF)
+                .setFixAspectRatio(true)
+                .setAspectRatio(1, 1)
+                .setAutoZoomEnabled(true)
+                .start(mHostActivity);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case WRITE_STORAGE_ACCESS_RQ:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    if(mImageSource == PROFILE_GALLERY_IMAGE){
+                        pickGalleryImage();
+                    }
+                    else if(mImageSource == PROFILE_CAMERA_IMAGE){
+                        captureImage();
+                    }
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    boolean isDenied = ActivityCompat.shouldShowRequestPermissionRationale(mHostActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                    if (!isDenied) {
+                        //If the user turned down the permission request in the past and chose the Don't ask again option in the permission request system dialog
+
+                        mPermissionDialog = PermissionManager.showCustomPermissionDialog(mHostActivity, getString(R.string.external_storage_permission_msg), new PermissionManager.CustomPermissionDialogCallback() {
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+
+                            @Override
+                            public void onOpenSettingClick() {
+
+                            }
+                        });
+                    }
+                }
+                break;
+        }
+    }
+
+    private void pickGalleryImage() {
+        Intent openGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(openGallery, PROFILE_GALLERY_IMAGE);
+    }
+
+    private void captureImage() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = Utils.getCustomImagePath(mHostActivity, System.currentTimeMillis() + "");
+        mCapturedImageUrl = file.getAbsolutePath();
+        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+        startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
+    }
+
+    private void gotoImageEditActivity(String capturedImagePath){
+        Intent intent = new Intent(mHostActivity, EditImageActivity.class);
+        intent.putExtra(FilterFragment.STICKER_IMAGE_PATH, mSelectedItem.getImagePath());
+        intent.putExtra(FilterFragment.IMAGE_PATH, capturedImagePath);
+        startActivity(intent);
     }
 }

@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -99,6 +100,8 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
     private final int PROFILE_GALLERY_IMAGE = 1;
     private final int PROFILE_GALLERY_IMAGE_GIF = 2;
     private ImageView imvProductImage;
+    private RelativeLayout rlJustificationHolder;
+    private TextView txtViewMoreComment, txtRecentComments, edtJustification;
     private String mCapturedImageUrl;
     private android.app.AlertDialog mPermissionDialog;
 
@@ -133,6 +136,8 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
+
+        txtViewMoreComment.setTextColor(ContextCompat.getColor(this, R.color.colorDesignerText));
 
         ArrayList<Category> categoryList = appPref.getCategoryList();
 
@@ -412,6 +417,10 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         imvProductImage = (ImageView) findViewById(R.id.imvProductImage);
         imgPlaceHolder = (CustomAppCompatTextView) findViewById(R.id.imgPlaceHolder);
         rlTabLayoutContainer = (RelativeLayout) findViewById(R.id.rlTabLayoutContainer);
+        rlJustificationHolder = (RelativeLayout) findViewById(R.id.rlJustificationHolder);
+        edtJustification = (TextView) findViewById(R.id.edtJustification);
+        txtViewMoreComment = (TextView) findViewById(R.id.txtViewMoreComment);
+        txtRecentComments = (TextView) findViewById(R.id.txtRecentComments);
     }
 
     @Override
@@ -480,6 +489,11 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                         public void captureFromCamera() {
 
                         }
+
+                        @Override
+                        public void selectedItemPosition(int position) {
+
+                        }
                     });
                 } else {
                     Utils.showAlertDialogToGetPic(this, new ImagePickerListener() {
@@ -491,6 +505,11 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                         @Override
                         public void captureFromCamera() {
                             captureImage();
+                        }
+
+                        @Override
+                        public void selectedItemPosition(int position) {
+
                         }
                     });
                 }

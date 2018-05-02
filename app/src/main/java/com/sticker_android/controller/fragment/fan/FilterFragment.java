@@ -1,23 +1,30 @@
 package com.sticker_android.controller.fragment.fan;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -25,53 +32,43 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.sticker_android.R;
-import com.sticker_android.constant.AppConstant;
-import com.sticker_android.controller.activities.designer.addnew.AddNewDesignActivity;
-import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
-import com.sticker_android.controller.activities.fan.home.EditImageActivity;
+import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
-import com.sticker_android.controller.adaptors.DesignListAdapter;
-import com.sticker_android.controller.fragment.designer.DesignerHomeFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.corporateproduct.Product;
-import com.sticker_android.model.enums.DesignType;
-import com.sticker_android.model.interfaces.DesignerActionListener;
+import com.sticker_android.model.filter.FanFilter;
 import com.sticker_android.model.interfaces.ImagePickerListener;
-import com.sticker_android.model.interfaces.MessageEventListener;
-import com.sticker_android.model.interfaces.NetworkPopupEventListener;
-import com.sticker_android.model.payload.Payload;
-import com.sticker_android.network.ApiCall;
-import com.sticker_android.network.ApiResponse;
-import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
-import com.sticker_android.utils.ImageFileFilter;
+import com.sticker_android.utils.BitmapUtils;
+import com.sticker_android.utils.FileUtil;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.helper.PaginationScrollListener;
+import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.StickerView;
 import com.sticker_android.view.imagezoom.ImageViewTouch;
 import com.sticker_android.view.imagezoom.ImageViewTouchBase;
-import com.sticker_android.view.imagezoom.easing.Linear;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Locale;
-
-import retrofit2.Call;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import static android.app.Activity.RESULT_OK;
+import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_STORAGE_ACCESS_RQ;
 
 /**
  * Created by satyendra on 4/9/18.
  */
 
 public class FilterFragment extends Fragment implements View.OnClickListener {
+
 
     private RelativeLayout rlContent;
     private LinearLayout llLoaderView;
@@ -80,14 +77,14 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
     private final String TAG = FilterFragment.class.getSimpleName();
     private Context mContext;
-    private Activity mHostActivity;
+    private AppBaseActivity mHostActivity;
 
     private View inflatedView;
     private User mLoggedUser;
     public Bitmap mainBitmap;
     private Bitmap originalBitmap;
     public ImageViewTouch mainImage;
-    private RelativeLayout rlImageContainer, rlPlaceHolderClick;
+    private RelativeLayout rlImageContainer, rlPlaceHolderClick, rlResetButtonHolder;
     private LinearLayout rlFilterOptionContainer, llFilter, llSticker, llEmoji;
     private Button btnReset, btnSave;
 
@@ -97,17 +94,22 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
     public String filePath;
     public String saveFilePath;
-    private int imageWidth, imageHeight;
 
     private final int PROFILE_CAMERA_IMAGE = 0;
     private final int PROFILE_GALLERY_IMAGE = 1;
+    private final int CHOOSE_GALLERY_FILTER = 2;
+    private int mImageSource = -1;
     private String mCapturedImageUrl;
+    private android.app.AlertDialog mPermissionDialog;
+    private FanFilter mSelectedFilter;
+    public static final String IMAGE_PATH = "image_path";
+    public static final String STICKER_IMAGE_PATH = "sticker_image_path";
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        mHostActivity = (FanHomeActivity) context;
+        mHostActivity = (AppBaseActivity) context;
         mLoggedUser = new AppPref(mContext).getUserInfo();
     }
 
@@ -128,9 +130,24 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             setViewReferences();
             setListenerOnViews();
 
-            /*getFilterFromServer(false, "");*/
+            Bundle argument = getArguments();
+            if(argument != null){
+                mCapturedImageUrl = argument.getString(IMAGE_PATH);
+                String stickerPath = argument.getString(STICKER_IMAGE_PATH);
+                rlPlaceHolderClick.setVisibility(View.GONE);
+                loadImage(mCapturedImageUrl);
+                mSelectedFilter = new FanFilter();
+                mSelectedFilter.imageUrl = stickerPath;
+                setSelectedFilter();
 
-            //loadImage(null);
+                rlFilterOptionContainer.setVisibility(View.INVISIBLE);
+                rlResetButtonHolder.setVisibility(View.GONE);
+                makeSaveButtonEnable(true);
+            }
+            else{
+                makeSaveButtonEnable(false);
+                makeFilterOptionEnable(false);
+            }
 
         } else {
             if (inflatedView.getParent() != null)
@@ -189,6 +206,18 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if (originalBitmap != null && !originalBitmap.isRecycled()) {
+            originalBitmap.recycle();
+            originalBitmap = null;
+        }
+        if (mLoadImageTask != null) {
+            mLoadImageTask.cancel(true);
+        }
+
+        if (mSaveImageTask != null) {
+            mSaveImageTask.cancel(true);
+        }
     }
 
     @Override
@@ -197,11 +226,6 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setViewReferences() {
-        rlContent = (RelativeLayout) inflatedView.findViewById(R.id.rlContent);
-        txtNoDataFoundTitle = (TextView) inflatedView.findViewById(R.id.txtNoDataFoundTitle);
-        txtNoDataFoundContent = (TextView) inflatedView.findViewById(R.id.txtNoDataFoundContent);
-        rlConnectionContainer = (RelativeLayout) inflatedView.findViewById(R.id.rlConnectionContainer);
-        llLoaderView = (LinearLayout) inflatedView.findViewById(R.id.llLoader);
         mStickerView = (StickerView) inflatedView.findViewById(R.id.sticker_panel);
         mainImage = (ImageViewTouch) inflatedView.findViewById(R.id.main_image);
         rlImageContainer = (RelativeLayout) inflatedView.findViewById(R.id.rlImageContainer);
@@ -211,6 +235,8 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         llEmoji = (LinearLayout) inflatedView.findViewById(R.id.llEmoji);
         btnReset = (Button) inflatedView.findViewById(R.id.btnReset);
         btnSave = (Button) inflatedView.findViewById(R.id.btnSave);
+        rlPlaceHolderClick = (RelativeLayout) inflatedView.findViewById(R.id.rlPlaceHolderClick);
+        rlResetButtonHolder = (RelativeLayout) inflatedView.findViewById(R.id.rlResetButtonHolder);
     }
 
     public void setListenerOnViews() {
@@ -219,13 +245,13 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         llEmoji.setOnClickListener(this);
         btnReset.setOnClickListener(this);
         btnSave.setOnClickListener(this);
+        rlPlaceHolderClick.setOnClickListener(this);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         AppLogger.error(TAG, "Inside onActivityResult()");
-
         switch (requestCode) {
 
             case PROFILE_CAMERA_IMAGE:
@@ -252,12 +278,62 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
                     mCapturedImageUrl = resultUri.getPath();
-                    rlImageContainer.setVisibility(View.GONE);
+                    rlPlaceHolderClick.setVisibility(View.GONE);
+                    Log.e(TAG, "Path => " + mCapturedImageUrl);
+                    makeFilterOptionEnable(true);
+                    loadImage(mCapturedImageUrl);
+
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
                     error.printStackTrace();
                 }
+                break;
+            case CHOOSE_GALLERY_FILTER:
+                if (resultCode == Activity.RESULT_OK) {
+                    mSelectedFilter = data.getParcelableExtra(ImageAlbumActivity.SELECTED_FILTER);
+                    if (mSelectedFilter != null) {
+                        mStickerView.clear();
+                        makeSaveButtonEnable(true);
+                        setSelectedFilter();
+                    }
+                }
+                break;
         }
+    }
+
+    private void setSelectedFilter() {
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(mHostActivity);
+        progressDialogHandler.show();
+        mHostActivity.imageLoader.loadImage(mSelectedFilter.imageUrl, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String s, View view) {
+
+            }
+
+            @Override
+            public void onLoadingFailed(String s, View view, FailReason failReason) {
+                progressDialogHandler.hide();
+            }
+
+            @Override
+            public void onLoadingComplete(String s, View view, final Bitmap bitmap) {
+
+                /*mStickerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        mStickerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                    }
+                });*/
+                progressDialogHandler.hide();
+                setSelectedStickerItem(bitmap);
+            }
+
+            @Override
+            public void onLoadingCancelled(String s, View view) {
+                progressDialogHandler.hide();
+            }
+        });
     }
 
     private void openCropActivity(String url) {
@@ -267,6 +343,48 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 .setAspectRatio(1, 1)
                 .setAutoZoomEnabled(true)
                 .start(mHostActivity);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case WRITE_STORAGE_ACCESS_RQ:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    if(mImageSource == PROFILE_GALLERY_IMAGE){
+                        pickGalleryImage();
+                    }
+                    else if(mImageSource == PROFILE_CAMERA_IMAGE){
+                        captureImage();
+                    }
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    boolean isDenied = ActivityCompat.shouldShowRequestPermissionRationale(mHostActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                    if (!isDenied) {
+                        //If the user turned down the permission request in the past and chose the Don't ask again option in the permission request system dialog
+
+                        mPermissionDialog = PermissionManager.showCustomPermissionDialog(mHostActivity, getString(R.string.external_storage_permission_msg), new PermissionManager.CustomPermissionDialogCallback() {
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+
+                            @Override
+                            public void onOpenSettingClick() {
+
+                            }
+                        });
+                    }
+                }
+                break;
+        }
     }
 
     private void setSelectedStickerItem(Bitmap bitmap) {
@@ -286,23 +404,58 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         mLoadImageTask.execute(filepath);
     }
 
+    protected void doSaveImage() {
+        if (mSaveImageTask != null) {
+            mSaveImageTask.cancel(true);
+        }
+
+        saveFilePath = Utils.getCustomImagePath(mHostActivity, null).getAbsolutePath();
+        mainImage.setDrawingCacheEnabled(true);
+        mainImage.buildDrawingCache(true);
+
+        mStickerView.setDrawingCacheEnabled(true);
+        mStickerView.buildDrawingCache(true);
+
+        mSaveImageTask = new SaveImageTask();
+        mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), mStickerView.getDrawingCache()));
+    }
+
+    public static Bitmap mergeBitmap(Bitmap bmp1, Bitmap bmp2) {
+        Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+        Canvas canvas = new Canvas(bmOverlay);
+        canvas.drawBitmap(bmp1, new Matrix(), null);
+        canvas.drawBitmap(bmp2, 0, 0, null);
+        return bmOverlay;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnReset:
-
+                mStickerView.clear();
+                mainImage.clear();
+                rlPlaceHolderClick.setVisibility(View.VISIBLE);
+                mCapturedImageUrl = null;
+                makeSaveButtonEnable(false);
+                makeFilterOptionEnable(false);
                 break;
             case R.id.btnSave:
-
+                if (mStickerView.getBank().size() != 0) {
+                    mStickerView.hideHelpBoxTool();
+                    doSaveImage();
+                } else {
+                    Toast.makeText(mHostActivity, R.string.no_customization_alert, Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.llFilter:
-                moveToActivity("filter");
+                openFilterGallery("filter");
+
                 break;
             case R.id.llSticker:
-                moveToActivity("stickers");
+                openFilterGallery("sticker");
                 break;
             case R.id.llEmoji:
-                moveToActivity("emoji");
+                openFilterGallery("emoji");
                 break;
             case R.id.rlPlaceHolderClick:
                 Utils.showAlertDialogToGetPicFromFragment(mHostActivity, new ImagePickerListener() {
@@ -315,15 +468,50 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                     public void captureFromCamera() {
                         captureImage();
                     }
+
+                    @Override
+                    public void selectedItemPosition(int position) {
+                        if(position == 0){
+                            mImageSource = PROFILE_CAMERA_IMAGE;
+                        }
+                        else if(position == 1){
+                            mImageSource = PROFILE_GALLERY_IMAGE;
+                        }
+                    }
                 }, this);
                 break;
         }
     }
+    private void makeSaveButtonEnable(boolean enable){
+        if(enable){
+            btnSave.setEnabled(true);
+            btnSave.setAlpha(1.0f);
+        }
+        else{
+            btnSave.setEnabled(false);
+            btnSave.setAlpha(0.3f);
+        }
+    }
 
-    private void moveToActivity(String type) {
+    private void makeFilterOptionEnable(boolean enable){
+        if(enable){
+            rlFilterOptionContainer.setEnabled(true);
+            rlFilterOptionContainer.setAlpha(1.0f);
+        }
+        else{
+            rlFilterOptionContainer.setEnabled(false);
+            rlFilterOptionContainer.setAlpha(0.3f);
+        }
+    }
+
+    private void openFilterGallery(String type) {
+        if(mCapturedImageUrl == null){
+            //Toast.makeText(mHostActivity, R.string.select_image_for_filter, Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(getActivity(), ImageAlbumActivity.class);
-        intent.putExtra("type", type);
-        getActivity().startActivityForResult(intent, 333);
+        intent.putExtra(ImageAlbumActivity.FILTER_IMAGE_TYPE, type);
+        startActivityForResult(intent, CHOOSE_GALLERY_FILTER);
     }
 
     private void pickGalleryImage() {
@@ -342,16 +530,21 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... params) {
+            try {
+                FileInputStream inputStream = new FileInputStream(new File(mHostActivity.getCacheDir(),
+                        getFileName(params[0])));
 
-            /*return BitmapUtils.getSampledBitmap(params[0], imageWidth,
-                    imageHeight);*/
-            return BitmapFactory.decodeResource(getResources(),
-                    R.drawable.gradient_bg_des_hdpi);
+                return BitmapFactory.decodeStream(inputStream);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
         protected void onPostExecute(Bitmap result) {
             super.onPostExecute(result);
+
             if (mainBitmap != null) {
                 mainBitmap.recycle();
                 mainBitmap = null;
@@ -364,16 +557,13 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             mStickerView.mainBitmap = mainBitmap;
             mStickerView.mainImage = mainImage;
             mStickerView.setVisibility(View.VISIBLE);
-
-            mStickerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    mStickerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    setSelectedStickerItem(BitmapFactory.decodeResource(getResources(),
-                            R.drawable.forgot_password_hdpi));
-                }
-            });
         }
+    }
+
+    private String getFileName(String fileName) {
+        String name = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length());
+        Log.e(TAG, "File name => " + name);
+        return name;
     }
 
     private final class SaveImageTask extends AsyncTask<Bitmap, Void, Boolean> {
@@ -383,8 +573,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         protected Boolean doInBackground(Bitmap... params) {
             if (TextUtils.isEmpty(saveFilePath))
                 return false;
-            //return BitmapUtils.saveBitmap(params[0], saveFilePath);
-            return false;
+            return BitmapUtils.saveBitmap(params[0], saveFilePath);
         }
 
         @Override
@@ -412,9 +601,19 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             dialog.dismiss();
 
             if (result) {
-                //onSaveTaskDone();
+                FileUtil.albumUpdate(mHostActivity, saveFilePath);
+                mStickerView.clear();
+                mCapturedImageUrl = null;
+                mainImage.clear();
+                rlPlaceHolderClick.setVisibility(View.VISIBLE);
+                makeSaveButtonEnable(false);
+                makeFilterOptionEnable(false);
+                Toast.makeText(mHostActivity, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
+                if(rlFilterOptionContainer.getVisibility() == View.INVISIBLE){
+                    mHostActivity.onBackPressed();
+                }
             } else {
-                //SnackBarHandler.show(parentLayout,R.string.save_error);
+                Toast.makeText(mHostActivity, getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -425,178 +624,4 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         dialog.setMessage(title);
         return dialog;
     }
-
-    /*private void getFilterFromServer(final boolean isRefreshing, final String searchKeyword) {
-
-        //remove wi-fi symbol when response got
-        if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
-            rlConnectionContainer.removeAllViews();
-        }
-
-        if (mCurrentPage == 0 && !isRefreshing) {
-            llLoaderView.setVisibility(View.VISIBLE);
-        }
-
-        llNoDataFound.setVisibility(View.GONE);
-        int index = 0;
-        int limit = PAGE_LIMIT;
-
-        if (isRefreshing) {
-            index = 0;
-        } else if (mCurrentPage != -1) {
-            index = mCurrentPage * PAGE_LIMIT;
-        }
-
-        if (PAGE_LIMIT != -1) {
-            limit = PAGE_LIMIT;
-        }
-
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mLoggedUser.getLanguageId(), "", mLoggedUser.getId(),
-                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword);
-        apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
-            @Override
-            public void onSuccess(ApiResponse apiResponse) {
-
-                if (isAdded() && getActivity() != null) {
-                    llLoaderView.setVisibility(View.GONE);
-                    rlContent.setVisibility(View.VISIBLE);
-                    swipeRefresh.setRefreshing(false);
-
-                    //remove wi-fi symbol when response got
-                    if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
-                        rlConnectionContainer.removeAllViews();
-                    }
-
-                    try {
-                        if (apiResponse.status) {
-                            Payload payload = apiResponse.paylpad;
-
-                            if (payload != null) {
-
-                                if (isRefreshing) {
-
-                                    if (payload.productList != null && payload.productList.size() != 0) {
-                                        mStickerList.clear();
-                                        mStickerList.addAll(payload.productList);
-
-                                        llNoDataFound.setVisibility(View.GONE);
-                                        rcDesignList.setVisibility(View.VISIBLE);
-                                        mAdapter.setData(mStickerList);
-
-                                        mCurrentPage = 0;
-                                        mCurrentPage++;
-                                    } else {
-                                        mStickerList.clear();
-                                        mAdapter.setData(mStickerList);
-                                        if(searchKeyword.length() != 0){
-                                            txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                        }
-                                        else{
-                                            txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
-                                        }
-                                        showNoDataFound();
-                                    }
-                                } else {
-
-                                    if (mCurrentPage == 0) {
-                                        mStickerList.clear();
-                                        if(payload.productList != null){
-                                            mStickerList.addAll(payload.productList);
-                                        }
-
-                                        if (mStickerList.size() != 0) {
-                                            llNoDataFound.setVisibility(View.GONE);
-                                            rcDesignList.setVisibility(View.VISIBLE);
-                                            mAdapter.setData(mStickerList);
-                                        } else {
-                                            showNoDataFound();
-                                            if(searchKeyword.length() != 0){
-                                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                            }
-                                            else{
-                                                txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
-                                            }
-                                            rcDesignList.setVisibility(View.GONE);
-                                        }
-                                    } else {
-                                        AppLogger.error(TAG, "Remove loader...");
-                                        mAdapter.removeLoader();
-                                        if (payload.productList != null && payload.productList.size() != 0) {
-                                            mStickerList.addAll(payload.productList);
-                                            mAdapter.setData(mStickerList);
-                                        }
-                                    }
-
-                                    if (payload.productList != null && payload.productList.size() != 0) {
-                                        mCurrentPage++;
-                                    }
-                                }
-                                AppLogger.error(TAG, "item list size => " + mStickerList.size());
-
-                            } else if (mStickerList == null || (mStickerList != null && mStickerList.size() == 0)) {
-                                if(searchKeyword.length() != 0){
-                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                }
-                                else{
-                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
-                                }
-                                showNoDataFound();
-                            }
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        Utils.showAlertMessage(mContext, new MessageEventListener() {
-                            @Override
-                            public void onOkClickListener(int reqCode) {
-
-                            }
-                        }, getString(R.string.server_unreachable), getString(R.string.oops), 0);
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFail(final Call<ApiResponse> call, Throwable t) {
-
-                if (isAdded() && getActivity() != null) {
-                    llLoaderView.setVisibility(View.GONE);
-                    mAdapter.removeLoader();
-                    swipeRefresh.setRefreshing(false);
-
-                    if (mCurrentPage == 0) {
-                        rlContent.setVisibility(View.GONE);
-                    } else {
-                        rlContent.setVisibility(View.VISIBLE);
-                    }
-                    if (!call.isCanceled() && (t instanceof java.net.ConnectException ||
-                            t instanceof java.net.SocketTimeoutException ||
-                            t instanceof java.net.SocketException ||
-                            t instanceof java.net.UnknownHostException)) {
-
-                        if (mCurrentPage == 0) {
-                            mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
-                                @Override
-                                public void onOkClickListener(int reqCode) {
-                                    rlContent.setVisibility(View.VISIBLE);
-                                }
-
-                                @Override
-                                public void onRetryClickListener(int reqCode) {
-                                    getDesignFromServer(isRefreshing, searchKeyword);
-                                }
-                            }, 0);
-                        } else {
-                            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    private void showNoDataFound() {
-        llNoDataFound.setVisibility(View.VISIBLE);
-        txtNoDataFoundTitle.setText("");
-    }*/
 }

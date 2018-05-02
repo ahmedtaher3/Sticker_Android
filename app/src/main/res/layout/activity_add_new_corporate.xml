@@ -136,70 +136,6 @@
 
                 </LinearLayout>
 
-              <!--  <LinearLayout
-
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="@dimen/add_corp_tv_margin_top"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:textSize="@dimen/text_size_edittext"
-                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                        android:layout_marginStart="2dp"
-                        android:layout_marginBottom="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:hint="Category"
-                        android:textColor="@color/edt_background_tint" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_alignParentBottom="true"
-                            android:background="@color/edt_background_tint" />
-
-                        <android.support.v7.widget.AppCompatImageView
-                            android:id="@+id/imgDown2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="5dp"
-                            app:srcCompat="@drawable/spinner_dropdown" />
-
-                        <Spinner
-                            android:id="@+id/spnrCategory"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:dropDownVerticalOffset="35dp"
-                            android:gravity="start|center"
-                            android:paddingBottom="5dp"
-                            android:spinnerMode="dropdown"
-                            android:textSize="@dimen/text_size_contact_us" />
-                    </RelativeLayout>
-                    &lt;!&ndash; <Spinner
-                         android:paddingBottom="5dp"
-                         android:layout_alignBottom="@id/intEdt"
-                         android:layout_alignTop="@id/intEdt"
-                         android:id="@+id/spnrCategory"
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content"
-                         android:layout_alignParentBottom="true"
-                         android:layout_marginTop="@dimen/margin_spinner_top"
-                         android:background="@null"
-                         android:dropDownVerticalOffset="35dp"
-                         android:gravity="start|center"
-                         android:layout_marginBottom="8dp"
-                         android:spinnerMode="dropdown"
-                         android:textSize="@dimen/text_size_contact_us"/>
-          &ndash;&gt;
-                </LinearLayout>
--->
                 <TextView
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:layout_width="match_parent"
@@ -223,6 +159,15 @@
                     android:minHeight="@dimen/act_add_corp_write_des_edt_heigh"
                     android:padding="5dp"
                     android:textSize="@dimen/text_size_contact_us" />
+
+                <RelativeLayout
+                    android:id="@+id/rlJustificationHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <include layout="@layout/layout_justification_content"/>
+                </RelativeLayout>
 
                 <Button
                     android:id="@+id/act_corp_add_new_btn_post"

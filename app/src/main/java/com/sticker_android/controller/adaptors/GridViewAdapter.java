@@ -29,19 +29,19 @@ public class GridViewAdapter extends BaseAdapter {
     private List<FanFilter> imageLists = new ArrayList<>();
 
 
-    public interface OnProductItemClickListener{
-        void onProductItemClick(FanFilter product);
+    public interface OnFilterItemClickListener{
+        void onItemClick(FanFilter product);
     }
 
-    private OnProductItemClickListener productItemClickListener;
+    private OnFilterItemClickListener itemClickListener;
 
     public GridViewAdapter(Context context) {
         this.context = context;
         this.mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public void setOnProductClickListener(OnProductItemClickListener productClickListener){
-        this.productItemClickListener = productClickListener;
+    public void setOnItemClickListener(OnFilterItemClickListener itemClickListener){
+        this.itemClickListener = itemClickListener;
     }
 
 
@@ -94,7 +94,7 @@ public class GridViewAdapter extends BaseAdapter {
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                productItemClickListener.onProductItemClick(fanFilter);
+                itemClickListener.onItemClick(fanFilter);
             }
         });
 

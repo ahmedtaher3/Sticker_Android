@@ -22,16 +22,19 @@ import android.widget.RelativeLayout;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.fragment.fan.FilterFragment;
 import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadEmojiFragment;
 import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadGifFragment;
 import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadStickerFragment;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -295,4 +298,19 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Fragment f = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
+
+        if (resultCode == getActivity().RESULT_OK) {
+            if(f instanceof FanCustomizationStickersFragment){
+                ((FanCustomizationStickersFragment)f).onActivityResult(requestCode, resultCode, data);
+            }
+            if(f instanceof FanCustomizationEmojiFragment){
+                ((FanCustomizationStickersFragment)f).onActivityResult(requestCode, resultCode, data);
+            }
+        }
+
+    }
 }

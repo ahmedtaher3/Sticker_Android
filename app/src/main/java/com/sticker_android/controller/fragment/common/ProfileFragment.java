@@ -293,6 +293,11 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     public void captureFromCamera() {
                         captureImage();
                     }
+
+                    @Override
+                    public void selectedItemPosition(int position) {
+
+                    }
                 });
                 break;
         }

@@ -22,6 +22,8 @@ import java.util.LinkedHashMap;
  */
 public class StickerView extends View {
 
+    private String TAG = StickerView.class.getSimpleName();
+
     private static int STATUS_IDLE = 0;
     private static int STATUS_MOVE = 1;// Mobile status
     private static int STATUS_DELETE = 2;// Delete status
@@ -29,7 +31,7 @@ public class StickerView extends View {
 
     private int imageCount;// The number of photos have been added
     private Context mContext;
-    private int currentStatus;//Current state
+    public int currentStatus;//Current state
     private StickerItem currentItem;// Current map data manipulation
     private float oldx, oldy;
 
@@ -202,4 +204,16 @@ public class StickerView extends View {
         bank.clear();
         this.invalidate();
     }
+
+    public void hideHelpBoxTool(){
+        for (Integer id : bank.keySet()) {
+            StickerItem item = bank.get(id);
+
+            if(item != null){
+                item.isDrawHelpTool = false;
+                invalidate();
+            }
+        }
+    }
 }
+
