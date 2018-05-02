@@ -33,6 +33,7 @@ import com.sticker_android.controller.activities.designer.addnew.AddNewDesignAct
 import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.fan.home.EditImageActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.controller.adaptors.DesignListAdapter;
 import com.sticker_android.controller.fragment.designer.DesignerHomeFragment;
 import com.sticker_android.model.User;
@@ -70,7 +71,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by satyendra on 4/9/18.
  */
 
-public class FilterFragment extends Fragment implements View.OnClickListener{
+public class FilterFragment extends Fragment implements View.OnClickListener {
 
     private RelativeLayout rlContent;
     private LinearLayout llLoaderView;
@@ -268,12 +269,13 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
                 .start(mHostActivity);
     }
 
-    private void setSelectedStickerItem(Bitmap bitmap){
+    private void setSelectedStickerItem(Bitmap bitmap) {
         mStickerView.addBitImage(bitmap);
     }
 
     /**
      * Load the image from filepath into mainImage imageView.
+     *
      * @param filepath The image to be loaded.
      */
     public void loadImage(String filepath) {
@@ -286,7 +288,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnReset:
 
                 break;
@@ -294,13 +296,13 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
 
                 break;
             case R.id.llFilter:
-
+                moveToActivity("filter");
                 break;
             case R.id.llSticker:
-
+                moveToActivity("stickers");
                 break;
             case R.id.llEmoji:
-
+                moveToActivity("emoji");
                 break;
             case R.id.rlPlaceHolderClick:
                 Utils.showAlertDialogToGetPicFromFragment(mHostActivity, new ImagePickerListener() {
@@ -316,6 +318,12 @@ public class FilterFragment extends Fragment implements View.OnClickListener{
                 }, this);
                 break;
         }
+    }
+
+    private void moveToActivity(String type) {
+        Intent intent = new Intent(getActivity(), ImageAlbumActivity.class);
+        intent.putExtra("type", type);
+        getActivity().startActivityForResult(intent, 333);
     }
 
     private void pickGalleryImage() {

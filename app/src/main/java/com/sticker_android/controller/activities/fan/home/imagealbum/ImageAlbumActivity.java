@@ -1,5 +1,6 @@
 package com.sticker_android.controller.activities.fan.home.imagealbum;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +45,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
     private ArrayList<FanFilter> mImageAlbumList = new ArrayList<>();
+    private String type="";
 
 
     @Override
@@ -53,6 +55,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
         getuserInfo();
         setContentView(R.layout.activity_image_album);
         PAGE_LIMIT = getResources().getInteger(R.integer.designed_item_page_limit);
+        getIntentData();
         setViewReferences();
         setViewListeners();
         setToolbar();
@@ -69,6 +72,13 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
         setAdaptor();
         getFilterApi(false);
 
+    }
+
+    private void getIntentData() {
+
+        if(getIntent().getExtras()!=null){
+         type=getIntent().getExtras().getString("type");
+    }
     }
 
 
@@ -109,7 +119,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
      */
     private void setToolBarTitle() {
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText("Filter");
+        textView.setText(type);
         toolbar.setTitle(" ");
     }
 
@@ -146,7 +156,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
             llLoaderView.setVisibility(View.VISIBLE);
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiFilterList(userdata.getLanguageId(), userdata.getAuthrizedKey(),
-                userdata.getId(), 0, 1000, "", "filter_list", "emoji");
+                userdata.getId(), 0, 1000, "", "filter_list", type);
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
@@ -162,6 +172,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
                         gridViewAdapter.setData(apiResponse.paylpad.fanFilterArrayList);
                     }
                     if (apiResponse.paylpad.fanFilterArrayList == null) {
+                        txtNoDataFoundContent.setText("No "+type+" Found.");
                         showNoDataFound();
                     }
                 }

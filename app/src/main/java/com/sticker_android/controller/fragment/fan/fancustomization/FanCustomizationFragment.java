@@ -78,7 +78,6 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setHasOptionsMenu(true);
         replaceFragment(new FanCustomizationStickersFragment());
-        startActivity(new Intent(getActivity(), ImageAlbumActivity.class));
         return view;
     }
 

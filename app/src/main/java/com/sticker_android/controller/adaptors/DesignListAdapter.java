@@ -232,6 +232,14 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             }
 
+            if(productItem.statics.likeCount>0){
+                itemHolder.checkboxLike.setChecked(true);
+                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+            } else {
+                itemHolder.checkboxLike.setChecked(false);
+                itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+
+            }
             itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
             itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
             itemHolder.imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {

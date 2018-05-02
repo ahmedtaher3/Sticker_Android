@@ -42,7 +42,7 @@ import retrofit2.Call;
  * Created by user on 30/4/18.
  */
 
-public class FanCustomizationStickersFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener{
+public class FanCustomizationStickersFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,FanDownloadListAdaptor.OnProductItemClickListener{
 
 
     private RecyclerView rcDesignList;
@@ -78,7 +78,7 @@ public class FanCustomizationStickersFragment extends BaseFragment implements Sw
         setViewListeners();
         initRecyclerView();
         mAdapter = new FanDownloadListAdaptor(getActivity());
-
+        mAdapter.setOnProductClickListener(this);
         rcDesignList.setAdapter(mAdapter);
         llNoDataFound.setVisibility(View.GONE);
         mStickerList = new ArrayList<>();
@@ -364,5 +364,11 @@ public class FanCustomizationStickersFragment extends BaseFragment implements Sw
         super.onAttach(context);
         mContext = context;
         mHostActivity = (FanHomeActivity) context;
+    }
+
+    @Override
+    public void onProductItemClick(FanContestDownload product) {
+        startActivity(new Intent(getActivity(), ImageAlbumActivity.class));
+
     }
 }

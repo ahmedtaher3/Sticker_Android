@@ -72,7 +72,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
         public ImageButton imvBtnEditRemove;
         public CardView cardItem;
         public ProgressBar pbLoader;
-        public TextView tvName;
+        public TextView tvName, tvFeatured;
 
         public ViewHolder(View view) {
             super(view);
@@ -87,7 +87,9 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
             cardItem = (CardView) view.findViewById(R.id.card_view);
             pbLoader = (ProgressBar) view.findViewById(R.id.pgrImage);
             tvName = (TextView) view.findViewById(R.id.tv_name);
+            tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
         }
+
     }
 
     public class LoaderViewHolder extends RecyclerView.ViewHolder {
@@ -224,7 +226,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
 
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                String shareBody = "Image url "+product.product.getImagePath();
+                String shareBody = "Image url " + product.product.getImagePath();
                 String shareSub = "Share data";
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
@@ -302,9 +304,14 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
                 itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
             }
+            if (productItem.isFeatured > 0) {
+                itemHolder.tvFeatured.setVisibility(View.VISIBLE);
+            } else
+                itemHolder.tvFeatured.setVisibility(View.GONE);
+
             itemHolder.tvName.setText(productItem.userName);
             itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
-     //       itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
+            //       itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
             itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
 
             itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));

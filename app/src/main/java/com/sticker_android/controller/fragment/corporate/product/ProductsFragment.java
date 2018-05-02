@@ -128,9 +128,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
         corporateListAdaptor = new CorporateListAdaptor(getActivity());
         productList.clear();
-
         recAd.setAdapter(corporateListAdaptor);
-
         llNoDataFound.setVisibility(View.GONE);
         productList = new ArrayList<>();
         mCurrentPage = 0;
@@ -581,9 +579,9 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     Utils.showToast(getActivity(), "Deleted successfully");
-                    productAdaptor.delete(position);
-                   /* refreshApi();
-               */
+                  //  productAdaptor.delete(position);
+                    refreshApi();
+
                 }
             }
 

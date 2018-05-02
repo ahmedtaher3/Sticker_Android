@@ -586,9 +586,9 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     Utils.showToast(getActivity(), "Deleted successfully");
-                    productAdaptor.delete(position);
-                   /* refreshApi();
-               */
+                  //  productAdaptor.delete(position);
+                   refreshApi();
+
                 }
             }
 

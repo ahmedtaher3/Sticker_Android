@@ -1,6 +1,7 @@
 package com.sticker_android.controller.fragment.fan.fancustomization;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.controller.adaptors.FanDownloadListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeStickerFragment;
@@ -40,7 +42,7 @@ import retrofit2.Call;
  * Created by user on 30/4/18.
  */
 
-public class FanCustomizationEmojiFragment  extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener{
+public class FanCustomizationEmojiFragment  extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,FanDownloadListAdaptor.OnProductItemClickListener{
     private RecyclerView rcDesignList;
     private LinearLayout llNoDataFound;
     private SwipeRefreshLayout swipeRefresh;
@@ -358,5 +360,10 @@ public class FanCustomizationEmojiFragment  extends BaseFragment implements Swip
         super.onAttach(context);
         mContext = context;
         mHostActivity = (FanHomeActivity) context;
+    }
+
+    @Override
+    public void onProductItemClick(FanContestDownload product) {
+        startActivity(new Intent(getActivity(), ImageAlbumActivity.class));
     }
 }
