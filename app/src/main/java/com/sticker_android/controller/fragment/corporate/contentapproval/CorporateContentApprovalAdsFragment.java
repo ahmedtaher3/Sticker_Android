@@ -332,6 +332,7 @@ public class CorporateContentApprovalAdsFragment extends BaseFragment implements
     @Override
     public void onRemove(Product product) {
         mAdapter.notifyDataSetChanged();
+
     }
 
     @Override

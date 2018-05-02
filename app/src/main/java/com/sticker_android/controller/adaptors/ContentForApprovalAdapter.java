@@ -226,10 +226,10 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
             AppLogger.error(TAG, "Edit item after");
         } else {
             Intent intent = new Intent(context, AddNewDesignActivity.class);
-       //     bundle.putString("edit", type);
-         //   intent.putExtras(bundle);
+            //     bundle.putString("edit", type);
+            //   intent.putExtras(bundle);
             intent.putExtra(AppConstant.PRODUCT, product);
-            ((Activity) context). startActivityForResult(intent, DesignerHomeFragment.EDIT_DESIGN);
+            ((Activity) context).startActivityForResult(intent, DesignerHomeFragment.EDIT_DESIGN);
 
             //(Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
 
@@ -359,7 +359,7 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                     case editId:
                         AppLogger.error(TAG, "Edit item");
                         if (designerActionListener != null)
-                        designerActionListener.onEdit(product);
+                            designerActionListener.onEdit(product);
                         moveToDetails(product, "Edit");
                         break;
                     case removeId:
@@ -387,6 +387,8 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
         });
     }
 
+
+
     private void removeProductApi(final Product product) {
         AppPref appPref = new AppPref(context);
         User mUserdata = appPref.getUserInfo();
@@ -399,8 +401,8 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                 if (apiResponse.status) {
                     Utils.showToast(context, context.getString(R.string.deleted_successfully));
                     if (designerActionListener != null)
-                    designerActionListener.onRemove(product);
-
+                        designerActionListener.onRemove(product);
+                    notifyDataSetChanged();
                 }
             }
 
