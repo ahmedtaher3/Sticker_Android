@@ -29,6 +29,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -78,6 +80,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     public Bitmap mainBitmap;
     private Bitmap originalBitmap;
     public ImageViewTouch mainImage;
+    private ImageView imgFilterMask;
     private RelativeLayout rlImageContainer, rlPlaceHolderClick, rlResetButtonHolder;
     private LinearLayout rlFilterOptionContainer, llFilter, llSticker, llEmoji;
     private Button btnReset, btnSave;
@@ -131,6 +134,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 rlPlaceHolderClick.setVisibility(View.GONE);
                 loadImage(mCapturedImageUrl);
                 mSelectedFilter = new FanFilter();
+                mSelectedFilter.type = "sticker";
                 mSelectedFilter.imageUrl = stickerPath;
                 setSelectedFilter();
 
@@ -229,6 +233,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         llEmoji = (LinearLayout) inflatedView.findViewById(R.id.llEmoji);
         btnReset = (Button) inflatedView.findViewById(R.id.btnReset);
         btnSave = (Button) inflatedView.findViewById(R.id.btnSave);
+        imgFilterMask = (ImageView) inflatedView.findViewById(R.id.imgFilterMask);
         rlPlaceHolderClick = (RelativeLayout) inflatedView.findViewById(R.id.rlPlaceHolderClick);
         rlResetButtonHolder = (RelativeLayout) inflatedView.findViewById(R.id.rlResetButtonHolder);
     }
@@ -311,16 +316,31 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onLoadingComplete(String s, View view, final Bitmap bitmap) {
+                progressDialogHandler.hide();
+                if(mSelectedFilter.type.contains("filter")){
+                    mStickerView.setVisibility(View.GONE);
+                    imgFilterMask.setVisibility(View.VISIBLE);
 
-                /*mStickerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    imgFilterMask.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        mStickerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        imgFilterMask.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        int width = imgFilterMask.getWidth();
+                        int height = imgFilterMask.getHeight();
 
+                        int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
+                        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
+                        params.height = imgHeight;
+                        imgFilterMask.setLayoutParams(params);
+
+                        imgFilterMask.setImageBitmap(bitmap);
                     }
-                });*/
-                progressDialogHandler.hide();
-                setSelectedStickerItem(bitmap);
+                });
+                }
+                else{
+                    mStickerView.setVisibility(View.VISIBLE);
+                    setSelectedStickerItem(bitmap);
+                }
             }
 
             @Override
@@ -410,15 +430,28 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         mStickerView.setDrawingCacheEnabled(true);
         mStickerView.buildDrawingCache(true);
 
+        imgFilterMask.setDrawingCacheEnabled(true);
+        imgFilterMask.buildDrawingCache(true);
+
         mSaveImageTask = new SaveImageTask();
-        mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), mStickerView.getDrawingCache()));
+        if(mSelectedFilter.type.contains("filter")){
+            mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), imgFilterMask.getDrawingCache(), true));
+        }
+        else{
+            mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), mStickerView.getDrawingCache(), false));
+        }
     }
 
-    public static Bitmap mergeBitmap(Bitmap bmp1, Bitmap bmp2) {
+    public static Bitmap mergeBitmap(Bitmap bmp1, Bitmap bmp2, boolean alignBottom) {
         Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(bmp1, new Matrix(), null);
-        canvas.drawBitmap(bmp2, 0, 0, null);
+        if(alignBottom){
+            canvas.drawBitmap(bmp2, 0, bmp1.getHeight() - bmp2.getHeight(), null);
+        }
+        else{
+            canvas.drawBitmap(bmp2, 0, 0, null);
+        }
         return bmOverlay;
     }
 
@@ -428,13 +461,15 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             case R.id.btnReset:
                 mStickerView.clear();
                 mainImage.clear();
+                imgFilterMask.setImageBitmap(null);
                 rlPlaceHolderClick.setVisibility(View.VISIBLE);
                 mCapturedImageUrl = null;
                 makeSaveButtonEnable(false);
                 makeFilterOptionEnable(false);
                 break;
             case R.id.btnSave:
-                if (mStickerView.getBank().size() != 0) {
+                if (mSelectedFilter.type.contains("filter")
+                        || mStickerView.getBank().size() != 0) {
                     mStickerView.hideHelpBoxTool();
                     doSaveImage();
                 } else {
@@ -599,6 +634,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 mStickerView.clear();
                 mCapturedImageUrl = null;
                 mainImage.clear();
+                imgFilterMask.setImageBitmap(null);
                 rlPlaceHolderClick.setVisibility(View.VISIBLE);
                 makeSaveButtonEnable(false);
                 makeFilterOptionEnable(false);
