@@ -80,9 +80,6 @@ public abstract class ApiCall implements Callback<ApiResponse> {
      *//*
     private void expireSession(ApiResponse apiResponse) {
         SessionExpire.sessionExptireDialog(apiResponse,mActivity);
-        //Monika//
-        ChatHelper.setUnregisterUser(mActivity);
-        ChatHelper.clearDataOnLogout(mActivity);                  //Clear local database on logout
 
         DialogUtils.showDialog(mActivity, apiResponse.error.getMessage(), new DialogInterface.OnClickListener() {
             @Override

@@ -42,6 +42,7 @@ import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.common.comments.CommentsActivity;
 import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.model.User;
@@ -168,7 +169,41 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 }
             });
         }
+        if (mProduct != null)
+        manageStatus();
     }
+
+    private void manageStatus() {
+
+
+            if (mProduct.productStatus == 3) {
+                rlJustificationHolder.setVisibility(View.VISIBLE);
+                setAdminCommentData();
+                btnPost.setText("Resubmit");
+                imvProductImage.setOnClickListener(this);
+            } else {
+                rlJustificationHolder.setVisibility(View.GONE);
+                btnPost.setText("Update");
+                imvProductImage.setOnClickListener(null);
+            }
+    }
+
+    private void setAdminCommentData() {
+            if (mProduct.rejectionList != null) {
+                if (mProduct.rejectionList.size() > 0) {
+
+                    txtRecentComments.setText("" + mProduct.rejectionList.get(mProduct.rejectionList.size() - 1).description);
+                }
+                if (mProduct.rejectionList.size() > 1) {
+                    txtViewMoreComment.setVisibility(View.VISIBLE);
+                    txtViewMoreComment.setTextColor(getResources().getColor(R.color.colorDesignerText));
+                } else {
+                    txtViewMoreComment.setVisibility(View.GONE);
+
+                }
+            }
+    }
+
 
     private void setDetailOfDesignedItem() {
 
@@ -378,7 +413,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         btnPost.setOnClickListener(this);
         imvProductImage.setOnClickListener(this);
         imgCategoryDropDown.setOnClickListener(this);
-
+        txtViewMoreComment.setOnClickListener(this);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -467,14 +502,21 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
             case R.id.act_corp_add_new_btn_post:
                 if (isValidData()) {
                     if (mProduct != null) {
-                        if (isDesignedImageChanges) {
-                            beginUpload(mCapturedImageUrl);
+                        if (mProduct.productStatus == 3) {
+                            if (isDesignedImageChanges)
+                                beginUpload(mCapturedImageUrl);
+                            else
+                                resubmitApiCall(mProduct.getImagePath());
                         } else {
-                            addDesignApi(mProduct.getImagePath());
+                            if (isDesignedImageChanges) {
+                                beginUpload(mCapturedImageUrl);
+                            } else {
+                                addDesignApi(mProduct.getImagePath());
+                            }
                         }
-                    } else {
-                        beginUpload(mCapturedImageUrl);
-                    }
+
+                    }else{
+                    beginUpload(mCapturedImageUrl);}
                 }
                 break;
             case R.id.imvProductImage:
@@ -517,6 +559,16 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
             case R.id.imgDown2:
                 spnrCategory.performClick();
                 break;
+            case R.id.txtViewMoreComment:
+                Intent intent = new Intent(getActivity(), CommentsActivity.class);
+                Bundle bundle = new Bundle();
+
+                bundle.putParcelable(AppConstant.PRODUCT_OBJ_COMMENTS, mProduct);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 101);
+                getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                        R.anim.activity_animation_exit);
+                break;
         }
     }
 
@@ -527,6 +579,55 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
             return getSelectedDesignType();
         }
     }
+
+
+    private void resubmitApiCall(String imagePath) {
+        int categoryId = corporateCategories.get(spnrCategory.getSelectedItemPosition()).categoryId;
+
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+        final String type = mProduct != null ? mProduct.getType() : getSelectedDesignType().toLowerCase(Locale.ENGLISH);
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProjectRejection(userdata.getLanguageId(), userdata.getAuthrizedKey(),
+                userdata.getId(), edtCorpName.getText().toString().trim(), type, ""
+                , mExpireDate, imagePath, String.valueOf(mProduct.getProductid()), edtJustification.getText().toString().trim(), categoryId, "");
+
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if (apiResponse.status) {
+                    progressDialogHandler.hide();
+                    if (apiResponse.status) {
+                        if (mProduct != null) {
+                            Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " updated successfully.");
+                        } else {
+                            Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " added successfully.");
+                        }
+
+
+                        if (comingFromDetailActivity) {
+                            Intent intent = new Intent(AddNewDesignActivity.this, DesignerHomeActivity.class);
+                            intent.putExtra(AppConstant.DATA_REFRESH_NEEDED, true);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent();
+                            intent.putExtra(AppConstant.PRODUCT, apiResponse.paylpad.product);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
+
+    }
+
 
     private void captureImage() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -624,7 +725,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
 
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
-            mCapturedImageUrl  =  null;
+            mCapturedImageUrl = null;
             imgPlaceHolder.setVisibility(View.VISIBLE);
             imvProductImage.setImageResource(R.color.image_background_color);
         }

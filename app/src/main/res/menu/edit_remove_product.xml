@@ -5,6 +5,11 @@
     <item android:id="@+id/repost"
         android:visible="false"
         android:title="@string/txt_repost" />
+    <item android:id="@+id/reSubmit"
+        android:visible="false"
+        android:title="@string/txt_resubmit" />
+
     <item android:id="@+id/remove"
         android:title="@string/txt_remove" />
+
 </menu>

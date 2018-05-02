@@ -1,11 +1,11 @@
 package com.sticker_android.controller.activities.common.comments;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +17,9 @@ import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
-import com.sticker_android.model.notification.NotificationApp;
+import com.sticker_android.model.rejection.Reject;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -41,29 +42,77 @@ public class CommentsActivity extends AppBaseActivity implements SwipeRefreshLay
     private TextView txtNoDataFoundTitle;
     private TextView txtNoDataFoundContent;
     private SwipeRefreshLayout swiperefresh;
+    private Product productObj;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
         init();
+        getProductData();
+        setToolbar();
+        toolbar.setNavigationIcon(R.drawable.back_arrow_small);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         setViewReferences();
         setViewListeners();
         recyclerViewLayout();
         setAdaptor();
-        setDummyData();
+        // setDummyData();
+        setDataIntoAdaptor();
 
     }
 
-    private void setDummyData() {
+    private void setDataIntoAdaptor() {
 
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("check");
-        strings.add("check");
-        strings.add("check");
-        strings.add("check");
-        strings.add("check");
-        commentsAdaptor.setData(strings);
+        commentsAdaptor.setData((ArrayList<Reject>) productObj.rejectionList);
+    }
+
+
+    private void getProductData() {
+
+        if (getIntent().getExtras() != null) {
+
+            productObj = getIntent().getExtras().getParcelable(AppConstant.PRODUCT_OBJ_COMMENTS);
+        }
+    }
+
+    /**
+     * Method is used to set the toolbar
+     */
+    private void setToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setToolbarBackground();
+        setToolBarTitle();
+        setSupportActionBar(toolbar);
+    }
+
+    /**
+     * Method is used to set the toolbar title
+     */
+    private void setToolBarTitle() {
+        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
+        textView.setText(getString(R.string.txt_comments));
+        toolbar.setTitle(" ");
+    }
+
+    /**
+     * Method is used to set the toolbar background
+     */
+    private void setToolbarBackground() {
+        if (productObj != null) {
+            if (productObj.getType().equalsIgnoreCase("ads") || productObj.getType().equalsIgnoreCase("product"))
+                toolbar.setBackground(getResources().getDrawable(R.drawable.corporate_header_hdpi));
+            else {
+                toolbar.setBackground(getResources().getDrawable(R.drawable.designer_header_hdpi));
+
+            }
+        }
     }
 
     private void init() {
@@ -186,7 +235,7 @@ public class CommentsActivity extends AppBaseActivity implements SwipeRefreshLay
 
     public class CommentsAdaptor extends RecyclerView.Adapter<CommentsAdaptor.NotificationHolder> {
 
-        private ArrayList<String> mCommentsItem = new ArrayList<>();
+        private ArrayList<Reject> mCommentsItem = new ArrayList<>();
 
         public CommentsAdaptor() {
 
@@ -200,10 +249,36 @@ public class CommentsActivity extends AppBaseActivity implements SwipeRefreshLay
 
         @Override
         public void onBindViewHolder(CommentsAdaptor.NotificationHolder holder, int position) {
+
+            Reject reject = mCommentsItem.get(position);
+            if (reject.actionBy.equals("admin")) {
+                holder.tvCommentHeader.setText("Admin's Comment");
+                holder.tvDescription.setText(reject.description);
+                holder.tvCommentHeader.setTextColor(Color.GRAY);
+
+            } else {
+                if (productObj.getType().equalsIgnoreCase("ads") || productObj.getType().equalsIgnoreCase("product"))
+                    holder.tvCommentHeader.setTextColor(getResources().getColor(R.color.colorCorporateText));
+                else
+                    holder.tvCommentHeader.setTextColor(getResources().getColor(R.color.colorDesignerText));
+
+                holder.tvCommentHeader.setText("User Comment");
+                holder.tvDescription.setText(reject.description);
+
+            }
+            if (reject.description.equals("")&&reject.description.isEmpty()){
+                holder.tvCommentHeader.setVisibility(View.GONE);
+                holder.tvDescription.setVisibility(View.GONE);
+
+            }else {
+                holder.tvCommentHeader.setVisibility(View.VISIBLE);
+                holder.tvDescription.setVisibility(View.VISIBLE);
+
+            }
         }
 
-        public void setData(ArrayList<String> data) {
-            if(data!=null) {
+        public void setData(ArrayList<Reject> data) {
+            if (data != null) {
                 mCommentsItem = new ArrayList<>();
                 mCommentsItem.addAll(data);
                 notifyDataSetChanged();

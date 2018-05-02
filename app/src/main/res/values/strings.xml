@@ -221,5 +221,7 @@
     <string name="apply_filter_title">Apply Filter</string>
     <string name="recent_comment">Recent Comment</string>
     <string name="your_comment">Your Comment</string>
+    <string name="txt_comments">"Comment's"</string>
+    <string name="txt_resubmit">Resubmit</string>
 
 </resources>

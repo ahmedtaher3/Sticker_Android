@@ -277,9 +277,9 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
         final int reSubmitId = 3;
         PopupMenu popup = new PopupMenu(mContext, v);
         popup.getMenu().add(1, editId, editId, R.string.edit);
-        if(status.equalsIgnoreCase("rejected")){
+        if(product.productStatus==3){
             popup.getMenu().add(1, removeId, removeId, R.string.remove);
-            popup.getMenu().add(1, reSubmitId, reSubmitId, R.string.resubmit_with_justification);
+         //   popup.getMenu().add(1, reSubmitId, reSubmitId, R.string.resubmit_with_justification);
         }
         else{
             popup.getMenu().add(1, removeId, removeId, R.string.remove);

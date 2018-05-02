@@ -2,18 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/act_add_new_corp_margin"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
     android:orientation="vertical"
     tools:ignore="MissingPrefix">
-
     <TextView
         android:id="@+id/tvCommentHeader"
         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
-        android:layout_marginTop="@dimen/add_corp_tv_margin_top"
+        android:layout_marginTop="@dimen/tv_comments_margin_top"
         android:text="@string/txt_your_comment"
         android:textSize="@dimen/text_size_contact_us" />
 

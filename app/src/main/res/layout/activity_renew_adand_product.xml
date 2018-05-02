@@ -210,6 +210,7 @@
                     android:minHeight="@dimen/act_add_corp_write_des_edt_heigh"
                     android:padding="5dp"
                     android:textSize="@dimen/text_size_contact_us" />
+                <include layout="@layout/layout_justification_content"/>
 
                 <Button
                     android:id="@+id/act_corp_add_new_btn_re_post"

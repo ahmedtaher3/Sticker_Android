@@ -28,6 +28,7 @@ import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
 import com.sticker_android.controller.activities.designer.addnew.AddNewDesignActivity;
+import com.sticker_android.controller.fragment.designer.DesignerHomeFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
@@ -210,7 +211,6 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
 
     private void moveToDetails(Product product, String type) {
         Bundle bundle = new Bundle();
-
         bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
 
         if (product.getType().equals("ads") || product.getType().equals("product")) {
@@ -218,15 +218,20 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
             Intent intent = new Intent(context, RenewAdandProductActivity.class);
             bundle.putString("edit", type);
             intent.putExtras(bundle);
+            AppLogger.error(TAG, "Edit item before");
             ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
 
             ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
                     R.anim.activity_animation_exit);
+            AppLogger.error(TAG, "Edit item after");
         } else {
             Intent intent = new Intent(context, AddNewDesignActivity.class);
-            bundle.putString("edit", type);
-            intent.putExtras(bundle);
-            ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
+       //     bundle.putString("edit", type);
+         //   intent.putExtras(bundle);
+            intent.putExtra(AppConstant.PRODUCT, product);
+            ((Activity) context). startActivityForResult(intent, DesignerHomeFragment.EDIT_DESIGN);
+
+            //(Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
 
             ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
                     R.anim.activity_animation_exit);
@@ -281,9 +286,8 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                 itemHolder.tvStatus.setText(R.string.approved);
             } else {
                 if (productItem.getType().equalsIgnoreCase(DesignType.ads.getType().toLowerCase()) || productItem.getType().equalsIgnoreCase(DesignType.products.getType().toLowerCase())) {
-                    itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context,R.color.colorCorporateText));
-                }
-                    else {
+                    itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorCorporateText));
+                } else {
                     itemHolder.tvStatus.setTextColor(Color.parseColor("#1D93FB"));
                 }
                 itemHolder.tvStatus.setText(R.string.pending);
@@ -340,11 +344,11 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
         final int removeId = 2;
         final int reSubmitId = 3;
         PopupMenu popup = new PopupMenu(context, v);
-        popup.getMenu().add(1, editId, editId, R.string.edit);
-        if (status.equalsIgnoreCase("rejected")) {
+        if (product.productStatus == 3) {
+            popup.getMenu().add(1, reSubmitId, reSubmitId, R.string.txt_resubmit);
             popup.getMenu().add(1, removeId, removeId, R.string.remove);
-            popup.getMenu().add(1, reSubmitId, reSubmitId, R.string.resubmit_with_justification);
         } else {
+            popup.getMenu().add(1, editId, editId, R.string.edit);
             popup.getMenu().add(1, removeId, removeId, R.string.remove);
         }
         popup.show();
@@ -354,6 +358,7 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                 switch (item.getItemId()) {
                     case editId:
                         AppLogger.error(TAG, "Edit item");
+                        if (designerActionListener != null)
                         designerActionListener.onEdit(product);
                         moveToDetails(product, "Edit");
                         break;
@@ -372,8 +377,9 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
                         break;
                     case reSubmitId:
                         AppLogger.error(TAG, "Re submit item");
-                        designerActionListener.onResubmit(product);
-                        moveToDetails(product, "Repost");
+                        if (designerActionListener != null)
+                            designerActionListener.onResubmit(product);
+                        moveToDetails(product, "Edit");
                         break;
                 }
                 return false;
@@ -392,6 +398,7 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
                     Utils.showToast(context, context.getString(R.string.deleted_successfully));
+                    if (designerActionListener != null)
                     designerActionListener.onRemove(product);
 
                 }

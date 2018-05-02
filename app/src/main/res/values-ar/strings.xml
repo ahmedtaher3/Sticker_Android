@@ -119,4 +119,6 @@
     <string name="txt_no_downloaded_gif_found">No downloaded GIF found</string>
     <string name="txt_no_notification_found">No notification found.</string>
     <string name="text_all">All</string>
+    <string name="txt_comments">"Comment's"</string>
+    <string name="txt_resubmit">Resubmit</string>
 </resources>

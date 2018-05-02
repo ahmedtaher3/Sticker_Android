@@ -32,6 +32,7 @@ import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.common.comments.CommentsActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.corporateproduct.Product;
@@ -51,7 +52,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -84,6 +84,10 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     private boolean isUpdated;
     private ImageView imvProductImage2;
     private int categoryId;
+    private RelativeLayout rlJustification;
+
+    private TextView txtRecentCommentText, txtViewMoreComment, txtYourComment;
+    private EditText edtJustification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +111,37 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         fetchCategoryApi();
         measureImageWidthHeight();
         imvProductImage2.setVisibility(View.GONE);
+        manageStatus();
+    }
+
+    private void manageStatus() {
+
+        if (productObj.productStatus == 3) {
+            rlJustification.setVisibility(View.VISIBLE);
+            setAdminCommentData();
+            btnRePost.setText("Resubmit");
+            imvProductImage.setOnClickListener(this);
+        } else {
+            rlJustification.setVisibility(View.GONE);
+            btnRePost.setText("Update");
+            imvProductImage.setOnClickListener(null);
+        }
+    }
+
+    private void setAdminCommentData() {
+        if(productObj.rejectionList!=null) {
+            if (productObj.rejectionList.size() > 0) {
+
+                txtRecentCommentText.setText("" + productObj.rejectionList.get(productObj.rejectionList.size() - 1).description);
+            }
+            if (productObj.rejectionList.size() > 1) {
+                txtViewMoreComment.setVisibility(View.VISIBLE);
+                txtViewMoreComment.setTextColor(getResources().getColor(R.color.colorCorporateText));
+            } else {
+                txtViewMoreComment.setVisibility(View.GONE);
+
+            }
+        }
     }
 
     private void measureImageWidthHeight() {
@@ -116,7 +151,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
             public boolean onPreDraw() {
                 imvProductImage.getViewTreeObserver().removeOnPreDrawListener(this);
                 int finalWidth = imvProductImage.getMeasuredWidth();
-                int height = finalWidth * 3 /5;
+                int height = finalWidth * 3 / 5;
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imvProductImage.getLayoutParams();
                 //  LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imvProductImage.getLayoutParams();
                 layoutParams.height = height;
@@ -175,21 +210,21 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     }
 
     private Set<Category> setCategory() {
-Category category=new Category();
+        Category category = new Category();
         Set<Category> temp = new LinkedHashSet<>();
         ArrayList<Product> tempPro = new ArrayList<>();
         if (productObj != null) {
             for (int i = 0; i < corporateCategories.size(); i++) {
                 if (corporateCategories.get(i).categoryId == productObj.getCategoryId()) {
-                //    temp.add(corporateCategories.get(i));
-                    category=corporateCategories.get(i);
+                    //    temp.add(corporateCategories.get(i));
+                    category = corporateCategories.get(i);
                     break;
                 }
             }
 
         }
-      temp.add(category);
- temp.addAll(corporateCategories);
+        temp.add(category);
+        temp.addAll(corporateCategories);
         return temp;
     }
 
@@ -259,6 +294,7 @@ Category category=new Category();
     @Override
     protected void setViewListeners() {
         btnRePost.setOnClickListener(this);
+        txtViewMoreComment.setOnClickListener(this);
         //  imvProductImage.setOnClickListener(this);
     }
 
@@ -273,6 +309,11 @@ Category category=new Category();
         imvProductImage = (ImageView) findViewById(R.id.imvProductImage);
         pgrImage = (ProgressBar) findViewById(R.id.pgrImage);
         imvProductImage2 = (ImageView) findViewById(R.id.imvProductImage2);
+        rlJustification = (RelativeLayout) findViewById(R.id.rlJustification);
+        txtRecentCommentText = (TextView) findViewById(R.id.txtRecentComments);
+        txtViewMoreComment = (TextView) findViewById(R.id.txtViewMoreComment);
+        txtYourComment = (TextView) findViewById(R.id.txtYourComment);
+        edtJustification = (EditText) findViewById(R.id.edtJustification);
 
     }
 
@@ -337,12 +378,23 @@ Category category=new Category();
         switch (v.getId()) {
             case R.id.act_corp_add_new_btn_re_post:
                 if (isValidData()) {
-                    if (isUpdated)
-                        beginUpload(mCapturedImageUrl);
-                    else
-                        renewOrEditApi(productObj.getImagePath());
 
                     // renewOrEditApi();
+                    if (productObj.productStatus == 3) {
+                        if (isUpdated)
+                            beginUpload(mCapturedImageUrl);
+                        else
+                            resubmitApiCall(productObj.getImagePath());
+
+                    } else {
+                        if (isUpdated)
+                            beginUpload(mCapturedImageUrl);
+                        else
+                            renewOrEditApi(productObj.getImagePath());
+
+                    }
+
+
                 }
                 break;
 
@@ -364,7 +416,52 @@ Category category=new Category();
                     }
                 });
                 break;
+            case R.id.txtViewMoreComment:
+                Intent intent = new Intent(getActivity(), CommentsActivity.class);
+                Bundle bundle = new Bundle();
+
+                bundle.putParcelable(AppConstant.PRODUCT_OBJ_COMMENTS, productObj);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 101);
+                getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                        R.anim.activity_animation_exit);
+
+                break;
         }
+    }
+
+    private void resubmitApiCall(String imagePath) {
+        int categoryId = getCategoryId();
+        if (setDate != null)
+            mExpireDate = setDate.getChosenDate();
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+        final String type = productObj.getType();
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProjectRejection(userdata.getLanguageId(), userdata.getAuthrizedKey(),
+                userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
+                , mExpireDate, imagePath, String.valueOf(productObj.getProductid()), edtJustification.getText().toString().trim(), categoryId, "");
+
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if (apiResponse.status) {
+                    progressDialogHandler.hide();
+                    if (apiResponse.status) {
+                        Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " updated successfully.");
+                        setResult(RESULT_OK);
+                        onBackPressed();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
+
     }
 
 
@@ -396,7 +493,7 @@ Category category=new Category();
         final String type = productObj.getType();
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
                 userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
-                , mExpireDate, imagePath, String.valueOf(productObj.getProductid()),categoryId );
+                , mExpireDate, imagePath, String.valueOf(productObj.getProductid()), categoryId);
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
@@ -556,7 +653,12 @@ Category category=new Category();
                 if (TransferState.COMPLETED == state) {
                     progressDialogHandler.hide();
                     String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
-                    renewOrEditApi(imagePath);
+                    if (productObj.productStatus == 3) {
+                        resubmitApiCall(imagePath);
+                    } else {
+                        renewOrEditApi(imagePath);
+
+                    }
                     isUpdated = false;
                 }
             }

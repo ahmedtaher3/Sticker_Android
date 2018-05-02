@@ -4,6 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.sticker_android.model.rejection.Reject;
+
+import java.util.List;
 
 /**
  * Created by user on 4/4/18.
@@ -35,6 +38,9 @@ public class Product implements Parcelable {
     @SerializedName("user_name")
     public String userName;
 
+    @SerializedName("rejection_list")
+
+    public List<Reject> rejectionList = null;
 
     @SerializedName("user_contest_id")
     public long userContestId;
@@ -159,6 +165,7 @@ public class Product implements Parcelable {
         dest.writeString(this.imagePath);
         dest.writeInt(this.isLike);
         dest.writeString(this.userName);
+        dest.writeTypedList(this.rejectionList);
         dest.writeLong(this.userContestId);
         dest.writeLong(this.contestId);
         dest.writeInt(this.isExpired);
@@ -179,6 +186,7 @@ public class Product implements Parcelable {
         this.imagePath = in.readString();
         this.isLike = in.readInt();
         this.userName = in.readString();
+        this.rejectionList = in.createTypedArrayList(Reject.CREATOR);
         this.userContestId = in.readLong();
         this.contestId = in.readLong();
         this.isExpired = in.readInt();

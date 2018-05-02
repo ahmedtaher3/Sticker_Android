@@ -136,5 +136,6 @@
     <dimen name="filter_action_top_margin">10dp</dimen>
     <dimen name="filter_action_text_size">13sp</dimen>
     <dimen name="filter_btn_size">48dp</dimen>
+    <dimen name="tv_comments_margin_top">10dp</dimen>
 
 </resources>

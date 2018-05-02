@@ -548,6 +548,10 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     case R.id.repost:
                         moveToActivity(position, "Repost");
                         break;
+
+                    case R.id.reSubmit:
+                     moveToActivity(position,"Edit");
+                        break;
                 }
                 return false;
             }
@@ -566,6 +570,12 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         } else {
             popupMenu.findItem(R.id.edit).setVisible(true);
             popupMenu.findItem(R.id.repost).setVisible(false);
+        }
+
+        if(product.productStatus==3){
+            popupMenu.findItem(R.id.repost).setVisible(false);
+            popupMenu.findItem(R.id.edit).setVisible(false);
+            popupMenu.findItem(R.id.reSubmit).setVisible(true);
         }
     }
 

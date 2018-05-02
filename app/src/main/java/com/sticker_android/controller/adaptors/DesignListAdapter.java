@@ -328,12 +328,12 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final int removeId = 2;
         final int reSubmitId = 3;
         PopupMenu popup = new PopupMenu(context, v);
-        popup.getMenu().add(1, editId, editId, R.string.edit);
-        if(status.equalsIgnoreCase("rejected")){
+        if(product.productStatus==3){
+            popup.getMenu().add(1, reSubmitId, reSubmitId, R.string.txt_resubmit);
             popup.getMenu().add(1, removeId, removeId, R.string.remove);
-            popup.getMenu().add(1, reSubmitId, reSubmitId, R.string.resubmit_with_justification);
         }
         else{
+            popup.getMenu().add(1, editId, editId, R.string.edit);
             popup.getMenu().add(1, removeId, removeId, R.string.remove);
         }
         popup.show();

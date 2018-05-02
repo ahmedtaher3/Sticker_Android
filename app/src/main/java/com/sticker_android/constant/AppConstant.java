@@ -10,6 +10,7 @@ public class AppConstant {
     public static final int SPLASH_TIMER_WAIT=3000;
     /*Intent Constant*/
     public static final String PRODUCT_OBJ_KEY="productObj";
+    public static final String PRODUCT_OBJ_COMMENTS="productObjcomments";
     public static final String PRODUCT = "product";
     public static final String FAN_CONTEST_OBJ= "fanContest";
 

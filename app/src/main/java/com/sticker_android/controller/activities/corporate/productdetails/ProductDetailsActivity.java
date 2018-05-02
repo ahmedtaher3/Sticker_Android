@@ -132,7 +132,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
             checkboxLike.setButtonDrawable(getResources().getDrawable(R.drawable.ic_like));
 
         }
-      //  tvStatus.setText(status);
+        //  tvStatus.setText(status);
         imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -250,6 +250,10 @@ public class ProductDetailsActivity extends AppBaseActivity {
                     case R.id.repost:
                         moveToActivity("Repost");
                         break;
+                    case R.id.reSubmit:
+                        moveToActivity("Edit");
+                        break;
+
                 }
                 return false;
             }
@@ -295,6 +299,12 @@ public class ProductDetailsActivity extends AppBaseActivity {
             popupMenu.findItem(R.id.edit).setVisible(true);
             popupMenu.findItem(R.id.repost).setVisible(false);
         }
+        if (productObj.productStatus == 3) {
+            popupMenu.findItem(R.id.repost).setVisible(false);
+            popupMenu.findItem(R.id.edit).setVisible(false);
+            popupMenu.findItem(R.id.reSubmit).setVisible(true);
+        }
+
     }
 
     private void moveToActivity(String type) {
