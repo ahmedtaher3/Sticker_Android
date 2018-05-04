@@ -2,6 +2,7 @@ package com.sticker_android.controller.fragment.fan.fanhome;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -65,7 +66,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
     private int PAGE_LIMIT;
     private FanListAdaptor mAdapter;
     private String categories;
-    String filterData="";
+    String filterData = "";
 
 
     public FanHomeStickerFragment() {
@@ -150,13 +151,17 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
 
     @Override
     public void onRefresh() {
-        categories="";
+        categories = "";
+        mCurrentPage = 0;
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getDesignFromServer(true, "", "");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+        FanHomeFragment parentFrag = ((FanHomeFragment) FanHomeStickerFragment.this.getParentFragment());
+        if (parentFrag != null)
+            parentFrag.closeSearch();
     }
 
     public void setRecScrollListener() {
@@ -375,16 +380,36 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
 
     public void filterData(String categories, String filterdata) {
         this.categories = categories;
-        mCurrentPage=0;
+        mCurrentPage = 0;
         if (Utils.isConnectedToInternet(mHostActivity)) {
             mStickerList.clear();
-            this.filterData=filterdata;
-            Toast.makeText(getActivity(),"filterdata",Toast.LENGTH_SHORT).show();
+            this.filterData = filterdata;
             getDesignFromServer(false, "", categories);
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
 
+    }
+
+    public void refreshApi() {
+        mCurrentPage = 0;
+        categories = "";
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            getDesignFromServer(true, "", "");
+        } else {
+            swipeRefresh.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (getActivity().RESULT_OK == resultCode) {
+            if (requestCode == 0) {
+                onRefresh();
+            }
+        }
     }
 }

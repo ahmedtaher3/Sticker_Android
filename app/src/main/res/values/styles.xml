@@ -207,4 +207,13 @@
         <item name="android:drawableRight">@drawable/selector_filter_view</item>
         <item name="android:textSize">14sp</item>
     </style>
+
+    <style name="NoDisplay">
+        <item name="@android:windowBackground">@null</item>
+        <item name="@android:windowContentOverlay">@null</item>
+        <item name="@android:windowIsTranslucent">true</item>
+        <item name="@android:windowAnimationStyle">@null</item>
+        <item name="@android:windowDisablePreview">true</item>
+        <item name="@android:windowNoDisplay">true</item>
+    </style>
 </resources>

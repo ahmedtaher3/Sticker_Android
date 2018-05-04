@@ -130,7 +130,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     }
 
     private void setAdminCommentData() {
-        if(productObj.rejectionList!=null) {
+        if (productObj.rejectionList != null) {
             if (productObj.rejectionList.size() > 0) {
 
                 txtRecentCommentText.setText("" + productObj.rejectionList.get(productObj.rejectionList.size() - 1).description);
@@ -232,7 +232,11 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     private void setExpireDate() {
         setDate = new SetDate(edtExpireDate, this, R.style.AppThemeAddRenew);
         // setDate.setDate(productObj.getExpireDate());
-        setDate.setMinDate(productObj.getExpireDate());
+/*
+        if (productObj.productStatus != 3) {
+            setDate.setMinDate(productObj.getExpireDate());
+        }*/
+
     }
 
     private void setButtonText() {

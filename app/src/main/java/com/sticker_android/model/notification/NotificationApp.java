@@ -16,7 +16,7 @@ public class NotificationApp implements Parcelable {
     @SerializedName("user_id")
     public int userId;
     @SerializedName("text_json")
-    public ContestObj contestObj;
+    public Acme acme;
     @SerializedName("created_date")
     public String cratedDate;
 
@@ -32,14 +32,14 @@ public class NotificationApp implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.notificatinId);
         dest.writeInt(this.userId);
-        dest.writeParcelable(this.contestObj, flags);
+        dest.writeParcelable(this.acme, flags);
         dest.writeString(this.cratedDate);
     }
 
     protected NotificationApp(Parcel in) {
         this.notificatinId = in.readInt();
         this.userId = in.readInt();
-        this.contestObj = in.readParcelable(ContestObj.class.getClassLoader());
+        this.acme = in.readParcelable(Acme.class.getClassLoader());
         this.cratedDate = in.readString();
     }
 

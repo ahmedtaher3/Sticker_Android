@@ -20,22 +20,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.controller.fragment.fan.FilterFragment;
-import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadEmojiFragment;
-import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadGifFragment;
-import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadStickerFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Locale;
 
 import retrofit2.Call;
 
@@ -244,6 +236,12 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 // Write your code here
+                Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
+                if (fragment instanceof FanCustomizationEmojiFragment) {
+                    ((FanCustomizationEmojiFragment) fragment).refreshApi();
+                } else if (fragment instanceof FanCustomizationStickersFragment)
+                    ((FanCustomizationStickersFragment) fragment).refreshApi();
+
                 return true;
 
             }
@@ -312,5 +310,11 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
             }
         }
 
+    }
+
+
+    public void closeSearch() {
+        if(item!=null)
+            MenuItemCompat.collapseActionView(item);
     }
 }

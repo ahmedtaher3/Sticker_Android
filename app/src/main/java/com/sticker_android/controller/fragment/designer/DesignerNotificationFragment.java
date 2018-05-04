@@ -23,6 +23,7 @@ import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.common.contest.ApplyDesignerContestActivity;
 import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.model.notification.NotificationApp;
@@ -32,6 +33,7 @@ import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.BadgeUtils;
 
 import java.util.ArrayList;
 
@@ -86,6 +88,8 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
         appPref.saveNewMessagesCount(0);
         if (mHostActivity != null)
             mHostActivity.updateCallbackMessage();
+        BadgeUtils.clearBadge(getActivity());
+        LocalNotification.clearNotifications(getActivity());
         return view;
     }
 
@@ -223,7 +227,7 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
         @Override
         public void onBindViewHolder(NotificationAdaptor.NotificationHolder holder, int position) {
             final NotificationApp notification = mNotificationItem.get(position);
-            final int contestId = notification.contestObj.status;
+            final int contestId = notification.acme.contestObj.status;
 
             if (position % 3 == 0) {
                 holder.imvNotification.setImageResource(R.drawable.ic_side_image_pink);
@@ -237,7 +241,7 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
             }
             holder.tvTimeNotification.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(notification.cratedDate),getActivity()));
 
-            holder.tvNotification.setText(notification.contestObj.msg);
+            holder.tvNotification.setText(notification.acme.contestObj.msg);
             showData(holder, contestId);
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override

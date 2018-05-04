@@ -15,16 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.adaptors.ContentForApprovalAdapter;
-import com.sticker_android.controller.adaptors.CorporateContentApproval;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.contentapproval.CorporateContentApprovalAdsFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.contest.OngoingContest;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
+import com.sticker_android.model.interfaces.DesignerActionListener;
 import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.model.payload.Payload;
@@ -81,6 +79,23 @@ public class DesignerContentApprEmojiFragment extends BaseFragment implements Sw
         setViewReferences(view);
         setViewListeners();
         mAdapter = new ContentForApprovalAdapter(getActivity());
+        mAdapter.setDesignerActionListener(new DesignerActionListener() {
+            @Override
+            public void onEdit(Product product) {
+
+            }
+
+            @Override
+            public void onRemove(Product product) {
+                mAdapter.notifyDataSetChanged();
+                onRefresh();
+            }
+
+            @Override
+            public void onResubmit(Product product) {
+
+            }
+        });
         llNoDataFound.setVisibility(View.GONE);
         mProductList = new ArrayList<>();
         getDesignFromServer(false);
@@ -164,7 +179,7 @@ public class DesignerContentApprEmojiFragment extends BaseFragment implements Sw
         }
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().getUserPendingList(mUserdata.getLanguageId(), "", mUserdata.getId(),
-                index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "product_list");
+                index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "product_list","[1]");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

@@ -5,11 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
@@ -22,10 +22,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.corporate.addnew.AddNewCorporateActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
-import com.sticker_android.controller.fragment.common.ChangePasswordFragment;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.fragment.common.ChangePasswordFragment;
 import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.controller.fragment.corporate.product.ProductsFragment;
 import com.sticker_android.model.User;
@@ -78,7 +79,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_corporate_home, container, false);
-        init();
+       /* init();
         getuserInfo();
         setViewReferences(view);
         setViewListeners();
@@ -97,13 +98,46 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
                 //   mUpdateToolbarCallback.updateToolbarTitle(getResources().getString(R.string.txt_home));
             }
         }, 300);
-        swipeListener();
+        swipeListener();*/
+
+        init();
+        getuserInfo();
+        setViewReferences(view);
+        setViewListeners();
+        setBackground();
+        addTabsDynamically();
+        Utils.setTabLayoutDivider(tabLayout, getActivity());
+        replaceFragment(new AdsFragment());
+        // Inflate the layout for this fragment
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
+        setSelectedTabColor();
+        setHasOptionsMenu(true);
         return view;
 
     }
 
+
+
+    public void addTabsDynamically() {
+
+        TabLayout.Tab adsTab = tabLayout.newTab();
+        adsTab.setText(getString(R.string.txt_ads_frag)); // set the Text for the first Tab
+        tabLayout.addTab(adsTab);
+
+        TabLayout.Tab productTab = tabLayout.newTab();
+        productTab.setText(getString(R.string.txt_products_frag)); // set the Text for the Second Tab
+        tabLayout.addTab(productTab);
+        Utils.setTabLayoutDivider(tabLayout, getActivity());
+    }
+
+
+
     private void swipeListener() {
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+
+       /* viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(final int i, final float v, final int i2) {
 
@@ -128,7 +162,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             public void onPageScrollStateChanged(final int i) {
             }
         });
-
+*/
     }
 
     @Override
@@ -148,13 +182,13 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     @Override
     protected void setViewListeners() {
         fabAddNew.setOnClickListener(this);
-        tabLayout.addOnTabSelectedListener(new TabListeners(viewPager));
+        tabLayout.addOnTabSelectedListener(new TabListeners());
     }
 
     @Override
     protected void setViewReferences(View view) {
         fabAddNew = (FloatingActionButton) view.findViewById(R.id.fabAddNew);
-        viewPager = (ViewPager) view.findViewById(R.id.view_pager);
+    //    viewPager = (ViewPager) view.findViewById(R.id.view_pager);
         tabLayout = (TabLayout) view.findViewById(R.id.act_landing_tab);
     }
 
@@ -214,26 +248,44 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             MenuItemCompat.collapseActionView(item);
     }
 
+    public void closeSearch() {
+        if(item!=null)
+            MenuItemCompat.collapseActionView(item);
+    }
+
 
     public class TabListeners implements TabLayout.OnTabSelectedListener {
 
         private ViewPager viewPager;
 
-        public TabListeners(ViewPager viewPager) {
-            this.viewPager = viewPager;
+        public TabListeners() {
         }
 
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             Utils.hideKeyboard(getActivity());
-            viewPager.setCurrentItem(tab.getPosition());
-            Fragment fragment = adapter.getItem(tab.getPosition());
+         //   viewPager.setCurrentItem(tab.getPosition());
+//            Fragment fragment = adapter.getItem(tab.getPosition());
+            Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_contest);
+
             if (fragment instanceof ChangePasswordFragment) {
                 ((ChangePasswordFragment) fragment).clearField();
             }
             if (searchView != null) {
                 MenuItemCompat.collapseActionView(item);
             }
+
+
+            switch (tab.getPosition()) {
+                case 0:
+                    replaceFragment(new AdsFragment());
+                    break;
+                case 1:
+                    replaceFragment(new ProductsFragment());
+                    break;
+
+            }
+
         }
 
 
@@ -269,8 +321,14 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
+
                 int tab = tabLayout.getSelectedTabPosition();
-                Fragment fragment = adapter.getItem(tab);
+                Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_contest);
+
+
+                // Fragment fragment = adapter.getItem(tab);
+             //   Fragment fragment = tabLayout.getTabAt(tab);
+
                 if (fragment instanceof AdsFragment) {
                     ((AdsFragment) fragment).refreshList();
                 } else if (fragment instanceof ProductsFragment)
@@ -294,9 +352,11 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 // Write your code here
-                int tab = tabLayout.getSelectedTabPosition();
+                Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_contest);
+
+         /*       int tab = tabLayout.getSelectedTabPosition();
                 Fragment fragment = adapter.getItem(tab);
-                if (fragment instanceof AdsFragment) {
+         */       if (fragment instanceof AdsFragment) {
                     ((AdsFragment) fragment).refreshApi();
                 } else if (fragment instanceof ProductsFragment)
                     ((ProductsFragment) fragment).refreshApi();
@@ -377,9 +437,11 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
      */
     private void searchResult(String query) {
 
-        int tab = tabLayout.getSelectedTabPosition();
+        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_contest);
+
+      /*  int tab = tabLayout.getSelectedTabPosition();
         Fragment fragment = adapter.getItem(tab);
-        if (fragment instanceof AdsFragment) {
+      */  if (fragment instanceof AdsFragment) {
             ((AdsFragment) fragment).searchProduct(query);
         } else if (fragment instanceof ProductsFragment)
             ((ProductsFragment) fragment).searchProduct(query);
@@ -434,10 +496,11 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     }
 
     private void showSearchResultApi(ArrayList<Product> product) {
+        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_contest);
 
-        int tab = tabLayout.getSelectedTabPosition();
+     /*   int tab = tabLayout.getSelectedTabPosition();
         Fragment fragment = adapter.getItem(tab);
-        if (fragment instanceof AdsFragment) {
+     */   if (fragment instanceof AdsFragment) {
             ((AdsFragment) fragment).searchProduct(product);
         } else if (fragment instanceof ProductsFragment)
             ((ProductsFragment) fragment).searchProduct(product);
@@ -449,15 +512,22 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 11:
-                int tab = tabLayout.getSelectedTabPosition();
+                Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_contest);
+              /*  int tab = tabLayout.getSelectedTabPosition();
                 Fragment fragment = adapter.getItem(tab);
-                if (fragment instanceof AdsFragment) {
+              */  if (fragment instanceof AdsFragment) {
                     ((AdsFragment) fragment).refreshList();
                 } else if (fragment instanceof ProductsFragment)
                     ((ProductsFragment) fragment).refreshList();
 
-
                 break;
+
+            case AppConstant.INTENT_PRODUCT_DETAILS:
+
+            for (Fragment fragment2 : getChildFragmentManager().getFragments()) {
+                fragment2.onActivityResult(requestCode, resultCode, data);
+            }
+            break;
 
         }
     }
@@ -481,5 +551,22 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
 
     }
+
+
+    /**
+     * replace existing fragment of container
+     *
+     * @param fragment
+     */
+    private void replaceFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction =
+                getChildFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container_contest,
+                fragment);
+        fragmentTransaction.commit();
+
+
+    }
+
 
 }

@@ -436,9 +436,15 @@
     <dimen name="padding_fan_contest">30dp</dimen>
     <dimen name="dimen_fan_filter_header">60dp</dimen>
 
-    <dimen name="filter_action_top_margin">10dp</dimen>
-    <dimen name="filter_action_text_size">13sp</dimen>
+    <dimen name="filter_action_top_margin">30dp</dimen>
+    <dimen name="filter_action_text_size">17sp</dimen>
     <dimen name="filter_btn_size">55dp</dimen>
     <dimen name="tv_comments_margin_top">15dp</dimen>
+    <dimen name="txt_size_contest">18sp</dimen>
+    <dimen name="filter_placeholder_margin">60dp</dimen>
+    <dimen name="filter_place_holder_container_height">380dp</dimen>
+    <dimen name="filter_place_holder_txt_size">22sp</dimen>
+    <dimen name="filter_image_size">110dp</dimen>
+    <dimen name="image_size_gallary">200dp</dimen>
 
 </resources>

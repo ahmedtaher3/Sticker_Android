@@ -77,7 +77,24 @@ public class CorporateContentApprovalAdsFragment extends BaseFragment implements
         setViewListeners();
         //   mAdapter = new CorporateContentApproval(getActivity());
         mAdapter = new ContentForApprovalAdapter(getActivity());
-        mAdapter.setDesignerActionListener(this);
+        mAdapter.setDesignerActionListener(new DesignerActionListener() {
+            @Override
+            public void onEdit(Product product) {
+
+            }
+
+            @Override
+            public void onRemove(Product product) {
+                AppLogger.debug("CorporateContentApprovalAdsFragment","remove is called");
+                mAdapter.notifyDataSetChanged();
+                onRefresh();
+            }
+
+            @Override
+            public void onResubmit(Product product) {
+
+            }
+        });
         llNoDataFound.setVisibility(View.GONE);
         mProductList = new ArrayList<>();
         //  getContentApi();
@@ -120,7 +137,7 @@ public class CorporateContentApprovalAdsFragment extends BaseFragment implements
         }
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().getUserPendingList(mUserdata.getLanguageId(), "", mUserdata.getId(),
-                index, limit, DesignType.ads.getType().toLowerCase(Locale.ENGLISH), "product_list");
+                index, limit, DesignType.ads.getType().toLowerCase(Locale.ENGLISH), "product_list","[1]");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

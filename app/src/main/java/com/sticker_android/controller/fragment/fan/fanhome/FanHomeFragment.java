@@ -1,6 +1,5 @@
 package com.sticker_android.controller.fragment.fan.fanhome;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -154,7 +153,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                         if (itemFilter != null) {
                             itemFilter.setVisible(false);
                         }
-                        if(item!=null)
+                        if (item != null)
                             item.setVisible(false);
                         break;
                     case 1:
@@ -202,7 +201,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
     }
 
     private void setItemVisible() {
-        if(item!=null)
+        if (item != null)
             item.setVisible(true);
     }
 
@@ -259,6 +258,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                 if (itemFilter != null) {
                     itemFilter.setVisible(false);
                 }
+
                 return true;
             }
 
@@ -273,6 +273,19 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                     if (itemFilter != null)
                         itemFilter.setVisible(false);
                 }
+
+                if (fragment instanceof FanHomeStickerFragment) {
+                    ((FanHomeStickerFragment) fragment).refreshApi();
+                } else if (fragment instanceof FanHomeEmojiFragment)
+                    ((FanHomeEmojiFragment) fragment).refreshApi();
+                else if (fragment instanceof FanHomeGifFragment)
+                    ((FanHomeGifFragment) fragment).refreshApi();
+
+                else if (fragment instanceof FanHomeAdsFragment)
+                    ((FanHomeAdsFragment) fragment).refreshApi();
+                else if (fragment instanceof FanHomeProductsFragment)
+                    ((FanHomeProductsFragment) fragment).refreshApi();
+
                 return true;
             }
         });
@@ -325,24 +338,25 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
 
                 break;
             case R.id.filter:
-
-                startActivityForResult(new Intent(getActivity(), FanFilterActivity.class), 131);
+                Intent intent = new Intent(getActivity(), FanFilterActivity.class);
+                intent.putExtra("type",""+tabLayout.getSelectedTabPosition());
+                startActivityForResult(intent, 131);
                 getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                         R.anim.activity_animation_exit);
 
                 //  showBottomSheetDialogFragment();
 
-
+/*
                 if (tabLayout.getSelectedTabPosition() == 0) {
                     Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
                     if (fragment instanceof FanHomeStickerFragment) {
                         Toast.makeText(getActivity(), "Under development", Toast.LENGTH_SHORT).show();
                         //
                         // ((FanHomeStickerFragment) fragment).searchData();
-                    }
+                    }*//*
 
 
-                }
+                }*/
                 break;
         }
         return true;
@@ -366,17 +380,17 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         if (fragment instanceof FanHomeStickerFragment) {
             ((FanHomeStickerFragment) fragment).filterData(categories, filterdata);
         }
-       if (fragment instanceof FanHomeEmojiFragment) {
-            ((FanHomeEmojiFragment) fragment).filterData(categories,filterdata);
+        if (fragment instanceof FanHomeEmojiFragment) {
+            ((FanHomeEmojiFragment) fragment).filterData(categories, filterdata);
         }
         if (fragment instanceof FanHomeGifFragment) {
-            ((FanHomeGifFragment) fragment).filterData(categories,filterdata);
+            ((FanHomeGifFragment) fragment).filterData(categories, filterdata);
         }
         if (fragment instanceof FanHomeAdsFragment) {
-            ((FanHomeAdsFragment) fragment).filterData(categories,filterdata);
+            ((FanHomeAdsFragment) fragment).filterData(categories, filterdata);
         }
         if (fragment instanceof FanHomeProductsFragment) {
-            ((FanHomeProductsFragment) fragment).filterData(categories,filterdata);
+            ((FanHomeProductsFragment) fragment).filterData(categories, filterdata);
         }
 
     }
@@ -447,7 +461,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         }
         searchView.setIconified(false);
         searchView.clearFocus();
-    //    MenuItemCompat.collapseActionView(item);
+        //    MenuItemCompat.collapseActionView(item);
 
         return true;
     }
@@ -491,16 +505,22 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
             if (requestCode == 131) {
                 if (data.getExtras() != null) {
                     Bundle b = data.getExtras();
-                    String filterByName =b.getString("filterBy");
+                    String filterByName = b.getString("filterBy");
                     ArrayList<Category> categoryList = b.getParcelableArrayList("categoryList");
                     if (categoryList != null) {
                         filterData(filterListdata(categoryList), filterByName);
                     }
                 }
+            } else if (f instanceof FilterFragment) {
+                ((FilterFragment) f).onActivityResult(requestCode, resultCode, data);
             }
-            else if(f instanceof FilterFragment){
-                ((FilterFragment)f).onActivityResult(requestCode, resultCode, data);
-            }
+
+
+
+              }
+        if(requestCode==0)
+        for (Fragment fragment : getChildFragmentManager().getFragments()) {
+            fragment.onActivityResult(requestCode, resultCode, data);
         }
 
     }
@@ -519,5 +539,10 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         String jsonNames = gson.toJson(categoryArray);
         return jsonNames;
 
+    }
+
+    public void closeSearch() {
+        if(item!=null)
+            MenuItemCompat.collapseActionView(item);
     }
 }

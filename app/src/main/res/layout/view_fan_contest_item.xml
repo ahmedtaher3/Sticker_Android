@@ -40,9 +40,8 @@
                 android:layout_toLeftOf="@+id/imvBtnEditRemove"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Header"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/txt_size_home_12sp" />
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/txt_size_contest" />
 
             <ImageButton
                 android:id="@+id/imbNext"

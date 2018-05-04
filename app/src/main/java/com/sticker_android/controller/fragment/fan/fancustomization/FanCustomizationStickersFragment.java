@@ -1,7 +1,6 @@
 package com.sticker_android.controller.fragment.fan.fancustomization;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,7 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +22,6 @@ import android.widget.TextView;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.EditImageActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
-import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.controller.adaptors.FanDownloadListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.fan.FilterFragment;
@@ -196,12 +193,16 @@ public class FanCustomizationStickersFragment extends BaseFragment implements Sw
 
     @Override
     public void onRefresh() {
+        mCurrentPage=0;
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getDesignFromServer(true, "");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+        FanCustomizationFragment parentFrag = ((FanCustomizationFragment) FanCustomizationStickersFragment.this.getParentFragment());
+        if(parentFrag!=null)
+            parentFrag.closeSearch();
     }
 
     public void setRecScrollListener() {
@@ -525,5 +526,15 @@ public class FanCustomizationStickersFragment extends BaseFragment implements Sw
         intent.putExtra(FilterFragment.IMAGE_PATH, capturedImagePath);
         startActivity(intent);
 
+    }
+
+    public void refreshApi() {
+        mCurrentPage=0;
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            getDesignFromServer(true, "");
+        } else {
+            swipeRefresh.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
     }
 }

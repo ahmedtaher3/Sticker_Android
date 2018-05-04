@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.fragment.common.AccountSettingFragment;
@@ -91,7 +92,8 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         setViewReferences();
         setViewListeners();
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
-        showFragmentManually();
+       replaceFragment(CorporateHomeFragment.newInstance(), getResources().getString(R.string.txt_home));
+        // showFragmentManually();
         setUserDataIntoNaviagtion();
 
         initializeCountDrawer(appPref.getNewMessagesCount(0));
@@ -262,13 +264,13 @@ public class CorporateHomeActivity extends AppBaseActivity implements
             fragmentClass = CorporateHomeFragment.newInstance();
             textView.setText(getResources().getString(R.string.txt_home));
             tag = getResources().getString(R.string.txt_home);
-            replaceFragment(fragmentClass, tag);
+          //  replaceFragment(fragmentClass, tag);
             // Handle the camera action
         } else if (id == R.id.nav_report && !(f instanceof CorporateReportFragment)) {
             fragmentClass = new CorporateReportFragment();
             textView.setText(R.string.txt_report);
             tag = getResources().getString(R.string.txt_report);
-            replaceFragment(fragmentClass, tag);
+        //    replaceFragment(fragmentClass, tag);
             //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_profile && !(f instanceof ProfileFragment)) {
@@ -276,30 +278,33 @@ public class CorporateHomeActivity extends AppBaseActivity implements
             fragmentClass = new ProfileFragment();
             textView.setText(getResources().getString(R.string.txt_myprofile));
             tag = getResources().getString(R.string.txt_myprofile);
-            replaceFragment(fragmentClass, tag);
+         //   replaceFragment(fragmentClass, tag);
         } else if (id == R.id.nav_account_setting && !(f instanceof AccountSettingFragment)) {
             fragmentClass = AccountSettingFragment.newInstance("", "");
             textView.setText(getResources().getString(R.string.txt_account_setting));
             tag = getResources().getString(R.string.txt_account_setting);
-            replaceFragment(fragmentClass, tag);
+        //    replaceFragment(fragmentClass, tag);
         } else if (id == R.id.nav_logout) {
             userLogout();
         } else if (id == R.id.nav_corp_contest && !(f instanceof CorporateContestFragment)) {
             textView.setText(getResources().getString(R.string.txt_contest));
             fragmentClass = new CorporateContestFragment();
             tag = getResources().getString(R.string.txt_contest);
-            replaceFragment(fragmentClass, tag);
+      //      replaceFragment(fragmentClass, tag);
         } else if (id == R.id.nav_content_for_approval && !(f instanceof CorporateContentApprovalFragment)) {
             textView.setText(R.string.txt_pending_content);
             fragmentClass = new CorporateContentApprovalFragment();
             tag = getResources().getString(R.string.txt_content_approval);
-            replaceFragment(fragmentClass, tag);
+           // replaceFragment(fragmentClass, tag);
         } else if (id == R.id.nav_notification && !(f instanceof CorporateNotificationFragment)) {
             textView.setText(R.string.txt_notifications);
             fragmentClass = CorporateNotificationFragment.newInstance();
             tag = getResources().getString(R.string.txt_notifications);
-            replaceFragment(fragmentClass, tag);
+        //    replaceFragment(fragmentClass, tag);
         }
+
+        if(fragmentClass!=null)
+            replaceFragment(fragmentClass, tag);
 
         // Insert the fragment by replacing any existing fragment
         setUserDataIntoNaviagtion();
@@ -342,6 +347,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
 
     private void exitOnBack() {
         if (doubleBackToExitPressedOnce) {
+            clearBackStack();
             super.onBackPressed();
             return;
         }
@@ -369,19 +375,20 @@ public class CorporateHomeActivity extends AppBaseActivity implements
 
     public void replaceFragment(final Fragment fragmentClass, final String tag) {
 
-        new Handler().postDelayed(new Runnable() {
+        FragmentTransaction fragmentTransaction =
+                getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container_home,
+                fragmentClass);
+        int count = getFragmentManager().getBackStackEntryCount();
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+      /*  new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                FragmentTransaction fragmentTransaction =
-                        getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.container_home,
-                        fragmentClass, tag);
-                int count = getFragmentManager().getBackStackEntryCount();
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+
             }
         }, 200);
-
+*/
 
     }
 
@@ -521,6 +528,11 @@ public class CorporateHomeActivity extends AppBaseActivity implements
                         fragment.onActivityResult(requestCode, resultCode, data);
                     }
                     break;
+            case AppConstant.INTENT_NOTIFICATION_CODE:
+                for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                    fragment.onActivityResult(requestCode, resultCode, data);
+                }
+                break;
             }
 
         }

@@ -388,7 +388,6 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
     }
 
 
-
     private void removeProductApi(final Product product) {
         AppPref appPref = new AppPref(context);
         User mUserdata = appPref.getUserInfo();
@@ -400,8 +399,7 @@ public class ContentForApprovalAdapter extends RecyclerView.Adapter<RecyclerView
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
                     Utils.showToast(context, context.getString(R.string.deleted_successfully));
-                    if (designerActionListener != null)
-                        designerActionListener.onRemove(product);
+                    designerActionListener.onRemove(product);
                     notifyDataSetChanged();
                 }
             }

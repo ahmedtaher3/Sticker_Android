@@ -70,6 +70,9 @@ public class Payload {
     @SerializedName("filter_list")
     public ArrayList<FanFilter> fanFilterArrayList = new ArrayList<>();
 
+
+    @SerializedName("msg")
+    public String msg;
 }
 
 

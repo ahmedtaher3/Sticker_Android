@@ -10,12 +10,18 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class ContestObj implements Parcelable {
+
     @SerializedName("status")
     public int status;
     @SerializedName("contest_id")
     public int contestId;
     @SerializedName("msg")
     public String msg;
+    @SerializedName("notification_id")
+    public String notificationId;
+
+    public ContestObj() {
+    }
 
     @Override
     public int describeContents() {
@@ -27,18 +33,17 @@ public class ContestObj implements Parcelable {
         dest.writeInt(this.status);
         dest.writeInt(this.contestId);
         dest.writeString(this.msg);
-    }
-
-    public ContestObj() {
+        dest.writeString(this.notificationId);
     }
 
     protected ContestObj(Parcel in) {
         this.status = in.readInt();
         this.contestId = in.readInt();
         this.msg = in.readString();
+        this.notificationId = in.readString();
     }
 
-    public static final Parcelable.Creator<ContestObj> CREATOR = new Parcelable.Creator<ContestObj>() {
+    public static final Creator<ContestObj> CREATOR = new Creator<ContestObj>() {
         @Override
         public ContestObj createFromParcel(Parcel source) {
             return new ContestObj(source);

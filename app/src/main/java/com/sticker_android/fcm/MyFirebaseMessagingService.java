@@ -6,6 +6,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.sticker_android.controller.notification.LocalNotification;
+import com.sticker_android.model.notification.AppNotification;
 
 /**
  * Created by user on 14/11/17.
@@ -39,10 +40,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Log.d(TAG, "From: Retrive Data "+ remoteMessage.getData().get("data"));
 
-      //  new Gson().fromJson(remoteMessage.getData().get("data"), AppNotification.class);
+        AppNotification appNotification=new Gson().fromJson(remoteMessage.getData().get("data"), AppNotification.class);
 
         LocalNotification localNotification=new LocalNotification();
-        localNotification.setNotification(this,"sdcdscdc","dscdscdc");
+
+        localNotification.setNotification(this,appNotification.title,appNotification.message);
 
 
     }

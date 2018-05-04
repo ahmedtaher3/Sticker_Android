@@ -76,6 +76,7 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
             holder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
         }
+        holder.checkboxLike.setText(""+listItem.productList.statics.likeCount);
         if (listItem.productList.getImagePath() != null && !listItem.productList.getImagePath().isEmpty())
             Glide.with(context)
                     .load(listItem.productList.getImagePath()).fitCenter()

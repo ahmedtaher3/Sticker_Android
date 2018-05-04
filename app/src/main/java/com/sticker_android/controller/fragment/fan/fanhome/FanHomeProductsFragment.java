@@ -141,6 +141,7 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
 
     @Override
     public void onRefresh() {
+        mCurrentPage=0;
         categories="";
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getProductFromServer(true, "","");
@@ -148,6 +149,9 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+        FanHomeFragment parentFrag = ((FanHomeFragment) FanHomeProductsFragment.this.getParentFragment());
+        if(parentFrag!=null)
+            parentFrag.closeSearch();
     }
 
     public void setRecScrollListener() {
@@ -375,5 +379,16 @@ public class FanHomeProductsFragment extends BaseFragment implements SwipeRefres
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
 
+    }
+
+    public void refreshApi() {
+        mCurrentPage=0;
+        categories="";
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            getProductFromServer(true, "","");
+        } else {
+            swipeRefresh.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
     }
 }

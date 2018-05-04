@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
                 android:clickable="true"
-                android:columnWidth="100dp"
+                android:columnWidth="120dp"
                 android:drawSelectorOnTop="true"
                 android:focusable="true"
                 android:gravity="center"

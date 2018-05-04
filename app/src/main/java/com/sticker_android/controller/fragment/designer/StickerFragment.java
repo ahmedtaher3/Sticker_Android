@@ -447,6 +447,10 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+
+        DesignerHomeFragment parentFrag = ((DesignerHomeFragment)StickerFragment.this.getParentFragment());
+        if(parentFrag!=null)
+            parentFrag.closeSearch();
     }
 
     @Override
@@ -475,6 +479,10 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onResubmit(Product product) {
+
+        Intent intent = new Intent(getActivity(), AddNewDesignActivity.class);
+        intent.putExtra(AppConstant.PRODUCT, product);
+        startActivityForResult(intent, DesignerHomeFragment.EDIT_DESIGN);
 
     }
 }

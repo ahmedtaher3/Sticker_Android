@@ -16,6 +16,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,9 +41,8 @@ import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
 import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
-import com.sticker_android.controller.adaptors.CorporateListAdaptor;
-import com.sticker_android.controller.adaptors.DesignListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
@@ -53,7 +53,6 @@ import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.model.payload.Payload;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
-import com.sticker_android.network.LogUtils;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
@@ -67,6 +66,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -236,10 +236,9 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                                     if (payload.productList != null && payload.productList.size() != 0) {
                                         productList.clear();
                                         productList.addAll(payload.productList);
-
                                         llNoDataFound.setVisibility(View.GONE);
                                         recAd.setVisibility(View.VISIBLE);
-                                        corporateListAdaptor.setData(productList);
+                                        corporateListAdaptor.setData(payload.productList);
 
                                         mCurrentPage = 0;
                                         mCurrentPage++;
@@ -258,6 +257,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                                     if (mCurrentPage == 0) {
                                         productList.clear();
                                         if (payload.productList != null) {
+                                            productList.clear();
                                             productList.addAll(payload.productList);
                                         }
 
@@ -278,7 +278,11 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                                         AppLogger.error(TAG, "Remove loader...");
                                         corporateListAdaptor.removeLoader();
                                         if (payload.productList != null && payload.productList.size() != 0) {
-                                            productList.addAll(payload.productList);
+                                            LinkedHashSet<Product> productsSet = new LinkedHashSet<Product>();
+                                            productsSet.addAll(productList);
+                                            productsSet.addAll(payload.productList);
+                                            productList.clear();
+                                            productList.addAll(productsSet);
                                             corporateListAdaptor.setData(productList);
                                         }
                                     }
@@ -357,17 +361,20 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() {
-        mCurrentPage = 0;
-        if (productList != null)
-            productList.clear();
-        corporateListAdaptor.setData(productList);
-        if (Utils.isConnectedToInternet(mHostActivity)) {
+        Log.e(TAG, "Inside onRefresh() method");
+         if (Utils.isConnectedToInternet(mHostActivity)) {
             getProductFromServer(true, "");
         } else {
             swipeRefreshLayout.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+
+        CorporateHomeFragment parentFrag = ((CorporateHomeFragment)AdsFragment.this.getParentFragment());
+        if(parentFrag!=null)
+        parentFrag.closeSearch();
     }
+
+
 
     private void init() {
 
@@ -550,7 +557,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                         break;
 
                     case R.id.reSubmit:
-                     moveToActivity(position,"Edit");
+                        moveToActivity(position, "Edit");
                         break;
                 }
                 return false;
@@ -572,7 +579,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             popupMenu.findItem(R.id.repost).setVisible(false);
         }
 
-        if(product.productStatus==3){
+        if (product.productStatus == 3) {
             popupMenu.findItem(R.id.repost).setVisible(false);
             popupMenu.findItem(R.id.edit).setVisible(false);
             popupMenu.findItem(R.id.reSubmit).setVisible(true);
@@ -596,8 +603,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
                     Utils.showToast(getActivity(), "Deleted successfully");
-                  //  productAdaptor.delete(position);
-                   refreshApi();
+                    //  productAdaptor.delete(position);
+                    refreshApi();
 
                 }
             }
@@ -690,6 +697,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
+            Log.e(TAG, "Inside onActivityResult() method");
             switch (requestCode) {
                 case AppConstant.INTENT_RENEW_CODE:
                     onRefresh();
@@ -895,7 +903,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
     public class CorporateListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private final String TAG = DesignListAdapter.class.getSimpleName();
+        private final String TAG = CorporateListAdaptor.class.getSimpleName();
         private ArrayList<Product> mItems;
         private Context context;
         public boolean isLoaderVisible;
@@ -962,7 +970,9 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
         public void setData(ArrayList<Product> data) {
             if (data != null) {
-                mItems = new ArrayList<>();
+                Log.e("Adapter", "Adapter list size => " + data.size());
+                mItems.clear();
+               // mItems = new ArrayList<>();
                 mItems.addAll(data);
                 notifyDataSetChanged();
                 isLoaderVisible = false;

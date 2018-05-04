@@ -59,6 +59,8 @@
                 android:padding="10dp">
 
                 <RadioButton
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:id="@+id/chkMostDownload"
                     style="@style/checkBoxSingleSelection"
@@ -73,6 +75,8 @@
                     android:textSize="14sp" />
 
                 <RadioButton
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:id="@+id/chkRecentUpload"
                     style="@style/checkBoxSingleSelection"
@@ -139,6 +143,8 @@
                     android:visibility="visible">
 
                     <CheckBox
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                         android:id="@+id/chkSelectAll"
                         style="@style/checkBoxSingleSelection"

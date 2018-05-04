@@ -93,7 +93,7 @@ public class FanDownloadFragment extends BaseFragment implements SearchView.OnQu
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(item!=null)
+                if (item != null)
                     MenuItemCompat.collapseActionView(item);
                 switch (tab.getPosition()) {
                     case 0:
@@ -146,7 +146,7 @@ public class FanDownloadFragment extends BaseFragment implements SearchView.OnQu
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                  searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
+                searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
 
             }
         });
@@ -160,6 +160,7 @@ public class FanDownloadFragment extends BaseFragment implements SearchView.OnQu
 
         searchViewExpandListener(item);
     }
+
     /**
      * Method is used to get the type of posted product     *
      *
@@ -236,7 +237,15 @@ public class FanDownloadFragment extends BaseFragment implements SearchView.OnQu
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                // Write your code here
+
+                Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
+                if (fragment instanceof FanDownloadStickerFragment) {
+                    ((FanDownloadStickerFragment) fragment).refreshApi();
+                } else if (fragment instanceof FanDownloadEmojiFragment)
+                    ((FanDownloadEmojiFragment) fragment).refreshApi();
+                else if (fragment instanceof FanDownloadGifFragment)
+                    ((FanDownloadGifFragment) fragment).refreshApi();
+
                 return true;
 
             }
@@ -272,12 +281,13 @@ public class FanDownloadFragment extends BaseFragment implements SearchView.OnQu
         } else {
             searchResult(query);
         }
-            searchView.setIconified(false);
-            searchView.clearFocus();
-            //MenuItemCompat.collapseActionView(item);
+        searchView.setIconified(false);
+        searchView.clearFocus();
+        //MenuItemCompat.collapseActionView(item);
 
         return true;
     }
+
     private void searchResult(String query) {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
         if (fragment instanceof FanDownloadStickerFragment) {
@@ -290,6 +300,11 @@ public class FanDownloadFragment extends BaseFragment implements SearchView.OnQu
             ((FanDownloadEmojiFragment) fragment).filterData(query.trim());
         }
 
+    }
+
+    public void closeSearch() {
+        if(item!=null)
+            MenuItemCompat.collapseActionView(item);
     }
 
 }

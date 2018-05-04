@@ -100,12 +100,12 @@
         "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/layout/abc_action_menu_layout.xml"
     },
     {
-        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/debug/layout/crop_image_activity.xml",
-        "source": "/home/user/Sticker_Android/cropper/src/main/res/layout/crop_image_activity.xml"
-    },
-    {
         "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/debug/layout/notification_template_part_time.xml",
         "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/layout/notification_template_part_time.xml"
+    },
+    {
+        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/debug/layout/crop_image_activity.xml",
+        "source": "/home/user/Sticker_Android/cropper/src/main/res/layout/crop_image_activity.xml"
     },
     {
         "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/debug/layout/abc_action_mode_close_item_material.xml",

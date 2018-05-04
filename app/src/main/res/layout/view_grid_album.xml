@@ -5,8 +5,8 @@
     android:orientation="vertical"
     android:padding="5dp">
     <RelativeLayout
-        android:layout_width="100dp"
-        android:layout_height="100dp">
+        android:layout_width="@dimen/image_size_gallary"
+        android:layout_height="@dimen/image_size_gallary">
     <ProgressBar
         android:id="@+id/progressImage"
         android:layout_centerInParent="true"

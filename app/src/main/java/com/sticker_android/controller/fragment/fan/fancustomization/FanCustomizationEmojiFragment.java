@@ -25,6 +25,8 @@ import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.adaptors.FanDownloadListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.fan.FilterFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.FanHomeEmojiFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.FanHomeFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeStickerFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.contest.FanContestDownload;
@@ -191,12 +193,16 @@ public class FanCustomizationEmojiFragment  extends BaseFragment implements Swip
 
     @Override
     public void onRefresh() {
+        mCurrentPage=0;
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getDesignFromServer(true, "");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+        FanCustomizationFragment parentFrag = ((FanCustomizationFragment) FanCustomizationEmojiFragment.this.getParentFragment());
+        if(parentFrag!=null)
+            parentFrag.closeSearch();
     }
 
     public void setRecScrollListener() {
@@ -526,5 +532,15 @@ public class FanCustomizationEmojiFragment  extends BaseFragment implements Swip
         intent.putExtra(FilterFragment.STICKER_IMAGE_PATH, mSelectedItem.getImagePath());
         intent.putExtra(FilterFragment.IMAGE_PATH, capturedImagePath);
         startActivity(intent);
+    }
+
+    public void refreshApi() {
+        mCurrentPage=0;
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            getDesignFromServer(true, "");
+        } else {
+            swipeRefresh.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
     }
 }

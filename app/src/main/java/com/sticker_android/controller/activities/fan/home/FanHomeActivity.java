@@ -27,14 +27,17 @@ import android.widget.Toast;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.common.terms.TermsActivity;
 import com.sticker_android.controller.fragment.common.AccountSettingFragment;
 import com.sticker_android.controller.fragment.common.ProfileFragment;
+import com.sticker_android.controller.fragment.designer.contentapproval.DesignerContentApprovalFragment;
 import com.sticker_android.controller.fragment.fan.fancustomization.FanCustomizationFragment;
 import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeFragment;
 import com.sticker_android.controller.fragment.fan.notification.FanNotification;
 import com.sticker_android.model.User;
 import com.sticker_android.network.ApiConstant;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -409,6 +412,9 @@ public class FanHomeActivity extends AppBaseActivity
             else if(f instanceof FanCustomizationFragment){
                 ((FanCustomizationFragment)f).onActivityResult(requestCode, resultCode, data);
             }
+            else if(f instanceof DesignerContentApprovalFragment){
+                ((DesignerContentApprovalFragment)f).onActivityResult(requestCode, resultCode, data);
+            }
         }
 
         if (resultCode == RESULT_OK) {
@@ -418,7 +424,13 @@ public class FanHomeActivity extends AppBaseActivity
                         fragment.onActivityResult(requestCode, resultCode, data);
                     }
                     break;
+                case 0:
+                    for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                        fragment.onActivityResult(requestCode, resultCode, data);
+                    }
+                    break;
             }
+
 
         }
     }

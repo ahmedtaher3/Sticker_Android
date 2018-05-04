@@ -41,7 +41,6 @@ import com.sticker_android.controller.activities.corporate.productdetails.Produc
 import com.sticker_android.controller.adaptors.DesignListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
-import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
@@ -65,7 +64,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -271,7 +270,11 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                                         AppLogger.error(TAG, "Remove loader...");
                                         corporateListAdaptor.removeLoader();
                                         if (payload.productList != null && payload.productList.size() != 0) {
-                                            productList.addAll(payload.productList);
+                                            LinkedHashSet<Product> productsSet = new LinkedHashSet<Product>();
+                                            productsSet.addAll(productList);
+                                            productsSet.addAll(payload.productList);
+                                            productList.clear();
+                                            productList.addAll(productsSet);
                                             corporateListAdaptor.setData(productList);
                                         }
                                     }
@@ -350,16 +353,16 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-        mCurrentPage = 0;
-        if (productList != null)
-            productList.clear();
-        corporateListAdaptor.setData(productList);
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getProductFromServer(true, "");
         } else {
             swipeRefreshLayout.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+
+        CorporateHomeFragment parentFrag = ((CorporateHomeFragment)ProductsFragment.this.getParentFragment());
+        if(parentFrag!=null)
+            parentFrag.closeSearch();
     }
 
     private void init() {

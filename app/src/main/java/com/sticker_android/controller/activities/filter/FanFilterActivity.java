@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -53,19 +52,35 @@ public class FanFilterActivity extends AppBaseActivity {
     private CustomListViewAdapter customListViewAdapter;
     ProgressBar progressBar;
     private RadioGroup radioGroup;
+    private String type = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_filter);
         init();
+        getIntentInfo();
         getuserInfo();
         setViewReferences();
         setViewListeners();
         fetchCategoryApi();
         setListViewAdaptor();
         changeStatusBarColor(getResources().getColor(R.color.colorFanText));
+        showHide();
+    }
 
+    private void showHide() {
+
+    if(type.equalsIgnoreCase("5")||type.equalsIgnoreCase("6")){
+        chkMostDownload.setVisibility(View.GONE);
+        chkRecentUpload.setChecked(true);
+    }
+    }
+
+    private void getIntentInfo() {
+        if (getIntent().getExtras() != null) {
+            type = getIntent().getExtras().getString("type");
+        }
     }
 
     private void init() {
@@ -167,7 +182,7 @@ public class FanFilterActivity extends AppBaseActivity {
                             }
                             customListViewAdapter.notifyDataSetChanged();
                         }
-                    }else {
+                    } else {
                         for (int i = 0; i < customListViewAdapter.getCount(); i++) {
                             listFilter.setItemChecked(i, false);
                         }
@@ -297,9 +312,9 @@ public class FanFilterActivity extends AppBaseActivity {
                 holder = (CustomListViewAdapter.ViewHolder) convertView.getTag();
 
             // holder.checkBoxMultipleSelect.setText(rowItem.categoryName);
-            holder.txtTitle.setText(rowItem.categoryName);
+            //holder.txtTitle.setText(rowItem.categoryName);
 
-
+            holder.checkBoxMultipleSelect.setText(rowItem.categoryName);
             final CustomListViewAdapter.ViewHolder finalHolder = holder;
             holder.checkBoxMultipleSelect.setChecked(listFilter.isItemChecked(position));
             rowItem.isChecked = listFilter.isItemChecked(position);

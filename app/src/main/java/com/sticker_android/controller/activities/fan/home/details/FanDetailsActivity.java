@@ -96,7 +96,7 @@ public class FanDetailsActivity extends AppBaseActivity {
             public boolean onPreDraw() {
                 imvProductImage.getViewTreeObserver().removeOnPreDrawListener(this);
                 int finalWidth = imvProductImage.getMeasuredWidth();
-                int height = finalWidth * 3 /5;
+                int height = finalWidth * 3 / 5;
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imvProductImage.getLayoutParams();
 
                 //      LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imvOfAds.getLayoutParams();
@@ -345,13 +345,14 @@ public class FanDetailsActivity extends AppBaseActivity {
     private void downloadApi(int i) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId()
-                , "", mProduct.getProductid(), "" + i, "", "download_count");
+                , "", mProduct.getProductid(), "" + i, "statics", "download_count");
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
-                    mProduct.statics.downloadCount++;
-                    checkboxLike.setText("" + mProduct.statics.downloadCount);
+                    mProduct.statics.downloadCount = apiResponse.paylpad.statics.downloadCount;
+                //    mProduct.statics.downloadCount++;
+                    tvDownloads.setText("" + mProduct.statics.downloadCount);
                 }
             }
 
@@ -364,4 +365,10 @@ public class FanDetailsActivity extends AppBaseActivity {
 
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT_OK);
+    }
 }

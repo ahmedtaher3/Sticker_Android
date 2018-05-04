@@ -74,6 +74,8 @@ public class ApplyCorporateContestActivity extends AppBaseActivity implements Vi
         setSelectedTabColor();
         replaceFragment(new CorporateContestAdsFragment());
         setBackground();
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+
         getNotificationData();
     }
 
@@ -180,7 +182,7 @@ public class ApplyCorporateContestActivity extends AppBaseActivity implements Vi
 
         if (notificationObj != null) {
 
-            Call<ApiResponse> apiResponseCall = RestClient.getService().saveUserContest(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId(), selectedProduct.getProductid(), notificationObj.contestObj.contestId, "");
+            Call<ApiResponse> apiResponseCall = RestClient.getService().saveUserContest(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId(), selectedProduct.getProductid(), notificationObj.acme.contestObj.contestId, "",notificationObj.notificatinId);
             apiResponseCall.enqueue(new ApiCall(this) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
@@ -188,6 +190,7 @@ public class ApplyCorporateContestActivity extends AppBaseActivity implements Vi
                         progressBarSave.setVisibility(View.GONE);
                     if (apiResponse.status) {
                         Utils.showToast(ApplyCorporateContestActivity.this, getString(R.string.txt_successfully_applied_for_contest));
+                        setResult(RESULT_OK);
                         onBackPressed();
                     }
                 }

@@ -197,6 +197,10 @@ public class FanContestFragment extends BaseFragment implements SwipeRefreshLayo
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+
+        FanHomeFragment parentFrag = ((FanHomeFragment) FanContestFragment.this.getParentFragment());
+        if(parentFrag!=null)
+            parentFrag.closeSearch();
     }
 
 

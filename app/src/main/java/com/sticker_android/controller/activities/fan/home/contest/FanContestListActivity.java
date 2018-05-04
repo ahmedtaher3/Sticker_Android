@@ -105,7 +105,7 @@ public class FanContestListActivity extends AppBaseActivity implements SwipeRefr
             notificationObj = getIntent().getExtras().getParcelable(AppConstant.NOTIFICATION_OBJ);
             if (notificationObj != null) {
                 mContestObj = new FanContest();
-                mContestObj.contestId = notificationObj.contestObj.contestId;
+                mContestObj.contestId = notificationObj.acme.contestObj.contestId;
             }
         }
     }

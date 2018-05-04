@@ -152,8 +152,14 @@
         <activity
             android:name=".controller.activities.fan.home.imagealbum.ImageAlbumActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".controller.activities.fan.home.EditImageActivity" />
-        <activity android:name=".controller.activities.common.comments.CommentsActivity"></activity>
+        <activity
+            android:name=".controller.activities.fan.home.EditImageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".controller.activities.common.comments.CommentsActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".controller.activities.common.exit.ExitActivity" android:theme="@style/NoDisplay"
+            android:autoRemoveFromRecents="true" />
     </application>
 
 </manifest>

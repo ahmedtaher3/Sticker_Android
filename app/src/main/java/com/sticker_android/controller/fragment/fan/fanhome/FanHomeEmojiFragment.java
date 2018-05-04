@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
@@ -141,6 +140,7 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
 
     @Override
     public void onRefresh() {
+        mCurrentPage=0;
         categories="";
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getEmojiFromServer(true, "","");
@@ -148,6 +148,9 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+        FanHomeFragment parentFrag = ((FanHomeFragment) FanHomeEmojiFragment.this.getParentFragment());
+        if(parentFrag!=null)
+            parentFrag.closeSearch();
     }
 
     public void setRecScrollListener() {
@@ -375,5 +378,16 @@ public class FanHomeEmojiFragment extends BaseFragment implements SwipeRefreshLa
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
 
+    }
+
+    public void refreshApi() {
+        mCurrentPage=0;
+        categories="";
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            getEmojiFromServer(true, "","");
+        } else {
+            swipeRefresh.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
     }
 }

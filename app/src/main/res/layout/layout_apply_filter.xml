@@ -97,8 +97,8 @@
                     android:paddingRight="@dimen/filter_action_top_margin">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/filter_image_size"
+                        android:layout_height="@dimen/filter_image_size"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerCrop"
                         android:src="@drawable/filter" />
@@ -132,8 +132,8 @@
                     android:paddingRight="@dimen/filter_action_top_margin">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/filter_image_size"
+                        android:layout_height="@dimen/filter_image_size"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerCrop"
                         android:src="@drawable/sticker" />
@@ -167,8 +167,8 @@
                     android:paddingRight="@dimen/filter_action_top_margin">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/filter_image_size"
+                        android:layout_height="@dimen/filter_image_size"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerCrop"
                         android:src="@drawable/emoji" />
@@ -204,7 +204,6 @@
             android:id="@+id/work_space"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_above="@+id/control_area"
             android:layout_alignParentTop="true"
             android:background="@android:color/white">
 
@@ -235,12 +234,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_margin="@dimen/filter_placeholder_margin"
             android:foreground="?attr/selectableItemBackground">
 
             <ImageView
                 android:id="@+id/imvProductImage"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/act_add_new_corp_imv_height"
+                android:layout_height="@dimen/filter_place_holder_container_height"
                 android:adjustViewBounds="true"
                 android:background="@color/image_background_color"
                 android:scaleType="fitXY" />
@@ -256,7 +256,7 @@
                 android:longClickable="false"
                 android:text="@string/please_choose_image_to_apply_filter_sticker_emoji"
                 android:textColor="#babec1"
-                android:textSize="15sp"
+                android:textSize="@dimen/filter_place_holder_txt_size"
                 app:drawableTopCompat="@drawable/upload_sticker_placeholder" />
 
         </RelativeLayout>

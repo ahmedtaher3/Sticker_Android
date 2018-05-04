@@ -487,7 +487,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
                 break;
             case R.id.llSticker:
-                openFilterGallery("sticker");
+                openFilterGallery("stickers");
                 break;
             case R.id.llEmoji:
                 openFilterGallery("emoji");

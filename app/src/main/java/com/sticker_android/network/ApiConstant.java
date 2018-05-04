@@ -42,5 +42,6 @@ public class ApiConstant {
     public static final String API_GET_USER_COMPLETED_LIST = "getUserCompleteContestList/";
    public static final String API_FILTER_LIST = "filterList/";
  public static final String API_SAVE_PROJECT_REJECTION = "SaveProductRejection/";
+ public static final String API_DELETE_NOTIFICATION = "deleteNotifcation/";
 
 }

@@ -5,11 +5,22 @@
     android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.sticker_android.controller.fragment.corporate.CorporateHomeFragment">
-    <RelativeLayout
+   <!-- <RelativeLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <include layout="@layout/tab_with_divider"/>
     </RelativeLayout>
+-->
+    <include  android:id="@+id/tabLayout" layout="@layout/tab_layout_without_viewpager"/>
+
+    <RelativeLayout
+        android:layout_below="@+id/tabLayout"
+        android:id="@+id/container_contest"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></RelativeLayout>
+
+
     <android.support.design.widget.FloatingActionButton
         app:backgroundTint="@color/colorFloatingCorporate"
         android:layout_alignParentEnd="true"

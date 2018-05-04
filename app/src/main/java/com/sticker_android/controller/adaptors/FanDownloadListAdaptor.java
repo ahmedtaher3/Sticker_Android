@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final String TAG = FanListAdaptor.class.getSimpleName();
+    private final String TAG = FanDownloadListAdaptor.class.getSimpleName();
     private ArrayList<FanContestDownload> mItems;
     private Context context;
     public boolean isLoaderVisible;

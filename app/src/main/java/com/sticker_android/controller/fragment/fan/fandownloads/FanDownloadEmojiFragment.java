@@ -16,11 +16,11 @@ import com.sticker_android.R;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.adaptors.FanDownloadListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
+import com.sticker_android.controller.fragment.fan.fancustomization.FanCustomizationEmojiFragment;
+import com.sticker_android.controller.fragment.fan.fancustomization.FanCustomizationFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeStickerFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.contest.FanContestAll;
 import com.sticker_android.model.contest.FanContestDownload;
-import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
@@ -142,12 +142,17 @@ public class FanDownloadEmojiFragment extends BaseFragment implements SwipeRefre
 
     @Override
     public void onRefresh() {
+        mCurrentPage=0;
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getDesignFromServer(true, "");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+
+        FanDownloadFragment parentFrag = ((FanDownloadFragment) FanDownloadEmojiFragment.this.getParentFragment());
+        if(parentFrag!=null)
+            parentFrag.closeSearch();
     }
 
     public void setRecScrollListener() {
@@ -363,4 +368,13 @@ public class FanDownloadEmojiFragment extends BaseFragment implements SwipeRefre
         mHostActivity = (FanHomeActivity) context;
     }
 
+    public void refreshApi() {
+     mCurrentPage=0;
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            getDesignFromServer(true, "");
+        } else {
+            swipeRefresh.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
+    }
 }

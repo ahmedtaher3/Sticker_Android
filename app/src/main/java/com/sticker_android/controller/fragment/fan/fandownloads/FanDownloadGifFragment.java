@@ -18,9 +18,7 @@ import com.sticker_android.controller.adaptors.FanDownloadListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeStickerFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.contest.FanContestAll;
 import com.sticker_android.model.contest.FanContestDownload;
-import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
@@ -131,8 +129,8 @@ public class FanDownloadGifFragment extends BaseFragment implements SwipeRefresh
     public void filterData(String query) {
         mGifList.clear();
         mAdapter.setData(mGifList);
-        mCurrentPage=0;
-        getDesignFromServer(false,query );
+        mCurrentPage = 0;
+        getDesignFromServer(false, query);
 
 
     }
@@ -144,12 +142,16 @@ public class FanDownloadGifFragment extends BaseFragment implements SwipeRefresh
 
     @Override
     public void onRefresh() {
+        mCurrentPage = 0;
         if (Utils.isConnectedToInternet(mHostActivity)) {
             getDesignFromServer(true, "");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+        FanDownloadFragment parentFrag = ((FanDownloadFragment) FanDownloadGifFragment.this.getParentFragment());
+        if(parentFrag!=null)
+            parentFrag.closeSearch();
     }
 
     public void setRecScrollListener() {
@@ -365,4 +367,13 @@ public class FanDownloadGifFragment extends BaseFragment implements SwipeRefresh
         mHostActivity = (FanHomeActivity) context;
     }
 
+    public void refreshApi() {
+        mCurrentPage = 0;
+        if (Utils.isConnectedToInternet(mHostActivity)) {
+            getDesignFromServer(true, "");
+        } else {
+            swipeRefresh.setRefreshing(false);
+            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+        }
+    }
 }

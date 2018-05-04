@@ -37,6 +37,7 @@ public class SplashActivity extends AppBaseActivity {
         setSelectedLangage();
         changeStatusBarColor(Color.BLACK);
         BadgeUtils.setBadge(this,0);
+        LocalNotification.clearNotifications(this);
     }
 
     private void init() {

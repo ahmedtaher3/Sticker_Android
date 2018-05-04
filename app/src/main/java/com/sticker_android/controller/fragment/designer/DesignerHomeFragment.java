@@ -410,4 +410,9 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
         }
         return type;
     }
+
+    public void closeSearch() {
+        if(item!=null)
+            MenuItemCompat.collapseActionView(item);
+    }
 }

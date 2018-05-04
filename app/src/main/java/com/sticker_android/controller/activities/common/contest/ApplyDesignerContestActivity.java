@@ -17,9 +17,6 @@ import android.widget.TextView;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
-import com.sticker_android.controller.adaptors.ContestAdaptor;
-import com.sticker_android.controller.fragment.corporate.contest.CorporateContestAdsFragment;
-import com.sticker_android.controller.fragment.corporate.contest.CorporateContestProductFragment;
 import com.sticker_android.controller.fragment.designer.contest.DesignerContestEmojiFragment;
 import com.sticker_android.controller.fragment.designer.contest.DesignerContestGifFragment;
 import com.sticker_android.controller.fragment.designer.contest.DesignerContestStickerFragment;
@@ -79,6 +76,8 @@ public class ApplyDesignerContestActivity extends AppBaseActivity implements Vie
         replaceFragment( new DesignerContestStickerFragment());
         setBackground();
         getNotificationData();
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarDesigner));
+
     }
 
 
@@ -254,7 +253,7 @@ if(progressBarSave!=null)
 
         if (notificationObj != null) {
 
-            Call<ApiResponse> apiResponseCall = RestClient.getService().saveUserContest(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId(), selectedProduct.getProductid(), notificationObj.contestObj.contestId, "");
+            Call<ApiResponse> apiResponseCall = RestClient.getService().saveUserContest(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId(), selectedProduct.getProductid(), notificationObj.acme.contestObj.contestId, "",notificationObj.notificatinId);
             apiResponseCall.enqueue(new ApiCall(this) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
@@ -262,6 +261,7 @@ if(progressBarSave!=null)
                     progressBarSave.setVisibility(View.GONE);
                     if (apiResponse.status) {
                         Utils.showToast(ApplyDesignerContestActivity.this, getString(R.string.txt_successfully_applied_for_contest));
+                       setResult(RESULT_OK);
                         onBackPressed();
                     }
                 }

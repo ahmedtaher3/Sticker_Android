@@ -133,9 +133,15 @@
     <dimen name="dimen_fan_filter_header">50dp</dimen>
 
     <dimen name="filter_btn_left_right_margin">50dp</dimen>
-    <dimen name="filter_action_top_margin">10dp</dimen>
-    <dimen name="filter_action_text_size">13sp</dimen>
+    <dimen name="filter_action_top_margin">20dp</dimen>
+    <dimen name="filter_action_text_size">15sp</dimen>
     <dimen name="filter_btn_size">48dp</dimen>
     <dimen name="tv_comments_margin_top">10dp</dimen>
+    <dimen name="txt_size_contest">18sp</dimen>
+    <dimen name="filter_placeholder_margin">40dp</dimen>
+    <dimen name="filter_place_holder_container_height">250dp</dimen>
+    <dimen name="filter_place_holder_txt_size">18sp</dimen>
+    <dimen name="filter_image_size">100dp</dimen>
+    <dimen name="image_size_gallary">170dp</dimen>
 
 </resources>

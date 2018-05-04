@@ -443,6 +443,9 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+        DesignerHomeFragment parentFrag = ((DesignerHomeFragment)GIFFragment.this.getParentFragment());
+        if(parentFrag!=null)
+            parentFrag.closeSearch();
     }
 
     @Override
@@ -471,6 +474,8 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     @Override
     public void onResubmit(Product product) {
-
+        Intent intent = new Intent(getActivity(), AddNewDesignActivity.class);
+        intent.putExtra(AppConstant.PRODUCT, product);
+        startActivityForResult(intent, DesignerHomeFragment.EDIT_DESIGN);
     }
 }

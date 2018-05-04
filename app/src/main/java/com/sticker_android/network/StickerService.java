@@ -1,8 +1,6 @@
 package com.sticker_android.network;
 
 
-import java.util.StringTokenizer;
-
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -108,7 +106,7 @@ public interface StickerService {
     @FormUrlEncoded
     @POST(ApiConstant.API_SAVE_USER_CONTEST)
     public Call<ApiResponse> saveUserContest(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
-                                             @Field("user_id") String userId, @Field("product_id") int productId, @Field("contest_id") int contestId, @Field("key_name") String name);
+                                             @Field("user_id") String userId, @Field("product_id") int productId, @Field("contest_id") int contestId, @Field("key_name") String name,@Field("notification_id")long notificationId);
 
 
     @FormUrlEncoded
@@ -155,7 +153,7 @@ public interface StickerService {
     public Call<ApiResponse> getUserPendingList
             (@Field("language_id") String languageId, @Field("authrized_key") String authKey,
              @Field("user_id") String userId, @Field("index") int index,
-             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name);
+             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name,@Field("status")String status);
 
 
     @FormUrlEncoded
@@ -176,6 +174,12 @@ public interface StickerService {
                                                      @Field("type") String type, @Field("description") String description,
                                                      @Field("expiry_date") String expireDate
             , @Field("image_path") String imagePath, @Field("product_id") String productId,@Field("description_reject")String descriptionReject ,@Field("category_id") int categoryId, @Field("key_name") String keyName);
+
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_DELETE_NOTIFICATION)
+    public Call<ApiResponse> deleteNotification(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                           @Field("user_id") String userId,@Field("notification_id") long notificationId);
 
 
 }

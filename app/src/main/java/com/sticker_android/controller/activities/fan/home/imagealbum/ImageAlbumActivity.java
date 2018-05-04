@@ -2,7 +2,6 @@ package com.sticker_android.controller.activities.fan.home.imagealbum;
 
 
 import android.app.Activity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,13 +16,10 @@ import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.GridViewAdapter;
 import com.sticker_android.model.User;
-import com.sticker_android.model.corporateproduct.Product;
-import com.sticker_android.model.enums.DesignType;
 import com.sticker_android.model.filter.FanFilter;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -192,7 +188,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
 
                         gridViewAdapter.setData(apiResponse.paylpad.fanFilterArrayList);
                     }
-                    if (apiResponse.paylpad.fanFilterArrayList == null) {
+                    if (apiResponse.paylpad.fanFilterArrayList == null &&apiResponse.paylpad.fanFilterArrayList.size()==0) {
                         txtNoDataFoundContent.setText("No "+mFilterImageType+" Found.");
                         showNoDataFound();
                     }
