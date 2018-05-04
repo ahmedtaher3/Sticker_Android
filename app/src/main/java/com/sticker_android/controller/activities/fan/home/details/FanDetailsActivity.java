@@ -1,5 +1,6 @@
 package com.sticker_android.controller.activities.fan.home.details;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -86,6 +87,7 @@ public class FanDetailsActivity extends AppBaseActivity {
         Intent intent = getIntent();
         if (intent != null) {
             mProduct = intent.getParcelableExtra(AppConstant.PRODUCT);
+            viewCountApi();
         }
     }
 
@@ -105,6 +107,27 @@ public class FanDetailsActivity extends AppBaseActivity {
                 return true;
             }
         });
+    }
+
+
+    private void viewCountApi() {
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId()
+                , "", mProduct.getProductid(), "1", "statics", "view_count");
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if (apiResponse.status) {
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+
+
     }
 
     /**
@@ -263,6 +286,7 @@ public class FanDetailsActivity extends AppBaseActivity {
                         likeApi(0);
                     } else {
                         likeApi(1);
+                        viewCountApi();
                     }
               /*  if (product.isLike==1) {
                     likeApi(product, 0, position);

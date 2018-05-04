@@ -182,7 +182,7 @@ public class DesignerContentApprStickFragment extends BaseFragment implements Sw
             limit = PAGE_LIMIT;
         }
 
-        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserPendingList(mUserdata.getLanguageId(), "", mUserdata.getId(),
+        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserPendingList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "product_list","[1]");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override

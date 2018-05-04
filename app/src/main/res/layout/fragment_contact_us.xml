@@ -46,7 +46,6 @@
             android:layout_toRightOf="@+id/tvEmailHint"
             android:textColor="@color/colorFanText"
             fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
-            android:text="@string/contact_us_txt_Email_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
@@ -69,7 +68,6 @@
             android:layout_toRightOf="@+id/tvContactHint"
             android:textColor="@color/colorFanText"
             fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
-            android:text="@string/contact_us_txt_contact_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>

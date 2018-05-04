@@ -1,7 +1,6 @@
 package com.sticker_android.controller.fragment.common;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -180,8 +179,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
     private void changePasswordApi() {
         final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
         progressDialogHandler.show();
-        Log.d("jhcjdsc", mUser.getId());
-        Call<ApiResponse> apiResponseCall= RestClient.getService().changePassword(mUser.getId(),confirmPassword.getText().toString(),"");
+        Call<ApiResponse> apiResponseCall= RestClient.getService().changePassword(mUser.getId(),confirmPassword.getText().toString(),mUser.getAuthrizedKey());
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

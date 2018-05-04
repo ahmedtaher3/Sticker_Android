@@ -48,7 +48,9 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.UserTypeEnum;
+import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.fragmentinterface.UpdateToolbarTitle;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -71,6 +73,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     boolean doubleBackToExitPressedOnce = false;
     private boolean isFragClicked;
     private MenuItem mSelectedMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +95,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         setViewReferences();
         setViewListeners();
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
-       replaceFragment(CorporateHomeFragment.newInstance(), getResources().getString(R.string.txt_home));
+        replaceFragment(CorporateHomeFragment.newInstance(), getResources().getString(R.string.txt_home));
         // showFragmentManually();
         setUserDataIntoNaviagtion();
 
@@ -251,7 +254,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     }
 
     private void manageNavigationClickItem(MenuItem item) {
-        if(item == null){
+        if (item == null) {
             return;
         }
         String tag = getResources().getString(R.string.txt_home);
@@ -264,13 +267,13 @@ public class CorporateHomeActivity extends AppBaseActivity implements
             fragmentClass = CorporateHomeFragment.newInstance();
             textView.setText(getResources().getString(R.string.txt_home));
             tag = getResources().getString(R.string.txt_home);
-          //  replaceFragment(fragmentClass, tag);
+            //  replaceFragment(fragmentClass, tag);
             // Handle the camera action
         } else if (id == R.id.nav_report && !(f instanceof CorporateReportFragment)) {
             fragmentClass = new CorporateReportFragment();
             textView.setText(R.string.txt_report);
             tag = getResources().getString(R.string.txt_report);
-        //    replaceFragment(fragmentClass, tag);
+            //    replaceFragment(fragmentClass, tag);
             //    Toast.makeText(getApplicationContext(),"Under Development",Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_profile && !(f instanceof ProfileFragment)) {
@@ -278,32 +281,32 @@ public class CorporateHomeActivity extends AppBaseActivity implements
             fragmentClass = new ProfileFragment();
             textView.setText(getResources().getString(R.string.txt_myprofile));
             tag = getResources().getString(R.string.txt_myprofile);
-         //   replaceFragment(fragmentClass, tag);
+            //   replaceFragment(fragmentClass, tag);
         } else if (id == R.id.nav_account_setting && !(f instanceof AccountSettingFragment)) {
             fragmentClass = AccountSettingFragment.newInstance("", "");
             textView.setText(getResources().getString(R.string.txt_account_setting));
             tag = getResources().getString(R.string.txt_account_setting);
-        //    replaceFragment(fragmentClass, tag);
+            //    replaceFragment(fragmentClass, tag);
         } else if (id == R.id.nav_logout) {
             userLogout();
         } else if (id == R.id.nav_corp_contest && !(f instanceof CorporateContestFragment)) {
             textView.setText(getResources().getString(R.string.txt_contest));
             fragmentClass = new CorporateContestFragment();
             tag = getResources().getString(R.string.txt_contest);
-      //      replaceFragment(fragmentClass, tag);
+            //      replaceFragment(fragmentClass, tag);
         } else if (id == R.id.nav_content_for_approval && !(f instanceof CorporateContentApprovalFragment)) {
             textView.setText(R.string.txt_pending_content);
             fragmentClass = new CorporateContentApprovalFragment();
             tag = getResources().getString(R.string.txt_content_approval);
-           // replaceFragment(fragmentClass, tag);
+            // replaceFragment(fragmentClass, tag);
         } else if (id == R.id.nav_notification && !(f instanceof CorporateNotificationFragment)) {
             textView.setText(R.string.txt_notifications);
             fragmentClass = CorporateNotificationFragment.newInstance();
             tag = getResources().getString(R.string.txt_notifications);
-        //    replaceFragment(fragmentClass, tag);
+            //    replaceFragment(fragmentClass, tag);
         }
 
-        if(fragmentClass!=null)
+        if (fragmentClass != null)
             replaceFragment(fragmentClass, tag);
 
         // Insert the fragment by replacing any existing fragment
@@ -393,13 +396,30 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     }
 
     private void userLogout() {
-        appPref.userLogout();
-        Intent intent = new Intent(getActivity(), SigninActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        overridePendingTransition(R.anim.activity_animation_enter,
-                R.anim.activity_animation_exit);
-        finish();
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+        Call<ApiResponse> apiResponseCall = RestClient.getService().userLogout(user.getLanguageId(), user.getAuthrizedKey(), user.getId());
+
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+                if (apiResponse.status) {
+                    appPref.userLogout();
+                    Intent intent = new Intent(getActivity(), SigninActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.activity_animation_enter,
+                            R.anim.activity_animation_exit);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
     }
 
     public boolean isAdded(String tag) {
@@ -456,7 +476,7 @@ public class CorporateHomeActivity extends AppBaseActivity implements
 
     private void updatelanguageApi() {
         final int language = appPref.getLanguage(0);
-        Call<ApiResponse> apiResponseCall = RestClient.getService().changeLanguage(user.getId(), language, "");
+        Call<ApiResponse> apiResponseCall = RestClient.getService().changeLanguage(user.getId(), language, user.getAuthrizedKey());
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -528,11 +548,11 @@ public class CorporateHomeActivity extends AppBaseActivity implements
                         fragment.onActivityResult(requestCode, resultCode, data);
                     }
                     break;
-            case AppConstant.INTENT_NOTIFICATION_CODE:
-                for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-                    fragment.onActivityResult(requestCode, resultCode, data);
-                }
-                break;
+                case AppConstant.INTENT_NOTIFICATION_CODE:
+                    for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                        fragment.onActivityResult(requestCode, resultCode, data);
+                    }
+                    break;
             }
 
         }
@@ -547,9 +567,10 @@ public class CorporateHomeActivity extends AppBaseActivity implements
 
     @Override
     public void updateToolbarTitle(String name) {
-        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(name);
-
+        if (toolbar != null) {
+            TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
+            textView.setText(name);
+        }
     }
 
     @Override
@@ -565,14 +586,14 @@ public class CorporateHomeActivity extends AppBaseActivity implements
     @Override
     public void updateCallbackMessage() {
         super.updateCallbackMessage();
-      runOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-              setBadgeCount();
-                  initializeCountDrawer(appPref.getNewMessagesCount(0));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setBadgeCount();
+                initializeCountDrawer(appPref.getNewMessagesCount(0));
 
-          }
-      });
+            }
+        });
 
     }
 }

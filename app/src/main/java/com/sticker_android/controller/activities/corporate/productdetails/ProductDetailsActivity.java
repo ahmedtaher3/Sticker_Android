@@ -55,6 +55,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
     TimeUtility timeUtility = new TimeUtility();
     private ProgressBar pgrImage;
+    private TextView tvFeatured;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,10 +118,17 @@ public class ProductDetailsActivity extends AppBaseActivity {
             tvStatus.setTextColor(ContextCompat.getColor(this, R.color.colorCorporateText));
             tvStatus.setText(R.string.pending);
         }
+
+        if (productObj.isFeatured > 0) {
+            tvFeatured.setVisibility(View.VISIBLE);
+        } else {
+            tvFeatured.setVisibility(View.GONE);
+
+        }
        /* String status = "Ongoing";
         if (productObj.getIsExpired() > 0) {
             tvStatus.setTextColor(Color.RED);
-            status = "Expired";
+            status = "Expired";{"status":false,"authrized_status":"1
         } else {
             tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
 
@@ -213,6 +221,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
         imvBtnEditRemove = (ImageButton) findViewById(R.id.imvBtnEditRemove);
         tvTime = (TextView) findViewById(R.id.tvTime);
         pgrImage = (ProgressBar) findViewById(R.id.pgrImage);
+        tvFeatured = (TextView) findViewById(R.id.tvFeatured);
 
     }
 

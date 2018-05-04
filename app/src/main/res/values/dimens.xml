@@ -142,7 +142,8 @@
     <dimen name="filter_place_holder_container_height">180dp</dimen>
     <dimen name="filter_place_holder_txt_size">15sp</dimen>
     <dimen name="filter_image_size">70dp</dimen>
-    <dimen name="image_size_gallary">130dp</dimen>
+    <dimen name="image_size_gallary">70dp</dimen>
+    <dimen name="dimen_column_grid">90dp</dimen>
 
 
 </resources>

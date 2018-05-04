@@ -272,6 +272,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                     } else {
                         likeApi(product, 1, position);
+                        viewCountApi(product);
                     }
               /*  if (product.isLike==1) {
                     likeApi(product, 0, position);
@@ -411,6 +412,28 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     mItems.get(position).statics.downloadCount++;
                     notifyDataSetChanged();
                 }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
+
+
+    private void viewCountApi(final Product product) {
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
+                , "", product.getProductid(), "1", "statics", "view_count");
+        apiResponseCall.enqueue(new ApiCall((Activity) context) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if (apiResponse.status) {
+                 }
             }
 
             @Override

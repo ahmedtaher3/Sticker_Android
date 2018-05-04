@@ -178,7 +178,7 @@ public class DesignerContentApprEmojiFragment extends BaseFragment implements Sw
             limit = PAGE_LIMIT;
         }
 
-        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserPendingList(mUserdata.getLanguageId(), "", mUserdata.getId(),
+        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserPendingList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
                 index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "product_list","[1]");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override

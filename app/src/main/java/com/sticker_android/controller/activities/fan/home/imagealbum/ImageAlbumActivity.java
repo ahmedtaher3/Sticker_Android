@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 
-public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshLayout.OnRefreshListener{
+public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     ArrayList<String> stringArrayList = new ArrayList<>();
     private GridView gridView;
@@ -74,7 +74,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
     }
 
     private void getIntentData() {
-        if(getIntent() != null){
+        if (getIntent() != null) {
             mFilterImageType = getIntent().getStringExtra(FILTER_IMAGE_TYPE);
         }
     }
@@ -107,7 +107,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
 
     @Override
     protected void setViewListeners() {
-
+        swipeRefresh.setOnRefreshListener(this);
     }
 
     /**
@@ -119,14 +119,12 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
         toolbar.setTitle(" ");
     }
 
-    private String getToolbarTitle(){
-        if(mFilterImageType.contains("sticker")){
+    private String getToolbarTitle() {
+        if (mFilterImageType.contains("stickers")) {
             return "Choose Sticker";
-        }
-        else if(mFilterImageType.contains("filter")){
+        } else if (mFilterImageType.contains("filter")) {
             return "Choose Filter";
-        }
-        else if(mFilterImageType.contains("emoji")){
+        } else if (mFilterImageType.contains("emoji")) {
             return "Choose Emoji";
         }
         return "";
@@ -155,6 +153,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
         gridViewAdapter.setOnItemClickListener(new GridViewAdapter.OnFilterItemClickListener() {
             @Override
             public void onItemClick(FanFilter product) {
+                product.type = mFilterImageType;
                 Intent intent = new Intent();
                 intent.putExtra(SELECTED_FILTER, product);
                 setResult(Activity.RESULT_OK, intent);
@@ -188,8 +187,8 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
 
                         gridViewAdapter.setData(apiResponse.paylpad.fanFilterArrayList);
                     }
-                    if (apiResponse.paylpad.fanFilterArrayList == null &&apiResponse.paylpad.fanFilterArrayList.size()==0) {
-                        txtNoDataFoundContent.setText("No "+mFilterImageType+" Found.");
+                    if (apiResponse.paylpad.fanFilterArrayList == null && apiResponse.paylpad.fanFilterArrayList.size() == 0) {
+                        txtNoDataFoundContent.setText("No " + mFilterImageType + " Found.");
                         showNoDataFound();
                     }
                 }

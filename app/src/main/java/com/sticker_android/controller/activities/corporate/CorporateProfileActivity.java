@@ -215,7 +215,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
             final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
             progressDialogHandler.show();
             Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(user.getId(), edtCompanyName.getText().toString(),
-                    "", edtCompanyAddress.getText().toString(), user.getFirstName(), user.getLastName(),
+                   user.getAuthrizedKey(), edtCompanyAddress.getText().toString(), user.getFirstName(), user.getLastName(),
                     user.getEmail(), user.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
@@ -367,7 +367,7 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
 
         RequestBody userId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(user.getId()));
         RequestBody languageId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(user.getLanguageId()));
-        RequestBody authKey = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(""));
+        RequestBody authKey = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf( user.getAuthrizedKey()));
 
         Call<ApiResponse> apiResponseCall=  RestClient.getService().profileImage(userId,languageId,authKey,body);
         apiResponseCall.enqueue(new ApiCall(this) {

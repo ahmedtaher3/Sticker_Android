@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
@@ -263,6 +264,10 @@ if(progressBarSave!=null)
                         Utils.showToast(ApplyDesignerContestActivity.this, getString(R.string.txt_successfully_applied_for_contest));
                        setResult(RESULT_OK);
                         onBackPressed();
+                    }else
+                    {
+                        Toast.makeText(getActivity(),""+apiResponse.error.message,Toast.LENGTH_LONG).show();
+
                     }
                 }
 

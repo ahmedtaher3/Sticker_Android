@@ -290,8 +290,8 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
             limit = PAGE_LIMIT;
         }
 
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mLoggedUser.getLanguageId(), "", mLoggedUser.getId(),
-                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword);
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
+                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword,"");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

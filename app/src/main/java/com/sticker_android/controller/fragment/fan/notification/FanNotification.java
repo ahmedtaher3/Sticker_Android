@@ -145,6 +145,7 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
         for (NotificationApp notificationApp :
                 mNotificationList) {
             if (notificationApp.acme.contestObj.status == 5) {
+
                 tempList.add(notificationApp);
             }
         }

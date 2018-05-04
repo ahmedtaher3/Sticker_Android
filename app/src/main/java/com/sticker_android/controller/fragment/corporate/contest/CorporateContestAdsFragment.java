@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.common.contest.ApplyCorporateContestActivity;
@@ -222,8 +223,8 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
             limit = PAGE_LIMIT;
         }
 
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
-                index, limit, "ads", "product_list", "");
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(),mUserdata.getAuthrizedKey(), mUserdata.getId(),
+                index, limit, "ads", "product_list", "","[2]");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -239,7 +240,10 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
                     }
 
                     try {
-                        if (apiResponse.status) {
+
+                        if (apiResponse.status)
+                        {
+
                             Payload payload = apiResponse.paylpad;
 
                             if (payload != null) {
@@ -313,6 +317,9 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
                                     mHostActivity.disablePost(false);
                                 }
                             }
+                        }else {
+                            Toast.makeText(getActivity(),apiResponse.error.message,Toast.LENGTH_LONG).show();
+                            Utils.showToast(getActivity(),apiResponse.error.message);
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();

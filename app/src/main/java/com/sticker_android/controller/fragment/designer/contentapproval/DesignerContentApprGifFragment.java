@@ -181,7 +181,7 @@ public class DesignerContentApprGifFragment extends BaseFragment implements Swip
             limit = PAGE_LIMIT;
         }
 
-        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserPendingList(mUserdata.getLanguageId(), "", mUserdata.getId(),
+        Call<ApiResponse> apiResponseCall = RestClient.getService().getUserPendingList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
                 index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "product_list","[1]");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override

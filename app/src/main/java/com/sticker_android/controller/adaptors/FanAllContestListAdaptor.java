@@ -369,7 +369,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
     private void likeApi(final Product product, final int i, final int position) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
-                , "" + product.contestId, product.getProductid(), "" + i, "statics", "like_count");
+                , "" + product.userContestId, product.getProductid(), "" + i, "statics", "like_count");
         apiResponseCall.enqueue(new ApiCall((Activity) context) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

@@ -224,8 +224,8 @@ public class DesignerContestGifFragment extends BaseFragment implements SwipeRef
             limit = PAGE_LIMIT;
         }
 
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), "", mUserdata.getId(),
-                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword);
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
+                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword,"[2]");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -318,6 +318,8 @@ public class DesignerContestGifFragment extends BaseFragment implements SwipeRef
 
                                 showNoDataFound();
                             }
+                        }else {
+                            Utils.showToast(getActivity(),apiResponse.error.message);
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();

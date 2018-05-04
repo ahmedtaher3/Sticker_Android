@@ -153,7 +153,7 @@ public class ProfileActivity extends AppBaseActivity implements View.OnClickList
             final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
             progressDialogHandler.show();
             Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(user.getId(), edtCompanyName.getText().toString(),
-                    "", edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
+                    user.getAuthrizedKey(), edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
                     user.getEmail(), user.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override

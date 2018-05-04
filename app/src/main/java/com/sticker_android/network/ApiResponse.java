@@ -23,7 +23,7 @@ public class ApiResponse {
     public Boolean status;
 
     @SerializedName("authrized_status")
-    public String authrizedStatus;
+    public int authrizedStatus;
 
     @SerializedName("sql_error")
     public Object sqlError;

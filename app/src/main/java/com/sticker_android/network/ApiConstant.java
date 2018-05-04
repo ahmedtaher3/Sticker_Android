@@ -7,13 +7,13 @@ package com.sticker_android.network;
 
 public class ApiConstant {
     // public static final String BASE_API_URL = "http://localhost/vivek/index.php/";
-   // public static final String BASE_API_URL = "http://18.188.13.98/web/index.php/mobile/";
- public static final String BASE_API_URL = "http://18.188.13.98/v1/index.php/mobile/";
+    // public static final String BASE_API_URL = "http://18.188.13.98/web/index.php/mobile/";
+    public static final String BASE_API_URL = "http://18.188.13.98/v2/index.php/mobile/";
 //   public static final String IMAGE_URl = "http://18.188.13.98/web/";
 
-   public static final String IMAGE_URl = "http://18.188.13.98/v1/";
+    public static final String IMAGE_URl = "http://18.188.13.98/v2/";
 
-   public static final String API_LOGIN_URL = "userLogin/";
+    public static final String API_LOGIN_URL = "userLogin/";
     public static final String API_REGISTER = "userRegistration/";
     public static final String API_CHANGE_PASSWORD = "changePassword/";
     public static final String API_FORGOT_PASSWORD = "userForgotEmail/";
@@ -40,8 +40,9 @@ public class ApiConstant {
     public static final String API_GET_USER_PENDING_LIST = "userPendingProduct/";
 
     public static final String API_GET_USER_COMPLETED_LIST = "getUserCompleteContestList/";
-   public static final String API_FILTER_LIST = "filterList/";
- public static final String API_SAVE_PROJECT_REJECTION = "SaveProductRejection/";
- public static final String API_DELETE_NOTIFICATION = "deleteNotifcation/";
+    public static final String API_FILTER_LIST = "filterList/";
+    public static final String API_SAVE_PROJECT_REJECTION = "SaveProductRejection/";
+    public static final String API_DELETE_NOTIFICATION = "deleteNotifcation/";
+    public static final String API_USER_LOGOUT = "userLogout/";
 
 }

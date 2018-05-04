@@ -3,6 +3,12 @@ package com.sticker_android.network;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
+
+import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.utils.sharedpref.AppPref;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,16 +55,22 @@ public abstract class ApiCall implements Callback<ApiResponse> {
         }
         if (response.isSuccessful()) {
             ApiResponse apiResponse = response.body();
-            if (apiResponse.responseCode==1001) {
+            if (apiResponse.responseCode == 1001) {
                 //session expire
                 //redirect to login screen
-                //expireSession(apiResponse);
+                expireSession(apiResponse);
             } else {
                 //continue callback
                 onSuccess(apiResponse);
             }
+            if (apiResponse.authrizedStatus == 0) {
+                //session expire
+                //redirect to login screen
+                expireSession(apiResponse);
+
+            }
         }
-    }
+        }
 
     public abstract void onSuccess(ApiResponse apiResponse);
 
@@ -66,33 +78,45 @@ public abstract class ApiCall implements Callback<ApiResponse> {
 
     @Override
     public void onFailure(Call<ApiResponse> call, Throwable t) {
-        if(!hideApiError){
-            new ApiError(mActivity,t);
+        if (!hideApiError) {
+            new ApiError(mActivity, t);
         }
-        onFail(call,t);
+        onFail(call, t);
 
         //  LogUtils.error("Request Cancel by user Manually");
     }
 
-   /* *//***
-     * user token is expire then user will automatically redirect to home screen
-     * @param apiResponse response
-     *//*
-    private void expireSession(ApiResponse apiResponse) {
-        SessionExpire.sessionExptireDialog(apiResponse,mActivity);
+   /* */
 
-        DialogUtils.showDialog(mActivity, apiResponse.error.getMessage(), new DialogInterface.OnClickListener() {
+    /***
+     * user token is expire then user will automatically redirect to home screen
+     *
+     * @param apiResponse response
+     */
+    private void expireSession(ApiResponse apiResponse) {
+
+  /* *//***
+         * user token is expire then user will automatically redirect to home screen
+         * @param apiResponse response
+         */
+        final AlertDialog alertDialog = new AlertDialog.Builder(mActivity).create();
+        alertDialog.setCancelable(false);
+        alertDialog.setTitle("Session Timeout !");
+        alertDialog.setTitle("Your session has expired.");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Logout", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                new AppSharedPreference(mActivity).logout(mActivity);
+            public void onClick(DialogInterface dialog, int which) {
+                new AppPref(mActivity).userLogout();
                 Intent logoutIntent;
-                logoutIntent = new Intent(mActivity, LandingActivity.class);
-                logoutIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|
+                logoutIntent = new Intent(mActivity, SigninActivity.class);
+                logoutIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                         Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 // logoutIntent.putExtra(Utils.REFRESH, true);
                 mActivity.startActivity(logoutIntent);
-                //  mActivity.overridePendingTransition(R.anim.fragment_trans_left_in, R.anim.activity_trans_right_out);
 
             }
         });
-    }*/}
+        alertDialog.show();
+    }
+
+}

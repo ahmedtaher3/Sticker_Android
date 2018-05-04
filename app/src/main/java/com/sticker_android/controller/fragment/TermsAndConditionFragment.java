@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.sticker_android.R;
@@ -29,6 +30,9 @@ public class TermsAndConditionFragment extends BaseFragment {
     private TextView tvTerms;
     private AppPref appPref;
     private User user;
+    final String mimeType = "text/html";
+    final String encoding = "UTF-8";
+    private WebView webView;
 
     public TermsAndConditionFragment() {
         // Required empty public constructor
@@ -65,31 +69,47 @@ public class TermsAndConditionFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_terms_and_condition, container, false);
+        View view = inflater.inflate(R.layout.fragment_terms_and_condition, container, false);
         init();
         setViewReferences(view);
         getuserData();
         getTermsConditionData();
-
+     //   setWebView();
         return view;
     }
 
+   /* private void setWebView() {
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new MyWebViewClint(llLoader));
+        //webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        webView.getSettings().setAllowContentAccess(true);
+        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+    }
+
+    public static String getHtmlData(String bodyHTML) {
+        String head = "<head><style>img{max-width: 100%; width:auto; height: auto;}iframe{max-width: 100%; width:auto; height: auto;}div{max-width: 100%; width:auto; height: auto;}table{max-width: 100%; width:auto; height: auto;}</style></head>";
+        return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
+    }
+*/
     private void getuserData() {
-        user =appPref.getUserInfo();
+        user = appPref.getUserInfo();
     }
 
     private void init() {
-        appPref=new AppPref(getActivity());
+        appPref = new AppPref(getActivity());
+        appPref.getUserInfo();
 
     }
 
     private void getTermsConditionData() {
-        Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent(user.getId(),"2");
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetContent("2", user.getAuthrizedKey());
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                if(apiResponse.success){
-                    tvTerms.setText(apiResponse.paylpad.getData().getInfoText());
+                if (apiResponse.status) {
+                    //tvTerms.setText(apiResponse.paylpad.getData().getInfoText());
+                    webView.loadDataWithBaseURL("", apiResponse.paylpad.getData().getInfoText(), mimeType, encoding, "");
+
                 }
             }
 
@@ -108,7 +128,8 @@ public class TermsAndConditionFragment extends BaseFragment {
 
     @Override
     protected void setViewReferences(View view) {
-        tvTerms= (TextView) view.findViewById(R.id.tv_terms_conditions);
+        tvTerms = (TextView) view.findViewById(R.id.tv_terms_conditions);
+        webView = (WebView) view.findViewById(R.id.webView);
     }
 
     @Override

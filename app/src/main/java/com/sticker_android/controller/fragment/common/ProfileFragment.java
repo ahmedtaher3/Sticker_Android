@@ -321,7 +321,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
             progressDialogHandler.show();
             Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(user.getId(), edtCompanyName.getText().toString(),
-                    "", edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
+                    user.getAuthrizedKey(), edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
                     edtProfileEmail.getText().toString(), user.getUserType());
             apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
@@ -410,7 +410,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
         RequestBody userId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(user.getId()));
         RequestBody languageId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(user.getLanguageId()));
-        RequestBody authKey = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(""));
+        RequestBody authKey = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf( user.getAuthrizedKey()));
 
         Call<ApiResponse> apiResponseCall=  RestClient.getService().profileImage(userId,languageId,authKey,body);
         apiResponseCall.enqueue(new ApiCall(getActivity()) {

@@ -52,6 +52,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.fragmentinterface.UpdateToolbarTitle;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -62,7 +63,7 @@ import java.util.Locale;
 import retrofit2.Call;
 
 public class DesignerHomeActivity extends AppBaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener,UpdateToolbarTitle {
+        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener, UpdateToolbarTitle {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private CoordinatorLayout mainView;
@@ -97,6 +98,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         setBadgeCount();
         initializeCountDrawer(appPref.getNewMessagesCount(0));
     }
+
     /**
      * Humberg notification dot visibility
      */
@@ -120,6 +122,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         imageProfile.setImageResource(R.drawable.designer_hdpi);
         imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imageProfile, displayImageOptions);
     }
+
     /**
      * Method is used to set the counter in notification tab
      *
@@ -133,6 +136,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         notificationCounter.setTextColor(getResources().getColor(R.color.colorFloatingCorporate));
         notificationCounter.setText(count > 0 ? String.valueOf(count) : null);
     }
+
     @Override
     protected boolean isValidData() {
         return false;
@@ -265,8 +269,8 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         return true;
     }
 
-    private void manageNavigationClickItem(MenuItem item){
-        if(item == null){
+    private void manageNavigationClickItem(MenuItem item) {
+        if (item == null) {
             return;
         }
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
@@ -278,7 +282,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
             textView.setText(getResources().getString(R.string.txt_home));
         } else if (id == R.id.nav_content_for_appproval) {
             fragmentClass = new DesignerContentApprovalFragment();
-          //  textView.setText("Content Approval");
+            //  textView.setText("Content Approval");
         } else if (id == R.id.nav_report) {
             fragmentClass = new DesignerReportFragment();
             textView.setText("Report");
@@ -295,8 +299,8 @@ public class DesignerHomeActivity extends AppBaseActivity implements
             textView.setText(getResources().getString(R.string.txt_account_setting));
         } else if (id == R.id.nav_logout) {
             userLogout();
-        }else if(id==R.id.nav_notification){
-            fragmentClass =  DesignerNotificationFragment.newInstance();
+        } else if (id == R.id.nav_notification) {
+            fragmentClass = DesignerNotificationFragment.newInstance();
             textView.setText(getResources().getString(R.string.txt_notifications));
 
         }
@@ -309,13 +313,31 @@ public class DesignerHomeActivity extends AppBaseActivity implements
     }
 
     private void userLogout() {
-        appPref.userLogout();
-        Intent intent = new Intent(getActivity(), SigninActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        overridePendingTransition(R.anim.activity_animation_enter,
-                R.anim.activity_animation_exit);
-        finish();
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().userLogout(user.getLanguageId(), user.getAuthrizedKey(), user.getId());
+
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+                if (apiResponse.status) {
+                    appPref.userLogout();
+                    Intent intent = new Intent(getActivity(), SigninActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.activity_animation_enter,
+                            R.anim.activity_animation_exit);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
     }
 
     public void replaceFragment(FragmentManager manager, Fragment fragment) {
@@ -338,16 +360,15 @@ public class DesignerHomeActivity extends AppBaseActivity implements
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        if(intent != null){
+        if (intent != null) {
             boolean dataRefreshNeeded = intent.getBooleanExtra(AppConstant.DATA_REFRESH_NEEDED, false);
 
-            if(dataRefreshNeeded){
+            if (dataRefreshNeeded) {
                 //data of home has been changed
                 Fragment fragment = mFragmentManager.findFragmentById(R.id.container_home);
-                if(fragment instanceof DesignerHomeFragment){
+                if (fragment instanceof DesignerHomeFragment) {
                     ((DesignerHomeFragment) fragment).updateAttachedVisibleFragment();
-                }
-                else if(fragment instanceof DesignerPendingContentFragment){
+                } else if (fragment instanceof DesignerPendingContentFragment) {
                     ((DesignerPendingContentFragment) fragment).updateAttachedVisibleFragment();
                 }
             }
@@ -359,14 +380,12 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         Log.e("DesignerHomeActivity", "Count => " + getSupportFragmentManager().getBackStackEntryCount());
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        else if (mFragmentManager.getBackStackEntryCount() == 1){
+        } else if (mFragmentManager.getBackStackEntryCount() == 1) {
 
             if (doubleBackToExitPressedOnce) {
                 finish();
                 return;
-            }
-            else {
+            } else {
                 this.doubleBackToExitPressedOnce = true;
                 Toast.makeText(this, R.string.press_again_to_exit, Toast.LENGTH_SHORT).show();
 
@@ -378,8 +397,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
                     }
                 }, 2000);
             }
-        }
-        else {
+        } else {
             TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
             textView.setText(getString(R.string.txt_home));
             mFragmentManager.popBackStackImmediate(DesignerHomeFragment.class.getName(), 0);
@@ -427,7 +445,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
 
     private void updatelanguageApi() {
         final int language = appPref.getLanguage(0);
-        Call<ApiResponse> apiResponseCall = RestClient.getService().changeLanguage(user.getId(), language, "");
+        Call<ApiResponse> apiResponseCall = RestClient.getService().changeLanguage(user.getId(), language, user.getAuthrizedKey());
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

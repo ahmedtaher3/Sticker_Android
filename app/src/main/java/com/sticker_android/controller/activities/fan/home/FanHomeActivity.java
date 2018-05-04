@@ -36,14 +36,20 @@ import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadFragm
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeFragment;
 import com.sticker_android.controller.fragment.fan.notification.FanNotification;
 import com.sticker_android.model.User;
+import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import retrofit2.Call;
+
 public class FanHomeActivity extends AppBaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener ,ProfileFragment.OnFragmentProfileListener{
+        implements NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener {
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
@@ -73,7 +79,7 @@ public class FanHomeActivity extends AppBaseActivity
         actionBarToggle(toolbar);
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
         setUserDataIntoNaviagtion();
-       // showFragmentManually();
+        // showFragmentManually();
         replaceFragment(new FanHomeFragment());
         setBadgeCount();
         initializeCountDrawer(appPref.getNewMessagesCount(0));
@@ -104,21 +110,22 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
     private void setUserDataIntoNaviagtion() {
-        View header= navigationView.getHeaderView(0);
-        TextView   tvUserName=(TextView)header.findViewById(R.id.tvUserName);
-        TextView   tvEmail=(TextView)header.findViewById(R.id.tvEmail);
-        tvUserName.setText(user.getFirstName()+" "+ user.getLastName());
+        View header = navigationView.getHeaderView(0);
+        TextView tvUserName = (TextView) header.findViewById(R.id.tvUserName);
+        TextView tvEmail = (TextView) header.findViewById(R.id.tvEmail);
+        tvUserName.setText(user.getFirstName() + " " + user.getLastName());
         tvEmail.setText(user.getEmail());
-        ImageView imageProfile= (ImageView) header.findViewById(R.id.imageViewProfile);
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+ user.getCompanyLogo(),imageProfile, displayImageOptions);
-        LinearLayout linearLayout= (LinearLayout) header.findViewById(R.id.nav_header_common);
+        ImageView imageProfile = (ImageView) header.findViewById(R.id.imageViewProfile);
+        imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imageProfile, displayImageOptions);
+        LinearLayout linearLayout = (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.fan_profile_bg_hdpi));
         imageProfile.setImageResource(R.drawable.fan_xhdpi);
     }
-    private void setBackground(Toolbar toolbar) {
-        UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,user.getUserType().toUpperCase());
 
-        switch (userTypeEnum){
+    private void setBackground(Toolbar toolbar) {
+        UserTypeEnum userTypeEnum = Enum.valueOf(UserTypeEnum.class, user.getUserType().toUpperCase());
+
+        switch (userTypeEnum) {
             case FAN:
                 toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_xhdpi));
                 break;
@@ -134,8 +141,8 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
     private void init() {
-        appPref=new AppPref(this);
-        user =appPref.getUserInfo();
+        appPref = new AppPref(this);
+        user = appPref.getUserInfo();
     }
 
     @Override
@@ -146,24 +153,21 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
     private void setToolBarTitle() {
-        TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
+        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         textView.setText(getResources().getString(R.string.txt_home));
         toolbar.setTitle("");
-        centerToolbarText(toolbar,textView);
+        centerToolbarText(toolbar, textView);
     }
 
     private void centerToolbarText(final Toolbar toolbar, final TextView textView) {
-        toolbar.postDelayed(new Runnable()
-        {
+        toolbar.postDelayed(new Runnable() {
             @Override
-            public void run ()
-            {
+            public void run() {
                 int maxWidth = toolbar.getWidth();
                 int titleWidth = textView.getWidth();
                 int iconWidth = maxWidth - titleWidth;
 
-                if (iconWidth > 0)
-                {
+                if (iconWidth > 0) {
                     //icons (drawer, menu) are on left and right side
                     int width = maxWidth - iconWidth * 2;
                     textView.setMinimumWidth(width);
@@ -237,16 +241,17 @@ public class FanHomeActivity extends AppBaseActivity
         toggle.syncState();*/
         drawer.setScrimColor(Color.TRANSPARENT);
     }
+
     private void manageNavigationClickItem(MenuItem item) {
         if (item == null) {
             return;
         }
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
 
-        TextView  textView= (TextView) toolbar.findViewById(R.id.tvToolbar);
+        TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Fragment fragmentClass=null;
+        Fragment fragmentClass = null;
         if (id == R.id.nav_home && !(f instanceof FanHomeFragment)) {
             textView.setText("Home");
             fragmentClass = new FanHomeFragment();
@@ -264,25 +269,24 @@ public class FanHomeActivity extends AppBaseActivity
             textView.setText(getResources().getString(R.string.txt_myprofile));
             overridePendingTransition(R.anim.activity_animation_enter,
                     R.anim.activity_animation_exit);
-        }
-        else if (id == R.id.nav_account_setting && !(f instanceof AccountSettingFragment)) {
+        } else if (id == R.id.nav_account_setting && !(f instanceof AccountSettingFragment)) {
             textView.setText(getString(R.string.txt_account_setting));
-            fragmentClass = AccountSettingFragment.newInstance("","");
-        }
-        else if (id == R.id.nav_notification && !(f instanceof FanNotification)) {
+            fragmentClass = AccountSettingFragment.newInstance("", "");
+        } else if (id == R.id.nav_notification && !(f instanceof FanNotification)) {
             textView.setText(getString(R.string.txt_notifications));
             fragmentClass = new FanNotification();
-        }
-        else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_logout) {
             userLogout();
         }
 
         // Insert the fragment by replacing any existing fragment
-        if(fragmentClass!=null) {
-            replaceFragment(fragmentClass);        }
+        if (fragmentClass != null) {
+            replaceFragment(fragmentClass);
+        }
         drawer.closeDrawer(GravityCompat.START);
 
     }
+
     @Override
     protected void setViewListeners() {
         navigationView.setNavigationItemSelectedListener(this);
@@ -352,34 +356,52 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
 
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         this.mSelectedMenu = item;
         drawer.closeDrawer(GravityCompat.START);
-             return true;
+        return true;
     }
 
     private void userLogout() {
-        appPref.userLogout();
-        Intent intent = new Intent(getActivity(), SigninActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        overridePendingTransition(R.anim.activity_animation_enter,
-                R.anim.activity_animation_exit);
-        finish();
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().userLogout(user.getLanguageId(), user.getAuthrizedKey(), user.getId());
+
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+                if (apiResponse.status) {
+                    appPref.userLogout();
+                    Intent intent = new Intent(getActivity(), SigninActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.activity_animation_enter,
+                            R.anim.activity_animation_exit);
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
+
     }
 
     public void replaceFragment(final Fragment fragmentClass) {
-        final String tag=fragmentClass.getClass().getSimpleName();
-                FragmentTransaction fragmentTransaction =
-                        getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.container_home,
-                        fragmentClass, tag);
-                int count = getFragmentManager().getBackStackEntryCount();
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+        final String tag = fragmentClass.getClass().getSimpleName();
+        FragmentTransaction fragmentTransaction =
+                getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container_home,
+                fragmentClass, tag);
+        int count = getFragmentManager().getBackStackEntryCount();
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
 
 
     }
@@ -388,32 +410,30 @@ public class FanHomeActivity extends AppBaseActivity
     private void showFragmentManually() {
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment fragment=new FanHomeFragment();
+        Fragment fragment = new FanHomeFragment();
         transaction.replace(R.id.container_home, fragment);
         transaction.commit();
     }
 
-    public void setProfileFragmentReference(ProfileFragment profileFragmentReference){
+    public void setProfileFragmentReference(ProfileFragment profileFragmentReference) {
         this.mProfileFragment = profileFragmentReference;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
-            if(mProfileFragment != null){
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (mProfileFragment != null) {
                 mProfileFragment.onActivityResult(requestCode, resultCode, data);
             }
 
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
-            if(f instanceof FanHomeFragment){
-                ((FanHomeFragment)f).onActivityResult(requestCode, resultCode, data);
-            }
-            else if(f instanceof FanCustomizationFragment){
-                ((FanCustomizationFragment)f).onActivityResult(requestCode, resultCode, data);
-            }
-            else if(f instanceof DesignerContentApprovalFragment){
-                ((DesignerContentApprovalFragment)f).onActivityResult(requestCode, resultCode, data);
+            if (f instanceof FanHomeFragment) {
+                ((FanHomeFragment) f).onActivityResult(requestCode, resultCode, data);
+            } else if (f instanceof FanCustomizationFragment) {
+                ((FanCustomizationFragment) f).onActivityResult(requestCode, resultCode, data);
+            } else if (f instanceof DesignerContentApprovalFragment) {
+                ((DesignerContentApprovalFragment) f).onActivityResult(requestCode, resultCode, data);
             }
         }
 

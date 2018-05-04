@@ -291,7 +291,7 @@ public class AccountSettingFragment extends BaseFragment {
     private void updatelanguageApi() {
 
         final int language= appPref.getLanguage(0);
-        Call<ApiResponse> apiResponseCall=  RestClient.getService().changeLanguage(userdata.getId(),language,"");
+        Call<ApiResponse> apiResponseCall=  RestClient.getService().changeLanguage(userdata.getId(),language,userdata.getAuthrizedKey());
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

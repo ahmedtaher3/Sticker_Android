@@ -1,12 +1,15 @@
 package com.sticker_android.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by user on 26/3/18.
  */
 
-public class User {
+public class User implements Parcelable {
 
     @SerializedName("id")
     private String id;
@@ -260,4 +263,76 @@ public class User {
         this.authrizedKey = authrizedKey;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.firstName);
+        dest.writeString(this.email);
+        dest.writeString(this.pid);
+        dest.writeString(this.deviceType);
+        dest.writeString(this.languageId);
+        dest.writeString(this.lastName);
+        dest.writeString(this.mobile);
+        dest.writeString(this.imageUrl);
+        dest.writeString(this.userType);
+        dest.writeString(this.companyAddress);
+        dest.writeString(this.companyName);
+        dest.writeString(this.companyLogo);
+        dest.writeString(this.authrizedKey);
+        dest.writeString(this.passsword);
+        dest.writeInt(this.productid);
+        dest.writeString(this.productname);
+        dest.writeString(this.type);
+        dest.writeString(this.description);
+        dest.writeString(this.expireDate);
+        dest.writeString(this.imagePath);
+        dest.writeString(this.title);
+        dest.writeString(this.infoText);
+    }
+
+    public User() {
+    }
+
+    protected User(Parcel in) {
+        this.id = in.readString();
+        this.firstName = in.readString();
+        this.email = in.readString();
+        this.pid = in.readString();
+        this.deviceType = in.readString();
+        this.languageId = in.readString();
+        this.lastName = in.readString();
+        this.mobile = in.readString();
+        this.imageUrl = in.readString();
+        this.userType = in.readString();
+        this.companyAddress = in.readString();
+        this.companyName = in.readString();
+        this.companyLogo = in.readString();
+        this.authrizedKey = in.readString();
+        this.passsword = in.readString();
+        this.productid = in.readInt();
+        this.productname = in.readString();
+        this.type = in.readString();
+        this.description = in.readString();
+        this.expireDate = in.readString();
+        this.imagePath = in.readString();
+        this.title = in.readString();
+        this.infoText = in.readString();
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

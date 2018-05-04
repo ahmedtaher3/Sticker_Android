@@ -60,6 +60,7 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
 
     private Product mProduct;
     private TimeUtility timeUtility = new TimeUtility();
+    private TextView tvFeatured;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +143,11 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
                 checkboxLike.setButtonDrawable(getResources().getDrawable(R.drawable.ic_like));
 
             }
+            if(mProduct.isFeatured>0){
+                tvFeatured.setVisibility(View.VISIBLE);
+            }else
+                tvFeatured.setVisibility(View.GONE);
+
             /*String status = "pending";
             if (status.equalsIgnoreCase("rejected")) {
                 tvStatus.setTextColor(Color.RED);
@@ -256,6 +262,7 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
         tvDownloads = (TextView) findViewById(R.id.tvDownloads);
         cardItem = (CardView) findViewById(R.id.card_view);
         pbLoader = (ProgressBar) findViewById(R.id.pgrImage);
+        tvFeatured =(TextView)findViewById(R.id.tvFeatured);
     }
 
     @Override

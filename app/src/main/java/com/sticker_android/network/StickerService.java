@@ -76,7 +76,7 @@ public interface StickerService {
     @POST(ApiConstant.API_GET_PRODUCT_LIST)
     public Call<ApiResponse> apiGetProductList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
                                                @Field("user_id") String userId, @Field("index") int index,
-                                               @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search);
+                                               @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search,@Field("status")String status);
 
 
     @FormUrlEncoded
@@ -180,6 +180,13 @@ public interface StickerService {
     @POST(ApiConstant.API_DELETE_NOTIFICATION)
     public Call<ApiResponse> deleteNotification(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
                                            @Field("user_id") String userId,@Field("notification_id") long notificationId);
+
+
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_USER_LOGOUT)
+    public Call<ApiResponse> userLogout(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                                @Field("user_id") String userId);
 
 
 }

@@ -14,8 +14,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,7 +22,6 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -40,7 +37,6 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
-import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.filter.FanFilter;
@@ -296,8 +292,11 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             case CHOOSE_GALLERY_FILTER:
                 if (resultCode == Activity.RESULT_OK) {
                     mSelectedFilter = data.getParcelableExtra(ImageAlbumActivity.SELECTED_FILTER);
+                    AppLogger.error(TAG, "Inside onActivityResult()" + mSelectedFilter.type);
                     if (mSelectedFilter != null) {
                         mStickerView.clear();
+                        imgFilterMask.setImageBitmap(null);
+                        imgFilterMask.setVisibility(View.GONE);
                         makeSaveButtonEnable(true);
                         setSelectedFilter();
                     }
@@ -333,6 +332,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                         imgFilterMask.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         int width = imgFilterMask.getWidth();
                         int height = imgFilterMask.getHeight();
+                        Log.e(TAG, "Set filter height");
 
                         int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
                         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
@@ -345,6 +345,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 }
                 else{
                     mStickerView.setVisibility(View.VISIBLE);
+                    imgFilterMask.setVisibility(View.GONE);
                     setSelectedStickerItem(bitmap);
                 }
             }

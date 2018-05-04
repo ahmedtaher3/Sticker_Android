@@ -1,7 +1,6 @@
 package com.sticker_android.controller.adaptors;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +9,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
-import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.filter.FanFilter;
 import com.sticker_android.utils.AppLogger;
 
@@ -29,7 +28,7 @@ public class GridViewAdapter extends BaseAdapter {
     private List<FanFilter> imageLists = new ArrayList<>();
 
 
-    public interface OnFilterItemClickListener{
+    public interface OnFilterItemClickListener {
         void onItemClick(FanFilter product);
     }
 
@@ -40,7 +39,7 @@ public class GridViewAdapter extends BaseAdapter {
         this.mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public void setOnItemClickListener(OnFilterItemClickListener itemClickListener){
+    public void setOnItemClickListener(OnFilterItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
@@ -67,7 +66,6 @@ public class GridViewAdapter extends BaseAdapter {
             convertView = mLayoutInflater.inflate(R.layout.view_grid_album, null);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
-
         } else
             viewHolder = (ViewHolder) convertView.getTag();
         final FanFilter fanFilter = imageLists.get(position);
@@ -75,38 +73,48 @@ public class GridViewAdapter extends BaseAdapter {
         if (fanFilter.imageUrl != null && !fanFilter.imageUrl.isEmpty()) {
             Glide.with(context)
                     .load(fanFilter.imageUrl)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            viewHolder.progressImage.setVisibility(View.INVISIBLE);
-
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            viewHolder.progressImage.setVisibility(View.INVISIBLE);
-
-                            return false;
-                        }
-                    })
+                    .listener(new Request(viewHolder))
                     .into(viewHolder.image);
-        viewHolder.image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemClickListener.onItemClick(fanFilter);
-            }
-        });
+            viewHolder.image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemClickListener.onItemClick(fanFilter);
+                }
+            });
 
         }
         return convertView;
     }
 
+    class Request implements RequestListener {
+
+        private final ViewHolder viewHolder;
+
+        public Request(ViewHolder viewHolder) {
+            this.viewHolder = viewHolder;
+        }
+
+        @Override
+        public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+            viewHolder.progressImage.setVisibility(View.GONE);
+
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+            viewHolder.progressImage.setVisibility(View.GONE);
+
+
+            return false;
+        }
+    }
 
     protected class ViewHolder {
         public ImageView image;
 
         public ProgressBar progressImage;
+        public RequestListener requestListener;
 
         public ViewHolder(View view) {
             image = (ImageView) view.findViewById(R.id.image);
