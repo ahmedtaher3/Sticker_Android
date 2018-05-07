@@ -54,7 +54,7 @@ public interface StickerService {
 
     @FormUrlEncoded
     @POST(ApiConstant.API_GET_CONTENT)
-    public Call<ApiResponse> apiGetContent(@Field("id") String userId, @Field("authrized_key") String authKey);
+    public Call<ApiResponse> apiGetContent(@Field("id") String userId);
 
     @FormUrlEncoded
     @POST(ApiConstant.API_ADD_PRODUCT)

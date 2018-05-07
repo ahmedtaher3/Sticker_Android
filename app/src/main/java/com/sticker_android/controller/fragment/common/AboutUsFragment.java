@@ -85,7 +85,7 @@ public class AboutUsFragment extends BaseFragment {
 
     private void getContactApi() {
 
-        Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent("4",user.getAuthrizedKey());
+        Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent("4");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

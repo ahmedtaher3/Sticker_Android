@@ -11,6 +11,7 @@
     tools:ignore="MissingPrefix">
 
     <RelativeLayout
+        android:id="@+id/rlContestMain"
         android:layout_width="match_parent"
         android:layout_height="100dp">
 

@@ -3,33 +3,41 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Under Development</string>
-    <string name="txt_fan">Fan</string>
-    <string name="txt_designer">Designer</string>
+    <string name="txt_fan">مشجع</string>
+    <string name="txt_designer">مصمم</string>
     <string name="text_corporate">Corporate</string>
+    <integer name="running_device_config">5</integer>
+    <integer name="designed_item_page_limit">30</integer>
 
     <!--Sign In-->
     <string name="txt_dont_have_a_account">"Don't have a account?"</string>
-    <string name="txt_signup">SignUp</string>
+    <string name="txt_signup">Signup</string>
     <string name="txt_forgot_password">"Forgot Password?"</string>
     <string name="txt_login">Login</string>
     <string name="txt_hint_email">Email</string>
     <string name="txt_hint_password">Password</string>
     <!--Signin validation message-->
-    <string name="msg_email_cannot_be_empty">Email cannot be empty.</string>
-    <string name="msg_email_not_valid">Email not valid.</string>
-    <string name="msg_password_cannot_be_empty">Password cannot be empty.</string>
+    <string name="msg_email_cannot_be_empty">Please enter email.</string>
+    <string name="msg_email_not_valid">Please enter valid email.</string>
+    <string name="msg_password_cannot_be_empty">Please enter password.</string>
 
     <!--Signup validation-->
-    <string name="first_name_cannot_be_empty">First name cannot be empty.</string>
-    <string name="first_name_cannot_be_less_than">First name cannot be less than 3 character.</string>
-    <string name="last_name_cannot_be_less_than">Last name cannot be less than 3 character.</string>
+    <string name="first_name_cannot_be_empty">Please enter first name.</string>
+    <string name="first_name_cannot_be_less_than">Please enter first name equal or more than 3 characters.</string>
+    <string name="last_name_cannot_be_less_than">Please enter last name equal or more than 3 characters.</string>
+    <string name="last_name_cannot_be_empty">Please enter last name.</string>
+    <string name="password_cannot_be_empty">Please enter password.</string>
+    <string name="password_cannot_be_less">Please enter password equal or more than 8 characters.</string>
+    <string name="confirm_password_cannot_be_less">Please enter confirm password equal or more than 8 characters.</string>
 
-    <string name="last_name_cannot_be_empty">Last name cannot be empty.</string>
-    <string name="password_cannot_be_empty">Password cannot be empty.</string>
-    <string name="password_cannot_be_less">Password cannot be less than 8 digit.</string>
+    <string name="new_password_cannot_be_less">Please enter new password equal or more than 8 characters.</string>
+    <string name="please_enter_new_password">"Please enter new password."</string>
+    <string name="old_password_cannot_be_less">Please enter old password equal or more than 8 characters.</string>
+
     <string name="confirm_password_cannot_be_empty">Confirm Password cannot be empty.</string>
-    <string name="confirm_password_not_match">Confirm Password not match.</string>
+    <string name="confirm_password_not_match">New and confirm Password do not match.</string>
 
+    <string name="old_password_not_match">Old Password is wrong.</string>
 
     <!--SignUp-->
     <string name="txt_hint_first_name">First Name</string>
@@ -47,7 +55,8 @@
 
     <string name="txt_account_setting">Account Settings</string>
     <string name="txt_profile">Profile</string>
-
+    <string name="txt_contest">Contest</string>
+    <string name="txt_content_approval">Content for Approval</string>
     <string name="txt_home">Home</string>
     <string name="txt_myprofile">My Profile</string>
     <!--Change password-->
@@ -68,7 +77,7 @@
     <string name="txt_btn_update">Update</string>
     <string name="txt_btn_continue">Continue</string>
     <!--AboutUs-->
-    <string name="txt_about_us">"Contact"</string>
+    <string name="txt_about_us">"About Us"</string>
 
     <!--Forgot password-->
     <string name="txt_reset_link_will_be_sent">A reset link will we sent to the
@@ -89,12 +98,90 @@
     <string name="txt_call">Call</string>
     <string name="no_contact_available">No contact available</string>
     <string name="title_activity_demo">DemoActivity</string>
+    <string name="phone_call_permission">Please allow phone call permission.</string>
+    <string name="company">Company</string>
+
+    <string name="txt_lorem">"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."</string>
+
+    <!--corporate add new-->
+    <string name="act_corp_txt_add_new">Add New</string>
+    <string name="act_corp_txt_renew">Renew</string>
+    <string name="act_corp_txt_edit">Edit</string>
+    <string name="txt_ads_frag">Ads</string>
+    <string name="txt_products_frag">Products</string>
+    <string name="txt_my_ads_frag">My Ads</string>
+    <string name="txt_my_products_frag">My Products</string>
+
+    <string name="act_add_corp_txt_name">Name</string>
+    <string name="act_add_corp_txt_expire_date">Expire Date</string>
+    <string name="act_add_corp_txt_write_description">Write Description</string>
+    <string name="txt_post">Post</string>
+    <string name="txt_repost">Repost</string>
+    <string name="txt_add_new_ads_frag">Ad</string>
+    <string name="txt__add_products_frag">Product</string>
+
+    <string name="txt_edit">Edit</string>
+    <string name="txt_remove">Remove</string>
+    <!--Time prefix-->
+    <string name="time_ago_prefix"></string>
+    <string name="time_ago_suffix">ago</string>
+    <string name="time_ago_seconds">less than a minute</string>
+    <string name="time_ago_minute">about a minute</string>
+    <string name="time_ago_minutes">%d minutes</string>
+    <string name="time_ago_hour">hour</string>
+    <string name="time_ago_hours"> %d hours</string>
+    <string name="time_ago_day">day</string>
+    <string name="time_ago_days">%d days</string>
+    <string name="time_ago_month">about a month</string>
+    <string name="time_ago_months">%d months</string>
+    <string name="time_ago_year">about a year</string>
+    <string name="time_ago_years">%d years</string>
     <string name="no_ads_uploaded_yet">No Ads uploaded Yet.</string>
+    <string name="no_product_uploaded_yet">No Products uploaded Yet.</string>
+    <string name="no_search_found">No Search found.</string>
+    <string name="emoji">Emoji</string>
+    <string name="gif">GIF</string>
+    <string name="stickers">Stickers</string>
+    <string name="press_again_to_exit">Press again to exit.</string>
+    <string name="select_category">Select Category</string>
+    <string name="category">Category</string>
+    <string name="select_design_category">Select Category</string>
+    <string name="loading">Loading...</string>
     <string name="txt_are_you_sure">Are you sure you want to delete this item?</string>
     <string name="txt_delete_resources">Deleted successfully</string>
     <string name="txt_report">Report</string>
-    <string name="write_some_description">Write something here</string>
+    <string name="write_some_description">Write something here...</string>
+    <string name="select_category_txt">Select a Category</string>
+    <string name="search">Search</string>
+
     <string name="txt_notifications">Notifications</string>
+
+    <string name="no_data_found">No data found.</string>
+    <string name="server_unreachable">Server unreachable</string>
+    <string name="oops">Oops!</string>
+    <string name="pls_check_ur_internet_connection">Please check internet connection.</string>
+    <string name="try_again">Try Again</string>
+    <string name="connection_not_found">Connection not found</string>
+    <string name="no_stickers_uploaded_yet">No stickers uploaded yet.</string>
+    <string name="no_gif_uploaded_yet">No GIF uploaded yet.</string>
+    <string name="no_emoji_uploaded_yet">No Emoji uploaded yet.</string>
+    <string name="ok">Ok</string>
+    <string name="remove">Remove</string>
+    <string name="edit">Edit</string>
+    <string name="resubmit_with_justification">Re-submit with Justification</string>
+    <string name="upload_sticker">Upload Sticker</string>
+    <string name="upload_gif">Upload GIF</string>
+    <string name="upload_emoji">Upload Emoji</string>
+    <string name="deleted_successfully">Deleted successfully</string>
+    <string name="update">Update</string>
+    <string name="pls_select_category">Please select a category.</string>
+    <string name="pls_enter_name">Please enter a name.</string>
+    <string name="pls_upload_image">Please upload a image.</string>
+    <string name="detail">Details</string>
+    <string name="rejected">Rejected</string>
+    <string name="approved">Approved</string>
+    <string name="pending">Pending</string>
+    <string name="expired">Expired</string>
     <string name="txt_onging">Ongoing</string>
     <string name="txt_completed">Completed</string>
     <string name="end_date">End Date-</string>
@@ -107,7 +194,7 @@
     <string name="txt_apply_for_context">Please apply for a contest.</string>
     <string name="txt_no_onging_contest_found">No Ongoing contest found</string>
     <string name="txt_pending_content">Pending Content</string>
-    <string name="txt_no_completed_contest">No Completed Contest Found.</string>
+    <string name="txt_no_completed_contest">No Completed contest Found.</string>
     <string name="most_downloaded">Most Downloaded</string>
     <string name="recent_upload">Recent Upload</string>
     <string name="by_championship">By Championship</string>
@@ -119,6 +206,26 @@
     <string name="txt_no_downloaded_gif_found">No downloaded GIF found</string>
     <string name="txt_no_notification_found">No notification found.</string>
     <string name="text_all">All</string>
+
+    <string name="save">Save</string>
+    <string name="reset">Reset</string>
+    <string name="filter">Filter</string>
+    <string name="emojis">Emojis</string>
+    <string name="please_choose_image_to_apply_filter_sticker_emoji">Please choose image to apply filter, sticker or emoji.</string>
+
+    <string name="txt_your_comment">Your Comment</string>
+    <string name="something_went_wrong">Something went wrong.</string>
+    <string name="no_customization_alert">No customization done.</string>
+    <string name="saved_successfully">Saved successfully.</string>
+    <string name="select_image_for_filter">Please choose the image on which you want to apply filter.</string>
+    <string name="apply_filter_title">Apply Filter</string>
+    <string name="recent_comment">Recent Comment</string>
+    <string name="your_comment">Your Comment</string>
     <string name="txt_comments">"Comment's"</string>
     <string name="txt_resubmit">Resubmit</string>
+    <string name="txt_please_enter_description">Please enter a description.</string>
+    <string name="txt_please_enter_a_name">Please enter a name.</string>
+    <string name="txt_please_enter_a_expire_date">Please enter a expire date.</string>
+    <string name="txt_please_select_a_category">Please select a category.</string>
+
 </resources>

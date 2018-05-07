@@ -7,8 +7,12 @@
     android:layout_height="match_parent"
     tools:context="com.sticker_android.controller.activities.common.terms.TermsActivity">
     <include layout="@layout/toolbar"/>
-    <fragment
+    <!--   <fragment
     android:name="com.sticker_android.controller.fragment.TermsAndConditionFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"/>-->
+ <RelativeLayout
+     android:id="@+id/container"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"></RelativeLayout>
 </LinearLayout>

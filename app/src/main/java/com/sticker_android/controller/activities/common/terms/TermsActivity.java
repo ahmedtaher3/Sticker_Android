@@ -1,6 +1,8 @@
 package com.sticker_android.controller.activities.common.terms;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -8,6 +10,7 @@ import android.widget.TextView;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.fragment.TermsAndConditionFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -35,6 +38,7 @@ public class TermsActivity extends AppBaseActivity {
                 onBackPressed();
             }
         });
+        addFragment(new TermsAndConditionFragment());
     }
 
     private void setToolbarData() {
@@ -76,6 +80,20 @@ public class TermsActivity extends AppBaseActivity {
                 setStatusBarGradiant(this, AppConstants.CORPORATE);
                 break;
         }
+    }
+
+
+    /**
+     * replace existing fragment of container
+     *
+     * @param fragment
+     */
+    private void addFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction =
+                getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container,
+                fragment);
+        fragmentTransaction.commit();
     }
 
     @Override

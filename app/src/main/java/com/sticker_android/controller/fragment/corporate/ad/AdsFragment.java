@@ -38,6 +38,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
+import com.sticker_android.controller.activities.common.contest.ApplyCorporateContestActivity;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
 import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
@@ -50,6 +51,9 @@ import com.sticker_android.model.enums.ProductStatus;
 import com.sticker_android.model.interfaces.DesignerActionListener;
 import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
+import com.sticker_android.model.notification.Acme;
+import com.sticker_android.model.notification.ContestObj;
+import com.sticker_android.model.notification.NotificationApp;
 import com.sticker_android.model.payload.Payload;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -210,7 +214,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         }
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
-                index, limit, DesignType.ads.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword,"");
+                index, limit, DesignType.ads.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword, "");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -362,18 +366,17 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onRefresh() {
         Log.e(TAG, "Inside onRefresh() method");
-         if (Utils.isConnectedToInternet(mHostActivity)) {
+        if (Utils.isConnectedToInternet(mHostActivity)) {
             getProductFromServer(true, "");
         } else {
             swipeRefreshLayout.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
 
-        CorporateHomeFragment parentFrag = ((CorporateHomeFragment)AdsFragment.this.getParentFragment());
-        if(parentFrag!=null)
-        parentFrag.closeSearch();
+        CorporateHomeFragment parentFrag = ((CorporateHomeFragment) AdsFragment.this.getParentFragment());
+        if (parentFrag != null)
+            parentFrag.closeSearch();
     }
-
 
 
     private void init() {
@@ -468,8 +471,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         isLoading = true;
         if (swipeRefreshLayout != null)
             swipeRefreshLayout.setRefreshing(true);
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(),mUserdata.getAuthrizedKey(), mUserdata.getId(),
-                index, 50, "ads", "product_list", search,"");
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
+                index, 50, "ads", "product_list", search, "");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -746,67 +749,75 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
             final Product product = productList.get(position);
 
-            ((ProductHolder) holder).checkboxLike.setText(Utils.format(product.statics.likeCount));
-            ((ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showPopup(v, position, product);
-                }
-            });
-            ((ProductHolder) holder).tvProductTitle.setText(Utils.capitlizeText(product.getProductname()));
-            ((ProductHolder) holder).tvDesciption.setText(Utils.capitlizeText(product.getDescription()));
-            ((ProductHolder) holder).tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(product.getCreatedTime()), getActivity()));
-            ((ProductHolder) holder).cardItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    moveToDetails(product);
-                }
-            });
-            String status = "Ongoing";
-            if (product.getIsExpired() > 0) {
-                ((ProductHolder) holder).tvStatus.setTextColor(Color.RED);
-                status = "Expired";
-            } else {
-                ((ProductHolder) holder).tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
+            if (product.getType().equals("product")) {
+                ((ProductHolder) holder).contestname.setVisibility(View.GONE);
 
-            }
-            ((ProductHolder) holder).tvStatus.setText(status);
 
-            if (product.getImagePath() != null && !product.getImagePath().isEmpty())
+                ((ProductHolder) holder).checkboxLike.setText(Utils.format(product.statics.likeCount));
+                ((ProductHolder) holder).imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showPopup(v, position, product);
+                    }
+                });
+                ((ProductHolder) holder).tvProductTitle.setText(Utils.capitlizeText(product.getProductname()));
+                ((ProductHolder) holder).tvDesciption.setText(Utils.capitlizeText(product.getDescription()));
+                ((ProductHolder) holder).tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(product.getCreatedTime()), getActivity()));
+                ((ProductHolder) holder).cardItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        moveToDetails(product);
+                    }
+                });
+                String status = "Ongoing";
+                if (product.getIsExpired() > 0) {
+                    ((ProductHolder) holder).tvStatus.setTextColor(Color.RED);
+                    status = "Expired";
+                } else {
+                    ((ProductHolder) holder).tvStatus.setTextColor(getResources().getColor(R.color.colorHomeGreen));
+
+                }
+                ((ProductHolder) holder).tvStatus.setText(status);
+
+                if (product.getImagePath() != null && !product.getImagePath().isEmpty())
           /*  Glide.with(context)
                     .load(product.getImagePath())
                     .into(((ProductHolder) holder).imvOfAds);*/
-                ((ProductHolder) holder).pgrImage.setVisibility(View.VISIBLE);
-            Glide.with(context)
-                    .load(product.getImagePath()).fitCenter()
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    ((ProductHolder) holder).pgrImage.setVisibility(View.VISIBLE);
+                Glide.with(context)
+                        .load(product.getImagePath()).fitCenter()
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
 
-                            return false;
-                        }
+                                return false;
+                            }
 
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            ((ProductHolder) holder).pgrImage.setVisibility(View.GONE);
-                            return false;
-                        }
-                    })
-                    .into(((ProductHolder) holder).imvOfAds);
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                ((ProductHolder) holder).pgrImage.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .into(((ProductHolder) holder).imvOfAds);
 
-            if (product.isLike > 0) {
-                ((ProductHolder) holder).checkboxLike.setChecked(true);
-                ((ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+                if (product.isLike > 0) {
+                    ((ProductHolder) holder).checkboxLike.setChecked(true);
+                    ((ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+                } else {
+                    ((ProductHolder) holder).checkboxLike.setChecked(false);
+                    ((ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+
+                }
+                if (product.isFeatured > 0) {
+                    ((ProductHolder) holder).tvFeatured.setVisibility(View.VISIBLE);
+                } else
+                    ((ProductHolder) holder).tvFeatured.setVisibility(View.GONE);
+
             } else {
-                ((ProductHolder) holder).checkboxLike.setChecked(false);
-                ((ProductHolder) holder).checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
-
+                ((ProductHolder) holder).contestname.setVisibility(View.VISIBLE);
+                ((ProductHolder) holder).contestname.setText(product.getProductname());
             }
-            if (product.isFeatured > 0) {
-                ((ProductHolder) holder).tvFeatured.setVisibility(View.VISIBLE);
-            } else
-                ((ProductHolder) holder).tvFeatured.setVisibility(View.GONE);
-
         }
 
 
@@ -840,6 +851,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             public CardView cardItem;
             public ProgressBar pgrImage;
             public TextView tvFeatured;
+            public TextView contestname;
 
             public ProductHolder(View view) {
                 super(view);
@@ -855,6 +867,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 cardItem = (CardView) view.findViewById(R.id.card_view);
                 pgrImage = (ProgressBar) view.findViewById(R.id.pgrImage);
                 tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
+                contestname = (TextView) view.findViewById(R.id.tv_content_description);
             }
         }
 
@@ -926,6 +939,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             public CardView cardItem;
             public ProgressBar pbLoader;
             TextView tvFeatured;
+            public TextView contestname;
+            public RelativeLayout rlProduct,rlContest,rlContestMain;
 
             public ViewHolder(View view) {
                 super(view);
@@ -941,6 +956,10 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 cardItem = (CardView) view.findViewById(R.id.card_view);
                 pbLoader = (ProgressBar) view.findViewById(R.id.pgrImage);
                 tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
+                contestname = (TextView) view.findViewById(R.id.tv_content_description);
+                rlProduct = (RelativeLayout) view.findViewById(R.id.rlProduct);
+                rlContest=(RelativeLayout)view.findViewById(R.id.rlContest);
+                rlContestMain=(RelativeLayout)view.findViewById(R.id.rlContestMain);
             }
         }
 
@@ -972,7 +991,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             if (data != null) {
                 Log.e("Adapter", "Adapter list size => " + data.size());
                 mItems.clear();
-               // mItems = new ArrayList<>();
+                // mItems = new ArrayList<>();
                 mItems.addAll(data);
                 notifyDataSetChanged();
                 isLoaderVisible = false;
@@ -1053,6 +1072,25 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 // set the view's size, margins, paddings and layout parameters
                 final CorporateListAdaptor.ViewHolder vh = new CorporateListAdaptor.ViewHolder(v);
 
+                vh.rlContestMain.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = vh.getAdapterPosition();
+                        Product product = mItems.get(position);
+                        Intent intent = new Intent(getActivity(), ApplyCorporateContestActivity.class);
+                        Bundle bundle = new Bundle();
+                        NotificationApp notification = new NotificationApp();
+                        Acme acme = new Acme();
+                        ContestObj contestObj = new ContestObj();
+                        contestObj.contestId = product.getProductid();
+                        acme.contestObj = contestObj;
+                        notification.acme = acme;
+                        bundle.putParcelable(AppConstant.NOTIFICATION_OBJ, notification);
+                        intent.putExtras(bundle);
+                        startActivityForResult(intent, AppConstant.INTENT_NOTIFICATION_CODE);
+
+                    }
+                });
                 vh.cardItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -1060,19 +1098,20 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                         Product product = mItems.get(position);
                         Bundle bundle = new Bundle();
 
-                        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
+                            bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
 
-                        Intent intent = new Intent(context, ProductDetailsActivity.class);
+                            Intent intent = new Intent(context, ProductDetailsActivity.class);
 
-                        intent.putExtras(bundle);
+                            intent.putExtras(bundle);
 
-                        ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
+                            ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
 
-                        ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
-                                R.anim.activity_animation_exit);
+                            ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
+                                    R.anim.activity_animation_exit);
 
                     }
                 });
+
                 return vh;
             }
         }
@@ -1089,82 +1128,91 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             } else {
                 final CorporateListAdaptor.ViewHolder itemHolder = (CorporateListAdaptor.ViewHolder) holder;
                 final Product productItem = mItems.get(position);
-                if (productItem.isLike > 0) {
-                    itemHolder.checkboxLike.setChecked(true);
-                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
-                } else {
-                    itemHolder.checkboxLike.setChecked(false);
-                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
-                }
-                if (productItem.statics.likeCount > 0) {
-                    itemHolder.checkboxLike.setChecked(true);
-                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
-                } else {
-                    itemHolder.checkboxLike.setChecked(false);
-                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+                if (productItem.getType().equals("product")) {
+                    itemHolder.rlProduct.setVisibility(View.VISIBLE);
+                    itemHolder.rlContest.setVisibility(View.GONE);
+                    if (productItem.isLike > 0) {
+                        itemHolder.checkboxLike.setChecked(true);
+                        itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+                    } else {
+                        itemHolder.checkboxLike.setChecked(false);
+                        itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
-                }
-                itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
-                itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
-                itemHolder.imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // showPopup(v, position, "pending", productItem);
-                        showPopup(v, position, productItem);
                     }
-                });
-                itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));
-                itemHolder.tvDownloads.setVisibility(View.GONE);
-                if (productItem.getDescription() != null && productItem.getDescription().trim().length() != 0) {
-                    itemHolder.tvDesciption.setVisibility(View.VISIBLE);
-                    itemHolder.tvDesciption.setText(Utils.capitlizeText(productItem.getDescription()));
+                    if (productItem.statics.likeCount > 0) {
+                        itemHolder.checkboxLike.setChecked(true);
+                        itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+                    } else {
+                        itemHolder.checkboxLike.setChecked(false);
+                        itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+
+                    }
+                    itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
+                    itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
+                    itemHolder.imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // showPopup(v, position, "pending", productItem);
+                            showPopup(v, position, productItem);
+                        }
+                    });
+                    itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));
+                    itemHolder.tvDownloads.setVisibility(View.GONE);
+                    if (productItem.getDescription() != null && productItem.getDescription().trim().length() != 0) {
+                        itemHolder.tvDesciption.setVisibility(View.VISIBLE);
+                        itemHolder.tvDesciption.setText(Utils.capitlizeText(productItem.getDescription()));
+                    } else {
+                        itemHolder.tvDesciption.setVisibility(View.GONE);
+                    }
+                    itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context).replaceAll("about", "").trim());
+
+                    if (productItem.isFeatured > 0) {
+                        itemHolder.tvFeatured.setVisibility(View.VISIBLE);
+                    } else
+                        itemHolder.tvFeatured.setVisibility(View.GONE);
+
+                    int status = productItem.productStatus;
+                    AppLogger.error(TAG, "Status => " + status);
+                    if (status == ProductStatus.REJECTED.getStatus()) {
+                        itemHolder.tvStatus.setTextColor(Color.RED);
+                        itemHolder.tvStatus.setText(R.string.rejected);
+                    } else if (status == ProductStatus.EXPIRED.getStatus()) {
+                        itemHolder.tvStatus.setTextColor(Color.RED);
+                        itemHolder.tvStatus.setText(R.string.expired);
+                    } else if (status == ProductStatus.APPROVED.getStatus()) {
+                        itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorHomeGreen));
+                        itemHolder.tvStatus.setText(R.string.approved);
+                    } else {
+                        itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorCorporateText));
+                        itemHolder.tvStatus.setText(R.string.pending);
+                    }
+
+                    if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
+                        itemHolder.pbLoader.setVisibility(View.VISIBLE);
+                        Glide.with(context)
+                                .load(productItem.getImagePath())
+                                .listener(new RequestListener<String, GlideDrawable>() {
+                                    @Override
+                                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                        itemHolder.pbLoader.setVisibility(View.GONE);
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                        itemHolder.pbLoader.setVisibility(View.GONE);
+                                        return false;
+                                    }
+                                })
+                                .into(itemHolder.imvOfAds);
+                    } else {
+                        itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
+                    }
                 } else {
-                    itemHolder.tvDesciption.setVisibility(View.GONE);
-                }
-                itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context).replaceAll("about", "").trim());
-
-                if (productItem.isFeatured > 0) {
-                    itemHolder.tvFeatured.setVisibility(View.VISIBLE);
-                } else
-                    itemHolder.tvFeatured.setVisibility(View.GONE);
-
-                int status = productItem.productStatus;
-                AppLogger.error(TAG, "Status => " + status);
-                if (status == ProductStatus.REJECTED.getStatus()) {
-                    itemHolder.tvStatus.setTextColor(Color.RED);
-                    itemHolder.tvStatus.setText(R.string.rejected);
-                } else if (status == ProductStatus.EXPIRED.getStatus()) {
-                    itemHolder.tvStatus.setTextColor(Color.RED);
-                    itemHolder.tvStatus.setText(R.string.expired);
-                } else if (status == ProductStatus.APPROVED.getStatus()) {
-                    itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorHomeGreen));
-                    itemHolder.tvStatus.setText(R.string.approved);
-                } else {
-                    itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorCorporateText));
-                    itemHolder.tvStatus.setText(R.string.pending);
-                }
-
-                if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
-                    itemHolder.pbLoader.setVisibility(View.VISIBLE);
-                    Glide.with(context)
-                            .load(productItem.getImagePath())
-                            .listener(new RequestListener<String, GlideDrawable>() {
-                                @Override
-                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    itemHolder.pbLoader.setVisibility(View.GONE);
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    itemHolder.pbLoader.setVisibility(View.GONE);
-                                    return false;
-                                }
-                            })
-                            .into(itemHolder.imvOfAds);
-                } else {
-                    itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
+                    itemHolder.rlProduct.setVisibility(View.GONE);
+                    itemHolder.rlContest.setVisibility(View.VISIBLE);
+                    itemHolder.contestname.setText(productItem.getProductname());
                 }
             }
         }

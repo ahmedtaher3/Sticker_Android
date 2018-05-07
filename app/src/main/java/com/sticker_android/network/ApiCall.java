@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 
+import com.sticker_android.R;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -113,6 +114,8 @@ public abstract class ApiCall implements Callback<ApiResponse> {
                         Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 // logoutIntent.putExtra(Utils.REFRESH, true);
                 mActivity.startActivity(logoutIntent);
+                mActivity.overridePendingTransition(R.anim.activity_animation_enter, R.anim.activity_animation_exit);
+
 
             }
         });

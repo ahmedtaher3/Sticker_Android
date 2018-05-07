@@ -223,5 +223,9 @@
     <string name="your_comment">Your Comment</string>
     <string name="txt_comments">"Comment's"</string>
     <string name="txt_resubmit">Resubmit</string>
+    <string name="txt_please_enter_description">Please enter a description.</string>
+    <string name="txt_please_enter_a_name">Please enter a name.</string>
+    <string name="txt_please_enter_a_expire_date">Please enter a expire date.</string>
+    <string name="txt_please_select_a_category">Please select a category.</string>
 
 </resources>

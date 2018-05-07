@@ -14,6 +14,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,12 +36,14 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
+import com.sticker_android.controller.activities.common.contest.ApplyCorporateContestActivity;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
 import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
 import com.sticker_android.controller.adaptors.DesignListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
+import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
@@ -48,6 +51,9 @@ import com.sticker_android.model.enums.ProductStatus;
 import com.sticker_android.model.interfaces.DesignerActionListener;
 import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
+import com.sticker_android.model.notification.Acme;
+import com.sticker_android.model.notification.ContestObj;
+import com.sticker_android.model.notification.NotificationApp;
 import com.sticker_android.model.payload.Payload;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -881,7 +887,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
     public class CorporateListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private final String TAG = DesignListAdapter.class.getSimpleName();
+        private final String TAG = AdsFragment.CorporateListAdaptor.class.getSimpleName();
         private ArrayList<Product> mItems;
         private Context context;
         public boolean isLoaderVisible;
@@ -903,7 +909,9 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             public ImageButton imvBtnEditRemove;
             public CardView cardItem;
             public ProgressBar pbLoader;
-            public TextView tvFeatured;
+            TextView tvFeatured;
+            public TextView contestname;
+            public RelativeLayout rlProduct,rlContest,rlContestMain;
 
             public ViewHolder(View view) {
                 super(view);
@@ -919,6 +927,10 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 cardItem = (CardView) view.findViewById(R.id.card_view);
                 pbLoader = (ProgressBar) view.findViewById(R.id.pgrImage);
                 tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
+                contestname = (TextView) view.findViewById(R.id.tv_content_description);
+                rlProduct = (RelativeLayout) view.findViewById(R.id.rlProduct);
+                rlContest=(RelativeLayout)view.findViewById(R.id.rlContest);
+                rlContestMain=(RelativeLayout)view.findViewById(R.id.rlContestMain);
             }
         }
 
@@ -947,10 +959,14 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         }
 
         public void setData(ArrayList<Product> data) {
-            mItems = new ArrayList<>();
-            mItems.addAll(data);
-            notifyDataSetChanged();
-            isLoaderVisible = false;
+            if (data != null) {
+                Log.e("Adapter", "Adapter list size => " + data.size());
+                mItems.clear();
+                // mItems = new ArrayList<>();
+                mItems.addAll(data);
+                notifyDataSetChanged();
+                isLoaderVisible = false;
+            }
         }
 
         public void updateAdapterData(ArrayList<Product> data) {
@@ -1019,7 +1035,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             if (viewType == ITEM_FOOTER) {
                 View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_loader_view, parent, false);
                 // set the view's size, margins, paddings and layout parameters
-                final LoaderViewHolder vh = new LoaderViewHolder(v);
+                final CorporateListAdaptor.LoaderViewHolder vh = new CorporateListAdaptor.LoaderViewHolder(v);
                 return vh;
             } else {
                 // create a new view
@@ -1027,6 +1043,25 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 // set the view's size, margins, paddings and layout parameters
                 final CorporateListAdaptor.ViewHolder vh = new CorporateListAdaptor.ViewHolder(v);
 
+                vh.rlContestMain.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = vh.getAdapterPosition();
+                        Product product = mItems.get(position);
+                        Intent intent = new Intent(getActivity(), ApplyCorporateContestActivity.class);
+                        Bundle bundle = new Bundle();
+                        NotificationApp notification = new NotificationApp();
+                        Acme acme = new Acme();
+                        ContestObj contestObj = new ContestObj();
+                        contestObj.contestId = product.getProductid();
+                        acme.contestObj = contestObj;
+                        notification.acme = acme;
+                        bundle.putParcelable(AppConstant.NOTIFICATION_OBJ, notification);
+                        intent.putExtras(bundle);
+                        startActivityForResult(intent, AppConstant.INTENT_NOTIFICATION_CODE);
+
+                    }
+                });
                 vh.cardItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -1047,6 +1082,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
                     }
                 });
+
                 return vh;
             }
         }
@@ -1061,84 +1097,93 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             if (itemType == ITEM_FOOTER) {
 
             } else {
-                final ViewHolder itemHolder = (CorporateListAdaptor.ViewHolder) holder;
+                final CorporateListAdaptor.ViewHolder itemHolder = (CorporateListAdaptor.ViewHolder) holder;
                 final Product productItem = mItems.get(position);
-                if (productItem.isLike > 0) {
-                    itemHolder.checkboxLike.setChecked(true);
-                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
-                } else {
-                    itemHolder.checkboxLike.setChecked(false);
-                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
-                }
-                if (productItem.statics.likeCount > 0) {
-                    itemHolder.checkboxLike.setChecked(true);
-                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
-                } else {
-                    itemHolder.checkboxLike.setChecked(false);
-                    itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+                if (productItem.getType().equals("product")) {
+                    itemHolder.rlProduct.setVisibility(View.VISIBLE);
+                    itemHolder.rlContest.setVisibility(View.GONE);
+                    if (productItem.isLike > 0) {
+                        itemHolder.checkboxLike.setChecked(true);
+                        itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+                    } else {
+                        itemHolder.checkboxLike.setChecked(false);
+                        itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
-                }
-                itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
-                itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
-                itemHolder.imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // showPopup(v, position, "pending", productItem);
-                        showPopup(v, position, productItem);
                     }
-                });
-                itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));
-                itemHolder.tvDownloads.setVisibility(View.GONE);
-                if (productItem.getDescription() != null && productItem.getDescription().trim().length() != 0) {
-                    itemHolder.tvDesciption.setVisibility(View.VISIBLE);
-                    itemHolder.tvDesciption.setText(Utils.capitlizeText(productItem.getDescription()));
+                    if (productItem.statics.likeCount > 0) {
+                        itemHolder.checkboxLike.setChecked(true);
+                        itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_hand));
+                    } else {
+                        itemHolder.checkboxLike.setChecked(false);
+                        itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+
+                    }
+                    itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
+                    itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
+                    itemHolder.imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // showPopup(v, position, "pending", productItem);
+                            showPopup(v, position, productItem);
+                        }
+                    });
+                    itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));
+                    itemHolder.tvDownloads.setVisibility(View.GONE);
+                    if (productItem.getDescription() != null && productItem.getDescription().trim().length() != 0) {
+                        itemHolder.tvDesciption.setVisibility(View.VISIBLE);
+                        itemHolder.tvDesciption.setText(Utils.capitlizeText(productItem.getDescription()));
+                    } else {
+                        itemHolder.tvDesciption.setVisibility(View.GONE);
+                    }
+                    itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context).replaceAll("about", "").trim());
+
+                    if (productItem.isFeatured > 0) {
+                        itemHolder.tvFeatured.setVisibility(View.VISIBLE);
+                    } else
+                        itemHolder.tvFeatured.setVisibility(View.GONE);
+
+                    int status = productItem.productStatus;
+                    AppLogger.error(TAG, "Status => " + status);
+                    if (status == ProductStatus.REJECTED.getStatus()) {
+                        itemHolder.tvStatus.setTextColor(Color.RED);
+                        itemHolder.tvStatus.setText(R.string.rejected);
+                    } else if (status == ProductStatus.EXPIRED.getStatus()) {
+                        itemHolder.tvStatus.setTextColor(Color.RED);
+                        itemHolder.tvStatus.setText(R.string.expired);
+                    } else if (status == ProductStatus.APPROVED.getStatus()) {
+                        itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorHomeGreen));
+                        itemHolder.tvStatus.setText(R.string.approved);
+                    } else {
+                        itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorCorporateText));
+                        itemHolder.tvStatus.setText(R.string.pending);
+                    }
+
+                    if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
+                        itemHolder.pbLoader.setVisibility(View.VISIBLE);
+                        Glide.with(context)
+                                .load(productItem.getImagePath())
+                                .listener(new RequestListener<String, GlideDrawable>() {
+                                    @Override
+                                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                        itemHolder.pbLoader.setVisibility(View.GONE);
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                        itemHolder.pbLoader.setVisibility(View.GONE);
+                                        return false;
+                                    }
+                                })
+                                .into(itemHolder.imvOfAds);
+                    } else {
+                        itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
+                    }
                 } else {
-                    itemHolder.tvDesciption.setVisibility(View.GONE);
-                }
-                itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context).replaceAll("about", "").trim());
-
-                if (productItem.isFeatured > 0) {
-                    itemHolder.tvFeatured.setVisibility(View.VISIBLE);
-                } else
-                    itemHolder.tvFeatured.setVisibility(View.GONE);
-
-                int status = productItem.productStatus;
-                AppLogger.error(TAG, "Status => " + status);
-                if (status == ProductStatus.REJECTED.getStatus()) {
-                    itemHolder.tvStatus.setTextColor(Color.RED);
-                    itemHolder.tvStatus.setText(R.string.rejected);
-                } else if (status == ProductStatus.EXPIRED.getStatus()) {
-                    itemHolder.tvStatus.setTextColor(Color.RED);
-                    itemHolder.tvStatus.setText(R.string.expired);
-                } else if (status == ProductStatus.APPROVED.getStatus()) {
-                    itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorHomeGreen));
-                    itemHolder.tvStatus.setText(R.string.approved);
-                } else {
-                    itemHolder.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.colorCorporateText));
-                    itemHolder.tvStatus.setText(R.string.pending);
-                }
-
-                if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
-                    itemHolder.pbLoader.setVisibility(View.VISIBLE);
-                    Glide.with(context)
-                            .load(productItem.getImagePath())
-                            .listener(new RequestListener<String, GlideDrawable>() {
-                                @Override
-                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    itemHolder.pbLoader.setVisibility(View.GONE);
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    itemHolder.pbLoader.setVisibility(View.GONE);
-                                    return false;
-                                }
-                            })
-                            .into(itemHolder.imvOfAds);
-                } else {
-                    itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
+                    itemHolder.rlProduct.setVisibility(View.GONE);
+                    itemHolder.rlContest.setVisibility(View.VISIBLE);
+                    itemHolder.contestname.setText(productItem.getProductname());
                 }
             }
         }

@@ -326,13 +326,15 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     protected boolean isValidData() {
 
         if (edtCorpName.getText().toString().trim().isEmpty()) {
-            Utils.showToast(this, "Please enter a name.");
+            Utils.showToast(this, getString(R.string.txt_please_enter_a_name));
             return false;
         } else if (edtExpireDate.getText().toString().trim().isEmpty()) {
-            Utils.showToast(this, "Please enter a expire date.");
+            Utils.showToast(this, getString(R.string.txt_please_enter_a_expire_date));
 
             return false;
         } else if (edtDescription.getText().toString().trim().isEmpty()) {
+            Utils.showToast(this,getString(R.string.txt_please_enter_description));
+
             return false;
         } /*else if (productObj.getExpireDate().trim().equals(mExpireDate)) {
             Utils.showToast(this, "Please select a valid date.");

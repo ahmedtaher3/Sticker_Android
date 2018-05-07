@@ -755,6 +755,9 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                         //uploadImage();
                     }
                 }
+                else{
+                    mCapturedImageUrl = null;
+                }
                 break;
 
             case PROFILE_GALLERY_IMAGE:

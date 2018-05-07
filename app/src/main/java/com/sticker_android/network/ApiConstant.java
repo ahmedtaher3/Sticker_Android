@@ -8,10 +8,10 @@ package com.sticker_android.network;
 public class ApiConstant {
     // public static final String BASE_API_URL = "http://localhost/vivek/index.php/";
     // public static final String BASE_API_URL = "http://18.188.13.98/web/index.php/mobile/";
-    public static final String BASE_API_URL = "http://18.188.13.98/v2/index.php/mobile/";
+    public static final String BASE_API_URL = "http://18.188.13.98/v3/index.php/mobile/";
 //   public static final String IMAGE_URl = "http://18.188.13.98/web/";
 
-    public static final String IMAGE_URl = "http://18.188.13.98/v2/";
+    public static final String IMAGE_URl = "http://18.188.13.98/v3/";
 
     public static final String API_LOGIN_URL = "userLogin/";
     public static final String API_REGISTER = "userRegistration/";

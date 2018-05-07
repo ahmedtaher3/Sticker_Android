@@ -102,7 +102,7 @@ public class TermsAndConditionFragment extends BaseFragment {
     }
 
     private void getTermsConditionData() {
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetContent("2", user.getAuthrizedKey());
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetContent("2");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

@@ -38,6 +38,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AWSUtil;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.CategorySpinnerAdaptor;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
@@ -249,16 +250,16 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
         }else
         if (edtCorpName.getText().toString().trim().isEmpty()) {
-            Utils.showToast(this, "Please enter a name.");
+            Utils.showToast(this, getString(R.string.txt_please_enter_a_name));
             return false;
         } else if (edtExpireDate.getText().toString().trim().isEmpty()) {
-            Utils.showToast(this, "Please enter a expire date.");
+            Utils.showToast(this, getString(R.string.txt_please_enter_a_expire_date));
             return false;
         }else if(spnrCategory.getSelectedItemPosition()==0){
-            Utils.showToast(this, "Please select a category.");
+            Utils.showToast(this, getString(R.string.txt_please_select_a_category));
             return false;
         } else if (edtDescription.getText().toString().trim().isEmpty()) {
-            Utils.showToast(this, "Please enter a description.");
+            Utils.showToast(this, getString(R.string.txt_please_enter_description));
             return false;
         }
         return true;
@@ -315,9 +316,12 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
 
     private void captureImage() {
+
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File file = Utils.getCustomImagePath(this, System.currentTimeMillis() + "");
+        AppLogger.debug(TAG,"captured url"+mCapturedImageUrl+"file path is:"+file);
         mCapturedImageUrl = file.getAbsolutePath();
+        AppLogger.debug(TAG,"captured url"+mCapturedImageUrl);
         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
     }
@@ -409,40 +413,43 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
+           switch (requestCode) {
 
-            case PROFILE_CAMERA_IMAGE:
-                if (resultCode == Activity.RESULT_OK) {
-                    if (mCapturedImageUrl != null) {
-                        openCropActivity(mCapturedImageUrl);
-                        //uploadImage();
+                case PROFILE_CAMERA_IMAGE:
+                    if (resultCode == Activity.RESULT_OK) {
+                        if (mCapturedImageUrl != null) {
+                            AppLogger.debug(TAG,"captured url"+mCapturedImageUrl+"on activity result:"+mCapturedImageUrl);
+                            openCropActivity(mCapturedImageUrl);
+                            //uploadImage();
 
+                        }
+                    } else{
+                        mCapturedImageUrl = null;
                     }
-                }
-                break;
+                    break;
 
-            case PROFILE_GALLERY_IMAGE:
-                if (resultCode == Activity.RESULT_OK) {
-                    Uri selectedImage = data.getData();
-                    String sourceUrl = Utils.getGalleryImagePath(this, selectedImage);
-                    File file = Utils.getCustomImagePath(this, "temp");
-                    mCapturedImageUrl = file.getAbsolutePath();
-                    mCapturedImageUrl=sourceUrl;
-                    openCropActivity(sourceUrl);
-                }
-                break;
-            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
-                CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                if (resultCode == RESULT_OK) {
-                    Uri resultUri = result.getUri();
-                    mCapturedImageUrl = resultUri.getPath();
-                    imvProductImage2.setVisibility(View.GONE);
-                    imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
-                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                    Exception error = result.getError();
-                    error.printStackTrace();
-                }
-        }
+                case PROFILE_GALLERY_IMAGE:
+                    if (resultCode == Activity.RESULT_OK) {
+                        Uri selectedImage = data.getData();
+                        String sourceUrl = Utils.getGalleryImagePath(this, selectedImage);
+                        File file = Utils.getCustomImagePath(this, "temp");
+                        mCapturedImageUrl = file.getAbsolutePath();
+                        mCapturedImageUrl = sourceUrl;
+                        openCropActivity(sourceUrl);
+                    }
+                    break;
+                case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                    if (resultCode == RESULT_OK) {
+                        Uri resultUri = result.getUri();
+                        mCapturedImageUrl = resultUri.getPath();
+                        imvProductImage2.setVisibility(View.GONE);
+                        imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
+                    } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                        Exception error = result.getError();
+                        error.printStackTrace();
+                    }
+            }
     }
 
     private void openCropActivity(String url) {
