@@ -7,18 +7,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.changelanguage.ChangeLanguageActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.corporate.CorporateProfileActivity;
-import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
+import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
+import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.BadgeUtils;
 
@@ -34,7 +34,6 @@ public class SplashActivity extends AppBaseActivity {
         setContentView(R.layout.activity_splash);
         init();
         waitForFewSecond();
-        setSelectedLangage();
         changeStatusBarColor(Color.BLACK);
         BadgeUtils.setBadge(this,0);
         LocalNotification.clearNotifications(this);
@@ -45,11 +44,18 @@ public class SplashActivity extends AppBaseActivity {
         appPref.clearCategoryList();
     }
 
-    private void setSelectedLangage() {
+    private void setSelectedLangage(Class<?> cls) {
 
-       int language= appPref.getLanguage(0);
-      //  setLocale(String.valueOf(language));
-    }
+       int language= appPref.getLanguage(1);
+       // setLocale(language,cls);
+        if (language ==2) {
+            Utils.changeLanguage("ar",this,cls);
+
+        }else{
+            Utils.changeLanguage("en",this,cls);
+
+        }
+        }
 
     /**
      * Method is used for waiting  few second to start Main App
@@ -85,10 +91,12 @@ public class SplashActivity extends AppBaseActivity {
                 moveToActivity();
                 finish();
             }else if(!appPref.getLanguageStatus(false)){
-                startNewActivity(ChangeLanguageActivity.class);
+               setSelectedLangage(ChangeLanguageActivity.class);
+               // startNewActivity(ChangeLanguageActivity.class);
                 finish();
             }else {
-                startNewActivity(SigninActivity.class);
+               setSelectedLangage(SigninActivity.class);
+              //  startNewActivity(SigninActivity.class);
                 finish();
 
             }
@@ -101,31 +109,41 @@ public class SplashActivity extends AppBaseActivity {
      * setLocale() set the localization configuration according to your selected language.
      *
      * @param lang
+     * @param cls
      */
 
-    public void setLocale(String lang) {
-        Locale myLocale = new Locale(lang);
+    public void setLocale(int lang, Class<?> cls) {
+        Locale myLocale=null;
+         if (lang ==2) {
+             myLocale  = new Locale("ar");
+         }else{
+             myLocale  = new Locale("en");
+         }
         Resources res = getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
         Configuration conf = res.getConfiguration();
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
-        startNewActivity(SigninActivity.class);
+        startNewActivity(cls);
     }
 
   public void  moveToActivity() {
       User user = appPref.getUserInfo();
       if (user.getUserType().equals("corporate")) {
           if (user.getCompanyName() != null&& !user.getCompanyName().isEmpty()){
-              startNewActivity(CorporateHomeActivity.class);
+           //   startNewActivity(CorporateHomeActivity.class);
+              setSelectedLangage(CorporateHomeActivity.class);
       } else {
-          startNewActivity(CorporateProfileActivity.class);
+         // startNewActivity(CorporateProfileActivity.class);
+              setSelectedLangage(CorporateProfileActivity.class);
       }
     }
       else if (user.getUserType().equals("fan")) {
-          startNewActivity(FanHomeActivity.class);
+         // startNewActivity(FanHomeActivity.class);
+          setSelectedLangage(FanHomeActivity.class);
       } else if (user.getUserType().equals("designer")) {
-          startNewActivity(DesignerHomeActivity.class);
+         // startNewActivity(DesignerHomeActivity.class);
+          setSelectedLangage(DesignerHomeActivity.class);
       }
 
   }

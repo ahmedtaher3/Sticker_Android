@@ -289,7 +289,7 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             limit = PAGE_LIMIT;
         }
 
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductWithContestList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword,"[2]");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override

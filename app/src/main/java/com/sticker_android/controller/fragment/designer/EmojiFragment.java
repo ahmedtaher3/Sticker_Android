@@ -289,7 +289,7 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             limit = PAGE_LIMIT;
         }
 
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductWithContestList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword,"");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override

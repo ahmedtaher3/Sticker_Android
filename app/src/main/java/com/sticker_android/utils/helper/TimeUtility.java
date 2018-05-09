@@ -50,12 +50,12 @@ public class TimeUtility {
         String words;
 
         if(seconds < 20){
-            words = "Just now";
+            words = context.getString(R.string.txt_just_now);
             return words;
         }
         else if (seconds < 45) {
             //  words = r.getString(R.string.time_ago_seconds)+""+ Math.round(seconds);
-            words =  ""+Math.round(seconds)+" second ";
+            words =  ""+Math.round(seconds)+context.getString(R.string.txt_second);
 
         } else if (seconds < 90) {
             words = r.getString(R.string.time_ago_minute)+" ";

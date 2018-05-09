@@ -1,6 +1,7 @@
 package com.sticker_android.utils;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,19 +10,15 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -284,10 +281,14 @@ public class Utils {
         Configuration conf = res.getConfiguration();
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
+        conf.setLayoutDirection(myLocale);
         Intent intent = new Intent(activity, cls);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivity(intent);
         activity.finish();
+        activity.overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
+
     }
 
     /**
@@ -504,6 +505,24 @@ public class Utils {
     }
 
     //Set the radius of the Blur. Supported range 0 < radius <= 25
+    public static void setLocale(Context mContext, String lang) {
+        Locale myLocale = new Locale(lang);
+        Resources res = mContext.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            setSystemLocale(conf, myLocale);
+        } else {
+            conf.locale = myLocale;
+            res.updateConfiguration(conf, dm);
+            conf.setLayoutDirection(myLocale);
+        }
 
+         }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    public static void setSystemLocale(Configuration config, Locale locale) {
+        config.setLocale(locale);
+    }
 }

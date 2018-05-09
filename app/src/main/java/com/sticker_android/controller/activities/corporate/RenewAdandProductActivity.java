@@ -242,14 +242,14 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
     private void setButtonText() {
 
         if (type.equals("Edit")) {
-            btnRePost.setText("Update");
+            btnRePost.setText(getResources().getString(R.string.update));
             setDate = new SetDate(edtExpireDate, this, R.style.AppThemeAddRenew);
         } else {
             edtDescription.setLongClickable(false);
             edtDescription.setEnabled(false);
             edtCorpName.setLongClickable(false);
             edtCorpName.setEnabled(false);
-            btnRePost.setText("Update");
+            btnRePost.setText(getResources().getString(R.string.update));
             setExpireDate();
         }
     }
@@ -455,7 +455,8 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
                 if (apiResponse.status) {
                     progressDialogHandler.hide();
                     if (apiResponse.status) {
-                        Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " updated successfully.");
+
+                        Utils.showToast(getApplicationContext(),getString(R.string.act_renew_product_txt_data_updated_successfully));
                         setResult(RESULT_OK);
                         onBackPressed();
                     }
@@ -507,7 +508,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
-                    Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " updated successfully.");
+                    Utils.showToast(getApplicationContext(),getString(R.string.act_renew_product_txt_data_updated_successfully));
                     setResult(RESULT_OK);
                     onBackPressed();
                 }
@@ -644,7 +645,7 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
         progressDialogHandler.show();
         if (filePath == null) {
-            Toast.makeText(this, "Could not find the filepath of the selected file",
+            Toast.makeText(this, getResources().getString(R.string.txt_could_not_find_file_path),
                     Toast.LENGTH_LONG).show();
             return;
         }

@@ -14,7 +14,10 @@ import com.sticker_android.model.contest.OngoingContest;
 import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.corporateproduct.Statics;
+import com.sticker_android.model.fandownload.Download;
 import com.sticker_android.model.filter.FanFilter;
+import com.sticker_android.model.notification.Acme;
+import com.sticker_android.model.notification.AcmeNoti;
 import com.sticker_android.model.notification.NotificationApp;
 
 import java.util.ArrayList;
@@ -84,6 +87,16 @@ public class Payload implements Parcelable {
     @SerializedName("info_text")
     public String infoText;
 
+    @SerializedName("download_list")
+    public ArrayList<Download> downloadArrayList;
+
+
+    @SerializedName("acme1")
+
+    public AcmeNoti acmeObj;
+    public Payload() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -107,9 +120,8 @@ public class Payload implements Parcelable {
         dest.writeString(this.msg);
         dest.writeString(this.title);
         dest.writeString(this.infoText);
-    }
-
-    public Payload() {
+        dest.writeTypedList(this.downloadArrayList);
+        dest.writeParcelable(this.acmeObj, flags);
     }
 
     protected Payload(Parcel in) {
@@ -133,9 +145,11 @@ public class Payload implements Parcelable {
         this.msg = in.readString();
         this.title = in.readString();
         this.infoText = in.readString();
+        this.downloadArrayList = in.createTypedArrayList(Download.CREATOR);
+        this.acmeObj = in.readParcelable(AcmeNoti.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Payload> CREATOR = new Parcelable.Creator<Payload>() {
+    public static final Creator<Payload> CREATOR = new Creator<Payload>() {
         @Override
         public Payload createFromParcel(Parcel source) {
             return new Payload(source);

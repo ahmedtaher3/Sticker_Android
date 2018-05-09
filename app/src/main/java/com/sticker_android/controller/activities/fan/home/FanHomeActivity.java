@@ -25,17 +25,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
-import com.sticker_android.controller.activities.common.terms.TermsActivity;
+import com.sticker_android.controller.activities.fan.home.contest.FanContestListActivity;
 import com.sticker_android.controller.fragment.common.AccountSettingFragment;
 import com.sticker_android.controller.fragment.common.ProfileFragment;
 import com.sticker_android.controller.fragment.designer.contentapproval.DesignerContentApprovalFragment;
 import com.sticker_android.controller.fragment.fan.fancustomization.FanCustomizationFragment;
-import com.sticker_android.controller.fragment.fan.fandownloads.FanDownloadFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeFragment;
+import com.sticker_android.controller.fragment.fan.fansavecustomization.FanSaveCustomization;
 import com.sticker_android.controller.fragment.fan.notification.FanNotification;
+import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
+import com.sticker_android.model.notification.Acme;
+import com.sticker_android.model.notification.AppNotification;
+import com.sticker_android.model.notification.ContestObj;
+import com.sticker_android.model.notification.NotificationApp;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
@@ -43,14 +49,16 @@ import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.UserTypeEnum;
+import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import retrofit2.Call;
 
 public class FanHomeActivity extends AppBaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener, AccountSettingFragment.ILanguageUpdate {
 
+    private static final String TAG = FanHomeActivity.class.getSimpleName();
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
@@ -150,6 +158,13 @@ public class FanHomeActivity extends AppBaseActivity
         super.onResume();
         init();
         setUserDataIntoNaviagtion();
+    /*    int lang=appPref.getLanguage(1);
+      if(lang==2){
+          Utils.changeLanguage("ar",getActivity(),FanHomeActivity.class);
+      }else {
+          Utils.changeLanguage("en",getActivity(),FanHomeActivity.class);
+
+      }*/
     }
 
     private void setToolBarTitle() {
@@ -253,17 +268,17 @@ public class FanHomeActivity extends AppBaseActivity
         int id = item.getItemId();
         Fragment fragmentClass = null;
         if (id == R.id.nav_home && !(f instanceof FanHomeFragment)) {
-            textView.setText("Home");
+            textView.setText(getResources().getString(R.string.txt_home));
             fragmentClass = new FanHomeFragment();
-        } else if (id == R.id.nav_downloads && !(f instanceof FanDownloadFragment)) {
-            textView.setText("Downloads");
-            fragmentClass = new FanDownloadFragment();
-        } else if (id == R.id.nav_customization && !(f instanceof FanCustomizationFragment)) {
-            textView.setText("Customization");
+        } else if (id == R.id.nav_downloads && !(f instanceof FanCustomizationFragment)) {
+            textView.setText(R.string.txt_downloads);
             fragmentClass = new FanCustomizationFragment();
+        } else if (id == R.id.nav_customization && !(f instanceof FanSaveCustomization)) {
+            textView.setText(R.string.txt_customization);
+            fragmentClass = new FanSaveCustomization();
 
         } else if (id == R.id.nav_profile && !(f instanceof ProfileFragment)) {
-            textView.setText("Home");
+            //textView.setText("Home");
             //  startNewActivity(ViewProfileActivity.class);
             fragmentClass = new ProfileFragment();
             textView.setText(getResources().getString(R.string.txt_myprofile));
@@ -472,6 +487,67 @@ public class FanHomeActivity extends AppBaseActivity
 
             }
         });
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        LocalNotification.clearNotifications(this);
+        if (intent.getExtras() != null) {
+            if (intent.getExtras().getParcelable("obj") != null) {
+                AppNotification appNotification = new AppNotification();
+                appNotification = intent.getExtras().getParcelable("obj");
+                if (appNotification.payload.acmeObj.status == 5)
+                    setIntentData(appNotification);
+            }
+        }
+/*
+        Intent intent = new Intent(getActivity(), FanContestListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(AppConstant.NOTIFICATION_OBJ, notification);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, AppConstant.INTENT_NOTIFICATION_CODE);
+*/
+
+    }
+
+
+    private void setIntentData(AppNotification appNotification) {
+
+        NotificationApp notificationApp = new NotificationApp();
+        notificationApp.notificatinId = appNotification.payload.acmeObj.notificationId;
+        Acme acme = new Acme();
+        ContestObj contestObj = new ContestObj();
+        contestObj.contestId = appNotification.payload.acmeObj.contestId;
+        acme.contestObj = contestObj;
+        notificationApp.acme = acme;
+        Intent intentApplyContest = new Intent(this, FanContestListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(AppConstant.NOTIFICATION_OBJ, notificationApp);
+        intentApplyContest.putExtras(bundle);
+        startActivityForResult(intentApplyContest, AppConstant.INTENT_NOTIFICATION_CODE);
+
+    }
+
+
+    @Override
+    public void updatelanguage(String language) {
+        AppLogger.debug(TAG, "language is :" + language);
+        if(language.equalsIgnoreCase("1"))
+        {
+            appPref.setLanguage(1);
+            Utils.changeLanguage("en", this, FanHomeActivity.class);
+            AppLogger.debug(FanHomeActivity.class.getSimpleName(),"language Account on update"+language);
+
+        }else {
+            appPref.setLanguage(2);
+            Utils.changeLanguage("ar", this, FanHomeActivity.class);
+            AppLogger.debug(FanHomeActivity.class.getSimpleName(),"language Account on update"+language);
+
+        }
+
 
     }
 }

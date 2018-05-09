@@ -42,7 +42,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         AppNotification appNotification=new Gson().fromJson(remoteMessage.getData().get("data"), AppNotification.class);
 
-        LocalNotification localNotification=new LocalNotification();
+        LocalNotification localNotification=new LocalNotification(appNotification);
 
         localNotification.setNotification(this,appNotification.title,appNotification.message);
 

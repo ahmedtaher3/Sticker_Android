@@ -33,14 +33,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.filter.FanFilter;
 import com.sticker_android.model.interfaces.ImagePickerListener;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AWSUtil;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.BitmapUtils;
 import com.sticker_android.utils.FileUtil;
@@ -57,6 +65,8 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+
+import retrofit2.Call;
 
 import static android.app.Activity.RESULT_OK;
 import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_STORAGE_ACCESS_RQ;
@@ -130,7 +140,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             setListenerOnViews();
 
             Bundle argument = getArguments();
-            if(argument != null){
+            if (argument != null) {
                 mCapturedImageUrl = argument.getString(IMAGE_PATH);
                 String stickerPath = argument.getString(STICKER_IMAGE_PATH);
                 rlPlaceHolderClick.setVisibility(View.GONE);
@@ -143,8 +153,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 rlFilterOptionContainer.setVisibility(View.INVISIBLE);
                 rlResetButtonHolder.setVisibility(View.GONE);
                 makeSaveButtonEnable(true);
-            }
-            else{
+            } else {
                 makeSaveButtonEnable(false);
                 makeFilterOptionEnable(false);
             }
@@ -322,28 +331,27 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onLoadingComplete(String s, View view, final Bitmap bitmap) {
                 progressDialogHandler.hide();
-                if(mSelectedFilter.type.contains("filter")){
+                if (mSelectedFilter.type.contains("filter")) {
                     mStickerView.setVisibility(View.GONE);
                     imgFilterMask.setVisibility(View.VISIBLE);
 
                     imgFilterMask.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        imgFilterMask.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        int width = imgFilterMask.getWidth();
-                        int height = imgFilterMask.getHeight();
-                        Log.e(TAG, "Set filter height");
+                        @Override
+                        public void onGlobalLayout() {
+                            imgFilterMask.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            int width = imgFilterMask.getWidth();
+                            int height = imgFilterMask.getHeight();
+                            Log.e(TAG, "Set filter height");
 
-                        int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
-                        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
-                        params.height = imgHeight;
-                        imgFilterMask.setLayoutParams(params);
+                            int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
+                            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
+                            params.height = imgHeight;
+                            imgFilterMask.setLayoutParams(params);
 
-                        imgFilterMask.setImageBitmap(bitmap);
-                    }
-                });
-                }
-                else{
+                            imgFilterMask.setImageBitmap(bitmap);
+                        }
+                    });
+                } else {
                     mStickerView.setVisibility(View.VISIBLE);
                     imgFilterMask.setVisibility(View.GONE);
                     setSelectedStickerItem(bitmap);
@@ -376,10 +384,9 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    if(mImageSource == PROFILE_GALLERY_IMAGE){
+                    if (mImageSource == PROFILE_GALLERY_IMAGE) {
                         pickGalleryImage();
-                    }
-                    else if(mImageSource == PROFILE_CAMERA_IMAGE){
+                    } else if (mImageSource == PROFILE_CAMERA_IMAGE) {
                         captureImage();
                     }
 
@@ -431,6 +438,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         }
 
         saveFilePath = Utils.getCustomImagePath(mHostActivity, null).getAbsolutePath();
+      //  beginUpload(saveFilePath);
         mainImage.setDrawingCacheEnabled(true);
         mainImage.buildDrawingCache(true);
 
@@ -453,10 +461,9 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(bmp1, new Matrix(), null);
-        if(alignBottom){
+        if (alignBottom) {
             canvas.drawBitmap(bmp2, 0, bmp1.getHeight() - bmp2.getHeight(), null);
-        }
-        else{
+        } else {
             canvas.drawBitmap(bmp2, 0, 0, null);
         }
         return bmOverlay;
@@ -507,10 +514,9 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void selectedItemPosition(int position) {
-                        if(position == 0){
+                        if (position == 0) {
                             mImageSource = PROFILE_CAMERA_IMAGE;
-                        }
-                        else if(position == 1){
+                        } else if (position == 1) {
                             mImageSource = PROFILE_GALLERY_IMAGE;
                         }
                     }
@@ -518,30 +524,29 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-    private void makeSaveButtonEnable(boolean enable){
-        if(enable){
+
+    private void makeSaveButtonEnable(boolean enable) {
+        if (enable) {
             btnSave.setEnabled(true);
             btnSave.setAlpha(1.0f);
-        }
-        else{
+        } else {
             btnSave.setEnabled(false);
             btnSave.setAlpha(0.3f);
         }
     }
 
-    private void makeFilterOptionEnable(boolean enable){
-        if(enable){
+    private void makeFilterOptionEnable(boolean enable) {
+        if (enable) {
             rlFilterOptionContainer.setEnabled(true);
             rlFilterOptionContainer.setAlpha(1.0f);
-        }
-        else{
+        } else {
             rlFilterOptionContainer.setEnabled(false);
             rlFilterOptionContainer.setAlpha(0.3f);
         }
     }
 
     private void openFilterGallery(String type) {
-        if(mCapturedImageUrl == null){
+        if (mCapturedImageUrl == null) {
             //Toast.makeText(mHostActivity, R.string.select_image_for_filter, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -638,6 +643,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
             if (result) {
                 FileUtil.albumUpdate(mHostActivity, saveFilePath);
+                beginUpload(saveFilePath);
                 mStickerView.clear();
                 mCapturedImageUrl = null;
                 mainImage.clear();
@@ -646,7 +652,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 makeSaveButtonEnable(false);
                 makeFilterOptionEnable(false);
                 Toast.makeText(mHostActivity, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
-                if(rlFilterOptionContainer.getVisibility() == View.INVISIBLE){
+                if (rlFilterOptionContainer.getVisibility() == View.INVISIBLE) {
                     mHostActivity.onBackPressed();
                 }
             } else {
@@ -661,4 +667,77 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         dialog.setMessage(title);
         return dialog;
     }
+
+
+    /*
+       * Begins to upload the file specified by the file path.
+       */
+    private void beginUpload(String filePath) {
+
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
+        progressDialogHandler.show();
+        if (filePath == null) {
+            Toast.makeText(getActivity(), "Could not find the filepath of the selected file",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        final String fileName = Utils.getFileName(mLoggedUser.getId());
+
+        File file = new File(filePath);
+        TransferObserver observer = new AWSUtil().getTransferUtility(getActivity()).upload(AppConstant.BUCKET_NAME, fileName,
+                file);
+        observer.setTransferListener(new TransferListener() {
+
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                Log.d(TAG, "onStateChanged: " + id + ", " + state);
+                if (TransferState.COMPLETED == state) {
+                    if(progressDialogHandler!=null)
+                    progressDialogHandler.hide();
+                    String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
+                    saveImageApi(imagePath);
+                }
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                Log.d(TAG, String.format("onProgressChanged: %d, total: %d, current: %d",
+                        id, bytesTotal, bytesCurrent));
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                if(progressDialogHandler!=null)
+                progressDialogHandler.hide();
+                Log.e(TAG, "Error during upload: " + id, ex);
+            }
+
+        });
+    }
+
+    private void saveImageApi(String imagePath) {
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
+        progressDialogHandler.show();
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().saveCustomizeImage(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey()
+                , mLoggedUser.getId(), imagePath);
+
+        apiResponseCall.enqueue(new ApiCall(getActivity()) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+                if (apiResponse.status) {
+
+                }
+
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
+            }
+        });
+
+    }
+
 }

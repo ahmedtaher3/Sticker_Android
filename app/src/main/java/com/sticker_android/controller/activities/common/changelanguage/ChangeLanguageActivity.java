@@ -14,6 +14,7 @@ import android.widget.RadioGroup;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.Locale;
@@ -87,14 +88,16 @@ public class ChangeLanguageActivity extends AppBaseActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.act_change_lang_btn_english:
-               setLocale("en");
-                appPref.setLanguage(0);
-                appPref.setLanguageStatus(true);
-                break;
-            case R.id.act_change_lang_btn_arabic:
-                setLocale("ar");
                 appPref.setLanguage(1);
                 appPref.setLanguageStatus(true);
+                Utils.changeLanguage("en",this,SigninActivity.class);
+                //setLocale("en");
+                break;
+            case R.id.act_change_lang_btn_arabic:
+                appPref.setLanguage(2);
+                appPref.setLanguageStatus(true);
+                Utils.changeLanguage("ar",this,SigninActivity.class);
+               // setLocale("ar");
                 break;
         }
     }

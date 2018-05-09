@@ -109,7 +109,7 @@
                                     android:drawablePadding="10dp"
                                     android:drawableTop="@drawable/fan_xhdpi"
                                     android:gravity="bottom|center"
-                                    android:text="Fan"
+                                    android:text="@string/txt_fan"
                                     android:textColor="@color/colorFanText" />
 
                                 <RadioButton

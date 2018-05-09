@@ -143,7 +143,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
 
         ArrayList<Category> categoryList = appPref.getCategoryList();
 
-        final Category placeHolderCategory = new Category(-1, getString(R.string.select_design_category));
+        final Category placeHolderCategory = new Category(-1, getString(R.string.select_category_txt));
 
         if (categoryList != null && categoryList.size() != 0) {
             corporateCategories = categoryList;
@@ -180,11 +180,11 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
             if (mProduct.productStatus == 3) {
                 rlJustificationHolder.setVisibility(View.VISIBLE);
                 setAdminCommentData();
-                btnPost.setText("Resubmit");
+                btnPost.setText(getResources().getString(R.string.txt_resubmit));
                 imvProductImage.setOnClickListener(this);
             } else {
                 rlJustificationHolder.setVisibility(View.GONE);
-                btnPost.setText("Update");
+                btnPost.setText(R.string.act_txt_update_add_new_design);
                 imvProductImage.setOnClickListener(null);
             }
     }
@@ -794,7 +794,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                         imgPlaceHolder.setVisibility(View.GONE);
                     } else {
                         mCapturedImageUrl = null;
-                        Utils.showToast(this, "Please select a valid gif");
+                        Utils.showToast(this, getString(R.string.txt_please_select_a_valid_gif));
                     }
 
                 }
@@ -933,7 +933,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
         progressDialogHandler.show();
 
         if (filePath == null) {
-            Toast.makeText(this, "Could not find the filepath of the selected file",
+            Toast.makeText(this, R.string.txt_could_not_find_file_path,
                     Toast.LENGTH_LONG).show();
             return;
         }

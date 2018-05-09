@@ -32,7 +32,7 @@
                     android:layout_marginTop="@dimen/dp_10"
                     android:textSize="15sp"
                     android:textColor="@android:color/white"
-                    android:text="Company Details"
+                    android:text="@string/txt_company_details"
                     android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -85,7 +85,7 @@
                         android:maxLines="1"
                         android:maxLength="100"
                         android:inputType="text|textNoSuggestions|textCapWords"
-                        android:hint="Company Name"
+                        android:hint="@string/txt_company_name"
                         />
                 </android.support.design.widget.TextInputLayout>
                 <android.support.design.widget.TextInputLayout
@@ -101,7 +101,7 @@
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                         android:inputType="text|textNoSuggestions|textCapWords|textMultiLine"
                         style="@style/EditText"
-                        android:hint="Company Address"
+                        android:hint="@string/txt_company_address"
                         android:maxLength="100" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>

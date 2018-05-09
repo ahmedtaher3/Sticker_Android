@@ -26,7 +26,9 @@ import com.sticker_android.controller.fragment.common.ProfileFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeFragment;
 import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.utils.AppConstants;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.sharedpref.AppPref;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -55,6 +57,15 @@ public abstract class AppBaseActivity extends AppCompatActivity {
                 .considerExifParams(true)
                 .build();
         StickerApp.getInstance().setCurrentActivity(this);
+        initApp();
+    }
+
+
+    /**
+     * App Local
+     */
+    public void initApp() {
+
     }
 
     /**
@@ -80,29 +91,36 @@ public abstract class AppBaseActivity extends AppCompatActivity {
     }
 
 
-    /** Method is used to start a new Activity
+    /**
+     * Method is used to start a new Activity
+     *
      * @param cls Name of the class which you want to forward
      */
-    protected void startNewActivity(Class<?> cls){
-        startActivity(new Intent(getActivity(),cls));
+    protected void startNewActivity(Class<?> cls) {
+        startActivity(new Intent(getActivity(), cls));
         overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
 
     }
-    /** Method is used to start a new Activity
+
+    /**
+     * Method is used to start a new Activity
+     *
      * @param intent Data which you want to forward to next Activity
      */
 
-    protected void startNewActivityWithData(Intent intent){
+    protected void startNewActivityWithData(Intent intent) {
         startActivity(intent);
-               overridePendingTransition(R.anim.activity_animation_enter,
+        overridePendingTransition(R.anim.activity_animation_enter,
                 R.anim.activity_animation_exit);
 
     }
 
-    /** Method is used to start a new Activity with Result
-     * @param cls Name of the class which you want to forward
-     * @param bundle  Data which you want to forward to next Activity
+    /**
+     * Method is used to start a new Activity with Result
+     *
+     * @param cls         Name of the class which you want to forward
+     * @param bundle      Data which you want to forward to next Activity
      * @param requestCode request code for Activity  so you can get the result
      */
     protected void startActivityWithResult(Class<?> cls, Bundle bundle, int requestCode) {
@@ -127,6 +145,21 @@ public abstract class AppBaseActivity extends AppCompatActivity {
 
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+
+        AppLogger.debug(AppBaseActivity.class.getSimpleName(),"language base"+new AppPref(this).getLanguage(1));
+        if (new AppPref(this).getLanguage(1)==2)
+            Utils.setLocale(this, "ar");
+        else
+            Utils.setLocale(this, "en");
+/*
+        if (!new AppPref(this).getUserInfo().getLanguageId().equalsIgnoreCase("0")) {
+
+
+
+        }else {
+            Utils.setLocale(this, "en");
+        }
+*/
     }
 
    /* public void changeStatusBarColor(int color){
@@ -146,8 +179,8 @@ public abstract class AppBaseActivity extends AppCompatActivity {
 
     }*/
 
-    public void changeStatusBarColor(int statusBarColor){
-        boolean shouldChangeStatusBarTintToDark=false;
+    public void changeStatusBarColor(int statusBarColor) {
+        boolean shouldChangeStatusBarTintToDark = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
 
@@ -157,20 +190,18 @@ public abstract class AppBaseActivity extends AppCompatActivity {
             // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-            if(Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP){
-                if(statusBarColor == Color.WHITE){
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                if (statusBarColor == Color.WHITE) {
                     window.setStatusBarColor(Color.parseColor("#CCCCCC"));
-                }
-                else{
+                } else {
                     window.setStatusBarColor(statusBarColor);
                 }
-            }
-            else if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
+            } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 // finally change the color
                 window.setStatusBarColor(statusBarColor);
             }
 
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 View decor = getWindow().getDecorView();
                 if (shouldChangeStatusBarTintToDark) {
                     decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -189,13 +220,11 @@ public abstract class AppBaseActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = activity.getWindow();
             Drawable background = null;
-            if(userType == AppConstants.FAN){
+            if (userType == AppConstants.FAN) {
                 background = activity.getResources().getDrawable(R.drawable.fan_status_bar_gradient);
-            }
-            else if(userType == AppConstants.DESIGNER){
+            } else if (userType == AppConstants.DESIGNER) {
                 background = activity.getResources().getDrawable(R.drawable.designer_status_bar_gradient);
-            }
-            else{
+            } else {
                 background = activity.getResources().getDrawable(R.drawable.corporate_status_bar_gradient);
             }
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -213,15 +242,16 @@ public abstract class AppBaseActivity extends AppCompatActivity {
 
     /**
      * will show custom popup for no internet connection
+     *
      * @param context
      * @param parent
      * @param eventListener
      * @param requestCode
      */
-    public void manageNoInternetConnectionLayout(Context context, final RelativeLayout parent, final NetworkPopupEventListener eventListener, final int requestCode){
+    public void manageNoInternetConnectionLayout(Context context, final RelativeLayout parent, final NetworkPopupEventListener eventListener, final int requestCode) {
 
         final View view = LayoutInflater.from(context).inflate(R.layout.layout_no_internet_connection, null);
-        if(parent != null && parent.getChildCount() > 0){
+        if (parent != null && parent.getChildCount() > 0) {
             parent.removeAllViews();
         }
         parent.addView(view);
@@ -230,7 +260,7 @@ public abstract class AppBaseActivity extends AppCompatActivity {
         llRetry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(parent != null && parent.getChildCount() > 0){
+                if (parent != null && parent.getChildCount() > 0) {
                     parent.removeAllViews();
                 }
                 eventListener.onRetryClickListener(requestCode);
@@ -241,7 +271,6 @@ public abstract class AppBaseActivity extends AppCompatActivity {
     public void updateCallbackMessage() {
 
     }
-
 
 
     public void clearBackStack() {

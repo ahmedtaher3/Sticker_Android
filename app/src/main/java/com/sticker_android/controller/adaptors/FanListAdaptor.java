@@ -404,12 +404,13 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void downloadApi(final Product product, int i, final int position) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
-                , "", product.getProductid(), "" + i, "", "download_count");
+                , "", product.getProductid(), "" + i, "statics", "download_count");
         apiResponseCall.enqueue(new ApiCall((Activity) context) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
-                    mItems.get(position).statics.downloadCount++;
+                    mItems.get(position).statics.downloadCount = apiResponse.paylpad.statics.downloadCount;
+                  //  mItems.get(position).statics.downloadCount++;
                     notifyDataSetChanged();
                 }
             }

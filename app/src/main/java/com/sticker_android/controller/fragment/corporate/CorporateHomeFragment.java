@@ -62,16 +62,15 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     private UpdateToolbarTitle mUpdateToolbarCallback;
 
 
-
     public static CorporateHomeFragment newInstance() {
         CorporateHomeFragment f = new CorporateHomeFragment();
 
         return f;
     }
+
     public CorporateHomeFragment() {
         // Required empty public constructor
     }
-
 
 
     @Override
@@ -119,7 +118,6 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     }
 
 
-
     public void addTabsDynamically() {
 
         TabLayout.Tab adsTab = tabLayout.newTab();
@@ -131,7 +129,6 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         tabLayout.addTab(productTab);
         Utils.setTabLayoutDivider(tabLayout, getActivity());
     }
-
 
 
     private void swipeListener() {
@@ -188,7 +185,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     @Override
     protected void setViewReferences(View view) {
         fabAddNew = (FloatingActionButton) view.findViewById(R.id.fabAddNew);
-    //    viewPager = (ViewPager) view.findViewById(R.id.view_pager);
+        //    viewPager = (ViewPager) view.findViewById(R.id.view_pager);
         tabLayout = (TabLayout) view.findViewById(R.id.act_landing_tab);
     }
 
@@ -249,7 +246,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
     }
 
     public void closeSearch() {
-        if(item!=null)
+        if (item != null)
             MenuItemCompat.collapseActionView(item);
     }
 
@@ -264,7 +261,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             Utils.hideKeyboard(getActivity());
-         //   viewPager.setCurrentItem(tab.getPosition());
+            //   viewPager.setCurrentItem(tab.getPosition());
 //            Fragment fragment = adapter.getItem(tab.getPosition());
             Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_contest);
 
@@ -314,7 +311,12 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
+                if (getSelectedType().equalsIgnoreCase("ads"))
+                    searchView.setQueryHint(getString(R.string.txt_search_ad_by_name));
+                else {
+                    searchView.setQueryHint(getString(R.string.search_product_by_name));
+
+                }
 
             }
         });
@@ -327,7 +329,7 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
 
                 // Fragment fragment = adapter.getItem(tab);
-             //   Fragment fragment = tabLayout.getTabAt(tab);
+                //   Fragment fragment = tabLayout.getTabAt(tab);
 
                 if (fragment instanceof AdsFragment) {
                     ((AdsFragment) fragment).refreshList();
@@ -356,7 +358,8 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
          /*       int tab = tabLayout.getSelectedTabPosition();
                 Fragment fragment = adapter.getItem(tab);
-         */       if (fragment instanceof AdsFragment) {
+         */
+                if (fragment instanceof AdsFragment) {
                     ((AdsFragment) fragment).refreshApi();
                 } else if (fragment instanceof ProductsFragment)
                     ((ProductsFragment) fragment).refreshApi();
@@ -441,7 +444,8 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
       /*  int tab = tabLayout.getSelectedTabPosition();
         Fragment fragment = adapter.getItem(tab);
-      */  if (fragment instanceof AdsFragment) {
+      */
+        if (fragment instanceof AdsFragment) {
             ((AdsFragment) fragment).searchProduct(query);
         } else if (fragment instanceof ProductsFragment)
             ((ProductsFragment) fragment).searchProduct(query);
@@ -500,7 +504,8 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
      /*   int tab = tabLayout.getSelectedTabPosition();
         Fragment fragment = adapter.getItem(tab);
-     */   if (fragment instanceof AdsFragment) {
+     */
+        if (fragment instanceof AdsFragment) {
             ((AdsFragment) fragment).searchProduct(product);
         } else if (fragment instanceof ProductsFragment)
             ((ProductsFragment) fragment).searchProduct(product);
@@ -515,7 +520,8 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
                 Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_contest);
               /*  int tab = tabLayout.getSelectedTabPosition();
                 Fragment fragment = adapter.getItem(tab);
-              */  if (fragment instanceof AdsFragment) {
+              */
+                if (fragment instanceof AdsFragment) {
                     ((AdsFragment) fragment).refreshList();
                 } else if (fragment instanceof ProductsFragment)
                     ((ProductsFragment) fragment).refreshList();
@@ -524,10 +530,10 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
 
             case AppConstant.INTENT_PRODUCT_DETAILS:
 
-            for (Fragment fragment2 : getChildFragmentManager().getFragments()) {
-                fragment2.onActivityResult(requestCode, resultCode, data);
-            }
-            break;
+                for (Fragment fragment2 : getChildFragmentManager().getFragments()) {
+                    fragment2.onActivityResult(requestCode, resultCode, data);
+                }
+                break;
 
         }
     }

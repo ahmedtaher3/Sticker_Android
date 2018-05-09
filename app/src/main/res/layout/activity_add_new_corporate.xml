@@ -101,7 +101,7 @@
                         android:layout_marginStart="2dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="Category"
+                        android:hint="@string/act_add_new_corp_category"
                         android:textColor="@color/edt_background_tint" />
 
                     <RelativeLayout
@@ -118,6 +118,7 @@
                             android:layout_width="15dp"
                             android:layout_height="25dp"
                             android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="5dp"
                             app:srcCompat="@drawable/ic_expand_more_black_24dp" />

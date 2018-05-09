@@ -447,5 +447,7 @@
     <dimen name="filter_image_size">110dp</dimen>
     <dimen name="image_size_gallary">150dp</dimen>
     <dimen name="dimen_column_grid">150dp</dimen>
+    <dimen name="dimen_my_cust_image">150dp</dimen>
+    <dimen name="dimen_grid_gallary_download">150dp</dimen>
 
 </resources>

@@ -213,7 +213,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             limit = PAGE_LIMIT;
         }
 
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductWithContestList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
                 index, limit, DesignType.ads.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword, "");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
@@ -471,7 +471,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         isLoading = true;
         if (swipeRefreshLayout != null)
             swipeRefreshLayout.setRefreshing(true);
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductWithContestList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
                 index, 50, "ads", "product_list", search, "");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override

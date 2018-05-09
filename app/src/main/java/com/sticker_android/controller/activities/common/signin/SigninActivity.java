@@ -72,7 +72,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Utils.changeLanguage(String.valueOf(appPref.getLanguage(0)),this,SigninActivity.class);
+        Utils.changeLanguage(String.valueOf(appPref.getLanguage(1)),this,SigninActivity.class);
     }
 
     private void setToolbar() {

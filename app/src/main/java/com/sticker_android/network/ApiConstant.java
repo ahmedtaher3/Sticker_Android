@@ -44,5 +44,10 @@ public class ApiConstant {
     public static final String API_SAVE_PROJECT_REJECTION = "SaveProductRejection/";
     public static final String API_DELETE_NOTIFICATION = "deleteNotifcation/";
     public static final String API_USER_LOGOUT = "userLogout/";
+    public static final String API_GET_PRODUCT_LIST_WITH_CONTEST = "getProductWithContestList/";
+    public static final String API_MY_DOWNLOAD_LIST = "getMyDownloadList";
+    public static final String API_SAVE_CUSTOMIZED_IMAGE = "SaveMyDownload";
+
+    public static final String API_DELETE_CUSTOMIZED_IMAGE = "deleteMyDownload";
 
 }

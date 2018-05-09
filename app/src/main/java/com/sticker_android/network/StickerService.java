@@ -76,7 +76,7 @@ public interface StickerService {
     @POST(ApiConstant.API_GET_PRODUCT_LIST)
     public Call<ApiResponse> apiGetProductList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
                                                @Field("user_id") String userId, @Field("index") int index,
-                                               @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search,@Field("status")String status);
+                                               @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search, @Field("status") String status);
 
 
     @FormUrlEncoded
@@ -106,7 +106,7 @@ public interface StickerService {
     @FormUrlEncoded
     @POST(ApiConstant.API_SAVE_USER_CONTEST)
     public Call<ApiResponse> saveUserContest(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
-                                             @Field("user_id") String userId, @Field("product_id") int productId, @Field("contest_id") int contestId, @Field("key_name") String name,@Field("notification_id")long notificationId);
+                                             @Field("user_id") String userId, @Field("product_id") int productId, @Field("contest_id") int contestId, @Field("key_name") String name, @Field("notification_id") long notificationId);
 
 
     @FormUrlEncoded
@@ -119,7 +119,7 @@ public interface StickerService {
     public Call<ApiResponse> getFanHomeProductList
             (@Field("language_id") String languageId, @Field("authrized_key") String authKey,
              @Field("user_id") String userId, @Field("index") int index,
-             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search,@Field("category_id")String categoryId,@Field("filter")String filter);
+             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search, @Field("category_id") String categoryId, @Field("filter") String filter);
 
     @FormUrlEncoded
     @POST(ApiConstant.API_SAVE_PRODUCT_LIKE)
@@ -132,13 +132,13 @@ public interface StickerService {
     @FormUrlEncoded
     @POST(ApiConstant.API_GET_FAN_CONTEST_LIST)
     public Call<ApiResponse> getFanContestList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
-                                                @Field("user_id") String userId,@Field("key_name")String keyName);
+                                               @Field("user_id") String userId, @Field("key_name") String keyName);
 
     @FormUrlEncoded
     @POST(ApiConstant.API_GET_FAN_ALL_CONTEST_LIST)
     public Call<ApiResponse> getFanAllContestList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
-                                               @Field("user_id") String userId,@Field("contest_id")long contestId,@Field("index") int index,
-                                                  @Field("limit") int limit,@Field("key_name")String keyName);
+                                                  @Field("user_id") String userId, @Field("contest_id") long contestId, @Field("index") int index,
+                                                  @Field("limit") int limit, @Field("key_name") String keyName);
 
     @FormUrlEncoded
     @POST(ApiConstant.API_GET_FAN_DOWNLOAD_LIST)
@@ -153,19 +153,19 @@ public interface StickerService {
     public Call<ApiResponse> getUserPendingList
             (@Field("language_id") String languageId, @Field("authrized_key") String authKey,
              @Field("user_id") String userId, @Field("index") int index,
-             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name,@Field("status")String status);
+             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("status") String status);
 
 
     @FormUrlEncoded
     @POST(ApiConstant.API_GET_USER_COMPLETED_LIST)
     public Call<ApiResponse> getUserCompletedList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
-                                                @Field("user_id") String userId, @Field("key_name") String name);
+                                                  @Field("user_id") String userId, @Field("key_name") String name);
 
     @FormUrlEncoded
     @POST(ApiConstant.API_FILTER_LIST)
     public Call<ApiResponse> apiFilterList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
                                            @Field("user_id") String userId, @Field("index") int index,
-                                           @Field("limit") int limit, @Field("search")String search, @Field("key_name") String name,@Field("type")String type);
+                                           @Field("limit") int limit, @Field("search") String search, @Field("key_name") String name, @Field("type") String type);
 
     @FormUrlEncoded
     @POST(ApiConstant.API_SAVE_PROJECT_REJECTION)
@@ -173,20 +173,41 @@ public interface StickerService {
                                                      @Field("user_id") String userId, @Field("product_name") String productname,
                                                      @Field("type") String type, @Field("description") String description,
                                                      @Field("expiry_date") String expireDate
-            , @Field("image_path") String imagePath, @Field("product_id") String productId,@Field("description_reject")String descriptionReject ,@Field("category_id") int categoryId, @Field("key_name") String keyName);
+            , @Field("image_path") String imagePath, @Field("product_id") String productId, @Field("description_reject") String descriptionReject, @Field("category_id") int categoryId, @Field("key_name") String keyName);
 
 
     @FormUrlEncoded
     @POST(ApiConstant.API_DELETE_NOTIFICATION)
     public Call<ApiResponse> deleteNotification(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
-                                           @Field("user_id") String userId,@Field("notification_id") long notificationId);
-
+                                                @Field("user_id") String userId, @Field("notification_id") long notificationId);
 
 
     @FormUrlEncoded
     @POST(ApiConstant.API_USER_LOGOUT)
     public Call<ApiResponse> userLogout(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
-                                                @Field("user_id") String userId);
+                                        @Field("user_id") String userId);
 
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_GET_PRODUCT_LIST_WITH_CONTEST)
+    public Call<ApiResponse> apiGetProductWithContestList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                                          @Field("user_id") String userId, @Field("index") int index,
+                                                          @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search, @Field("status") String status);
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_MY_DOWNLOAD_LIST)
+    public Call<ApiResponse> getCustomizeImageList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                                   @Field("user_id") String userId, @Field("index") int index,
+                                                   @Field("limit") int limit, @Field("key_name") String keyName);
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_SAVE_CUSTOMIZED_IMAGE)
+    public Call<ApiResponse> saveCustomizeImage(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                                @Field("user_id") String userId, @Field("image_url") String imageUrl);
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_DELETE_CUSTOMIZED_IMAGE)
+    public Call<ApiResponse> deleteCustomizeImage(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                                @Field("user_id") String userId, @Field("user_my_id") String userMyId);
 
 }

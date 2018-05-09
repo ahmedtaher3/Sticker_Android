@@ -102,8 +102,8 @@ public abstract class ApiCall implements Callback<ApiResponse> {
          */
         final AlertDialog alertDialog = new AlertDialog.Builder(mActivity).create();
         alertDialog.setCancelable(false);
-        alertDialog.setTitle("Session Timeout !");
-        alertDialog.setTitle("Your session has expired.");
+        alertDialog.setTitle(mActivity.getString(R.string.txt_session_timeout));
+        alertDialog.setTitle(mActivity.getString(R.string.txt_session_expired));
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Logout", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

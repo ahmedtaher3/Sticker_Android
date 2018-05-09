@@ -35,7 +35,9 @@ import android.widget.Toast;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.common.contest.ApplyCorporateContestActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.fragment.common.AccountSettingFragment;
 import com.sticker_android.controller.fragment.common.ProfileFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
@@ -43,13 +45,20 @@ import com.sticker_android.controller.fragment.corporate.CorporateReportFragment
 import com.sticker_android.controller.fragment.corporate.contentapproval.CorporateContentApprovalFragment;
 import com.sticker_android.controller.fragment.corporate.contest.CorporateContestFragment;
 import com.sticker_android.controller.fragment.corporate.notification.CorporateNotificationFragment;
+import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
+import com.sticker_android.model.notification.Acme;
+import com.sticker_android.model.notification.AppNotification;
+import com.sticker_android.model.notification.ContestObj;
+import com.sticker_android.model.notification.NotificationApp;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.UserTypeEnum;
+import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.commonprogressdialog.CommonProgressBar;
 import com.sticker_android.utils.fragmentinterface.UpdateToolbarTitle;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -60,7 +69,7 @@ import java.util.Locale;
 import retrofit2.Call;
 
 public class CorporateHomeActivity extends AppBaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener, UpdateToolbarTitle {
+        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener, UpdateToolbarTitle,AccountSettingFragment.ILanguageUpdate {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private CoordinatorLayout mainView;
@@ -107,10 +116,11 @@ public class CorporateHomeActivity extends AppBaseActivity implements
      * Humberg notification dot visibility
      */
     private void setBadgeCount() {
-        if (appPref.getNewMessagesCount(0) > 0)
-            toolbar.findViewById(R.id.tv_nav_menu_badge).setVisibility(View.VISIBLE);
-        else
-            toolbar.findViewById(R.id.tv_nav_menu_badge).setVisibility(View.GONE);
+        if (toolbar != null)
+            if (appPref.getNewMessagesCount(0) > 0)
+                toolbar.findViewById(R.id.tv_nav_menu_badge).setVisibility(View.VISIBLE);
+            else
+                toolbar.findViewById(R.id.tv_nav_menu_badge).setVisibility(View.GONE);
     }
 
     /**
@@ -497,10 +507,10 @@ public class CorporateHomeActivity extends AppBaseActivity implements
         int selectedId = radioGroup.getCheckedRadioButtonId();
         if (selectedId == rdbEnglish.getId()) {
             setLocale("en");
-            appPref.setLanguage(0);
+            appPref.setLanguage(1);
         } else if (selectedId == rdbArabic.getId()) {
             setLocale("ar");
-            appPref.setLanguage(1);
+            appPref.setLanguage(2);
         }
 
     }
@@ -594,6 +604,58 @@ public class CorporateHomeActivity extends AppBaseActivity implements
 
             }
         });
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        LocalNotification.clearNotifications(this);
+        AppLogger.debug(TAG, "dscvdnsc");
+        if (intent.getExtras() != null) {
+            if (intent.getExtras().getParcelable("obj") != null) {
+                AppNotification appNotification = new AppNotification();
+                appNotification = intent.getExtras().getParcelable("obj");
+                if(appNotification.payload.acmeObj.status==5)
+                setIntentData(appNotification);
+            }
+        }
+    }
+
+    private void setIntentData(AppNotification appNotification) {
+
+
+        NotificationApp notificationApp = new NotificationApp();
+        notificationApp.notificatinId=appNotification.payload.acmeObj.notificationId;
+        Acme acme=new Acme();
+        ContestObj contestObj=new ContestObj();
+        contestObj.contestId=appNotification.payload.acmeObj.contestId;
+        acme.contestObj=contestObj;
+        notificationApp.acme=acme;
+        Intent intentApplyContest = new Intent(this, ApplyCorporateContestActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(AppConstant.NOTIFICATION_OBJ, notificationApp);
+        intentApplyContest.putExtras(bundle);
+        startActivityForResult(intentApplyContest, AppConstant.INTENT_NOTIFICATION_CODE);
+
+    }
+
+    @Override
+    public void updatelanguage(String language) {
+        AppLogger.debug(TAG, "language is :" + language);
+        if(language.equalsIgnoreCase("1"))
+        {
+            appPref.setLanguage(1);
+            Utils.changeLanguage("en", this, CorporateHomeActivity.class);
+            AppLogger.debug(FanHomeActivity.class.getSimpleName(),"language Account on update"+language);
+
+        }else {
+            appPref.setLanguage(2);
+            Utils.changeLanguage("ar", this, CorporateHomeActivity.class);
+            AppLogger.debug(FanHomeActivity.class.getSimpleName(),"language Account on update"+language);
+
+        }
+
 
     }
 }

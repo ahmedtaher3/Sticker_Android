@@ -142,7 +142,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
 
         }else if(confirmPass.isEmpty()){
             confirmPassword.requestFocus();
-            Utils.showToast(getActivity(),"Please enter confirm password.");
+            Utils.showToast(getActivity(),getString(R.string.txt_please_enter_confirm_password));
 
             // CommonSnackBar.show(oldPassword,"Confiem password cannot be empty", Snackbar.LENGTH_SHORT);
             return false;
@@ -186,7 +186,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
                 progressDialogHandler.hide();
                 if(apiResponse.status)
                     if(apiResponse.status) {
-                       Utils.showToast(getActivity(),"Password updated successfully");
+                       Utils.showToast(getActivity(),getString(R.string.txt_password_updated_successfully));
                         // CommonSnackBar.show(oldPassword,"Password updated successfully", Snackbar.LENGTH_SHORT);
                         appPref.saveUserObject(null);
                        User user =new User();

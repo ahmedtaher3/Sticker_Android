@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.common.terms.TermsActivity;
 import com.sticker_android.controller.activities.corporate.CorporateProfileActivity;
 import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
@@ -27,6 +28,8 @@ import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
+
+import java.util.Locale;
 
 import retrofit2.Call;
 
@@ -61,6 +64,18 @@ public class SignUpActivity extends AppBaseActivity {
         changeStatusBarColor(getResources().getColor(R.color.colorFanText));
         setBackground();
         setLoginButtonData();
+        //language();
+
+    }
+
+    private void language() {
+        int language=appPref.getLanguage(1);
+        if (language ==2) {
+            Utils.changeLanguage("ar",this,SignUpActivity.class);
+        }else{
+            Utils.changeLanguage("en",this,SignUpActivity.class);
+        }
+
     }
 
     private void getUserSelectedOption() {
@@ -283,7 +298,7 @@ public class SignUpActivity extends AppBaseActivity {
     public int getSelectedLanguage() {
 
 
-        return appPref.getLanguage(0);
+        return appPref.getLanguage(1);
     }
 
     @Override

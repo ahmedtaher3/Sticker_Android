@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
             android:gravity="center"
-            android:text="Change Language"
+            android:text="@string/txt_change_language"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -52,7 +52,7 @@
                 android:layout_marginTop="20dp"
                 android:gravity="start"
                 android:layout_below="@+id/imvLogoChangeLanguage"
-                android:text="Choose Language"
+                android:text="@string/txt_change_language"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <RadioGroup
@@ -70,14 +70,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/rdbEnglish"
-                    android:text="English" />
+                    android:text="@string/txt_string_english" />
                 <RadioButton
                     style="@style/MyRadioButton"
                     android:layout_marginLeft="@dimen/dp_40"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/rdbArabic"
-                    android:text="Arabic" />
+                    android:text="@string/txt_string_arabic" />
 
             </RadioGroup>
         </LinearLayout>
@@ -102,7 +102,7 @@
                 android:clickable="false"
                 android:elevation="@dimen/dp_30"
                 android:gravity="center"
-                android:text="Update"
+                android:text="@string/update"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF" />
 

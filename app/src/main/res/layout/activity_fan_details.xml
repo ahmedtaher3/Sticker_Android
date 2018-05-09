@@ -87,14 +87,17 @@
                             android:layout_marginTop="@dimen/dp_10">
 
                             <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:id="@+id/tv_add_product_title"
-                                style="@style/tvHome"
                                 fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
                                 android:layout_alignParentTop="true"
                                 android:layout_marginEnd="5dp"
                                 android:layout_toLeftOf="@+id/imvBtnEditRemove"
+                                android:layout_toStartOf="@+id/imvBtnEditRemove"
                                 android:ellipsize="end"
                                 android:maxLines="1"
+                                android:gravity="end"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/txt_size_home_12sp" />
 
@@ -149,6 +152,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="8dp"
                                 android:layout_toRightOf="@+id/checkboxLike"
+                                android:layout_toEndOf="@+id/checkboxLike"
+
                                 android:button="@drawable/share_selector"
                                 android:padding="@dimen/padding_like_8dp"
                                 android:textSize="@dimen/txt_size_home_12sp" />
@@ -159,8 +164,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_marginLeft="8dp"
+                                android:layout_toEndOf="@+id/checkboxShare"
                                 android:layout_toRightOf="@+id/checkboxShare"
                                 android:drawableLeft="@drawable/tv_svg_time"
+                                android:drawableStart="@drawable/tv_svg_time"
                                 android:drawablePadding="8dp"
                                 android:gravity="center"
                                 android:text="2 hour"
@@ -173,8 +180,11 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_marginLeft="16dp"
+                                android:layout_toEndOf="@+id/tvTime"
                                 android:layout_toRightOf="@+id/tvTime"
                                 android:drawableLeft="@drawable/ic_svg_drawable_download"
+                                android:drawableStart="@drawable/ic_svg_drawable_download"
+
                                 android:drawablePadding="8dp"
                                 android:gravity="center"
                                 android:text="2 hour"
@@ -189,6 +199,8 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginLeft="10dp"
                                 android:layout_toRightOf="@id/tvDownloads"
+                                android:layout_toEndOf="@id/tvDownloads"
+
                                 android:gravity="end"
                                 android:textColor="@android:color/holo_green_light"
                                 android:textSize="@dimen/txt_size_home_12sp" />

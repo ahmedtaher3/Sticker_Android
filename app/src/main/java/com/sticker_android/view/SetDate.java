@@ -9,11 +9,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sticker_android.utils.Utils;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by ankit on 30/1/17
@@ -38,11 +38,11 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
         m = myCalendar.get(Calendar.MONTH);
         d = myCalendar.get(Calendar.DAY_OF_MONTH);
 
-        pickerDialog = new DatePickerDialog(ctx, style, this, y, m, d){
+        pickerDialog = new DatePickerDialog(ctx, style, this, y, m, d) {
             @Override
             protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
-                if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP){
+                if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
                     // do something for phones running an SDK before lollipop
                     getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 }
@@ -67,10 +67,22 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        y = year;
-        m = monthOfYear;
-        d = dayOfMonth;
-        this.view.setText(Utils.dateModify(y + "-" + (m + 1) + "-" + d));
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MONTH, monthOfYear);
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        cal.set(Calendar.YEAR, year);
+        if (cal.before(myCalendar)) {
+            y = myCalendar.get(Calendar.YEAR);
+            m = myCalendar.get(Calendar.MONTH);
+            d = myCalendar.get(Calendar.DAY_OF_MONTH);
+            this.view.setText(Utils.dateModify(y + "-" + (m + 1) + "-" + d));
+
+        }else {
+            y = year;
+            m = monthOfYear;
+            d = dayOfMonth;
+            this.view.setText(Utils.dateModify(y + "-" + (m + 1) + "-" + d));
+        }
     }
 
     public String getChosenDate() {
@@ -96,11 +108,32 @@ public class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSet
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
-        calendar.set(y,m,d);
-     //   pickerDialog.getDatePicker().setMinDate(Utils.convertStringToDate(minDate).getTime() - 1000);
+        calendar.set(y, m, d);
+        //   pickerDialog.getDatePicker().setMinDate(Utils.convertStringToDate(minDate).getTime() - 1000);
         pickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
-        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP){
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
             // do something for phones running an SDK before lollipop
-           pickerDialog. getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }    }
+            pickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+    }
+
+
+    public static boolean validatePastDate(Context mContext, int day, int month, int year) {
+        final Calendar c = Calendar.getInstance();
+        int currentYear = c.get(Calendar.YEAR);
+        int currentMonth = c.get(Calendar.MONTH) + 1;
+        int currentDay = c.get(Calendar.DAY_OF_MONTH);
+        if (day > currentDay && year == currentYear && month == currentMonth) {
+            Toast.makeText(mContext, "Please select valid date", Toast.LENGTH_LONG).show();
+            return false;
+        } else if (month > currentMonth && year == currentYear) {
+            Toast.makeText(mContext, "Please select valid month", Toast.LENGTH_LONG).show();
+            return false;
+        } else if (year > currentYear) {
+            Toast.makeText(mContext, "Please select valid year", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
+    }
 }

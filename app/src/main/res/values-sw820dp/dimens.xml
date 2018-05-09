@@ -111,6 +111,8 @@
     <dimen name="dimen_fan_filter_header">70dp</dimen>
     <dimen name="tv_comments_margin_top">15dp</dimen>
     <dimen name="txt_size_contest">18sp</dimen>
+    <dimen name="dimen_my_cust_image">190dp</dimen>
+    <dimen name="dimen_grid_gallary_download">120dp</dimen>
 
 
 </resources>

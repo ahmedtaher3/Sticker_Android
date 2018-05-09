@@ -1,5 +1,6 @@
 package com.sticker_android.controller.fragment.common;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -23,6 +24,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
+import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
+import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.adaptors.ViewPagerAdapter;
 import com.sticker_android.controller.fragment.TermsAndConditionFragment;
 import com.sticker_android.controller.fragment.base.BaseFragment;
@@ -30,6 +35,7 @@ import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -53,7 +59,7 @@ public class AccountSettingFragment extends BaseFragment {
     private AppPref appPref;
     private User userdata;
     private AlertDialog languageDialog;
-
+    ILanguageUpdate iLanguageUpdate;
     public AccountSettingFragment() {
         // Required empty public constructor
     }
@@ -110,10 +116,10 @@ public class AccountSettingFragment extends BaseFragment {
 
     private void addFragmentToTab() {
         adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new ChangePasswordFragment(), "Change Password");
-        adapter.addFragment(new ContactUsFragment(), "Contact Us ");
-        adapter.addFragment(new TermsAndConditionFragment(), "Terms & Conditions");
-        adapter.addFragment(new AboutUsFragment(), "About Us ");
+        adapter.addFragment(new ChangePasswordFragment(), getString(R.string.txt_change_password));
+        adapter.addFragment(new ContactUsFragment(), getString(R.string.txt_contact_us));
+        adapter.addFragment(new TermsAndConditionFragment(), getString(R.string.txt_hint_terms_conditions));
+        adapter.addFragment(new AboutUsFragment(),  getString(R.string.txt_about_us));
         viewPager.setAdapter(adapter);
 
     }
@@ -242,10 +248,12 @@ public class AccountSettingFragment extends BaseFragment {
         final RadioButton rdbArabic = (RadioButton)languageDialogview. findViewById(R.id.rdbArabic);
         Button dialogButton = (Button) languageDialogview.findViewById(R.id.btn_update);
         TextView tvtxtChangeLanguage= (TextView)languageDialogview.findViewById(R.id.tvtxtChangeLanguage);
-        int language=  appPref.getLanguage(0);
-        rdbEnglish.setChecked(true);
-        if(language>0){
+        int language=  appPref.getLanguage(1);
+        AppLogger.debug(AppBaseActivity.class.getSimpleName(),"language Account"+language);
+        if(language==2){
             rdbArabic.setChecked(true);
+        }else {
+            rdbEnglish.setChecked(true);
         }
         setButtonBackground(dialogButton,tvtxtChangeLanguage);
         dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -253,7 +261,6 @@ public class AccountSettingFragment extends BaseFragment {
             public void onClick(View v) {
                 Utils.hideKeyboard(getActivity());
                 updateLanguage(radioGroup,rdbEnglish,rdbArabic);
-                updatelanguageApi();
                 languageDialog.dismiss();
             }
         });
@@ -288,16 +295,26 @@ public class AccountSettingFragment extends BaseFragment {
 
     }
 
-    private void updatelanguageApi() {
+    private void updatelanguageApi(final int language) {
 
-        final int language= appPref.getLanguage(0);
+        //final int language= appPref.getLanguage(1);
         Call<ApiResponse> apiResponseCall=  RestClient.getService().changeLanguage(userdata.getId(),language,userdata.getAuthrizedKey());
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if(apiResponse.status){
-                    appPref.setLanguage(language);
-                }
+                    if(language==2){
+                        iLanguageUpdate.updatelanguage("2");
+
+                        AppLogger.debug(AccountSettingFragment.class.getSimpleName(),"language Account on update"+language);
+
+                    }else {
+                        iLanguageUpdate.updatelanguage("1");
+
+                        AppLogger.debug(AccountSettingFragment.class.getSimpleName(),"language Account on update"+language);
+
+                    }
+                     }
 
             }
 
@@ -326,14 +343,43 @@ public class AccountSettingFragment extends BaseFragment {
     private void updateLanguage(final RadioGroup radioGroup, final RadioButton rdbEnglish, final RadioButton rdbArabic) {
         int selectedId = radioGroup.getCheckedRadioButtonId();
         if (selectedId == rdbEnglish.getId()) {
-            setLocale("en");
-            appPref.setLanguage(0);
+          //  setLocale("en");
+         //   appPref.setLanguage(1);
+            updatelanguageApi(1);
+            AppLogger.debug(FanHomeActivity.class.getSimpleName(), "Account setting language is :" + selectedId+"dcjdnc"+rdbEnglish.getId());
         } else if (selectedId == rdbArabic.getId()) {
-            setLocale("ar");
-            appPref.setLanguage(1);
+           // setLocale("ar");
+            updatelanguageApi(2);
+           // appPref.setLanguage(2);
+            AppLogger.debug(FanHomeActivity.class.getSimpleName(), "Account setting language is :" + selectedId+"arabic"+rdbArabic.getId());
+
         }
 
     }
 
 
+
+   public interface   ILanguageUpdate{
+        public void updatelanguage(String language);
+
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof FanHomeActivity) {
+            FanHomeActivity profileActivity = (FanHomeActivity) context;
+            iLanguageUpdate = (ILanguageUpdate) context;
+        }else if(context instanceof CorporateHomeActivity){
+            CorporateHomeActivity profileActivity = (CorporateHomeActivity) context;
+            iLanguageUpdate = (ILanguageUpdate) context;
+
+        }else {
+            DesignerHomeActivity profileActivity = (DesignerHomeActivity) context;
+            iLanguageUpdate = (ILanguageUpdate) context;
+        }
+
+
+    }
 }

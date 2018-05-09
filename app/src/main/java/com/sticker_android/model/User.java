@@ -27,7 +27,7 @@ public class User implements Parcelable {
     private String deviceType;
     @SerializedName("language_id")
 
-    private String languageId;
+    private String languageId="0";
     @SerializedName("last_name")
 
     private String lastName;

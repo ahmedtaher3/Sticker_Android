@@ -32,6 +32,7 @@
             app:contentPadding="8dp">
 
             <TextView
+                android:textDirection="anyRtl"
                 android:id="@+id/tv_content_description"
                 style="@style/tvHome"
                 fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
@@ -39,6 +40,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginEnd="5dp"
                 android:layout_toLeftOf="@+id/imvBtnEditRemove"
+                android:layout_toStartOf="@+id/imvBtnEditRemove"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@android:color/white"
@@ -49,6 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
                 android:background="@android:color/transparent"
                 android:paddingBottom="5dp"

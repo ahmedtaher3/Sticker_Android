@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import com.sticker_android.R;
@@ -17,19 +18,29 @@ import com.sticker_android.application.StickerApp;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.exit.ExitActivity;
 import com.sticker_android.controller.activities.common.splash.SplashActivity;
+import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
+import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
+import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.model.notification.AppNotification;
+import com.sticker_android.model.notification.NotificationApp;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.BadgeUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
 public class LocalNotification {
 
+    private final AppNotification notificationApp;
     private AppPref mAppPref;
     private String message;
 
 
-    public LocalNotification() {
-
+    public LocalNotification(AppNotification notificationApp) {
+        this.notificationApp = notificationApp;
     }
 
     public void setNotification(Context context, String notificationTitle, String textContent) {
@@ -54,7 +65,36 @@ public class LocalNotification {
         BadgeUtils.setBadge(context, messageCount);
         NotificationManager notificationManager = (NotificationManager) context.
                 getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent intent = new Intent(context, SplashActivity.class);
+        if (LocalNotification.isAppIsInBackground(context)) {
+            Intent intent = null;
+            AppLogger.debug("Local Notification", "mAPP" + mAppPref + " user info" + mAppPref.getUserInfo().getUserType());
+            if (mAppPref.getUserInfo().getUserType().equalsIgnoreCase("corporate")) {
+                intent = new Intent(context, CorporateHomeActivity.class);
+            } else if (mAppPref.getUserInfo().getUserType().equalsIgnoreCase("designer")) {
+
+                intent = new Intent(context, DesignerHomeActivity.class);
+
+            } else {
+                intent = new Intent(context, FanHomeActivity.class);
+            }
+            intent.putExtra("data here", true);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("obj", notificationApp);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtras(bundle);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context,
+                    0, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
+            notificationCompat.setContentIntent(pendingIntent);
+            notificationManager.notify(0,
+                    notificationCompat.build());
+
+        } else {
+            if (StickerApp.getInstance().getCurrentActivity() instanceof AppBaseActivity) {
+                StickerApp.getInstance().getCurrentActivity().updateCallbackMessage();
+            }
+
+      /*  Intent intent = new Intent(context, SplashActivity.class);
         intent.putExtra("data here", true);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (LocalNotification.isAppIsInBackground(context)) {
@@ -71,6 +111,11 @@ public class LocalNotification {
             }
 
         }
+*/
+        }
+    }
+
+    private void moveToActivity(Context context, Class<?> cls, NotificationCompat.Builder notificationCompat, NotificationManager notificationManager) {
 
 
     }
@@ -107,6 +152,24 @@ public class LocalNotification {
         }
 
         return isInBackground;
+    }
+
+
+    /**
+     * This method is to parse data for receive message event
+     *
+     * @param message text message
+     */
+
+    private void parseMessageData(String message) {
+
+        try {
+            JSONObject jsonObject = new JSONObject(message);
+            //notificationId=jsonObject.getString("notification_id");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -5,17 +5,17 @@
     <group >
         <item
             android:id="@+id/nav_home"
-            android:title="Home" />
+            android:title="@string/txt_home" />
         <item
             android:visible="false"
             android:id="@+id/nav_report"
             android:title="Report" />
         <item
             android:id="@+id/nav_contest"
-            android:title="Contest" />
+            android:title="@string/txt_contest" />
         <item
             android:id="@+id/nav_content_for_appproval"
-            android:title="Content for approval" />
+            android:title="@string/txt_content_approval" />
         <item android:id="@+id/nav_notification"
             app:actionLayout="@layout/menu_counter"
             android:title="@string/txt_notifications">
@@ -23,13 +23,13 @@
 
         <item
             android:id="@+id/nav_profile"
-            android:title="My Profile" />
+            android:title="@string/txt_myprofile" />
         <item
             android:id="@+id/nav_account_setting"
-            android:title="Account Settings" />
+            android:title="@string/txt_account_setting" />
         <item
             android:id="@+id/nav_logout"
-            android:title="Log Out" />
+            android:title="@string/txt_log_out" />
 
     </group>
 </menu>

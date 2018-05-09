@@ -62,14 +62,17 @@
                 android:layout_marginTop="@dimen/dp_10">
 
                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:id="@+id/tv_add_product_title"
-                    style="@style/tvHome"
                     fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
                     android:layout_alignParentTop="true"
                     android:layout_marginEnd="5dp"
                     android:layout_toLeftOf="@+id/imvBtnEditRemove"
+                    android:layout_toStartOf="@+id/imvBtnEditRemove"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:gravity="start"
                     android:text="Header"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/txt_size_home_12sp" />
@@ -79,6 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerInParent="true"
                     android:background="@android:color/transparent"
                     android:paddingBottom="5dp"
@@ -102,7 +106,8 @@
 
             <TextView
                 android:id="@+id/tv_add_product_status"
-                style="@style/tvHome"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                 android:gravity="end"
                 android:text="Pending"

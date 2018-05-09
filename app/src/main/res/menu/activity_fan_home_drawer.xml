@@ -5,25 +5,25 @@
     <group >
         <item
             android:id="@+id/nav_home"
-            android:title="Home" />
+            android:title="@string/txt_home" />
         <item
             android:id="@+id/nav_downloads"
-            android:title="My Downloads" />
+            android:title="@string/txt_my_downloads" />
         <item
             android:id="@+id/nav_customization"
-            android:title="My Customization" />
+            android:title="@string/txt_my_customization" />
         <item android:id="@+id/nav_notification"
             app:actionLayout="@layout/menu_counter"
             android:title="@string/txt_notifications"/>
         <item
             android:id="@+id/nav_profile"
-            android:title="My Profile" />
+            android:title="@string/txt_myprofile" />
         <item
             android:id="@+id/nav_account_setting"
-            android:title="Account Settings" />
+            android:title="@string/txt_account_setting" />
         <item
             android:id="@+id/nav_logout"
-            android:title="Log Out" />
+            android:title="@string/txt_log_out" />
 
     </group>
 </menu>

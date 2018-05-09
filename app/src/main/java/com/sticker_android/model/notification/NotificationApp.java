@@ -12,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
 public class NotificationApp implements Parcelable {
 
     @SerializedName("notification_id")
-    public int notificatinId;
+    public long notificatinId;
     @SerializedName("user_id")
     public int userId;
     @SerializedName("text_json")
@@ -30,14 +30,14 @@ public class NotificationApp implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.notificatinId);
+        dest.writeLong(this.notificatinId);
         dest.writeInt(this.userId);
         dest.writeParcelable(this.acme, flags);
         dest.writeString(this.cratedDate);
     }
 
     protected NotificationApp(Parcel in) {
-        this.notificatinId = in.readInt();
+        this.notificatinId = in.readLong();
         this.userId = in.readInt();
         this.acme = in.readParcelable(Acme.class.getClassLoader());
         this.cratedDate = in.readString();

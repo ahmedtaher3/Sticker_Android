@@ -48,8 +48,6 @@ import com.sticker_android.view.SetDate;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -245,7 +243,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     protected boolean isValidData() {
 
         if(mCapturedImageUrl==null){
-            Utils.showToast(this, "Please upload a image.");
+            Utils.showToast(this, getString(R.string.txt_please_upload_a_image));
             return false;
 
         }else
@@ -356,7 +354,12 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                     String typeProduct="Product";
                     if(type.equalsIgnoreCase("ads"))
                         typeProduct="Ad";
-                    Utils.showToast(getApplicationContext(), typeProduct + " added successfully.");
+
+                    if(typeProduct.equalsIgnoreCase("Ad")) {
+                        Utils.showToast(getApplicationContext(), getString(R.string.txt_add_added_successfully));
+                    }else {
+                        Utils.showToast(getApplicationContext(), getString(R.string.txt_product_added_successfully) );
+                    }
                     setResult(RESULT_OK);
                     onBackPressed();
                 }
@@ -534,7 +537,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
         progressDialogHandler.show();
         if (filePath == null) {
-            Toast.makeText(this, "Could not find the filepath of the selected file",
+            Toast.makeText(this, getResources().getString(R.string.txt_could_not_find_file_path),
                     Toast.LENGTH_LONG).show();
             return;
         }

@@ -10,222 +10,248 @@
     <integer name="designed_item_page_limit">30</integer>
 
     <!--Sign In-->
-    <string name="txt_dont_have_a_account">"Don't have a account?"</string>
-    <string name="txt_signup">Signup</string>
-    <string name="txt_forgot_password">"Forgot Password?"</string>
-    <string name="txt_login">Login</string>
-    <string name="txt_hint_email">Email</string>
-    <string name="txt_hint_password">Password</string>
+    <string name="txt_dont_have_a_account">لست مسجل من قبل؟</string>
+    <string name="txt_signup">التسجيل</string>
+    <string name="txt_forgot_password">هل نسيت كلمة المرور؟</string>
+    <string name="txt_login">الدخول</string>
+    <string name="txt_hint_email">البريد الالكتروني</string>
+    <string name="txt_hint_password">كلمة المرور</string>
     <!--Signin validation message-->
-    <string name="msg_email_cannot_be_empty">Please enter email.</string>
-    <string name="msg_email_not_valid">Please enter valid email.</string>
-    <string name="msg_password_cannot_be_empty">Please enter password.</string>
+    <string name="msg_email_cannot_be_empty">فضلا ادخل بريدك الالكتروني.</string>
+    <string name="msg_email_not_valid">فضلا ادخل بريد الكتروني صحيح</string>
+    <string name="msg_password_cannot_be_empty">فضلا ادخل كلمة المرور</string>
 
     <!--Signup validation-->
-    <string name="first_name_cannot_be_empty">Please enter first name.</string>
-    <string name="first_name_cannot_be_less_than">Please enter first name equal or more than 3 characters.</string>
-    <string name="last_name_cannot_be_less_than">Please enter last name equal or more than 3 characters.</string>
-    <string name="last_name_cannot_be_empty">Please enter last name.</string>
-    <string name="password_cannot_be_empty">Please enter password.</string>
-    <string name="password_cannot_be_less">Please enter password equal or more than 8 characters.</string>
-    <string name="confirm_password_cannot_be_less">Please enter confirm password equal or more than 8 characters.</string>
+    <string name="first_name_cannot_be_empty">فضلا ادخل الاسم الاول</string>
+    <string name="first_name_cannot_be_less_than">فضلا ادخل الاسم الاول بثلاثة احرف او اكثر </string>
+    <string name="last_name_cannot_be_less_than">فضلا ادخل الاسم الاخير بثلاثة احرف او اكثر </string>
+    <string name="last_name_cannot_be_empty">فضلا ادخل الاسم الاخير</string>
+    <string name="password_cannot_be_empty">فضلا ادخل كلمة مرور بثمانية خانات او اكثر</string>
+    <string name="password_cannot_be_less">فضلا ادخل كلمة مرور بثمانية خانات او اكثر</string>
+    <string name="confirm_password_cannot_be_less">فضلا ادخل تأكيد كلمة مرور بثمانية خانات او اكثر</string>
 
-    <string name="new_password_cannot_be_less">Please enter new password equal or more than 8 characters.</string>
-    <string name="please_enter_new_password">"Please enter new password."</string>
-    <string name="old_password_cannot_be_less">Please enter old password equal or more than 8 characters.</string>
+    <string name="new_password_cannot_be_less">فضلا ادخل كلمة المرور الجديدة بثمانية خانات او اكثر</string>
+    <string name="please_enter_new_password">فضلا ادخل كلمة المرور الجديدة</string>
+    <string name="old_password_cannot_be_less">فضلا ادخل كلمة المرور القديمة بثمانية خانات او اكثر</string>
 
-    <string name="confirm_password_cannot_be_empty">Confirm Password cannot be empty.</string>
-    <string name="confirm_password_not_match">New and confirm Password do not match.</string>
+    <string name="confirm_password_cannot_be_empty">لايمكن ترك تأكيد كلمة المرور فارغة</string>
+    <string name="confirm_password_not_match">كلمة المرور وتأكيدها غير متطابقتين</string>
 
-    <string name="old_password_not_match">Old Password is wrong.</string>
+    <string name="old_password_not_match">كلمة المرور القديمة غير صحيحة</string>
 
     <!--SignUp-->
-    <string name="txt_hint_first_name">First Name</string>
-    <string name="txt_hint_last_name">Last Name</string>
-    <string name="txt_hint_conform_password">Confirm password</string>
-    <string name="txt_hint_next">Next</string>
-    <string name="txt_hint_proceed">Proceed</string>
-    <string name="txt_hint_terms_conditions">"Terms &amp; Conditions"</string>
+    <string name="txt_hint_first_name">الاسم الاول</string>
+    <string name="txt_hint_last_name">الاسم الاخير</string>
+    <string name="txt_hint_conform_password">تأكيد كلمة المرور</string>
+    <string name="txt_hint_next">التالي</string>
+    <string name="txt_hint_proceed">تقدم</string>
+    <string name="txt_hint_terms_conditions">الشروط والاحكام</string>
     <string name="title_activity_fan_home">FanHomeActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">الاعدادات</string>
 
-    <string name="txt_account_setting">Account Settings</string>
-    <string name="txt_profile">Profile</string>
-    <string name="txt_contest">Contest</string>
-    <string name="txt_content_approval">Content for Approval</string>
-    <string name="txt_home">Home</string>
-    <string name="txt_myprofile">My Profile</string>
+    <string name="txt_account_setting">اعدادات الحساب</string>
+    <string name="txt_profile">بياناتك</string>
+    <string name="txt_contest">مسابقة</string>
+    <string name="txt_content_approval">محتوى بإنتظار الموافقة</string>
+    <string name="txt_home">الرئيسية</string>
+    <string name="txt_myprofile">بياناتي</string>
     <!--Change password-->
-    <string name="frag_change_pass_text_hint_new_password">New Password</string>
+    <string name="frag_change_pass_text_hint_new_password">كلمة  المرور الجديدة</string>
 
-    <string name="frag_change_pass_text_hint_old_password">Old Password</string>
+    <string name="frag_change_pass_text_hint_old_password">كلمة المرور القديمة </string>
 
-    <string name="frag_change_pass_text_hint_confirm_password">Confirm Password</string>
+    <string name="frag_change_pass_text_hint_confirm_password">لايمكن ترك تأكيد كلمة المرور فارغة</string>
 
     <!--Contact Us-->
-    <string name="contact_us_txt_hint_Email_address">Email Address :</string>
+    <string name="contact_us_txt_hint_Email_address">البريد الالكتروني:</string>
     <string name="contact_us_txt_Email_address">SportWidget12@gmail.com</string>
     <string name="contact_us_txt_hint_contact_number">Contact Number :</string>
     <string name="contact_us_txt_contact_number">"+19874562548845"</string>
 
     <!--Profile-->
-    <string name="txt_personal_details">Personal Details</string>
-    <string name="txt_btn_update">Update</string>
-    <string name="txt_btn_continue">Continue</string>
+    <string name="txt_personal_details">البيانات الشخصية</string>
+    <string name="txt_btn_update">تحديث</string>
+    <string name="txt_btn_continue">الاستمرار</string>
     <!--AboutUs-->
-    <string name="txt_about_us">"About Us"</string>
+    <string name="txt_about_us">عن التطبيق</string>
 
     <!--Forgot password-->
-    <string name="txt_reset_link_will_be_sent">A reset link will we sent to the
-    registered email address.</string>
-    <string name="submit">Submit</string>
+    <string name="txt_reset_link_will_be_sent">سيتم ارسال رابط لإعادة تعيين كلمة المرور الى بريدك الالكتروني</string>
+    <string name="submit">ارسال</string>
 
-    <string name="take_photo">Take a photo</string>
-    <string name="pick_gallery">Choose from gallery</string>
+    <string name="take_photo">استخدم الكميرا</string>
+    <string name="pick_gallery">اختر من البوم الصور</string>
 
-    <string name="open_setting">Open Setting</string>
-    <string name="cancel">Cancel</string>
-    <string name="app_permission">Sport Widget Permission!</string>
-    <string name="external_storage_permission_msg">"Go to app setting to enable external storage access permission."</string>
+    <string name="open_setting">افتح الاعدادات</string>
+    <string name="cancel">الغاء</string>
+    <string name="app_permission">اذونات سبورت ويدجت</string>
+    <string name="external_storage_permission_msg">الذهاب الى الاعدادات للسماح بحفظ الصور على جهازك</string>
 
     <string name="txt_string_english">English</string>
-    <string name="txt_string_arabic">Arabic</string>
+    <string name="txt_string_arabic">العربية</string>
 
-    <string name="txt_call">Call</string>
-    <string name="no_contact_available">No contact available</string>
+    <string name="txt_call">اتصل</string>
+    <string name="no_contact_available">لايوجد رقم</string>
     <string name="title_activity_demo">DemoActivity</string>
-    <string name="phone_call_permission">Please allow phone call permission.</string>
-    <string name="company">Company</string>
+    <string name="phone_call_permission">فضلا فعل خاصية الاتصال من الاذونات</string>
+    <string name="company">الشركة</string>
 
     <string name="txt_lorem">"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."</string>
 
     <!--corporate add new-->
-    <string name="act_corp_txt_add_new">Add New</string>
-    <string name="act_corp_txt_renew">Renew</string>
-    <string name="act_corp_txt_edit">Edit</string>
-    <string name="txt_ads_frag">Ads</string>
-    <string name="txt_products_frag">Products</string>
-    <string name="txt_my_ads_frag">My Ads</string>
-    <string name="txt_my_products_frag">My Products</string>
+    <string name="act_corp_txt_add_new">اضافة جديد</string>
+    <string name="act_corp_txt_renew">تجديد</string>
+    <string name="act_corp_txt_edit">تعديل</string>
+    <string name="txt_ads_frag">اعلان</string>
+    <string name="txt_products_frag">منتج اعلاني</string>
+    <string name="txt_my_ads_frag">اعلاناتي</string>
+    <string name="txt_my_products_frag">منتجاتي</string>
 
-    <string name="act_add_corp_txt_name">Name</string>
-    <string name="act_add_corp_txt_expire_date">Expire Date</string>
-    <string name="act_add_corp_txt_write_description">Write Description</string>
-    <string name="txt_post">Post</string>
-    <string name="txt_repost">Repost</string>
+    <string name="act_add_corp_txt_name">الاسم</string>
+    <string name="act_add_corp_txt_expire_date">تاريخ الانتهاء</string>
+    <string name="act_add_corp_txt_write_description">الوصف</string>
+    <string name="txt_post">ارسال</string>
+    <string name="txt_repost">اعادة ارسال</string>
     <string name="txt_add_new_ads_frag">Ad</string>
-    <string name="txt__add_products_frag">Product</string>
+    <string name="txt__add_products_frag">منتج</string>
 
-    <string name="txt_edit">Edit</string>
-    <string name="txt_remove">Remove</string>
+    <string name="txt_edit">تعديل</string>
+    <string name="txt_remove">حذف</string>
     <!--Time prefix-->
     <string name="time_ago_prefix"></string>
-    <string name="time_ago_suffix">ago</string>
-    <string name="time_ago_seconds">less than a minute</string>
-    <string name="time_ago_minute">about a minute</string>
-    <string name="time_ago_minutes">%d minutes</string>
-    <string name="time_ago_hour">hour</string>
-    <string name="time_ago_hours"> %d hours</string>
-    <string name="time_ago_day">day</string>
+    <string name="time_ago_suffix">منذ</string>
+    <string name="time_ago_seconds">اقل من دقيقة</string>
+    <string name="time_ago_minute">دقيقة تقريبا</string>
+    <string name="time_ago_minutes">%d دقائق</string>
+    <string name="time_ago_hour">ساعة</string>
+    <string name="time_ago_hours"> %d ساعات</string>
+    <string name="time_ago_day">يوم</string>
     <string name="time_ago_days">%d days</string>
     <string name="time_ago_month">about a month</string>
-    <string name="time_ago_months">%d months</string>
-    <string name="time_ago_year">about a year</string>
-    <string name="time_ago_years">%d years</string>
-    <string name="no_ads_uploaded_yet">No Ads uploaded Yet.</string>
-    <string name="no_product_uploaded_yet">No Products uploaded Yet.</string>
-    <string name="no_search_found">No Search found.</string>
-    <string name="emoji">Emoji</string>
-    <string name="gif">GIF</string>
-    <string name="stickers">Stickers</string>
-    <string name="press_again_to_exit">Press again to exit.</string>
+    <string name="time_ago_months">%d شهور</string>
+    <string name="time_ago_year">سنة تقريبا</string>
+    <string name="time_ago_years">%d سنوات</string>
+    <string name="no_ads_uploaded_yet">لم يتم رفع اعلانات بعد</string>
+    <string name="no_product_uploaded_yet">لم يتم رفع منتجات اعلانية بعد</string>
+    <string name="no_search_found">لايوجد نتائج</string>
+    <string name="emoji">ايموجي</string>
+    <string name="gif">صور متحركة</string>
+    <string name="stickers">استكرات</string>
+    <string name="press_again_to_exit">اضغط مرة ثانية للخروج</string>
     <string name="select_category">Select Category</string>
     <string name="category">Category</string>
     <string name="select_design_category">Select Category</string>
-    <string name="loading">Loading...</string>
-    <string name="txt_are_you_sure">Are you sure you want to delete this item?</string>
-    <string name="txt_delete_resources">Deleted successfully</string>
-    <string name="txt_report">Report</string>
-    <string name="write_some_description">Write something here...</string>
-    <string name="select_category_txt">Select a Category</string>
-    <string name="search">Search</string>
+    <string name="loading">يتم التحميل...</string>
+    <string name="txt_are_you_sure">هل فعلا تود حذف العنصر المحدد؟</string>
+    <string name="txt_delete_resources">تم الحذف بنجاح</string>
+    <string name="txt_report">التقرير</string>
+    <string name="write_some_description">اكتب شيئا هنا...</string>
+    <string name="select_category_txt">اختر احد المسابقات</string>
+    <string name="search">بحث</string>
 
-    <string name="txt_notifications">Notifications</string>
+    <string name="txt_notifications">التنبيهات</string>
 
-    <string name="no_data_found">No data found.</string>
-    <string name="server_unreachable">Server unreachable</string>
-    <string name="oops">Oops!</string>
-    <string name="pls_check_ur_internet_connection">Please check internet connection.</string>
-    <string name="try_again">Try Again</string>
-    <string name="connection_not_found">Connection not found</string>
-    <string name="no_stickers_uploaded_yet">No stickers uploaded yet.</string>
-    <string name="no_gif_uploaded_yet">No GIF uploaded yet.</string>
-    <string name="no_emoji_uploaded_yet">No Emoji uploaded yet.</string>
-    <string name="ok">Ok</string>
-    <string name="remove">Remove</string>
-    <string name="edit">Edit</string>
-    <string name="resubmit_with_justification">Re-submit with Justification</string>
-    <string name="upload_sticker">Upload Sticker</string>
-    <string name="upload_gif">Upload GIF</string>
-    <string name="upload_emoji">Upload Emoji</string>
-    <string name="deleted_successfully">Deleted successfully</string>
-    <string name="update">Update</string>
-    <string name="pls_select_category">Please select a category.</string>
-    <string name="pls_enter_name">Please enter a name.</string>
-    <string name="pls_upload_image">Please upload a image.</string>
-    <string name="detail">Details</string>
-    <string name="rejected">Rejected</string>
-    <string name="approved">Approved</string>
+    <string name="no_data_found">لايوجد بيانات</string>
+    <string name="server_unreachable">لايمكن الاتصال السيرفر</string>
+    <string name="oops">عفوا!</string>
+    <string name="pls_check_ur_internet_connection">فضلا تأكد من اتصال الانترنت</string>
+    <string name="try_again">جرب مرة اخرى</string>
+    <string name="connection_not_found">فقد الاتصال</string>
+    <string name="no_stickers_uploaded_yet">لم يتم رفع استكرات بعد</string>
+    <string name="no_gif_uploaded_yet">لم يتم رفع صور متحركة بعد</string>
+    <string name="no_emoji_uploaded_yet">لم يتم رفع ايموجي بعد</string>
+    <string name="ok">موافق</string>
+    <string name="remove">حذف</string>
+    <string name="edit">تعديل</string>
+    <string name="resubmit_with_justification">اعادة الارسال مع مبررات</string>
+    <string name="upload_sticker">رفع استيكر</string>
+    <string name="upload_gif">رفع صور متحركة</string>
+    <string name="upload_emoji">رفع ايموجي</string>
+    <string name="deleted_successfully">تم الحذف بنجاح</string>
+    <string name="update">تحديث</string>
+    <string name="pls_select_category">فضلا اختر بطولة</string>
+    <string name="pls_enter_name">فضلا ادخل الاسم</string>
+    <string name="pls_upload_image">فضلا ادخل الصور</string>
+    <string name="detail">فضلا ادخل التفاصيل</string>
+    <string name="rejected">تم رفضة</string>
+    <string name="approved">تم قبولة</string>
     <string name="pending">Pending</string>
-    <string name="expired">Expired</string>
-    <string name="txt_onging">Ongoing</string>
-    <string name="txt_completed">Completed</string>
-    <string name="end_date">End Date-</string>
-    <string name="total_count">Total Likes-</string>
-    <string name="txt_ongoing_contest">Ongoing Contest</string>
-    <string name="txt_completed_contest">Completed Contest</string>
-    <string name="txt_won">Won</string>
-    <string name="txt_successfully_applied_for_contest">Successfully applied for contest</string>
-    <string name="txt_no_contest_found">No Contest found.</string>
-    <string name="txt_apply_for_context">Please apply for a contest.</string>
-    <string name="txt_no_onging_contest_found">No Ongoing contest found</string>
-    <string name="txt_pending_content">Pending Content</string>
-    <string name="txt_no_completed_contest">No Completed contest Found.</string>
-    <string name="most_downloaded">Most Downloaded</string>
-    <string name="recent_upload">Recent Upload</string>
-    <string name="by_championship">By Championship</string>
-    <string name="txt_all">All</string>
-    <string name="txt_apply">Apply</string>
-    <string name="txt_filter">Filter</string>
-    <string name="txt_no_downloaded_stickers_found">No downloaded stickers found.</string>
-    <string name="txt_no_downloaded_emoji_found">No downloaded Emoji found.</string>
-    <string name="txt_no_downloaded_gif_found">No downloaded GIF found</string>
-    <string name="txt_no_notification_found">No notification found.</string>
+    <string name="expired">تم انتهاء صلاحيتة </string>
+    <string name="txt_onging">مستمر</string>
+    <string name="txt_completed">مكتمل</string>
+    <string name="end_date">تاريخ الانتهاء-</string>
+    <string name="total_count">مجموعة الاعجابات-</string>
+    <string name="txt_ongoing_contest">مسابقة مستمرة</string>
+    <string name="txt_completed_contest">مسابقة مكتملة</string>
+    <string name="txt_won">فائز</string>
+    <string name="txt_successfully_applied_for_contest">تم المشاركة في المسابقة بنجاح</string>
+    <string name="txt_no_contest_found">لايوجد مسابقات.</string>
+    <string name="txt_apply_for_context">فضلا تقدم بالمشاركة في المسابقة</string>
+    <string name="txt_no_onging_contest_found">يوجد مسابقات مستمرة</string>
+    <string name="txt_pending_content">محتموى بإنتظار الموافقة</string>
+    <string name="txt_no_completed_contest">لايوجد مسابقات مكتلمة</string>
+    <string name="most_downloaded">الاكثر تحميلا</string>
+    <string name="recent_upload">ماتم رفعه مؤخرا</string>
+    <string name="by_championship">البحث بالبطولة</string>
+    <string name="txt_all">الجميع</string>
+    <string name="txt_apply">تقدم</string>
+    <string name="txt_filter">فتلر</string>
+    <string name="txt_no_downloaded_stickers_found">لم يتم تحميل اي استكرات</string>
+    <string name="txt_no_downloaded_emoji_found">لم يتم تحميل اي ايموجي</string>
+    <string name="txt_no_downloaded_gif_found">لم يتم تحميل اي صور متحركة</string>
+    <string name="txt_no_notification_found">لايوجد اي تنبيهات</string>
     <string name="text_all">All</string>
 
-    <string name="save">Save</string>
-    <string name="reset">Reset</string>
-    <string name="filter">Filter</string>
-    <string name="emojis">Emojis</string>
-    <string name="please_choose_image_to_apply_filter_sticker_emoji">Please choose image to apply filter, sticker or emoji.</string>
+    <string name="save">حفظ</string>
+    <string name="reset">اعادة تعيين</string>
+    <string name="filter">فتلر</string>
+    <string name="emojis">ايموجي</string>
+    <string name="please_choose_image_to_apply_filter_sticker_emoji">فضلا اختار صورة لتستخدم الفلتر عليها</string>
 
-    <string name="txt_your_comment">Your Comment</string>
-    <string name="something_went_wrong">Something went wrong.</string>
-    <string name="no_customization_alert">No customization done.</string>
-    <string name="saved_successfully">Saved successfully.</string>
-    <string name="select_image_for_filter">Please choose the image on which you want to apply filter.</string>
-    <string name="apply_filter_title">Apply Filter</string>
-    <string name="recent_comment">Recent Comment</string>
-    <string name="your_comment">Your Comment</string>
-    <string name="txt_comments">"Comment's"</string>
-    <string name="txt_resubmit">Resubmit</string>
+    <string name="txt_your_comment">تعليقك</string>
+    <string name="something_went_wrong">حدث خطأ ما</string>
+    <string name="no_customization_alert">لايوجد اي تعديل</string>
+    <string name="saved_successfully">تم الحفظ بنجاح</string>
+    <string name="select_image_for_filter">فضلا اختار الصورة التي تود استخدامها </string>
+    <string name="apply_filter_title">تطبيق الفلتر</string>
+    <string name="recent_comment">التعليق الاخير</string>
+    <string name="your_comment">تعليقك</string>
+    <string name="txt_comments">التعليقات</string>
+    <string name="txt_resubmit">اعادة الارسال</string>
     <string name="txt_please_enter_description">Please enter a description.</string>
     <string name="txt_please_enter_a_name">Please enter a name.</string>
     <string name="txt_please_enter_a_expire_date">Please enter a expire date.</string>
     <string name="txt_please_select_a_category">Please select a category.</string>
+    <string name="txt_session_timeout">Session Timeout !</string>
+    <string name="txt_session_expired">Your session has expired.</string>
+    <string name="txt_my_customization">My Customization</string>
+    <string name="txt_downloads">Downloads</string>
+    <string name="txt_customization">Customization</string>
+    <string name="txt_password_updated_successfully">Password updated successfully</string>
+    <string name="txt_please_enter_confirm_password">Please enter confirm password.</string>
+    <string name="txt_change_password">Change Password</string>
+    <string name="txt_contact_us">"Contact Us "</string>
+    <string name="txt_log_out">Log Out</string>
+    <string name="txt_my_downloads">My Downloads</string>
+    <string name="txt_please_upload_a_image">Please upload a image.</string>
+    <string name="act_add_new_corp_category">Category</string>
+    <string name="act_txt_update_add_new_design">تحديث</string>
+    <string name="txt_please_select_a_valid_gif">Please select a valid gif</string>
+    <string name="txt_could_not_find_file_path">Could not find the filepath of the selected file</string>
+    <string name="txt_add_added_successfully">" Ads added successfully."</string>
+    <string name="txt_product_added_successfully">Product added successfully</string>
+    <string name="act_renew_product_txt_data_updated_successfully">Data updated successfully.</string>
+    <string name="txt_change_language">Change Language</string>
+    <string name="txt_company_details">Company Details</string>
+    <string name="txt_company_name">Company Name</string>
+    <string name="txt_company_address">Company Address</string>
+    <string name="txt_search_ad_by_name">Search Ad by name</string>
+    <string name="search_product_by_name">Search Product by name</string>
+    <string name="txt_just_now">Just now</string>
+    <string name="txt_second">" second "</string>
 
 </resources>

@@ -151,7 +151,7 @@
     <string name="txt_delete_resources">Deleted successfully</string>
     <string name="txt_report">Report</string>
     <string name="write_some_description">Write something here...</string>
-    <string name="select_category_txt">Select a Category</string>
+    <string name="select_category_txt">Select a League</string>
     <string name="search">Search</string>
 
     <string name="txt_notifications">Notifications</string>
@@ -197,7 +197,7 @@
     <string name="txt_no_completed_contest">No Completed contest Found.</string>
     <string name="most_downloaded">Most Downloaded</string>
     <string name="recent_upload">Recent Upload</string>
-    <string name="by_championship">By Championship</string>
+    <string name="by_championship">By League</string>
     <string name="txt_all">All</string>
     <string name="txt_apply">Apply</string>
     <string name="txt_filter">Filter</string>
@@ -227,5 +227,32 @@
     <string name="txt_please_enter_a_name">Please enter a name.</string>
     <string name="txt_please_enter_a_expire_date">Please enter a expire date.</string>
     <string name="txt_please_select_a_category">Please select a category.</string>
+    <string name="txt_session_timeout">Session Timeout !</string>
+    <string name="txt_session_expired">Your session has expired.</string>
+    <string name="txt_my_customization">My Customization</string>
+    <string name="txt_downloads">Downloads</string>
+    <string name="txt_customization">Customization</string>
+    <string name="txt_password_updated_successfully">Password updated successfully</string>
+    <string name="txt_please_enter_confirm_password">Please enter confirm password.</string>
+    <string name="txt_change_password">Change Password</string>
+    <string name="txt_contact_us">"Contact Us "</string>
+    <string name="txt_log_out">Log Out</string>
+    <string name="txt_my_downloads">My Downloads</string>
+    <string name="txt_please_upload_a_image">Please upload a image.</string>
+    <string name="act_add_new_corp_category">Category</string>
+    <string name="act_txt_update_add_new_design">Update</string>
+    <string name="txt_please_select_a_valid_gif">Please select a valid gif</string>
+    <string name="txt_could_not_find_file_path">Could not find the filepath of the selected file</string>
+    <string name="txt_add_added_successfully">" Product added successfully."</string>
+    <string name="txt_product_added_successfully">Product added successfully</string>
+    <string name="act_renew_product_txt_data_updated_successfully">Data updated successfully.</string>
+    <string name="txt_change_language">Change Language</string>
+    <string name="txt_company_details">Company Details</string>
+    <string name="txt_company_name">Company Name</string>
+    <string name="txt_company_address">Company Address</string>
+    <string name="txt_search_ad_by_name">Search Ad by name</string>
+    <string name="search_product_by_name">Search Product by name</string>
+    <string name="txt_just_now">Just now</string>
+    <string name="txt_second">" second "</string>
 
 </resources>
