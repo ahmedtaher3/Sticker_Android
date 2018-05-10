@@ -242,6 +242,7 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
             itemHolder.tvName.setText(productItem.productInfo.userName);
             itemHolder.checkboxLike.setText(Utils.format(productItem.productInfo.statics.likeCount));
             itemHolder.tvDownloads.setText(Utils.format(productItem.productInfo.statics.downloadCount));
+            itemHolder.checkboxShare.setText(Utils.format(productItem.productInfo.statics.shareCount));
 
             itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.productInfo.getProductname()));
 

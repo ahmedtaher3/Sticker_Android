@@ -1,6 +1,5 @@
 package com.sticker_android.controller.activities.fan.home.details;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -159,6 +158,7 @@ public class FanDetailsActivity extends AppBaseActivity {
                 tvFeatured.setVisibility(View.GONE);
             checkboxLike.setText(Utils.format(mProduct.statics.likeCount));
             tvDownloads.setText(Utils.format(mProduct.statics.downloadCount));
+            checkboxShare.setText(Utils.format(mProduct.statics.shareCount));
             tvName.setText(mProduct.userName);
             tvProductTitle.setText(Utils.capitlizeText(mProduct.getProductname()));
             tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(mProduct.getCreatedTime()), mContext).replaceAll("about", "").trim());
@@ -217,15 +217,15 @@ public class FanDetailsActivity extends AppBaseActivity {
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         if (mProduct != null) {
             if (mProduct.getType().equalsIgnoreCase(DesignType.stickers.getType())) {
-                textView.setText("Sticker" + " " + getString(R.string.detail));
+                textView.setText(getString(R.string.stickers) + " " + getString(R.string.detail));
             } else if (mProduct.getType().equalsIgnoreCase(DesignType.gif.getType())) {
-                textView.setText("GIF" + " " + getString(R.string.detail));
+                textView.setText(getString(R.string.gif) + " " + getString(R.string.detail));
             } else if (mProduct.getType().equalsIgnoreCase(DesignType.emoji.getType())) {
-                textView.setText("Emoji" + " " + getString(R.string.detail));
+                textView.setText(getString(R.string.emoji) + " " + getString(R.string.detail));
             } else if (mProduct.getType().equalsIgnoreCase(DesignType.products.getType())) {
-                textView.setText("Products" + " " + getString(R.string.detail));
+                textView.setText(getString(R.string.txt_products_frag) + " " + getString(R.string.detail));
             } else if (mProduct.getType().equalsIgnoreCase(DesignType.ads.getType())) {
-                textView.setText("Ads" + " " + getString(R.string.detail));
+                textView.setText(getString(R.string.txt_ads_frag) + " " + getString(R.string.detail));
             }
         }
         toolbar.setTitle(" ");
@@ -252,6 +252,10 @@ public class FanDetailsActivity extends AppBaseActivity {
     protected void setViewListeners() {
         likeListener();
         downloadListener();
+    }
+
+    private void shareListener() {
+
     }
 
     @Override
@@ -284,9 +288,11 @@ public class FanDetailsActivity extends AppBaseActivity {
                 if (buttonView.isPressed())
                     if (mProduct.isLike > 0) {
                         likeApi(0);
+                        checkboxLike.setEnabled(false);
                     } else {
                         likeApi(1);
                         viewCountApi();
+                        checkboxLike.setEnabled(false);
                     }
               /*  if (product.isLike==1) {
                     likeApi(product, 0, position);
@@ -317,7 +323,7 @@ public class FanDetailsActivity extends AppBaseActivity {
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Share using"));
-
+                shareApi(1);
             }
         });
     }
@@ -330,6 +336,7 @@ public class FanDetailsActivity extends AppBaseActivity {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
+                    checkboxLike.setEnabled(true);
                     mProduct.isLike = i;
                     mProduct.statics.likeCount = apiResponse.paylpad.statics.likeCount;
                     checkboxLike.setText("" + mProduct.statics.likeCount);
@@ -347,7 +354,7 @@ public class FanDetailsActivity extends AppBaseActivity {
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-
+                checkboxLike.setEnabled(true);
             }
         });
 
@@ -377,6 +384,29 @@ public class FanDetailsActivity extends AppBaseActivity {
                     mProduct.statics.downloadCount = apiResponse.paylpad.statics.downloadCount;
                 //    mProduct.statics.downloadCount++;
                     tvDownloads.setText("" + mProduct.statics.downloadCount);
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
+    private void shareApi(int i) {
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId()
+                , "", mProduct.getProductid(), "" + i, "statics", "share_count");
+        apiResponseCall.enqueue(new ApiCall(this) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if (apiResponse.status) {
+                    mProduct.statics.shareCount = apiResponse.paylpad.statics.shareCount;
+                    //    mProduct.statics.downloadCount++;
+                    checkboxShare.setText("" + mProduct.statics.shareCount);
                 }
             }
 

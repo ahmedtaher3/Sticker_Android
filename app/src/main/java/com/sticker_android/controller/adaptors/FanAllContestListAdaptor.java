@@ -231,6 +231,26 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 context.startActivity(Intent.createChooser(sharingIntent, "Share using"));
+                shareApi(product, 1, position);
+            }
+        });
+    }
+
+    private void shareApi(FanContestAll product, int i, final int position) {
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
+                , "" + product.contestId, product.product.getProductid(), "" + i, "statics", "share_count");
+        apiResponseCall.enqueue(new ApiCall((Activity) context) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if (apiResponse.status) {
+                    mItems.get(position).product.statics.shareCount = apiResponse.paylpad.statics.shareCount;
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
 
             }
         });
@@ -311,7 +331,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
 
             itemHolder.tvName.setText(productItem.userName);
             itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
-            //       itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
+                  itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
             itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
 
             itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));
@@ -392,12 +412,13 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
     private void downloadApi(final FanContestAll product, int i, final int position) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
-                , "" + product.contestId, product.product.getProductid(), "" + i, "", "download_count");
+                , "" + product.contestId, product.product.getProductid(), "" + i, "statics", "download_count");
         apiResponseCall.enqueue(new ApiCall((Activity) context) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
-                    mItems.get(position).product.statics.downloadCount++;
+                    mItems.get(position).product.statics.downloadCount = apiResponse.paylpad.statics.downloadCount;
+                    //    mProduct.statics.downloadCount++;
                     notifyDataSetChanged();
                 }
             }

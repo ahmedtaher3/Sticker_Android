@@ -36,6 +36,7 @@ import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -120,16 +121,15 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void updateTheFragment() {
 
-        if(mEmojiList != null && mEmojiList.size() != 0){
+        if (mEmojiList != null && mEmojiList.size() != 0) {
             swipeRefresh.setRefreshing(true);
             getDesignFromServer(true, "");
-        }
-        else{
+        } else {
             getDesignFromServer(false, "");
         }
     }
 
-    public void searchByKeyword(String keyword){
+    public void searchByKeyword(String keyword) {
         mCurrentPage = 0;
         mEmojiList.clear();
         mAdapter.setData(mEmojiList);
@@ -234,9 +234,9 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         });
     }
 
-    public void addNewEmoji(Product emoji){
+    public void addNewEmoji(Product emoji) {
 
-        if(emoji != null){
+        if (emoji != null) {
             llNoDataFound.setVisibility(View.GONE);
             rcDesignList.setVisibility(View.VISIBLE);
 
@@ -247,11 +247,11 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         }
     }
 
-    public void editEmoji(Product product){
+    public void editEmoji(Product product) {
 
-        if(product != null){
+        if (product != null) {
             int index = mEmojiList.indexOf(product);
-            if(index != -1){
+            if (index != -1) {
                 mEmojiList.set(index, product);
                 mAdapter.updateModifiedItem(product);
             }
@@ -290,7 +290,7 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         }
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductWithContestList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword,"");
+                index, limit, DesignType.emoji.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword, "");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -326,10 +326,9 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                     } else {
                                         mEmojiList.clear();
                                         mAdapter.setData(mEmojiList);
-                                        if(searchKeyword.length() != 0){
+                                        if (searchKeyword.length() != 0) {
                                             txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                        }
-                                        else{
+                                        } else {
                                             txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
                                         }
                                         showNoDataFound();
@@ -338,7 +337,7 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
                                     if (mCurrentPage == 0) {
                                         mEmojiList.clear();
-                                        if(payload.productList != null){
+                                        if (payload.productList != null) {
                                             mEmojiList.addAll(payload.productList);
                                         }
 
@@ -348,10 +347,9 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                             mAdapter.setData(mEmojiList);
                                         } else {
                                             showNoDataFound();
-                                            if(searchKeyword.length() != 0){
+                                            if (searchKeyword.length() != 0) {
                                                 txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                            }
-                                            else{
+                                            } else {
                                                 txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
                                             }
                                             rcDesignList.setVisibility(View.GONE);
@@ -360,8 +358,16 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                         AppLogger.error(TAG, "Remove loader...");
                                         mAdapter.removeLoader();
                                         if (payload.productList != null && payload.productList.size() != 0) {
-                                            mEmojiList.addAll(payload.productList);
+                                         /*   mEmojiList.addAll(payload.productList);
                                             mAdapter.setData(mEmojiList);
+                                       */
+                                            LinkedHashSet<Product> productsSet = new LinkedHashSet<Product>();
+                                            productsSet.addAll(mEmojiList);
+                                            productsSet.addAll(payload.productList);
+                                            mEmojiList.clear();
+                                            mEmojiList.addAll(productsSet);
+                                            mAdapter.setData(mEmojiList);
+
                                         }
                                     }
 
@@ -372,10 +378,9 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                 AppLogger.error(TAG, "item list size => " + mEmojiList.size());
 
                             } else if (mEmojiList == null || (mEmojiList != null && mEmojiList.size() == 0)) {
-                                if(searchKeyword.length() != 0){
+                                if (searchKeyword.length() != 0) {
                                     txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                }
-                                else{
+                                } else {
                                     txtNoDataFoundContent.setText(R.string.no_emoji_uploaded_yet);
                                 }
                                 showNoDataFound();
@@ -444,8 +449,8 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
 
-        DesignerHomeFragment parentFrag = ((DesignerHomeFragment)EmojiFragment.this.getParentFragment());
-        if(parentFrag!=null)
+        DesignerHomeFragment parentFrag = ((DesignerHomeFragment) EmojiFragment.this.getParentFragment());
+        if (parentFrag != null)
             parentFrag.closeSearch();
     }
 
@@ -463,10 +468,10 @@ public class EmojiFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onRemove(Product product) {
-        if(product != null){
+        if (product != null) {
             int index = mEmojiList.indexOf(product);
 
-            if(index != -1){
+            if (index != -1) {
                 mEmojiList.remove(index);
                 mAdapter.removeProductData(index);
             }

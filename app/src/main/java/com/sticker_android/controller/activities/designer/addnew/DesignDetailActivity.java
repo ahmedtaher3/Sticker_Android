@@ -105,7 +105,7 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
         if(mProduct != null){
 
             checkboxLike.setText(Utils.format(mProduct.statics.likeCount));
-          //  checkboxShare.setText(Utils.format(0));
+            checkboxShare.setText(Utils.format(mProduct.statics.shareCount));
             tvDownloads.setText(Utils.format(mProduct.statics.downloadCount));
             imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
                 @Override

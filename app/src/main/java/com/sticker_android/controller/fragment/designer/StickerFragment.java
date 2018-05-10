@@ -36,6 +36,7 @@ import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -361,8 +362,14 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                         AppLogger.error(TAG, "Remove loader...");
                                         mAdapter.removeLoader();
                                         if (payload.productList != null && payload.productList.size() != 0) {
-                                            mStickerList.addAll(payload.productList);
+                                            LinkedHashSet<Product> productsSet = new LinkedHashSet<Product>();
+                                            productsSet.addAll(mStickerList);
+                                            productsSet.addAll(payload.productList);
+                                            mStickerList.clear();
+                                            mStickerList.addAll(productsSet);
                                             mAdapter.setData(mStickerList);
+                                         //   mStickerList.addAll(payload.productList);
+
                                         }
                                     }
 

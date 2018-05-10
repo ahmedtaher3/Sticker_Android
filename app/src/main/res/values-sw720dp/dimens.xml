@@ -449,5 +449,7 @@
     <dimen name="dimen_column_grid">150dp</dimen>
     <dimen name="dimen_my_cust_image">150dp</dimen>
     <dimen name="dimen_grid_gallary_download">150dp</dimen>
+    <dimen name="dimen_image_my_cus">40dp</dimen>
+    <dimen name="dimen_image_size">120dp</dimen>
 
 </resources>

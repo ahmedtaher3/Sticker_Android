@@ -1,27 +1,22 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="1dp"
+    android:padding="2dp"
     android:background="@drawable/btn_shadow_corner"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="@dimen/image_size_gallary"
-        android:layout_height="@dimen/image_size_gallary">
+    <ProgressBar
+        android:id="@+id/progressImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center" />
 
-        <ProgressBar
-            android:id="@+id/progressImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center" />
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="@dimen/dimen_image_size"
+        android:layout_height="@dimen/dimen_image_size"
+        android:scaleType="centerCrop" />
 
-        <ImageView
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
-</LinearLayout>
+</FrameLayout>

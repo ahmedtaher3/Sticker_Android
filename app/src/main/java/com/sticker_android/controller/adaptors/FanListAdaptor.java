@@ -80,18 +80,18 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public ViewHolder(View view) {
             super(view);
-            imvOfAds            =    (ImageView) view.findViewById(R.id.imvOfAds);
-            tvProductTitle      =    (TextView) view.findViewById(R.id.tv_add_product_title);
-            tvStatus            =    (TextView) view.findViewById(R.id.tv_add_product_status);
-            tvDesciption        =    (TextView) view.findViewById(R.id.tv_add_product_item_description);
-            checkboxLike        =    (CheckBox) view.findViewById(R.id.checkboxLike);
-            checkboxShare       =    (CheckBox) view.findViewById(R.id.checkboxShare);
-            tvTime              =    (TextView) view.findViewById(R.id.tvTime);
-            tvDownloads         =    (TextView) view.findViewById(R.id.tvDownloads);
-            cardItem            =    (CardView) view.findViewById(R.id.card_view);
-            pbLoader            =    (ProgressBar) view.findViewById(R.id.pgrImage);
-            tvName              =    (TextView) view.findViewById(R.id.tv_name);
-            tvFeatured          =    (TextView) view.findViewById(R.id.tvFeatured);
+            imvOfAds = (ImageView) view.findViewById(R.id.imvOfAds);
+            tvProductTitle = (TextView) view.findViewById(R.id.tv_add_product_title);
+            tvStatus = (TextView) view.findViewById(R.id.tv_add_product_status);
+            tvDesciption = (TextView) view.findViewById(R.id.tv_add_product_item_description);
+            checkboxLike = (CheckBox) view.findViewById(R.id.checkboxLike);
+            checkboxShare = (CheckBox) view.findViewById(R.id.checkboxShare);
+            tvTime = (TextView) view.findViewById(R.id.tvTime);
+            tvDownloads = (TextView) view.findViewById(R.id.tvDownloads);
+            cardItem = (CardView) view.findViewById(R.id.card_view);
+            pbLoader = (ProgressBar) view.findViewById(R.id.pgrImage);
+            tvName = (TextView) view.findViewById(R.id.tv_name);
+            tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
         }
     }
 
@@ -212,7 +212,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Intent intent = new Intent(context, FanDetailsActivity.class);
                     intent.putExtra(AppConstant.PRODUCT, product);
                     ((Activity) context).startActivityForResult(intent, 0);
-                    ((Activity)context).overridePendingTransition(R.anim.activity_animation_enter,
+                    ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
                             R.anim.activity_animation_exit);
 
 
@@ -240,6 +240,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 context.startActivity(Intent.createChooser(sharingIntent, "Share using"));
+                shareApi(product, 1, position);
 
             }
         });
@@ -268,11 +269,12 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 boolean checked = isChecked;
                 if (buttonView.isPressed())
                     if (product.isLike > 0) {
-                        likeApi(product, 0, position);
-
+                        likeApi(vh, product, 0, position);
+                        vh.checkboxLike.setEnabled(false);
                     } else {
-                        likeApi(product, 1, position);
+                        likeApi(vh, product, 1, position);
                         viewCountApi(product);
+                        vh.checkboxLike.setEnabled(false);
                     }
               /*  if (product.isLike==1) {
                     likeApi(product, 0, position);
@@ -310,7 +312,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             itemHolder.tvName.setText(productItem.userName);
             itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
-            //   itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
+            itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
             itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
 
             itemHolder.tvProductTitle.setText(Utils.capitlizeText(productItem.getProductname()));
@@ -323,9 +325,9 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             itemHolder.tvTime.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(productItem.getCreatedTime()), context).replaceAll("about", "").trim());
 
-            if(productItem.isFeatured>0){
+            if (productItem.isFeatured > 0) {
                 itemHolder.tvFeatured.setVisibility(View.VISIBLE);
-            }else
+            } else
                 itemHolder.tvFeatured.setVisibility(View.GONE);
 
             if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
@@ -378,7 +380,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
 
-    private void likeApi(final Product product, final int i, final int position) {
+    private void likeApi(final ViewHolder vh, final Product product, final int i, final int position) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
                 , "", product.getProductid(), "" + i, "statics", "like_count");
@@ -388,13 +390,15 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if (apiResponse.status) {
                     product.isLike = i;
                     mItems.get(position).statics.likeCount = apiResponse.paylpad.statics.likeCount;
+                    vh.checkboxLike.setEnabled(true);
                     notifyDataSetChanged();
+
                 }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
-
+                vh.checkboxLike.setEnabled(true);
             }
         });
 
@@ -410,7 +414,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
                     mItems.get(position).statics.downloadCount = apiResponse.paylpad.statics.downloadCount;
-                  //  mItems.get(position).statics.downloadCount++;
+                    //  mItems.get(position).statics.downloadCount++;
                     notifyDataSetChanged();
                 }
             }
@@ -425,6 +429,29 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
 
+    private void shareApi(final Product product, int i, final int position) {
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
+                , "", product.getProductid(), "" + i, "statics", "share_count");
+        apiResponseCall.enqueue(new ApiCall((Activity) context) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if (apiResponse.status) {
+                    mItems.get(position).statics.shareCount = apiResponse.paylpad.statics.shareCount;
+                    //  mItems.get(position).statics.downloadCount++;
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
 
     private void viewCountApi(final Product product) {
 
@@ -434,7 +461,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
-                 }
+                }
             }
 
             @Override

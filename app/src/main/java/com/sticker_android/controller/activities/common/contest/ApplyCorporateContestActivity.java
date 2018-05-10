@@ -195,8 +195,10 @@ public class ApplyCorporateContestActivity extends AppBaseActivity implements Vi
                         onBackPressed();
                     }else
                     {
-                        Toast.makeText(getActivity(),""+apiResponse.error.message,Toast.LENGTH_LONG).show();
 
+                        Toast.makeText(getActivity(),""+apiResponse.error.message,Toast.LENGTH_LONG).show();
+                        setResult(RESULT_OK);
+                        onBackPressed();
                     }
                 }
 

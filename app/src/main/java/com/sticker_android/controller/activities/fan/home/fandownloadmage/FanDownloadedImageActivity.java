@@ -2,13 +2,13 @@ package com.sticker_android.controller.activities.fan.home.fandownloadmage;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -32,7 +32,6 @@ public class FanDownloadedImageActivity extends AppBaseActivity {
     private ImageView imvProductImage;
     private Toolbar toolbar;
     private ProgressBar pgrImage;
-    private ImageView imvDelete;
     private AppPref appPref;
     private User user;
     private Download downloadImageObj;
@@ -62,8 +61,8 @@ public class FanDownloadedImageActivity extends AppBaseActivity {
         // getWindow().setLayout(LinearLayoutCompat.LayoutParams.FILL_PARENT, LinearLayoutCompat.LayoutParams.FILL_PARENT);
         if (getIntent().getExtras() != null) {
             downloadImageObj = getIntent().getExtras().getParcelable("image");
-            if(downloadImageObj!=null)
-            setImage(downloadImageObj.imageUrl);
+            if (downloadImageObj != null)
+                setImage(downloadImageObj.imageUrl);
         }
     }
 
@@ -100,31 +99,9 @@ public class FanDownloadedImageActivity extends AppBaseActivity {
     }
 
 
-    private void measureImageWidthHeight() {
-
-        ViewTreeObserver vto = imvProductImage.getViewTreeObserver();
-        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            public boolean onPreDraw() {
-                imvProductImage.getViewTreeObserver().removeOnPreDrawListener(this);
-                int finalWidth = imvProductImage.getMeasuredWidth();
-                int height = finalWidth * 3 / 5;
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imvProductImage.getLayoutParams();
-                //    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imvProductImage.getLayoutParams();
-                layoutParams.height = height;
-                imvProductImage.setLayoutParams(layoutParams);
-                return true;
-            }
-        });
-    }
-
     @Override
     protected void setViewListeners() {
-        imvDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDeleteDialog();
-            }
-        });
+
     }
 
     private void showDeleteDialog() {
@@ -166,12 +143,28 @@ public class FanDownloadedImageActivity extends AppBaseActivity {
     protected void setViewReferences() {
         imvProductImage = (ImageView) findViewById(R.id.image);
         pgrImage = (ProgressBar) findViewById(R.id.pgrImage);
-        imvDelete = (ImageView) findViewById(R.id.imvDelete);
 
     }
 
     @Override
     protected boolean isValidData() {
         return false;
+    }
+
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.customize_image_delete, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete:
+                showDeleteDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

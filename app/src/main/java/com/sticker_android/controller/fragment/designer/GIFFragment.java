@@ -36,6 +36,7 @@ import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -360,8 +361,17 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                                         AppLogger.error(TAG, "Remove loader...");
                                         mAdapter.removeLoader();
                                         if (payload.productList != null && payload.productList.size() != 0) {
+                                           /* mAdapter.setData(mGifList);
                                             mGifList.addAll(payload.productList);
+                                       */
+                                            LinkedHashSet<Product> productsSet = new LinkedHashSet<Product>();
+                                            productsSet.addAll(mGifList);
+                                            productsSet.addAll(payload.productList);
+                                            mGifList.clear();
+                                            mGifList.addAll(productsSet);
                                             mAdapter.setData(mGifList);
+
+
                                         }
                                     }
 

@@ -17,6 +17,7 @@ import com.sticker_android.model.User;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -64,7 +65,7 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
 
 
     private void getContactApi() {
-
+        AppLogger.debug(ContactUsFragment.class.getSimpleName(),"inside get  contact api");
         Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent("4");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override

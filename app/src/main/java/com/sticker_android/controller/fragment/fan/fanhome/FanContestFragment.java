@@ -199,7 +199,7 @@ public class FanContestFragment extends BaseFragment implements SwipeRefreshLayo
         }
 
         FanHomeFragment parentFrag = ((FanHomeFragment) FanContestFragment.this.getParentFragment());
-        if(parentFrag!=null)
+        if (parentFrag != null)
             parentFrag.closeSearch();
     }
 

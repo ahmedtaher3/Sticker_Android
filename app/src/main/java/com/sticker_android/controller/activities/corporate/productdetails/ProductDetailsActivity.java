@@ -103,6 +103,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
     private void setProductDetails() {
 
         checkboxLike.setText(Utils.format(productObj.statics.likeCount));
+        checkboxShare.setText(Utils.format(productObj.statics.shareCount));
 
         int status = productObj.productStatus;
         if (status == ProductStatus.REJECTED.getStatus()) {

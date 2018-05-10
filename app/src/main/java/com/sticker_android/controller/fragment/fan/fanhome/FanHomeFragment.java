@@ -234,7 +234,9 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
+
+                setQueryHintText(searchView);
+                //searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
 
             }
         });
@@ -248,6 +250,32 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
 
         searchViewExpandListener(item);
 
+    }
+
+    private void setQueryHintText(SearchView searchView) {
+        if (tabLayout.getSelectedTabPosition() == 0) {
+            searchView.setQueryHint(getString(R.string.txt_search_filter_by_name));
+            //type = DesignType.filter.getType();
+        } else if (tabLayout.getSelectedTabPosition() == 1) {
+            searchView.setQueryHint(getString(R.string.txt_search_contest_by_name));
+
+        } else if (tabLayout.getSelectedTabPosition() == 2) {
+            searchView.setQueryHint(getString(R.string.txt_search_stickers_by_name));
+
+        } else if (tabLayout.getSelectedTabPosition() == 3) {
+            //type = DesignType.gif.getType().toUpperCase(Locale.US);
+            searchView.setQueryHint(getString(R.string.txt_search_gif_by_name));
+
+        } else if (tabLayout.getSelectedTabPosition() == 4) {
+            searchView.setQueryHint(getString(R.string.txt_search_emoji_by_name));
+
+        } else if (tabLayout.getSelectedTabPosition() == 5) {
+            searchView.setQueryHint(getString(R.string.txt_search_ad_by_name));
+
+        } else if (tabLayout.getSelectedTabPosition() == 6) {
+            searchView.setQueryHint(getString(R.string.search_product_by_name));
+
+        }
     }
 
     private void searchViewExpandListener(MenuItem item) {
@@ -339,7 +367,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                 break;
             case R.id.filter:
                 Intent intent = new Intent(getActivity(), FanFilterActivity.class);
-                intent.putExtra("type",""+tabLayout.getSelectedTabPosition());
+                intent.putExtra("type", "" + tabLayout.getSelectedTabPosition());
                 startActivityForResult(intent, 131);
                 getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                         R.anim.activity_animation_exit);
@@ -516,12 +544,11 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
             }
 
 
-
-              }
-        if(requestCode==0)
-        for (Fragment fragment : getChildFragmentManager().getFragments()) {
-            fragment.onActivityResult(requestCode, resultCode, data);
         }
+        if (requestCode == 0)
+            for (Fragment fragment : getChildFragmentManager().getFragments()) {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
 
     }
 
@@ -542,7 +569,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
     }
 
     public void closeSearch() {
-        if(item!=null)
+        if (item != null)
             MenuItemCompat.collapseActionView(item);
     }
 }

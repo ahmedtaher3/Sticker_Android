@@ -113,6 +113,8 @@
     <dimen name="txt_size_contest">18sp</dimen>
     <dimen name="dimen_my_cust_image">190dp</dimen>
     <dimen name="dimen_grid_gallary_download">120dp</dimen>
+    <dimen name="dimen_image_my_cus">50dp</dimen>
+    <dimen name="dimen_image_size">180dp</dimen>
 
 
 </resources>

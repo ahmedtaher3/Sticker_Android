@@ -1119,6 +1119,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                         itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
                     }
+                    itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
+
                     itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
                     itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
                     itemHolder.imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {

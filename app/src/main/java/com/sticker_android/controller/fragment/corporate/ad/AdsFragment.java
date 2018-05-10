@@ -1150,6 +1150,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     }
                     itemHolder.checkboxLike.setText(Utils.format(productItem.statics.likeCount));
                     itemHolder.tvDownloads.setText(Utils.format(productItem.statics.downloadCount));
+                    itemHolder.checkboxShare.setText(Utils.format(productItem.statics.shareCount));
+
                     itemHolder.imvBtnEditRemove.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

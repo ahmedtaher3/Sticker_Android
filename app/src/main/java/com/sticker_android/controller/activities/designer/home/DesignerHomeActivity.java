@@ -1,5 +1,6 @@
 package com.sticker_android.controller.activities.designer.home;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -72,7 +73,7 @@ import java.util.Locale;
 import retrofit2.Call;
 
 public class DesignerHomeActivity extends AppBaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener, UpdateToolbarTitle,AccountSettingFragment.ILanguageUpdate {
+        NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener, UpdateToolbarTitle, AccountSettingFragment.ILanguageUpdate {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private CoordinatorLayout mainView;
@@ -83,6 +84,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
     private boolean doubleBackToExitPressedOnce;
     private MenuItem mSelectedMenu;
     private FragmentManager mFragmentManager;
+    boolean isCalled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -387,23 +389,31 @@ public class DesignerHomeActivity extends AppBaseActivity implements
             if (intent.getExtras().getParcelable("obj") != null) {
                 AppNotification appNotification = new AppNotification();
                 appNotification = intent.getExtras().getParcelable("obj");
-                if(appNotification.payload.acmeObj.status==5)
-                setIntentData(appNotification);
+                if (appNotification.payload.acmeObj.status == 5)
+                    setIntentData(appNotification);
             }
         }
-
+/*
+        if (isCalled) {
+            isCalled=false;
+            if (appPref.getLanguage(1) == 2)
+                Utils.changeLanguage("ar", this, DesignerHomeActivity.class);
+            else
+                Utils.changeLanguage("en", this, DesignerHomeActivity.class);
+        }
+*/
 
     }
 
     private void setIntentData(AppNotification appNotification) {
 
         NotificationApp notificationApp = new NotificationApp();
-        notificationApp.notificatinId=appNotification.payload.acmeObj.notificationId;
-        Acme acme=new Acme();
-        ContestObj contestObj=new ContestObj();
-        contestObj.contestId=appNotification.payload.acmeObj.contestId;
-        acme.contestObj=contestObj;
-        notificationApp.acme=acme;
+        notificationApp.notificatinId = appNotification.payload.acmeObj.notificationId;
+        Acme acme = new Acme();
+        ContestObj contestObj = new ContestObj();
+        contestObj.contestId = appNotification.payload.acmeObj.contestId;
+        acme.contestObj = contestObj;
+        notificationApp.acme = acme;
         Intent intentApplyContest = new Intent(this, ApplyCorporateContestActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(AppConstant.NOTIFICATION_OBJ, notificationApp);
@@ -566,19 +576,21 @@ public class DesignerHomeActivity extends AppBaseActivity implements
 
     @Override
     public void updatelanguage(String language) {
-        if(language.equalsIgnoreCase("1"))
-        {
+        isCalled=true;
+        if (language.equalsIgnoreCase("1")) {
             appPref.setLanguage(1);
             Utils.changeLanguage("en", this, DesignerHomeActivity.class);
-            AppLogger.debug(FanHomeActivity.class.getSimpleName(),"language Account on update"+language);
+            AppLogger.debug(FanHomeActivity.class.getSimpleName(), "language Account on update" + language);
 
-        }else {
+        } else {
             appPref.setLanguage(2);
             Utils.changeLanguage("ar", this, DesignerHomeActivity.class);
-            AppLogger.debug(FanHomeActivity.class.getSimpleName(),"language Account on update"+language);
+            AppLogger.debug(FanHomeActivity.class.getSimpleName(), "language Account on update" + language);
 
         }
 
 
     }
+
+
 }

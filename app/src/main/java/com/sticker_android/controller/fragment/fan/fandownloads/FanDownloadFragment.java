@@ -146,8 +146,8 @@ public class FanDownloadFragment extends BaseFragment implements SearchView.OnQu
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
-
+              //  searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
+                setQueryHintText(searchView);
             }
         });
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
@@ -159,6 +159,20 @@ public class FanDownloadFragment extends BaseFragment implements SearchView.OnQu
         });
 
         searchViewExpandListener(item);
+    }
+
+    private void setQueryHintText(SearchView searchView) {
+
+       if (tabLayout.getSelectedTabPosition() == 0) {
+            searchView.setQueryHint(getString(R.string.txt_search_stickers_by_name));
+
+        } else if (tabLayout.getSelectedTabPosition() == 1) {
+            //type = DesignType.gif.getType().toUpperCase(Locale.US);
+            searchView.setQueryHint(getString(R.string.txt_search_gif_by_name));
+
+        } else if (tabLayout.getSelectedTabPosition() == 2) {
+           searchView.setQueryHint(getString(R.string.txt_search_emoji_by_name));
+       }
     }
 
     /**

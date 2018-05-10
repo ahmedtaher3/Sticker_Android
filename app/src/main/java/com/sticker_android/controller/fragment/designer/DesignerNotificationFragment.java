@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -240,7 +239,9 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
 
             }
             holder.tvTimeNotification.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(notification.cratedDate),getActivity()));
-
+            if(notification.acme.contestObj.status==8){
+                holder.imvtype.setImageResource(R.drawable.ic_like_notification);
+            }
             holder.tvNotification.setText(notification.acme.contestObj.msg);
             showData(holder, contestId);
             holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -291,7 +292,7 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
             public TextView tvNotification;
             public TextView tvTimeNotification;
             public ImageView imvtype;
-            public CardView cardView;
+            public RelativeLayout cardView;
 
             public NotificationHolder(View view) {
                 super(view);
@@ -299,7 +300,7 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
                 tvNotification = (TextView) view.findViewById(R.id.tvNotification);
                 tvTimeNotification = (TextView) view.findViewById(R.id.tvTimeNotification);
                 imvtype = (ImageView) view.findViewById(R.id.imvtype);
-                cardView = (CardView) view.findViewById(R.id.card_view);
+                cardView = (RelativeLayout) view.findViewById(R.id.card_view);
             }
         }
 

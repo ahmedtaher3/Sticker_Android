@@ -7,7 +7,7 @@
     <string name="txt_designer">Designer</string>
     <string name="text_corporate">Corporate</string>
     <integer name="running_device_config">5</integer>
-    <integer name="designed_item_page_limit">30</integer>
+    <integer name="designed_item_page_limit">60</integer>
 
     <!--Sign In-->
     <string name="txt_dont_have_a_account">"Don't have a account?"</string>
@@ -254,5 +254,11 @@
     <string name="search_product_by_name">Search Product by name</string>
     <string name="txt_just_now">Just now</string>
     <string name="txt_second">" second "</string>
+    <string name="txt_delete">Delete</string>
+    <string name="txt_search_filter_by_name">Search Filter by name</string>
+    <string name="txt_search_contest_by_name">Search Contest by name</string>
+    <string name="txt_search_stickers_by_name">Search Stickers by name</string>
+    <string name="txt_search_gif_by_name">Search GIF by name</string>
+    <string name="txt_search_emoji_by_name">Search Emoji by name</string>
 
 </resources>

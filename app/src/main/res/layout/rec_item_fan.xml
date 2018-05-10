@@ -38,21 +38,22 @@
                     android:layout_width="@dimen/sticker_progress_loader_size"
                     android:layout_height="@dimen/sticker_progress_loader_size"
                     android:layout_centerInParent="true" />
+
                 <TextView
-                    android:alpha=".75"
-                    android:visibility="gone"
-                    android:textSize="15sp"
-                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:id="@+id/tvFeatured"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
+                    android:alpha=".75"
                     android:background="@drawable/drawable_featured"
                     android:gravity="center"
                     android:paddingLeft="@dimen/dp_5"
                     android:paddingRight="@dimen/dp_5"
                     android:text="Featured"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -62,38 +63,36 @@
                 android:layout_marginTop="@dimen/dp_10">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:id="@+id/tv_add_product_title"
                     fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginEnd="5dp"
-                    android:layout_toLeftOf="@+id/imvBtnEditRemove"
-                    android:layout_toStartOf="@+id/imvBtnEditRemove"
+                    android:layout_toLeftOf="@+id/tv_name"
+                    android:layout_toStartOf="@+id/tv_name"
                     android:ellipsize="end"
+                    android:gravity="start"
                     android:maxLines="1"
-                    android:gravity="end"
+                    android:text="dcdjcvkldvdflvflvkfjvldfjvlfkvdfjlvkfvjdfkvfjvkfvjfkvfjvkfjvjvkfvfkvl"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/txt_size_home_12sp" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:id="@+id/tv_name"
-                        fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:gravity="end"
-                        android:maxLines="1"
-                        android:text="Vivek Singh"
-                        android:textColor="@color/colorFanText"
-                        android:textSize="@dimen/txt_size_home_12sp" />
+                <TextView
+                    android:ellipsize="end"
+                    android:id="@+id/tv_name"
+                    fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:gravity="end"
+                    android:maxLines="1"
+                    android:maxWidth="100dp"
+                    android:textColor="@color/colorFanText"
+                    android:textSize="@dimen/txt_size_home_12sp" />
 
 
-                </RelativeLayout>
             </RelativeLayout>
 
             <TextView
@@ -125,10 +124,10 @@
                     android:id="@+id/checkboxShare"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_toRightOf="@+id/checkboxLike"
+                    android:layout_marginLeft="8dp"
                     android:layout_toEndOf="@+id/checkboxLike"
+                    android:layout_toRightOf="@+id/checkboxLike"
 
                     android:button="@drawable/share_selector"
                     android:padding="@dimen/padding_like_8dp"
@@ -140,8 +139,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="8dp"
-                    android:layout_toRightOf="@+id/checkboxShare"
                     android:layout_toEndOf="@+id/checkboxShare"
+                    android:layout_toRightOf="@+id/checkboxShare"
 
                     android:drawableEnd="@drawable/tv_svg_time"
                     android:drawablePadding="8dp"
@@ -156,8 +155,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="16dp"
-                    android:layout_toRightOf="@+id/tvTime"
                     android:layout_toEndOf="@+id/tvTime"
+                    android:layout_toRightOf="@+id/tvTime"
                     android:drawableEnd="@drawable/ic_svg_drawable_download"
                     android:drawablePadding="8dp"
                     android:gravity="center"
@@ -172,8 +171,8 @@
                     android:layout_width="match_parent"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@id/tvDownloads"
                     android:layout_toEndOf="@id/tvDownloads"
+                    android:layout_toRightOf="@id/tvDownloads"
 
                     android:gravity="end"
                     android:textColor="@android:color/holo_green_light"

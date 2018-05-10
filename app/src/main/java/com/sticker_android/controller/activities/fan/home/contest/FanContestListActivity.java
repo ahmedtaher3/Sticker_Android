@@ -347,7 +347,7 @@ public class FanContestListActivity extends AppBaseActivity implements SwipeRefr
                             t instanceof java.net.UnknownHostException)) {
 
                         if (mCurrentPage == 0) {
-                            manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
+                            manageNoInternetConnectionLayout(getActivity(), rlConnectionContainer, new NetworkPopupEventListener() {
                                 @Override
                                 public void onOkClickListener(int reqCode) {
                                     rlContent.setVisibility(View.VISIBLE);
