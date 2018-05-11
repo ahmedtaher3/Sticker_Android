@@ -375,7 +375,7 @@ public class AccountSettingFragment extends BaseFragment {
             CorporateHomeActivity profileActivity = (CorporateHomeActivity) context;
             iLanguageUpdate = (ILanguageUpdate) context;
 
-        }else {
+        }else if(context instanceof DesignerHomeActivity) {
             DesignerHomeActivity profileActivity = (DesignerHomeActivity) context;
             iLanguageUpdate = (ILanguageUpdate) context;
         }

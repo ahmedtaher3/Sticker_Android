@@ -233,8 +233,11 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
 
                                     if (payload.productList != null && payload.productList.size() != 0) {
                                         productList.clear();
-                                        productList.addAll(payload.productList);
-
+                                        LinkedHashSet<Product> productsSet = new LinkedHashSet<Product>();
+                                        productsSet.addAll(payload.productList);
+                                        productList.clear();
+                                        productList.addAll(productsSet);
+                                      //  productList.addAll(payload.productList);
                                         llNoDataFound.setVisibility(View.GONE);
                                         recAd.setVisibility(View.VISIBLE);
                                         corporateListAdaptor.setData(productList);
@@ -256,7 +259,11 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                                     if (mCurrentPage == 0) {
                                         productList.clear();
                                         if (payload.productList != null) {
-                                            productList.addAll(payload.productList);
+                                            LinkedHashSet<Product> productsSet = new LinkedHashSet<Product>();
+                                            productsSet.addAll(payload.productList);
+                                            productList.clear();
+                                            productList.addAll(productsSet);
+                                          //  productList.addAll(payload.productList);
                                         }
 
                                         if (productList.size() != 0) {

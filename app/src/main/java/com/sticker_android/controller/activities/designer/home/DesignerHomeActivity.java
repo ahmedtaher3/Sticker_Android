@@ -383,6 +383,13 @@ public class DesignerHomeActivity extends AppBaseActivity implements
                     ((DesignerPendingContentFragment) fragment).updateAttachedVisibleFragment();
                 }
             }
+
+            if(intent.getBooleanExtra(AppConstant.CHANGE_LANGUAGE, false)){
+                if (appPref.getLanguage(1) == 2)
+                    Utils.changeLanguage("ar", this, DesignerHomeActivity.class);
+                else
+                    Utils.changeLanguage("en", this, DesignerHomeActivity.class);
+            }
         }
         LocalNotification.clearNotifications(this);
         if (intent.getExtras() != null) {
@@ -393,6 +400,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
                     setIntentData(appNotification);
             }
         }
+
 /*
         if (isCalled) {
             isCalled=false;
@@ -576,7 +584,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
 
     @Override
     public void updatelanguage(String language) {
-        isCalled=true;
+        isCalled = true;
         if (language.equalsIgnoreCase("1")) {
             appPref.setLanguage(1);
             Utils.changeLanguage("en", this, DesignerHomeActivity.class);
@@ -585,7 +593,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         } else {
             appPref.setLanguage(2);
             Utils.changeLanguage("ar", this, DesignerHomeActivity.class);
-            AppLogger.debug(FanHomeActivity.class.getSimpleName(), "language Account on update" + language);
+            AppLogger.debug(DesignerHomeActivity.class.getSimpleName(), "Designer language Account on update" + language);
 
         }
 

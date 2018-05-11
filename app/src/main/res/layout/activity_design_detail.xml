@@ -178,6 +178,14 @@
                         android:textSize="@dimen/txt_size_home_12sp" />
 
                 </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/rlJustificationHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <include layout="@layout/layout_justification_content"/>
+                </RelativeLayout>
 
             </LinearLayout>
         </ScrollView>

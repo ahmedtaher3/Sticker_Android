@@ -98,6 +98,8 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
     }
 
     private void getNotificationApi(final boolean isRefresh) {
+
+        recNotification.setVisibility(View.VISIBLE);
         if (isRefresh)
             swipeRefreshNotification.setRefreshing(true);
         else
@@ -115,19 +117,16 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
                 if (apiResponse.status) {
 
                     mNotificationList = apiResponse.paylpad.notificationArrayList;
-                    if (mNotificationList != null) {
+                    if (mNotificationList != null && mNotificationList.size() != 0) {
                         notificationAdaptor.setData(mNotificationList);
                         txtNoDataFoundContent.setVisibility(View.GONE);
 
-                    }
-                    if (mNotificationList == null) {
+                    } else {
                         txtNoDataFoundContent.setText(R.string.txt_no_notification_found);
                         showNoDataFound();
+                        recNotification.setVisibility(View.GONE);
                     }
-                    if (mNotificationList != null && mNotificationList.size() == 0) {
-                        txtNoDataFoundContent.setText(R.string.txt_no_notification_found);
-                        showNoDataFound();
-                    }
+
                 }
             }
 
@@ -238,8 +237,8 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
                 holder.imvNotification.setImageResource(R.drawable.ic_side_image_blue);
 
             }
-            holder.tvTimeNotification.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(notification.cratedDate),getActivity()));
-            if(notification.acme.contestObj.status==8){
+            holder.tvTimeNotification.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(notification.cratedDate), getActivity()));
+            if (notification.acme.contestObj.status == 8) {
                 holder.imvtype.setImageResource(R.drawable.ic_like_notification);
             }
             holder.tvNotification.setText(notification.acme.contestObj.msg);

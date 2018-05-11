@@ -239,7 +239,11 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
                                     if (payload.productList != null && payload.productList.size() != 0) {
                                         productList.clear();
-                                        productList.addAll(payload.productList);
+                                        LinkedHashSet<Product> productsSet = new LinkedHashSet<Product>();
+                                        productsSet.addAll(payload.productList);
+                                        productList.clear();
+                                        productList.addAll(productsSet);
+                                        //  productList.addAll(payload.productList);
                                         llNoDataFound.setVisibility(View.GONE);
                                         recAd.setVisibility(View.VISIBLE);
                                         corporateListAdaptor.setData(payload.productList);
@@ -261,8 +265,11 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                                     if (mCurrentPage == 0) {
                                         productList.clear();
                                         if (payload.productList != null) {
+                                            LinkedHashSet<Product> productsSet = new LinkedHashSet<Product>();
+                                            productsSet.addAll(payload.productList);
                                             productList.clear();
-                                            productList.addAll(payload.productList);
+                                            productList.addAll(productsSet);
+                                          //  productList.addAll();
                                         }
 
                                         if (productList.size() != 0) {
@@ -1129,7 +1136,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 final CorporateListAdaptor.ViewHolder itemHolder = (CorporateListAdaptor.ViewHolder) holder;
                 final Product productItem = mItems.get(position);
 
-                if (productItem.getType().equals("product")) {
+                if (productItem.getType().equals("ads")) {
                     itemHolder.rlProduct.setVisibility(View.VISIBLE);
                     itemHolder.rlContest.setVisibility(View.GONE);
                     if (productItem.isLike > 0) {

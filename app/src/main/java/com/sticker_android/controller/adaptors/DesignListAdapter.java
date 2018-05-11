@@ -29,6 +29,7 @@ import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.common.contest.ApplyCorporateContestActivity;
+import com.sticker_android.controller.activities.common.contest.ApplyDesignerContestActivity;
 import com.sticker_android.controller.activities.designer.addnew.DesignDetailActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
@@ -229,7 +230,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 public void onClick(View v) {
                     int position = vh.getAdapterPosition();
                     Product product = mItems.get(position);
-                    Intent intent = new Intent(context, ApplyCorporateContestActivity.class);
+                    Intent intent = new Intent(context, ApplyDesignerContestActivity.class);
                     Bundle bundle = new Bundle();
                     NotificationApp notification = new NotificationApp();
                     Acme acme = new Acme();
@@ -260,7 +261,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else {
             final ViewHolder itemHolder = (ViewHolder) holder;
             final Product productItem = mItems.get(position);
-            if (productItem.getType().equals("product")) {
+            if (productItem.getType().equals("stickers")||productItem.getType().equals("emoji")||productItem.getType().equals("gif")) {
                 itemHolder.rlProduct.setVisibility(View.VISIBLE);
                 itemHolder.rlContest.setVisibility(View.GONE);
 

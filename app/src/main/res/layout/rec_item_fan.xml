@@ -142,7 +142,7 @@
                     android:layout_toEndOf="@+id/checkboxShare"
                     android:layout_toRightOf="@+id/checkboxShare"
 
-                    android:drawableEnd="@drawable/tv_svg_time"
+                    android:drawableStart="@drawable/tv_svg_time"
                     android:drawablePadding="8dp"
                     android:gravity="center"
                     android:text="2 hour"
@@ -157,7 +157,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_toEndOf="@+id/tvTime"
                     android:layout_toRightOf="@+id/tvTime"
-                    android:drawableEnd="@drawable/ic_svg_drawable_download"
+                    android:drawableStart="@drawable/ic_svg_drawable_download"
                     android:drawablePadding="8dp"
                     android:gravity="center"
                     android:text="2 hour"
@@ -173,7 +173,6 @@
                     android:layout_marginLeft="10dp"
                     android:layout_toEndOf="@id/tvDownloads"
                     android:layout_toRightOf="@id/tvDownloads"
-
                     android:gravity="end"
                     android:textColor="@android:color/holo_green_light"
                     android:textSize="@dimen/txt_size_home_12sp" />

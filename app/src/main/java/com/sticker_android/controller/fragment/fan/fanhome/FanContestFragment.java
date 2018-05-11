@@ -78,6 +78,7 @@ public class FanContestFragment extends BaseFragment implements SwipeRefreshLayo
     }
 
     private void getContestListApi(final boolean isRefresh) {
+
         if (isRefresh) {
             swipeRefresh.setRefreshing(true);
             llLoaderView.setVisibility(View.GONE);
@@ -212,15 +213,24 @@ public class FanContestFragment extends BaseFragment implements SwipeRefreshLayo
     }
 
     public void searchData(String trim) {
+
+        rcDesignList.setVisibility(View.VISIBLE);
         if (mStickerList != null) {
             ArrayList<FanContest> tempList = mAdapter.filter(trim);
             if (tempList != null) {
                 if (tempList.size() == 0) {
                     llNoDataFound.setVisibility(View.VISIBLE);
-                    showNoDataFound();
                     txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
+                    showNoDataFound();
+                    rcDesignList.setVisibility(View.GONE);
 
                 }
+            } else {
+                llNoDataFound.setVisibility(View.VISIBLE);
+                txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
+                showNoDataFound();
+
+                rcDesignList.setVisibility(View.GONE);
             }
 
         }

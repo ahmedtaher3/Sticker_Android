@@ -61,6 +61,8 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
     private Product mProduct;
     private TimeUtility timeUtility = new TimeUtility();
     private TextView tvFeatured;
+    private RelativeLayout rlJustificationHolder;
+    private TextView txtViewMoreComment, txtRecentComments, edtJustification,txtYourComment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,8 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
         if(mProduct != null){
             setProductDetail();
         }
+        if (mProduct != null)
+            manageStatus();
     }
 
     private void getIntentValues(){
@@ -97,6 +101,35 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
         }
     }
 
+
+    private void manageStatus() {
+
+
+        if (mProduct.productStatus == 3) {
+            rlJustificationHolder.setVisibility(View.VISIBLE);
+            edtJustification.setVisibility(View.GONE);
+            txtYourComment.setVisibility(View.GONE);
+            setAdminCommentData();
+        } else {
+            rlJustificationHolder.setVisibility(View.GONE);
+        }
+    }
+
+    private void setAdminCommentData() {
+        if (mProduct.rejectionList != null) {
+            if (mProduct.rejectionList.size() > 0) {
+
+                txtRecentComments.setText("" + mProduct.rejectionList.get(mProduct.rejectionList.size() - 1).description);
+            }
+            if (mProduct.rejectionList.size() > 1) {
+                txtViewMoreComment.setVisibility(View.VISIBLE);
+                txtViewMoreComment.setTextColor(getResources().getColor(R.color.colorDesignerText));
+            } else {
+                txtViewMoreComment.setVisibility(View.GONE);
+
+            }
+        }
+    }
     /**
      * will set the product detail
      */
@@ -263,6 +296,11 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
         cardItem = (CardView) findViewById(R.id.card_view);
         pbLoader = (ProgressBar) findViewById(R.id.pgrImage);
         tvFeatured =(TextView)findViewById(R.id.tvFeatured);
+        rlJustificationHolder = (RelativeLayout) findViewById(R.id.rlJustificationHolder);
+        edtJustification = (TextView) findViewById(R.id.edtJustification);
+        txtViewMoreComment = (TextView) findViewById(R.id.txtViewMoreComment);
+        txtRecentComments = (TextView) findViewById(R.id.txtRecentComments);
+        txtYourComment=(TextView)findViewById(R.id.txtYourComment);
     }
 
     @Override

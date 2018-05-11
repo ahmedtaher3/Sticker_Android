@@ -18,6 +18,7 @@ public class AppConstant {
     public static final String NOTIFICATION_OBJ="notificationObj";
 
     public static final int INTENT_NOTIFICATION_CODE =10 ;
+    public static final String CHANGE_LANGUAGE = "change_language";
 
     public static final int INTENT_RENEW_CODE =12 ;
     public static final int INTENT_PRODUCT_DETAILS =121 ;

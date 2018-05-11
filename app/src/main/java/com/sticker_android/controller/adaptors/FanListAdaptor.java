@@ -332,18 +332,21 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
                 itemHolder.pbLoader.setVisibility(View.VISIBLE);
+                AppLogger.debug(TAG,"loading ...");
                 Glide.with(context)
                         .load(productItem.getImagePath())
                         .listener(new RequestListener<String, GlideDrawable>() {
                             @Override
                             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                                 itemHolder.pbLoader.setVisibility(View.GONE);
+                                AppLogger.debug(TAG,"loading ... on Exception");
                                 return false;
                             }
 
                             @Override
                             public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                                 itemHolder.pbLoader.setVisibility(View.GONE);
+                                AppLogger.debug(TAG,"loading ... ready");
                                 return false;
                             }
                         })
@@ -461,6 +464,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
+
                 }
             }
 

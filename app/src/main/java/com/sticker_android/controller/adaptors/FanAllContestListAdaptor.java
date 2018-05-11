@@ -239,7 +239,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
     private void shareApi(FanContestAll product, int i, final int position) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
-                , "" + product.contestId, product.product.getProductid(), "" + i, "statics", "share_count");
+                , "" + product.userContestId, product.product.getProductid(), "" + i, "statics", "share_count");
         apiResponseCall.enqueue(new ApiCall((Activity) context) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -412,7 +412,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
     private void downloadApi(final FanContestAll product, int i, final int position) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
-                , "" + product.contestId, product.product.getProductid(), "" + i, "statics", "download_count");
+                , "" + product.userContestId, product.product.getProductid(), "" + i, "statics", "download_count");
         apiResponseCall.enqueue(new ApiCall((Activity) context) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {

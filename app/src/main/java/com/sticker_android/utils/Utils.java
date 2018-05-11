@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -283,6 +284,7 @@ public class Utils {
         res.updateConfiguration(conf, dm);
         conf.setLayoutDirection(myLocale);
         Intent intent = new Intent(activity, cls);
+        intent.putExtra(AppConstant.CHANGE_LANGUAGE, true);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivity(intent);
         activity.finish();
@@ -290,6 +292,8 @@ public class Utils {
                 R.anim.activity_animation_exit);
 
     }
+
+
 
     /**
      * will show the alert for the phone call

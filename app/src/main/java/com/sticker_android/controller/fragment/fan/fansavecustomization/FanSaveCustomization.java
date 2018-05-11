@@ -129,14 +129,22 @@ public class FanSaveCustomization extends BaseFragment implements SwipeRefreshLa
                     llLoaderView.setVisibility(View.GONE);
                 }
                 if (apiResponse.status) {
-                    if (apiResponse.paylpad.fanFilterArrayList != null) {
+                    if (apiResponse.paylpad.fanFilterArrayList != null && apiResponse.paylpad.downloadArrayList.size() != 0) {
 
                         gridViewAdapter.setData(apiResponse.paylpad.downloadArrayList);
+
+                        AppLogger.debug(FanSaveCustomization.class.getSimpleName(), "inside not null");
+                    } else {
+                        AppLogger.debug(FanSaveCustomization.class.getSimpleName(), "inside null");
+                        showNoDataFound();
+                        txtNoDataFoundContent.setText("No Image Found.");
+                        gridView.setVisibility(View.GONE);
                     }
-                    if (apiResponse.paylpad.downloadArrayList == null && apiResponse.paylpad.downloadArrayList.size() == 0) {
+                   /* if (apiResponse.paylpad.downloadArrayList == null) {
+                        AppLogger.debug(FanSaveCustomization.class.getSimpleName(), "inside null");
                         txtNoDataFoundContent.setText("No Image Found.");
                         showNoDataFound();
-                    }
+                    }*/
                 }
 
             }

@@ -26,6 +26,7 @@ import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.common.comments.CommentsActivity;
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
@@ -56,6 +57,8 @@ public class ProductDetailsActivity extends AppBaseActivity {
     TimeUtility timeUtility = new TimeUtility();
     private ProgressBar pgrImage;
     private TextView tvFeatured;
+    private RelativeLayout rlJustificationHolder;
+    private TextView txtViewMoreComment, txtRecentComments, edtJustification,txtYourComment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +81,38 @@ public class ProductDetailsActivity extends AppBaseActivity {
         });
         measureImageWidthHeight();
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
+        if (productObj != null)
+            manageStatus();
+    }
 
+
+    private void manageStatus() {
+
+
+        if (productObj.productStatus == 3) {
+            rlJustificationHolder.setVisibility(View.VISIBLE);
+            edtJustification.setVisibility(View.GONE);
+            txtYourComment.setVisibility(View.GONE);
+            setAdminCommentData();
+        } else {
+            rlJustificationHolder.setVisibility(View.GONE);
+        }
+    }
+
+    private void setAdminCommentData() {
+        if (productObj.rejectionList != null) {
+            if (productObj.rejectionList.size() > 0) {
+
+                txtRecentComments.setText("" + productObj.rejectionList.get(productObj.rejectionList.size() - 1).description);
+            }
+            if (productObj.rejectionList.size() > 1) {
+                txtViewMoreComment.setVisibility(View.VISIBLE);
+                txtViewMoreComment.setTextColor(getResources().getColor(R.color.colorCorporateText));
+            } else {
+                txtViewMoreComment.setVisibility(View.GONE);
+
+            }
+        }
     }
 
     private void measureImageWidthHeight() {
@@ -207,7 +241,20 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
     @Override
     protected void setViewListeners() {
+        txtViewMoreComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CommentsActivity.class);
+                Bundle bundle = new Bundle();
 
+                bundle.putParcelable(AppConstant.PRODUCT_OBJ_COMMENTS, productObj);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 101);
+                getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                        R.anim.activity_animation_exit);
+
+            }
+        });
     }
 
     @Override
@@ -223,6 +270,12 @@ public class ProductDetailsActivity extends AppBaseActivity {
         tvTime = (TextView) findViewById(R.id.tvTime);
         pgrImage = (ProgressBar) findViewById(R.id.pgrImage);
         tvFeatured = (TextView) findViewById(R.id.tvFeatured);
+        rlJustificationHolder = (RelativeLayout) findViewById(R.id.rlJustificationHolder);
+        edtJustification = (TextView) findViewById(R.id.edtJustification);
+        txtViewMoreComment = (TextView) findViewById(R.id.txtViewMoreComment);
+        txtRecentComments = (TextView) findViewById(R.id.txtRecentComments);
+        txtYourComment=(TextView)findViewById(R.id.txtYourComment);
+
 
     }
 

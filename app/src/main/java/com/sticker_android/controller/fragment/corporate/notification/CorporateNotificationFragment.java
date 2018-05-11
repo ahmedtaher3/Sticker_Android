@@ -111,18 +111,14 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
                 if (apiResponse.status) {
 
                     mNotificationList = apiResponse.paylpad.notificationArrayList;
-                    if (mNotificationList != null) {
+                    if (mNotificationList != null && mNotificationList.size() != 0) {
                         notificationAdaptor.setData(mNotificationList);
                         txtNoDataFoundContent.setVisibility(View.GONE);
-                    }
-                    if (mNotificationList == null) {
+                    } else {
                         txtNoDataFoundContent.setText(R.string.txt_no_notification_found);
                         showNoDataFound();
                     }
-                    if (mNotificationList != null && mNotificationList.size() == 0) {
-                        txtNoDataFoundContent.setText(R.string.txt_no_notification_found);
-                        showNoDataFound();
-                    }
+
 
                 }
             }
@@ -237,11 +233,11 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
 
             }
 
-            if(notification.acme.contestObj.status==8){
+            if (notification.acme.contestObj.status == 8) {
                 holder.imvtype.setImageResource(R.drawable.ic_like_notification);
             }
 
-            holder.tvTimeNotification.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(notification.cratedDate),getActivity()));
+            holder.tvTimeNotification.setText(timeUtility.covertTimeToText(Utils.convertToCurrentTimeZone(notification.cratedDate), getActivity()));
             holder.tvNotification.setText(notification.acme.contestObj.msg);
             showData(holder, contestId);
             holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -310,7 +306,7 @@ public class CorporateNotificationFragment extends BaseFragment implements Swipe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        AppLogger.debug("corporate Notification",""+resultCode+"request code"+requestCode);
+        AppLogger.debug("corporate Notification", "" + resultCode + "request code" + requestCode);
         if (Activity.RESULT_OK == resultCode) {
             switch (requestCode) {
                 case AppConstant.INTENT_NOTIFICATION_CODE:

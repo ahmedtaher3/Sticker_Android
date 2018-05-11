@@ -291,7 +291,7 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         }
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiGetProductWithContestList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword,"[2]");
+                index, limit, DesignType.gif.getType().toLowerCase(Locale.ENGLISH), "product_list", searchKeyword,"");
         apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
