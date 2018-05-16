@@ -14,10 +14,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.controller.activities.fan.home.details.FanDetailsActivity;
+import com.sticker_android.controller.adaptors.DesignListAdapter;
 import com.sticker_android.controller.adaptors.FanListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
@@ -33,6 +35,7 @@ import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -65,8 +68,9 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
     private FanListAdaptor mAdapter;
-    private String categories;
+    private String categories="";
     String filterData = "";
+    private EndlessRecyclerViewScrollListener scrollListener2;
 
 
     public FanHomeStickerFragment() {
@@ -90,8 +94,39 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
         mStickerList = new ArrayList<>();
         mCurrentPage = 0;
         getDesignFromServer(false, "", "");
-        setRecScrollListener();
+       // setRecScrollListener();
+        setScrollListener();
+        mAdapter.setOnProductClickListener(new DesignListAdapter.OnProductItemClickListener() {
+            @Override
+            public void onProductItemClick(Product product) {
+                Intent intent = new Intent(getActivity(), FanDetailsActivity.class);
+                intent.putExtra(AppConstant.PRODUCT, product);
+                getActivity().startActivityForResult(intent, 333);
+                getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                        R.anim.activity_animation_exit);
+
+            }
+        });
         return view;
+    }
+
+    private void setScrollListener() {
+
+        scrollListener2= new EndlessRecyclerViewScrollListener(mLinearLayoutManager) {
+            @Override
+            public int getFooterViewType(int defaultNoFooterViewType) {
+
+                return 0;
+            }
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                getDesignFromServer(false, "", categories);
+                mAdapter.addLoader();
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rcDesignList.addOnScrollListener(scrollListener2);
     }
 
     private void init() {
@@ -154,6 +189,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
         categories = "";
         mCurrentPage = 0;
         if (Utils.isConnectedToInternet(mHostActivity)) {
+            scrollListener2.resetState();
             getDesignFromServer(true, "", "");
         } else {
             swipeRefresh.setRefreshing(false);
@@ -384,6 +420,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
         if (Utils.isConnectedToInternet(mHostActivity)) {
             mStickerList.clear();
             this.filterData = filterdata;
+            scrollListener2.resetState();
             getDesignFromServer(false, "", categories);
         } else {
             swipeRefresh.setRefreshing(false);
@@ -396,20 +433,22 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
         mCurrentPage = 0;
         categories = "";
         if (Utils.isConnectedToInternet(mHostActivity)) {
+            scrollListener2.resetState();
             getDesignFromServer(true, "", "");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (getActivity().RESULT_OK == resultCode) {
-            if (requestCode == 0) {
-                onRefresh();
-            }
+        if(requestCode==333){
+            AppLogger.debug(TAG,"on activity result called +0 fragfme");
+            refreshApi();
         }
+
     }
+
+
 }

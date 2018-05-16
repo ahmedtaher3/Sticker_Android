@@ -120,11 +120,11 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
         if (productObj.productStatus == 3) {
             rlJustification.setVisibility(View.VISIBLE);
             setAdminCommentData();
-            btnRePost.setText("Resubmit");
+            btnRePost.setText(getResources().getString(R.string.txt_resubmit));
             imvProductImage.setOnClickListener(this);
         } else {
             rlJustification.setVisibility(View.GONE);
-            btnRePost.setText("Update");
+            btnRePost.setText(getResources().getString(R.string.txt_btn_update));
             imvProductImage.setOnClickListener(null);
         }
     }
@@ -357,7 +357,11 @@ public class RenewAdandProductActivity extends AppBaseActivity implements View.O
      */
     private void setToolBarTitle() {
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(Utils.capitlizeText(type));
+        if(type.equalsIgnoreCase("Edit"))
+            textView.setText(getResources().getString(R.string.edit));
+        else if(type.equalsIgnoreCase("Repost")){
+            textView.setText(getResources().getString(R.string.txt_repost));
+        }
         toolbar.setTitle(" ");
     }
 

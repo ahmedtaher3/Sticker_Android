@@ -7,11 +7,11 @@
     <string name="txt_designer">Designer</string>
     <string name="text_corporate">Corporate</string>
     <integer name="running_device_config">5</integer>
-    <integer name="designed_item_page_limit">60</integer>
+    <integer name="designed_item_page_limit">50</integer>
 
     <!--Sign In-->
     <string name="txt_dont_have_a_account">"Don't have a account?"</string>
-    <string name="txt_signup">Signup</string>
+    <string name="txt_signup">Sign Up</string>
     <string name="txt_forgot_password">"Forgot Password?"</string>
     <string name="txt_login">Login</string>
     <string name="txt_hint_email">Email</string>
@@ -93,7 +93,7 @@
     <string name="external_storage_permission_msg">"Go to app setting to enable external storage access permission."</string>
 
     <string name="txt_string_english">English</string>
-    <string name="txt_string_arabic">Arabic</string>
+    <string name="txt_string_arabic">العربية</string>
 
     <string name="txt_call">Call</string>
     <string name="no_contact_available">No contact available</string>
@@ -260,5 +260,37 @@
     <string name="txt_search_stickers_by_name">Search Stickers by name</string>
     <string name="txt_search_gif_by_name">Search GIF by name</string>
     <string name="txt_search_emoji_by_name">Search Emoji by name</string>
+    <string name="txt_choose_stickers">No Sticker to choose.</string>
+    <string name="txt_choose_filter">No Filter to choose.</string>
+    <string name="txt_choose_emoji">No Emoji to choose.</string>
+    <string name="txt_enter_company_name">Please enter company name.</string>
+    <string name="txt_please_enter_company_address">Please enter company address.</string>
+    <string name="txt_upload_ad">Upload Ad</string>
+    <string name="txt_upload_product">Upload Product</string>
+    <string name="txt_please_enter_old_password">Please enter old password.</string>
+    <string name="txt_data_save_successfully">Data save sucessfully.</string>
+    <string name="txt_profile_updated_successfully">Profile updated successfully</string>
+    <string name="txt_filter_by">Filter By</string>
+    <string name="txt_deleted_successfully">Deleted successfully</string>
+    <string name="txt_ads_details">Ads Detsils</string>
+    <string name="txt_product_details">Product Details</string>
+    <string name="txt_sticker_details">Sticker Details</string>
+    <string name="txt_gif_details">GIF Details</string>
+    <string name="txt_emoji_details">Emoji Details</string>
+    <string name="txt_yes">Yes</string>
+    <string name="txt_no">No</string>
+    <string name="txt_data_updated_successfully">Data Updated Successfully.</string>
+    <string name="txt_send">send</string>
+    <string name="txt_email_address">Email Address</string>
+    <string name="txt_more_comments">More Comments</string>
+    <string name="txt_admis_comments">Admin\'s Comment</string>
+    <string name="txt_user_comment">User Comment</string>
+    <string name="txt_please_select_terms_condition">"Please select terms and conditions "</string>
+    <string name="txt_no_image_found">No Image Found.</string>
+    <string name="txt_featured">Featured</string>
+    <string name="change_language_arabic">تغيير اللغة</string>
+    <string name="txt_choose_sticker">Choose Sticker</string>
+    <string name="text_choose_filter">Choose Filter</string>
+    <string name="text_choose_emoji">Choose Emoji</string>
 
 </resources>

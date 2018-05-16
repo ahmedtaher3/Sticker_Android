@@ -218,13 +218,13 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         if(user.getUserType().equals("corporate")){
             if(edtCompanyName.getText().toString().trim().isEmpty())
             {
-                Utils.showToast(getActivity(),"Company name cannot be empty");
+                Utils.showToast(getActivity(),getResources().getString(R.string.txt_enter_company_name));
 
                 //   CommonSnackBar.show(edtCompanyName, "Company name cannot be empty", Snackbar.LENGTH_SHORT);
                 this.edtCompanyName.requestFocus();
                 return false;
             }else if(edtCompanyAddress.getText().toString().trim().isEmpty()){
-                Utils.showToast(getActivity(), "Company address cannot be empty");
+                Utils.showToast(getActivity(), getResources().getString(R.string.txt_please_enter_company_address));
 
                 //   CommonSnackBar.show(edtCompanyAddress, "Company address cannot be empty", Snackbar.LENGTH_SHORT);
                 this.edtCompanyAddress.requestFocus();
@@ -331,7 +331,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         appPref.saveUserObject(null);
                         appPref.saveUserObject(apiResponse.paylpad.getData());
                         appPref.setLoginFlag(true);
-                        Utils.showToast(getActivity(),"Profile updated successfully");
+                        Utils.showToast(getActivity(),getString(R.string.txt_profile_updated_successfully));
                         getActivity().onBackPressed();
                         //  CommonSnackBar.show(edtCompanyAddress, "Data updated successfully", Snackbar.LENGTH_SHORT);
 
@@ -418,7 +418,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
                 if(apiResponse.status){
-                    Utils.showToast(getActivity(),"Data save sucessfully.");
+                    Utils.showToast(getActivity(),getString(R.string.txt_data_save_successfully));
                     user.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
                     User userNew =new User();
                     userNew = user;

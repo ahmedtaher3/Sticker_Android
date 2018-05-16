@@ -10,191 +10,200 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-<RelativeLayout
-    android:id="@+id/rlProduct"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view"
+
+        <RelativeLayout
+            android:id="@+id/rlProduct"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="5dp"
-            app:cardCornerRadius="0dp"
-            app:contentPadding="8dp">
+            android:layout_height="match_parent">
 
-            <LinearLayout
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:foreground="?attr/selectableItemBackground"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp"
+                app:cardCornerRadius="0dp"
+                app:contentPadding="8dp">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/imvOfAds"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/image_height_add_product"
-                        android:adjustViewBounds="true"
-                        android:background="@color/image_background_color"
-                        android:scaleType="centerCrop" />
+                        android:layout_height="wrap_content">
 
-                    <ProgressBar
-                        android:id="@+id/pgrImage"
-                        android:layout_width="@dimen/sticker_progress_loader_size"
-                        android:layout_height="@dimen/sticker_progress_loader_size"
-                        android:layout_centerInParent="true" />
+                        <ImageView
+                            android:id="@+id/imvOfAds"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/image_height_add_product"
+                            android:adjustViewBounds="true"
+                            android:background="@color/image_background_color"
+                            android:scaleType="centerCrop" />
+
+                        <ProgressBar
+                            android:id="@+id/pgrImage"
+                            android:layout_width="@dimen/sticker_progress_loader_size"
+                            android:layout_height="@dimen/sticker_progress_loader_size"
+                            android:layout_centerInParent="true" />
+
+                        <TextView
+                            android:id="@+id/tvFeatured"
+                            fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:alpha=".75"
+                            android:background="@drawable/drawable_featured"
+                            android:gravity="center"
+                            android:paddingLeft="@dimen/dp_5"
+                            android:paddingRight="@dimen/dp_5"
+                            android:text="@string/txt_featured"
+                            android:textColor="@android:color/white"
+                            android:textSize="15sp"
+                            android:visibility="gone" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10">
+
+                        <TextView
+                            android:textDirection="locale"
+                            android:textAlignment="viewStart"
+                            android:layout_alignParentStart="true"
+                            android:id="@+id/tv_add_product_title"
+                           android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginEnd="5dp"
+                            android:layout_toLeftOf="@+id/imvBtnEditRemove"
+                            android:layout_toStartOf="@+id/imvBtnEditRemove"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Header"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/txt_size_home_12sp" />
+
+                        <ImageButton
+                            android:textDirection="locale"
+                            android:textAlignment="viewEnd"
+                            android:id="@+id/imvBtnEditRemove"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerInParent="true"
+                            android:background="@android:color/transparent"
+                            android:paddingBottom="5dp"
+                            android:paddingStart="10dp"
+                            android:tint="@color/colorCorporateText"
+                            app:srcCompat="@drawable/ic_more" />
+
+                    </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/tvFeatured"
+                        android:id="@+id/tv_add_product_item_description"
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:alpha=".75"
-                        android:background="@drawable/drawable_featured"
-                        android:gravity="center"
-                        android:paddingLeft="@dimen/dp_5"
-                        android:paddingRight="@dimen/dp_5"
-                        android:text="Featured"
-                        android:textColor="@android:color/white"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10">
-
-                    <TextView
-                        android:id="@+id/tv_add_product_title"
-                        style="@style/tvHome"
-                        fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginEnd="5dp"
-                        android:layout_toLeftOf="@+id/imvBtnEditRemove"
-                        android:layout_toStartOf="@+id/imvBtnEditRemove"
+                        android:layout_height="match_parent"
+                        android:clickable="false"
                         android:ellipsize="end"
                         android:gravity="start"
-                        android:maxLines="1"
-                        android:text="Header"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/txt_size_home_12sp" />
+                        android:maxLines="2"
+                        android:text="undo"
+                        android:textSize="12sp" />
 
-                    <ImageButton
-                        android:id="@+id/imvBtnEditRemove"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:background="@android:color/transparent"
-                        android:paddingBottom="5dp"
-                        android:paddingStart="10dp"
-                        android:tint="@color/colorCorporateText"
-                        app:srcCompat="@drawable/ic_more" />
-
-                </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/tv_add_product_item_description"
-                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:clickable="false"
-                    android:ellipsize="end"
-                    android:gravity="start"
-                    android:maxLines="2"
-                    android:text="undo"
-                    android:textSize="12sp" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/checkboxLike"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:button="@drawable/like_selector"
-                        android:padding="@dimen/padding_like_8dp"
-                        android:textSize="@dimen/txt_size_home_12sp" />
-
-                    <CheckBox
-                        android:id="@+id/checkboxShare"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_toRightOf="@+id/checkboxLike"
-                        android:layout_toEndOf="@+id/checkboxLike"
-                        android:button="@drawable/share_selector"
-                        android:padding="@dimen/padding_like_8dp"
-                        android:textSize="@dimen/txt_size_home_12sp" />
-
-                    <TextView
-                        android:id="@+id/tvTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="8dp"
-                        android:layout_toRightOf="@+id/checkboxShare"
-                        android:layout_toEndOf="@+id/checkboxShare"
-                        android:drawableLeft="@drawable/tv_svg_time"
-                        android:drawableStart="@drawable/tv_svg_time"
-                        android:drawablePadding="8dp"
-                        android:gravity="center"
-                        android:text="2 hour"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/txt_size_home_12sp" />
-
-                    <TextView
-                        android:id="@+id/tvDownloads"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="16dp"
-                        android:layout_toRightOf="@+id/tvTime"
-                        android:layout_toEndOf="@+id/tvTime"
-                        android:drawableLeft="@drawable/ic_svg_drawable_download"
-                        android:drawableStart="@drawable/ic_svg_drawable_download"
-                        android:drawablePadding="8dp"
-                        android:gravity="center"
-                        android:text="2 hour"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/txt_size_home_12sp" />
-
-                    <TextView
-                        android:id="@+id/tv_add_product_status"
-                        style="@style/tvHome"
-                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toRightOf="@id/tvDownloads"
-                        android:layout_toEndOf="@id/tvDownloads"
-                        android:gravity="end"
-                        android:textColor="@android:color/holo_green_light"
-                        android:textSize="@dimen/txt_size_home_12sp" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
 
-                </RelativeLayout>
+                        <CheckBox
+                            android:id="@+id/checkboxLike"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:button="@drawable/like_selector"
+                            android:padding="@dimen/padding_like_8dp"
+                            android:textSize="@dimen/txt_size_home_12sp" />
 
-            </LinearLayout>
+                        <CheckBox
+                            android:id="@+id/checkboxShare"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_toEndOf="@+id/checkboxLike"
+                            android:layout_toRightOf="@+id/checkboxLike"
+                            android:button="@drawable/share_selector"
+                            android:padding="@dimen/padding_like_8dp"
+                            android:textSize="@dimen/txt_size_home_12sp" />
+
+                        <TextView
+                            android:id="@+id/tvTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="8dp"
+                            android:layout_toEndOf="@+id/checkboxShare"
+                            android:layout_toRightOf="@+id/checkboxShare"
+                            android:drawableLeft="@drawable/tv_svg_time"
+                            android:drawablePadding="8dp"
+                            android:drawableStart="@drawable/tv_svg_time"
+                            android:gravity="center"
+                            android:text="2 hour"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/txt_size_home_12sp" />
+
+                        <TextView
+                            android:id="@+id/tvDownloads"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="16dp"
+                            android:layout_toEndOf="@+id/tvTime"
+                            android:layout_toRightOf="@+id/tvTime"
+                            android:drawableLeft="@drawable/ic_svg_drawable_download"
+                            android:drawablePadding="8dp"
+                            android:drawableStart="@drawable/ic_svg_drawable_download"
+                            android:gravity="center"
+                            android:text="2 hour"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/txt_size_home_12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_add_product_status"
+                            fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:gravity="end"
+                            android:textColor="@android:color/holo_green_light"
+                            android:textSize="@dimen/txt_size_home_12sp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
 
 
-        </android.support.v7.widget.CardView>
-</RelativeLayout>
+            </android.support.v7.widget.CardView>
+        </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/rlContest"
-            android:visibility="gone"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        <include android:id="@+id/view_contest" layout="@layout/view_fan_contest_item" />
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <include
+                android:id="@+id/view_contest"
+                layout="@layout/view_fan_contest_item" />
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

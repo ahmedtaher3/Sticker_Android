@@ -49,7 +49,7 @@
                     android:gravity="center"
                     android:paddingRight="@dimen/dp_5"
                     android:paddingLeft="@dimen/dp_5"
-                    android:text="Featured"
+                    android:text="@string/txt_featured"
                     android:textColor="@android:color/white" />
 
             </RelativeLayout>
@@ -60,6 +60,8 @@
                 android:layout_marginTop="@dimen/dp_10">
 
                 <TextView
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     android:id="@+id/tv_add_product_title"
                     style="@style/tvHome"
                     fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
@@ -73,6 +75,8 @@
                     android:textSize="@dimen/txt_size_home_12sp" />
 
                 <ImageButton
+                    android:textDirection="locale"
+                    android:textAlignment="viewEnd"
                     android:id="@+id/imvBtnEditRemove"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

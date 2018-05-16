@@ -51,7 +51,7 @@
                     android:gravity="center"
                     android:paddingLeft="@dimen/dp_5"
                     android:paddingRight="@dimen/dp_5"
-                    android:text="Featured"
+                    android:text="@string/txt_featured"
                     android:textColor="@android:color/white" />
 
             </RelativeLayout>
@@ -72,12 +72,15 @@
                     android:layout_toStartOf="@+id/imvBtnEditRemove"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:gravity="start"
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     android:text="Header"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/txt_size_home_12sp" />
 
                 <ImageButton
+                    android:textDirection="locale"
+                    android:textAlignment="viewEnd"
                     android:id="@+id/imvBtnEditRemove"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

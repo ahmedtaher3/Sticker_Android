@@ -63,6 +63,7 @@ import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.EndlessRecyclerViewScrollListener;
 import com.sticker_android.view.OnVerticalScrollListener;
 
 import java.net.ConnectException;
@@ -80,7 +81,7 @@ import retrofit2.Call;
  */
 public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-
+    private EndlessRecyclerViewScrollListener scrollListener2;
     private static final int PAGE_SIZE = 2;
     private static final String TAG = AdsFragment.class.getSimpleName();
     private RecyclerView recAd;
@@ -146,8 +147,30 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         getProductFromServer(false, "");
 
         //   productListApi(currentPageNo, search);
-        adaptorScrollListener();
+        //  adaptorScrollListener();
+
+        newListeneradded();
         return view;
+    }
+
+    private void newListeneradded() {
+
+        scrollListener2 = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+            @Override
+            public int getFooterViewType(int defaultNoFooterViewType) {
+
+                return 0;
+            }
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                getProductFromServer(false, "");
+                corporateListAdaptor.addLoader();
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recAd.addOnScrollListener(scrollListener2);
+
     }
 
     private void adaptorScrollListener() {
@@ -161,7 +184,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 if (productList.size() >= PAGE_LIMIT) {
                     AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + productList.size());
                     getProductFromServer(false, "");
-                    corporateListAdaptor.addLoader();
+                    //corporateListAdaptor.addLoader();
                 }
             }
 
@@ -269,7 +292,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                                             productsSet.addAll(payload.productList);
                                             productList.clear();
                                             productList.addAll(productsSet);
-                                          //  productList.addAll();
+                                            //  productList.addAll();
                                         }
 
                                         if (productList.size() != 0) {
@@ -374,6 +397,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
     public void onRefresh() {
         Log.e(TAG, "Inside onRefresh() method");
         if (Utils.isConnectedToInternet(mHostActivity)) {
+            corporateListAdaptor.setData(new ArrayList<Product>());
+            scrollListener2.resetState();
             getProductFromServer(true, "");
         } else {
             swipeRefreshLayout.setRefreshing(false);
@@ -468,6 +493,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         if (productList != null)
             productList.clear();
         mCurrentPage = 0;
+        scrollListener2.resetState();
         getProductFromServer(false, "");
     }
 
@@ -612,7 +638,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             public void onSuccess(ApiResponse apiResponse) {
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.status) {
-                    Utils.showToast(getActivity(), "Deleted successfully");
+                    Utils.showToast(getActivity(), getString(R.string.txt_deleted_successfully));
                     //  productAdaptor.delete(position);
                     refreshApi();
 
@@ -671,6 +697,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         if (productList != null)
             productList.clear();
         corporateListAdaptor.setData(productList);
+        scrollListener2.resetState();
         getProductFromServer(false, query);
     }
 
@@ -947,7 +974,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             public ProgressBar pbLoader;
             TextView tvFeatured;
             public TextView contestname;
-            public RelativeLayout rlProduct,rlContest,rlContestMain;
+            public RelativeLayout rlProduct, rlContest, rlContestMain;
 
             public ViewHolder(View view) {
                 super(view);
@@ -965,8 +992,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 tvFeatured = (TextView) view.findViewById(R.id.tvFeatured);
                 contestname = (TextView) view.findViewById(R.id.tv_content_description);
                 rlProduct = (RelativeLayout) view.findViewById(R.id.rlProduct);
-                rlContest=(RelativeLayout)view.findViewById(R.id.rlContest);
-                rlContestMain=(RelativeLayout)view.findViewById(R.id.rlContestMain);
+                rlContest = (RelativeLayout) view.findViewById(R.id.rlContest);
+                rlContestMain = (RelativeLayout) view.findViewById(R.id.rlContestMain);
             }
         }
 
@@ -997,9 +1024,13 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         public void setData(ArrayList<Product> data) {
             if (data != null) {
                 Log.e("Adapter", "Adapter list size => " + data.size());
+                LinkedHashSet<Product> productsSet = new LinkedHashSet<Product>();
+                productsSet.addAll(productList);
+                productsSet.addAll(data);
                 mItems.clear();
                 // mItems = new ArrayList<>();
-                mItems.addAll(data);
+                mItems.addAll(productsSet);
+                //   mItems.addAll(data);
                 notifyDataSetChanged();
                 isLoaderVisible = false;
             }
@@ -1105,16 +1136,16 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                         Product product = mItems.get(position);
                         Bundle bundle = new Bundle();
 
-                            bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
+                        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
 
-                            Intent intent = new Intent(context, ProductDetailsActivity.class);
+                        Intent intent = new Intent(context, ProductDetailsActivity.class);
 
-                            intent.putExtras(bundle);
+                        intent.putExtras(bundle);
 
-                            ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
+                        ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
 
-                            ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
-                                    R.anim.activity_animation_exit);
+                        ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
+                                R.anim.activity_animation_exit);
 
                     }
                 });
@@ -1265,3 +1296,4 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
 
 }
+

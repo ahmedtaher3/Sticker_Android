@@ -52,7 +52,7 @@
                 android:layout_marginTop="20dp"
                 android:gravity="start"
                 android:layout_below="@+id/imvLogoChangeLanguage"
-                android:text="@string/txt_change_language"
+                android:text="@string/change_language_arabic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <RadioGroup

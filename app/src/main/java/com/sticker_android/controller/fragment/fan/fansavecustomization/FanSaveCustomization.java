@@ -137,7 +137,7 @@ public class FanSaveCustomization extends BaseFragment implements SwipeRefreshLa
                     } else {
                         AppLogger.debug(FanSaveCustomization.class.getSimpleName(), "inside null");
                         showNoDataFound();
-                        txtNoDataFoundContent.setText("No Image Found.");
+                        txtNoDataFoundContent.setText(R.string.txt_no_image_found);
                         gridView.setVisibility(View.GONE);
                     }
                    /* if (apiResponse.paylpad.downloadArrayList == null) {

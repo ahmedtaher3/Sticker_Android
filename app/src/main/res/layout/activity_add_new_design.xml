@@ -73,6 +73,7 @@
                         android:backgroundTint="@color/edt_background_tint"
                         android:hint="@string/act_add_corp_txt_name"
                         android:imeOptions="actionDone"
+                        android:textAlignment="viewStart"
                         android:inputType="text|textCapSentences|textNoSuggestions"
                         android:maxLength="100"
                         android:maxLines="1" />
@@ -111,10 +112,14 @@
                             app:srcCompat="@drawable/ic_expand_more_black_24dp" />
 
                         <Spinner
+                            android:layout_toStartOf="@+id/imgDown2"
+                            android:layout_toLeftOf="@+id/imgDown2"
                             android:id="@+id/spnrCategory"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
+                            android:layoutDirection="rtl"
+                            android:textAlignment="viewStart"
                             android:dropDownVerticalOffset="35dp"
                             android:gravity="start|center"
                             android:spinnerMode="dropdown"

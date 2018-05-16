@@ -5,8 +5,9 @@ xmlns:tools="http://schemas.android.com/tools"
 tools:ignore="MissingPrefix"
 android:layout_height="match_parent">
 <TextView
+    android:textDirection="rtl"
+    android:textAlignment="viewStart"
     android:singleLine="true"
-    android:gravity="start"
     android:textColor="@android:color/black"
     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
     android:id="@+id/text1"

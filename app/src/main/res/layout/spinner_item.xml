@@ -8,5 +8,6 @@
     android:textColor="@android:color/black"
     android:paddingRight="@dimen/dp_5"
     android:textSize="15sp"
+    android:textAlignment="gravity"
     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
     xmlns:tools="http://schemas.android.com/tools" />

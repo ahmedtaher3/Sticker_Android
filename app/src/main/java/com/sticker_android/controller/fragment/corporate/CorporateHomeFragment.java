@@ -354,16 +354,17 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 // Write your code here
-                Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_contest);
+                if(item.isChecked()) {
+                    Fragment fragment = getChildFragmentManager().findFragmentById(R.id.container_contest);
 
          /*       int tab = tabLayout.getSelectedTabPosition();
                 Fragment fragment = adapter.getItem(tab);
          */
-                if (fragment instanceof AdsFragment) {
-                    ((AdsFragment) fragment).refreshApi();
-                } else if (fragment instanceof ProductsFragment)
-                    ((ProductsFragment) fragment).refreshApi();
-
+                    if (fragment instanceof AdsFragment) {
+                        ((AdsFragment) fragment).refreshApi();
+                    } else if (fragment instanceof ProductsFragment)
+                        ((ProductsFragment) fragment).refreshApi();
+                }
                 return true;
 
             }

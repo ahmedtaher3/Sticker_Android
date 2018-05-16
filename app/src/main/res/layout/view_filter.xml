@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Filter By"
+                android:text="@string/txt_filter_by"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/text_size_18sp" />
 

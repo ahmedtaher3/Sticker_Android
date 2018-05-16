@@ -34,16 +34,31 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_gray">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/imvProductImage"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:background="@color/image_background_color"
+                        android:layout_height="@dimen/act_add_new_corp_imv_height"
                         android:scaleType="fitXY" />
 
+                    <com.sticker_android.view.CustomAppCompatTextView
+                        android:id="@+id/imgPlaceHolder"
+                        fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:clickable="false"
+                        android:gravity="center_horizontal"
+                        android:longClickable="false"
+                        android:text="@string/txt_upload_ad"
+                        android:textColor="#babec1"
+                        android:textSize="15sp"
+                        app:drawableTopCompat="@drawable/upload_sticker_placeholder" />
+
                     <ImageView
+                        android:visibility="gone"
                         android:id="@+id/imvProductImage2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -124,11 +139,15 @@
                             app:srcCompat="@drawable/ic_expand_more_black_24dp" />
 
                         <Spinner
+                            android:layout_toStartOf="@+id/imgDown2"
+                            android:layout_toLeftOf="@+id/imgDown2"
                             android:id="@+id/spnrCategory"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
                             android:dropDownVerticalOffset="35dp"
+                            android:textDirection="rtl"
+                            android:textAlignment="viewStart"
                             android:gravity="start|center"
                             android:spinnerMode="dropdown"
                             android:textSize="@dimen/text_size_contact_us" />

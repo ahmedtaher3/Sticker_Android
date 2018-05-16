@@ -151,7 +151,7 @@
                         android:textSize="@dimen/text_size_edittext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="Category"
+                        android:hint="@string/category"
                         android:textColor="@color/edt_background_tint" />
 
                     <RelativeLayout

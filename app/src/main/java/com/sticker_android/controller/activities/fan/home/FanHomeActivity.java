@@ -437,6 +437,27 @@ public class FanHomeActivity extends AppBaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        AppLogger.debug(TAG,"on activity result called +0"+requestCode+"result"+resultCode);
+
+        if(requestCode==333){
+            AppLogger.debug(TAG,"on activity result called inside 333");
+            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 131:
+                    for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                        fragment.onActivityResult(requestCode, resultCode, data);
+                    }
+                    break;
+
+            }
+
+
+        }
+
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (mProfileFragment != null) {
                 mProfileFragment.onActivityResult(requestCode, resultCode, data);
@@ -452,22 +473,7 @@ public class FanHomeActivity extends AppBaseActivity
             }
         }
 
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case 131:
-                    for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-                        fragment.onActivityResult(requestCode, resultCode, data);
-                    }
-                    break;
-                case 0:
-                    for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-                        fragment.onActivityResult(requestCode, resultCode, data);
-                    }
-                    break;
-            }
 
-
-        }
     }
 
     @Override
@@ -550,4 +556,8 @@ public class FanHomeActivity extends AppBaseActivity
 
 
     }
+
+
 }
+
+

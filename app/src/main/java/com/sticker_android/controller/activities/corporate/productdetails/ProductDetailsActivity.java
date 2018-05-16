@@ -34,7 +34,6 @@ import com.sticker_android.model.enums.ProductStatus;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
@@ -58,7 +57,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
     private ProgressBar pgrImage;
     private TextView tvFeatured;
     private RelativeLayout rlJustificationHolder;
-    private TextView txtViewMoreComment, txtRecentComments, edtJustification,txtYourComment;
+    private TextView txtViewMoreComment, txtRecentComments, edtJustification, txtYourComment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,7 +222,10 @@ public class ProductDetailsActivity extends AppBaseActivity {
 
     private void setToolBarTitle(String type) {
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(Utils.capitlizeText(type) + " Details");
+        if (type.equalsIgnoreCase("ads")) {
+            textView.setText(R.string.txt_ads_details);
+        } else
+            textView.setText(R.string.txt_product_details);
         toolbar.setTitle("");
     }
 
@@ -274,7 +276,7 @@ public class ProductDetailsActivity extends AppBaseActivity {
         edtJustification = (TextView) findViewById(R.id.edtJustification);
         txtViewMoreComment = (TextView) findViewById(R.id.txtViewMoreComment);
         txtRecentComments = (TextView) findViewById(R.id.txtRecentComments);
-        txtYourComment=(TextView)findViewById(R.id.txtYourComment);
+        txtYourComment = (TextView) findViewById(R.id.txtYourComment);
 
 
     }

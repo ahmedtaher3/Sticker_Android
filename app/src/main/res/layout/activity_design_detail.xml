@@ -64,7 +64,7 @@
                         android:gravity="center"
                         android:paddingLeft="5dp"
                         android:paddingRight="@dimen/dp_5"
-                        android:text="Featured"
+                        android:text="@string/txt_featured"
                         android:textColor="@android:color/white" />
 
                 </RelativeLayout>
@@ -75,29 +75,37 @@
                     android:layout_marginTop="@dimen/dp_10">
 
                     <TextView
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
+                        android:layout_alignParentStart="true"
                         android:id="@+id/tv_add_product_title"
-                        style="@style/tvHome"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
                         android:layout_alignParentTop="true"
                         android:layout_marginEnd="5dp"
                         android:layout_toLeftOf="@+id/imvBtnEditRemove"
+                        android:layout_toStartOf="@+id/imvBtnEditRemove"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="Header"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/txt_size_home_12sp" />
+                        android:textSize="@dimen/txt_size_home_12sp"  />
 
                     <ImageButton
+                        android:textDirection="locale"
+                        android:textAlignment="viewEnd"
                         android:id="@+id/imvBtnEditRemove"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_centerInParent="true"
                         android:background="@android:color/transparent"
-                        android:paddingBottom="10dp"
-                        android:paddingStart="30dp"
-                        app:srcCompat="@drawable/ic_more"
-                        android:tint="@color/colorCorporateText" />
+                        android:paddingBottom="5dp"
+                        android:paddingStart="10dp"
+                        android:tint="@color/colorCorporateText"
+                        app:srcCompat="@drawable/ic_more" />
                 </RelativeLayout>
 
                 <TextView
@@ -132,6 +140,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_toEndOf="@+id/checkboxLike"
                         android:layout_toRightOf="@+id/checkboxLike"
                         android:button="@drawable/share_selector"
                         android:padding="@dimen/padding_like_8dp"
@@ -143,9 +153,11 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="8dp"
+                        android:layout_toEndOf="@+id/checkboxShare"
                         android:layout_toRightOf="@+id/checkboxShare"
                         android:drawableLeft="@drawable/tv_svg_time"
                         android:drawablePadding="8dp"
+                        android:drawableStart="@drawable/tv_svg_time"
                         android:gravity="center"
                         android:text="2 hour"
                         android:textColor="@android:color/black"
@@ -157,9 +169,11 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:layout_marginLeft="16dp"
+                        android:layout_toEndOf="@+id/tvTime"
                         android:layout_toRightOf="@+id/tvTime"
                         android:drawableLeft="@drawable/ic_svg_drawable_download"
                         android:drawablePadding="8dp"
+                        android:drawableStart="@drawable/ic_svg_drawable_download"
                         android:gravity="center"
                         android:text="2 hour"
                         android:textColor="@android:color/black"
@@ -167,13 +181,12 @@
 
                     <TextView
                         android:id="@+id/tv_add_product_status"
-                        style="@style/tvHome"
-                        android:layout_width="match_parent"
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                        android:gravity="end"
-                        android:layout_toRightOf="@id/tvDownloads"
-                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:gravity="end"
                         android:textColor="@android:color/holo_green_light"
                         android:textSize="@dimen/txt_size_home_12sp" />
 

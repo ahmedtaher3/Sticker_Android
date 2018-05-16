@@ -118,7 +118,7 @@ public class ChangePasswordFragment extends BaseFragment implements View.OnClick
         String confirmPass=confirmPassword.getText().toString();
         if(oldPass.isEmpty()){
             oldPassword.requestFocus();
-            Utils.showToast(getActivity(),"Please enter old password.");
+            Utils.showToast(getActivity(),getString(R.string.txt_please_enter_old_password));
 
             //  CommonSnackBar.show(oldPassword,"Old password cannot be empty", Snackbar.LENGTH_SHORT);
             return false;

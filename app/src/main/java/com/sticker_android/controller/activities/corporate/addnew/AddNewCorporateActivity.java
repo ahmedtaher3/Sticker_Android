@@ -80,6 +80,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private android.app.AlertDialog mPermissionDialog;
     private ImageView imvProductImage2;
     private TextView txtViewMoreComment, txtRecentComments, edtJustification;
+    private TextView imgPlaceHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +121,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
             public boolean onPreDraw() {
                 imvProductImage.getViewTreeObserver().removeOnPreDrawListener(this);
                 int finalWidth = imvProductImage.getMeasuredWidth();
-                int height = finalWidth * 3 /5;
+                int height = finalWidth * 3 / 5;
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imvProductImage.getLayoutParams();
                 //    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) imvProductImage.getLayoutParams();
                 layoutParams.height = height;
@@ -159,8 +160,8 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private void setSpinnerAdaptor() {
 
         if (corporateCategories != null) {
-            CategorySpinnerAdaptor categorySpinnerAdaptor=new CategorySpinnerAdaptor(this,corporateCategories);
-         spnrCategory.setAdapter(categorySpinnerAdaptor);
+            CategorySpinnerAdaptor categorySpinnerAdaptor = new CategorySpinnerAdaptor(this, corporateCategories);
+            spnrCategory.setAdapter(categorySpinnerAdaptor);
 
             /*
             CategoryAdapter categoryAdapter=new CategoryAdapter(this,corporateCategories);
@@ -231,29 +232,29 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         edtExpireDate = (EditText) findViewById(R.id.act_add_new_ad_corp_edt_expire_date);
         edtDescription = (EditText) findViewById(R.id.edtDescription);
         spnrCategory = (Spinner) findViewById(R.id.spnrCategory);
-        imvProductImage=(ImageView)findViewById(R.id.imvProductImage);
-        imvProductImage2=(ImageView)findViewById(R.id.imvProductImage2);
+        imvProductImage = (ImageView) findViewById(R.id.imvProductImage);
+        imvProductImage2 = (ImageView) findViewById(R.id.imvProductImage2);
         rlJustificationHolder = (RelativeLayout) findViewById(R.id.rlJustificationHolder);
         edtJustification = (TextView) findViewById(R.id.edtJustification);
         txtViewMoreComment = (TextView) findViewById(R.id.txtViewMoreComment);
         txtRecentComments = (TextView) findViewById(R.id.txtRecentComments);
+        imgPlaceHolder = (TextView) findViewById(R.id.imgPlaceHolder);
     }
 
     @Override
     protected boolean isValidData() {
 
-        if(mCapturedImageUrl==null){
+        if (mCapturedImageUrl == null) {
             Utils.showToast(this, getString(R.string.txt_please_upload_a_image));
             return false;
 
-        }else
-        if (edtCorpName.getText().toString().trim().isEmpty()) {
+        } else if (edtCorpName.getText().toString().trim().isEmpty()) {
             Utils.showToast(this, getString(R.string.txt_please_enter_a_name));
             return false;
         } else if (edtExpireDate.getText().toString().trim().isEmpty()) {
             Utils.showToast(this, getString(R.string.txt_please_enter_a_expire_date));
             return false;
-        }else if(spnrCategory.getSelectedItemPosition()==0){
+        } else if (spnrCategory.getSelectedItemPosition() == 0) {
             Utils.showToast(this, getString(R.string.txt_please_select_a_category));
             return false;
         } else if (edtDescription.getText().toString().trim().isEmpty()) {
@@ -317,9 +318,9 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File file = Utils.getCustomImagePath(this, System.currentTimeMillis() + "");
-        AppLogger.debug(TAG,"captured url"+mCapturedImageUrl+"file path is:"+file);
+        AppLogger.debug(TAG, "captured url" + mCapturedImageUrl + "file path is:" + file);
         mCapturedImageUrl = file.getAbsolutePath();
-        AppLogger.debug(TAG,"captured url"+mCapturedImageUrl);
+        AppLogger.debug(TAG, "captured url" + mCapturedImageUrl);
         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
     }
@@ -331,10 +332,11 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
     /**
      * Method is used to call the add ads or product api
+     *
      * @param imagePath
      */
     private void addProductOrAdApi(String imagePath) {
-        int categoryId=corporateCategories.get(spnrCategory.getSelectedItemPosition()).categoryId;
+        int categoryId = corporateCategories.get(spnrCategory.getSelectedItemPosition()).categoryId;
 
         if (setDate != null)
             mExpireDate = setDate.getChosenDate();
@@ -344,21 +346,21 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         final String type = getSelectedType();
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiAddProduct(userdata.getLanguageId(), userdata.getAuthrizedKey(),
                 userdata.getId(), edtCorpName.getText().toString().trim(), type, edtDescription.getText().toString().trim()
-                , mExpireDate, imagePath, "",categoryId);
+                , mExpireDate, imagePath, "", categoryId);
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
-                    String typeProduct="Product";
-                    if(type.equalsIgnoreCase("ads"))
-                        typeProduct="Ad";
+                    String typeProduct = "Product";
+                    if (type.equalsIgnoreCase("ads"))
+                        typeProduct = "Ad";
 
-                    if(typeProduct.equalsIgnoreCase("Ad")) {
+                    if (typeProduct.equalsIgnoreCase("Ad")) {
                         Utils.showToast(getApplicationContext(), getString(R.string.txt_add_added_successfully));
-                    }else {
-                        Utils.showToast(getApplicationContext(), getString(R.string.txt_product_added_successfully) );
+                    } else {
+                        Utils.showToast(getApplicationContext(), getString(R.string.txt_product_added_successfully));
                     }
                     setResult(RESULT_OK);
                     onBackPressed();
@@ -396,6 +398,11 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
 
+            if(tab.getPosition()==0){
+                imgPlaceHolder.setText(getResources().getString(R.string.txt_upload_ad));
+            }else {
+                imgPlaceHolder.setText(R.string.txt_upload_product);
+            }
         }
 
         @Override
@@ -410,49 +417,48 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     }
 
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-           switch (requestCode) {
+        switch (requestCode) {
 
-                case PROFILE_CAMERA_IMAGE:
-                    if (resultCode == Activity.RESULT_OK) {
-                        if (mCapturedImageUrl != null) {
-                            AppLogger.debug(TAG,"captured url"+mCapturedImageUrl+"on activity result:"+mCapturedImageUrl);
-                            openCropActivity(mCapturedImageUrl);
-                            //uploadImage();
+            case PROFILE_CAMERA_IMAGE:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (mCapturedImageUrl != null) {
+                        AppLogger.debug(TAG, "captured url" + mCapturedImageUrl + "on activity result:" + mCapturedImageUrl);
+                        openCropActivity(mCapturedImageUrl);
+                        //uploadImage();
 
-                        }
-                    } else{
-                        mCapturedImageUrl = null;
                     }
-                    break;
+                } else {
+                    mCapturedImageUrl = null;
+                }
+                break;
 
-                case PROFILE_GALLERY_IMAGE:
-                    if (resultCode == Activity.RESULT_OK) {
-                        Uri selectedImage = data.getData();
-                        String sourceUrl = Utils.getGalleryImagePath(this, selectedImage);
-                        File file = Utils.getCustomImagePath(this, "temp");
-                        mCapturedImageUrl = file.getAbsolutePath();
-                        mCapturedImageUrl = sourceUrl;
-                        openCropActivity(sourceUrl);
-                    }
-                    break;
-                case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
-                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                    if (resultCode == RESULT_OK) {
-                        Uri resultUri = result.getUri();
-                        mCapturedImageUrl = resultUri.getPath();
-                        imvProductImage2.setVisibility(View.GONE);
-                        imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
-                    } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                        Exception error = result.getError();
-                        error.printStackTrace();
-                    }
-            }
+            case PROFILE_GALLERY_IMAGE:
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri selectedImage = data.getData();
+                    String sourceUrl = Utils.getGalleryImagePath(this, selectedImage);
+                    File file = Utils.getCustomImagePath(this, "temp");
+                    mCapturedImageUrl = file.getAbsolutePath();
+                    mCapturedImageUrl = sourceUrl;
+                    openCropActivity(sourceUrl);
+                }
+                break;
+            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    Uri resultUri = result.getUri();
+                    mCapturedImageUrl = resultUri.getPath();
+                    imvProductImage2.setVisibility(View.GONE);
+                    imgPlaceHolder.setVisibility(View.GONE);
+                    imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                    error.printStackTrace();
+                }
+        }
     }
 
     private void openCropActivity(String url) {
@@ -546,12 +552,12 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         File file = new File(filePath);
         TransferObserver observer = new AWSUtil().getTransferUtility(this).upload(AppConstant.BUCKET_NAME, fileName,
                 file);
-        observer.setTransferListener(new TransferListener(){
+        observer.setTransferListener(new TransferListener() {
 
             @Override
             public void onStateChanged(int id, TransferState state) {
                 Log.d(TAG, "onStateChanged: " + id + ", " + state);
-                if(TransferState.COMPLETED==state){
+                if (TransferState.COMPLETED == state) {
                     progressDialogHandler.hide();
                     String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
                     addProductOrAdApi(imagePath);

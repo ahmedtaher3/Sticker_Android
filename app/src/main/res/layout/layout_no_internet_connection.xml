@@ -40,6 +40,7 @@
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/loading_icon"/>
             <TextView
+                android:layout_marginStart="@dimen/dp_10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_10"

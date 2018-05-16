@@ -459,10 +459,10 @@ public class Utils {
         builder.setMessage(message);
         builder.setCancelable(true);
         builder.setPositiveButton(
-                "Yes", listener);
+                R.string.txt_yes, listener);
 
         builder.setNegativeButton(
-                "No",
+                R.string.txt_no,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
@@ -522,6 +522,7 @@ public class Utils {
             res.updateConfiguration(conf, dm);
             conf.setLayoutDirection(myLocale);
         }
+
 
          }
 

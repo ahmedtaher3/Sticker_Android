@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sticker_android.R;
@@ -33,6 +35,10 @@ public class AboutUsFragment extends BaseFragment {
 
     private AppPref appPref;
     private User user;
+    private WebView webView;
+    ProgressBar pgr;
+    final String mimeType = "text/html";
+    final String encoding = "UTF-8";
 
     public AboutUsFragment() {
         // Required empty public constructor
@@ -84,18 +90,22 @@ public class AboutUsFragment extends BaseFragment {
     }
 
     private void getContactApi() {
-
-        Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent("4");
+        pgr.setVisibility(View.VISIBLE);
+        Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent("3");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
+                pgr.setVisibility(View.GONE);
                 if(apiResponse.status){
-                    textView.setText(apiResponse.paylpad.getData().getInfoText());
-                   }
+                  //  textView.setText(apiResponse.paylpad.getData().getInfoText());
+                    webView.loadDataWithBaseURL("", apiResponse.paylpad.getData().getInfoText(), mimeType, encoding, "");
+
+                }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
+                pgr.setVisibility(View.GONE);
             }
         });
     }
@@ -108,6 +118,8 @@ public class AboutUsFragment extends BaseFragment {
     @Override
     protected void setViewReferences(View view) {
         textView = view.findViewById(R.id.tv_terms_conditions);
+        webView = (WebView) view.findViewById(R.id.webView);
+        pgr  =(ProgressBar)view.findViewById(R.id.pgr);
     }
 
     @Override

@@ -255,7 +255,7 @@ public class CommentsActivity extends AppBaseActivity implements SwipeRefreshLay
 
             Reject reject = mCommentsItem.get(position);
             if (reject.actionBy.equals("admin")) {
-                holder.tvCommentHeader.setText("Admin's Comment");
+                holder.tvCommentHeader.setText(R.string.txt_admis_comments);
                 holder.tvDescription.setText(reject.description);
                 holder.tvCommentHeader.setTextColor(Color.GRAY);
 
@@ -265,7 +265,7 @@ public class CommentsActivity extends AppBaseActivity implements SwipeRefreshLay
                 else
                     holder.tvCommentHeader.setTextColor(getResources().getColor(R.color.colorDesignerText));
 
-                holder.tvCommentHeader.setText("User Comment");
+                holder.tvCommentHeader.setText(R.string.txt_user_comment);
                 holder.tvDescription.setText(reject.description);
 
             }

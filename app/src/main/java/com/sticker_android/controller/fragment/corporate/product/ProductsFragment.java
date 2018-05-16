@@ -40,7 +40,6 @@ import com.sticker_android.controller.activities.common.contest.ApplyCorporateCo
 import com.sticker_android.controller.activities.corporate.RenewAdandProductActivity;
 import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
 import com.sticker_android.controller.activities.corporate.productdetails.ProductDetailsActivity;
-import com.sticker_android.controller.adaptors.DesignListAdapter;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.corporate.CorporateHomeFragment;
 import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
@@ -63,6 +62,7 @@ import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.EndlessRecyclerViewScrollListener;
 import com.sticker_android.view.OnVerticalScrollListener;
 
 import java.net.ConnectException;
@@ -108,6 +108,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     private RelativeLayout rlConnectionContainer;
     private TextView txtNoDataFoundTitle, txtNoDataFoundContent;
     private CorporateHomeActivity mHostActivity;
+    private EndlessRecyclerViewScrollListener scrollListener2;
 
 
     public ProductsFragment() {
@@ -140,9 +141,32 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         getProductFromServer(false, "");
 
         //   productListApi(currentPageNo, search);
-        adaptorScrollListener();
+      //  adaptorScrollListener();
+        newListeneradded();
         return view;
     }
+
+
+    private void newListeneradded() {
+
+        scrollListener2= new EndlessRecyclerViewScrollListener(mLayoutManager) {
+            @Override
+            public int getFooterViewType(int defaultNoFooterViewType) {
+
+                return 0;
+            }
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                getProductFromServer(false, "");
+                corporateListAdaptor.addLoader();
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recAd.addOnScrollListener(scrollListener2);
+
+    }
+
 
     private void adaptorScrollListener() {
 
@@ -367,6 +391,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
+            scrollListener2.resetState();
             getProductFromServer(true, "");
         } else {
             swipeRefreshLayout.setRefreshing(false);
@@ -460,6 +485,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         if (productList != null)
             productList.clear();
         mCurrentPage = 0;
+       scrollListener2.resetState();
         getProductFromServer(false, "");
     }
 
@@ -652,6 +678,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
         mCurrentPage = 0;
         if (productList != null)
             productList.clear();
+        scrollListener2.resetState();
         corporateListAdaptor.setData(productList);
         getProductFromServer(false, query);
     }

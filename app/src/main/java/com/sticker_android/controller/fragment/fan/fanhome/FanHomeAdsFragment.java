@@ -1,6 +1,7 @@
 package com.sticker_android.controller.fragment.fan.fanhome;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.controller.activities.fan.home.details.FanDetailsActivity;
+import com.sticker_android.controller.adaptors.DesignListAdapter;
 import com.sticker_android.controller.adaptors.FanListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
@@ -28,6 +32,7 @@ import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 
@@ -59,9 +64,10 @@ public class FanHomeAdsFragment extends BaseFragment implements SwipeRefreshLayo
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
     private FanListAdaptor mAdapter;
-String filterData="";
-    private String categories="";
-    private String filterdata="";
+    String filterData = "";
+    private String categories = "";
+    private String filterdata = "";
+    private EndlessRecyclerViewScrollListener scrollListener2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,7 +75,7 @@ String filterData="";
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fan_home_common, container, false);
         init();
-         PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
+        PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
         setViewReferences(view);
         setViewListeners();
         initRecyclerView();
@@ -78,8 +84,20 @@ String filterData="";
         llNoDataFound.setVisibility(View.GONE);
         mAdsList = new ArrayList<>();
         mCurrentPage = 0;
-        getAdsFromServer(false, "","");
-        setRecScrollListener();
+        getAdsFromServer(false, "", "");
+        //setRecScrollListener();
+        setScrollListener();
+        mAdapter.setOnProductClickListener(new DesignListAdapter.OnProductItemClickListener() {
+            @Override
+            public void onProductItemClick(Product product) {
+                Intent intent = new Intent(getActivity(), FanDetailsActivity.class);
+                intent.putExtra(AppConstant.PRODUCT, product);
+               getActivity().startActivityForResult(intent, 333);
+                getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                        R.anim.activity_animation_exit);
+
+            }
+        });
         return view;
     }
 
@@ -129,9 +147,11 @@ String filterData="";
 
         mAdsList.clear();
         mAdapter.setData(mAdsList);
-        mCurrentPage=0;
-        getAdsFromServer(false,query,"" );
+        mCurrentPage = 0;
+        scrollListener2.resetState();
+        getAdsFromServer(false, query, "");
     }
+
     private void showNoDataFound() {
         llNoDataFound.setVisibility(View.VISIBLE);
         txtNoDataFoundTitle.setText("");
@@ -139,17 +159,38 @@ String filterData="";
 
     @Override
     public void onRefresh() {
-        mCurrentPage=0;
-        categories="";
+        mCurrentPage = 0;
+        categories = "";
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getAdsFromServer(true, "","");
+            scrollListener2.resetState();
+            getAdsFromServer(true, "", "");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
         FanHomeFragment parentFrag = ((FanHomeFragment) FanHomeAdsFragment.this.getParentFragment());
-        if(parentFrag!=null)
+        if (parentFrag != null)
             parentFrag.closeSearch();
+    }
+
+
+    private void setScrollListener() {
+
+        scrollListener2 = new EndlessRecyclerViewScrollListener(mLinearLayoutManager) {
+            @Override
+            public int getFooterViewType(int defaultNoFooterViewType) {
+
+                return 0;
+            }
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                getAdsFromServer(false, "", categories);
+                mAdapter.addLoader();
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rcDesignList.addOnScrollListener(scrollListener2);
     }
 
     public void setRecScrollListener() {
@@ -161,7 +202,7 @@ String filterData="";
 
                 if (mAdsList.size() >= PAGE_LIMIT) {
                     AppLogger.debug(TAG, "page limit" + PAGE_LIMIT + " list size" + mAdsList.size());
-                    getAdsFromServer(false, "",categories);
+                    getAdsFromServer(false, "", categories);
                     mAdapter.addLoader();
                 }
             }
@@ -214,7 +255,7 @@ String filterData="";
             limit = PAGE_LIMIT;
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, "ads", "all_product_list", searchKeyword,categories, filterData);
+                index, limit, "ads", "all_product_list", searchKeyword, categories, filterData);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
@@ -346,7 +387,7 @@ String filterData="";
 
                                 @Override
                                 public void onRetryClickListener(int reqCode) {
-                                    getAdsFromServer(isRefreshing, searchKeyword,categories);
+                                    getAdsFromServer(isRefreshing, searchKeyword, categories);
                                 }
                             }, 0);
                         } else {
@@ -367,10 +408,11 @@ String filterData="";
 
     public void filterData(String categories, String filterdata) {
         this.categories = categories;
-        mCurrentPage=0;
+        mCurrentPage = 0;
         if (Utils.isConnectedToInternet(mHostActivity)) {
             mAdsList.clear();
-            this.filterdata=filterdata;
+            this.filterdata = filterdata;
+            scrollListener2.resetState();
             getAdsFromServer(false, "", categories);
         } else {
             swipeRefresh.setRefreshing(false);
@@ -380,13 +422,25 @@ String filterData="";
     }
 
     public void refreshApi() {
-        mCurrentPage=0;
-        categories="";
+        mCurrentPage = 0;
+        categories = "";
         if (Utils.isConnectedToInternet(mHostActivity)) {
-            getAdsFromServer(true, "","");
+            scrollListener2.resetState();
+            getAdsFromServer(true, "", "");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==333){
+            AppLogger.debug(TAG,"on activity result called +0 fragfme");
+            refreshApi();
+        }
+
     }
 }

@@ -24,7 +24,7 @@
         android:layout_marginLeft="2dp"
         android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/add_corp_tv_margin_top"
-        android:text="More Comments"
+        android:text="@string/txt_more_comments"
         android:textSize="@dimen/text_size_contact_us" />
 
     <TextView

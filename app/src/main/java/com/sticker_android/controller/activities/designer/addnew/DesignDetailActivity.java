@@ -249,13 +249,15 @@ public class DesignDetailActivity extends AppBaseActivity implements View.OnClic
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
         if(mProduct != null){
             if(mProduct.getType().equalsIgnoreCase(DesignType.stickers.getType())){
-                textView.setText("Sticker" + " " + getString(R.string.detail));
+                textView.setText(R.string.txt_sticker_details);
+
+                //     textView.setText("Sticker" + " " + getString(R.string.detail));
             }
             else if(mProduct.getType().equalsIgnoreCase(DesignType.gif.getType())){
-                textView.setText("GIF" + " " + getString(R.string.detail));
+                textView.setText(R.string.txt_gif_details );
             }
             else if(mProduct.getType().equalsIgnoreCase(DesignType.emoji.getType())){
-                textView.setText("Emoji" + " " + getString(R.string.detail));
+                textView.setText(R.string.txt_emoji_details );
             }
         }
         toolbar.setTitle(" ");

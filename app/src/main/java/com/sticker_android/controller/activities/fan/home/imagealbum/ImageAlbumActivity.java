@@ -121,11 +121,12 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
 
     private String getToolbarTitle() {
         if (mFilterImageType.contains("stickers")) {
-            return "Choose Sticker";
+
+            return getString(R.string.txt_choose_sticker);
         } else if (mFilterImageType.contains("filter")) {
-            return "Choose Filter";
+            return getString(R.string.text_choose_filter);
         } else if (mFilterImageType.contains("emoji")) {
-            return "Choose Emoji";
+            return getString(R.string.text_choose_emoji);
         }
         return "";
     }
@@ -172,7 +173,7 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
             llLoaderView.setVisibility(View.VISIBLE);
         }
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiFilterList(userdata.getLanguageId(), userdata.getAuthrizedKey(),
-                userdata.getId(), 0, 1000, "", "filter_list", mFilterImageType);
+                userdata.getId(), 0, 1000000, "", "filter_list", mFilterImageType);
 
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
@@ -188,8 +189,21 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
                         gridViewAdapter.setData(apiResponse.paylpad.fanFilterArrayList);
                     }
                     if (apiResponse.paylpad.fanFilterArrayList == null && apiResponse.paylpad.fanFilterArrayList.size() == 0) {
-                        txtNoDataFoundContent.setText("No " + mFilterImageType + " Found.");
+                     String filterType = "";
+
+                        if (mFilterImageType.contains("stickers")) {
+                            filterType= getString(R.string.txt_choose_stickers);
+                            txtNoDataFoundContent.setText(filterType);
+                        } else if (mFilterImageType.contains("filter")) {
+                            filterType= getString(R.string.txt_choose_filter);
+                            txtNoDataFoundContent.setText(filterType);
+                        } else if (mFilterImageType.contains("emoji")) {
+                            filterType= getString(R.string.txt_choose_emoji);
+                            txtNoDataFoundContent.setText(filterType);
+                        }
+
                         showNoDataFound();
+
                     }
                 }
 

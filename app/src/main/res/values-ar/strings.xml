@@ -5,7 +5,7 @@
     <string name="hello_blank_fragment">Under Development</string>
     <string name="txt_fan">مشجع</string>
     <string name="txt_designer">مصمم</string>
-    <string name="text_corporate">Corporate</string>
+    <string name="text_corporate">الشركات</string>
     <integer name="running_device_config">5</integer>
     <integer name="designed_item_page_limit">30</integer>
 
@@ -69,7 +69,7 @@
     <!--Contact Us-->
     <string name="contact_us_txt_hint_Email_address">البريد الالكتروني:</string>
     <string name="contact_us_txt_Email_address">SportWidget12@gmail.com</string>
-    <string name="contact_us_txt_hint_contact_number">Contact Number :</string>
+    <string name="contact_us_txt_hint_contact_number">الشركات :</string>
     <string name="contact_us_txt_contact_number">"+19874562548845"</string>
 
     <!--Profile-->
@@ -116,7 +116,7 @@
     <string name="act_add_corp_txt_write_description">الوصف</string>
     <string name="txt_post">ارسال</string>
     <string name="txt_repost">اعادة ارسال</string>
-    <string name="txt_add_new_ads_frag">Ad</string>
+    <string name="txt_add_new_ads_frag">اعلان</string>
     <string name="txt__add_products_frag">منتج</string>
 
     <string name="txt_edit">تعديل</string>
@@ -130,8 +130,8 @@
     <string name="time_ago_hour">ساعة</string>
     <string name="time_ago_hours"> %d ساعات</string>
     <string name="time_ago_day">يوم</string>
-    <string name="time_ago_days">%d days</string>
-    <string name="time_ago_month">about a month</string>
+    <string name="time_ago_days">%d أيام</string>
+    <string name="time_ago_month">شهر تقريبا</string>
     <string name="time_ago_months">%d شهور</string>
     <string name="time_ago_year">سنة تقريبا</string>
     <string name="time_ago_years">%d سنوات</string>
@@ -143,7 +143,7 @@
     <string name="stickers">استكرات</string>
     <string name="press_again_to_exit">اضغط مرة ثانية للخروج</string>
     <string name="select_category">Select Category</string>
-    <string name="category">Category</string>
+    <string name="category">الشركات</string>
     <string name="select_design_category">Select Category</string>
     <string name="loading">يتم التحميل...</string>
     <string name="txt_are_you_sure">هل فعلا تود حذف العنصر المحدد؟</string>
@@ -179,7 +179,7 @@
     <string name="detail">فضلا ادخل التفاصيل</string>
     <string name="rejected">تم رفضة</string>
     <string name="approved">تم قبولة</string>
-    <string name="pending">Pending</string>
+    <string name="pending">بالانتظار</string>
     <string name="expired">تم انتهاء صلاحيتة </string>
     <string name="txt_onging">مستمر</string>
     <string name="txt_completed">مكتمل</string>
@@ -222,8 +222,8 @@
     <string name="your_comment">تعليقك</string>
     <string name="txt_comments">التعليقات</string>
     <string name="txt_resubmit">اعادة الارسال</string>
-    <string name="txt_please_enter_description">Please enter a description.</string>
-    <string name="txt_please_enter_a_name">Please enter a name.</string>
+    <string name="txt_please_enter_description">فضلا ضع الوصف</string>
+    <string name="txt_please_enter_a_name">فضلا ادخل الاسم</string>
     <string name="txt_please_enter_a_expire_date">فضلا ادخل تاريخ الانتهاء </string>
     <string name="txt_please_select_a_category">فضلا اختر بطولة</string>
     <string name="txt_session_timeout">تم الخروج من الحساب لتجاوز الوقت</string>
@@ -246,19 +246,52 @@
     <string name="txt_product_added_successfully">تم حفظ البيانات بنجاح</string>
     <string name="act_renew_product_txt_data_updated_successfully">تم تحديث البيانات بنجاح</string>
     <string name="txt_change_language">Change Language</string>
-    <string name="txt_company_details">Company Details</string>
-    <string name="txt_company_name">Company Name</string>
-    <string name="txt_company_address">Company Address</string>
-    <string name="txt_search_ad_by_name">Search Ad by name</string>
-    <string name="search_product_by_name">Search Product by name</string>
-    <string name="txt_just_now">Just now</string>
-    <string name="txt_second">" second "</string>
-    <string name="txt_delete">Delete</string>
-    <string name="txt_search_filter_by_name">Search Filter by name</string>
-    <string name="txt_search_contest_by_name">Search Contest by name</string>
-    <string name="txt_search_stickers_by_name">Search Stickers by name</string>
-    <string name="txt_search_gif_by_name">Search GIF by name</string>
-    <string name="txt_search_emoji_by_name">Search Emoji by name</string>
+    <string name="txt_company_details">تفاصيل الشركة</string>
+    <string name="txt_company_name">اسم الشركة</string>
+    <string name="txt_company_address">عنوان الشركة</string>
+    <string name="txt_search_ad_by_name">البحث عن اعلان بالاسم</string>
+    <string name="search_product_by_name">بحث المنتج بالاسم</string>
+    <string name="txt_just_now">الآن فقط</string>
+    <string name="txt_second">ثانيا</string>
+    <string name="txt_delete">حذف</string>
+    <string name="txt_search_filter_by_name">تصفية البحث بالاسم</string>
+    <string name="txt_search_contest_by_name">مسابقة البحث بالاسم</string>
+    <string name="txt_search_stickers_by_name">ابحث عن اسكتر بالاسم</string>
+    <string name="txt_search_gif_by_name">ابحث عن صورة متحركة بالاسم</string>
+    <string name="txt_search_emoji_by_name">ابحث عن ايموجي بالاسم</string>
+    <string name="txt_choose_stickers">اختر استكر </string>
+    <string name="txt_choose_filter">اختر فلتر</string>
+    <string name="txt_choose_emoji">اختر ايموجي</string>
+    <string name="txt_enter_company_name">فضلا اختر اسم الشركة</string>
+    <string name="txt_please_enter_company_address">فضلا اختر عنوان الشركة</string>
+    <string name="txt_upload_ad">تحميل الاعلان</string>
+    <string name="txt_upload_product">تحميل المنتج</string>
+    <string name="txt_please_enter_old_password">يرجى إدخال كلمة المرور القديمة.</string>
+    <string name="txt_data_save_successfully">تم الحفظ بنجاح</string>
+    <string name="txt_profile_updated_successfully">تم تحديث بياناتك بنجاح</string>
+    <string name="txt_filter_by">تصنيف بـ</string>
+    <string name="txt_deleted_successfully">حذف بنجاح</string>
+    <string name="txt_ads_details">تفاصيل الاعلان</string>
+    <string name="txt_product_details">تفاصيل المنتج</string>
+    <string name="txt_sticker_details">تفصايل الاستكر</string>
+    <string name="txt_gif_details">تفاصيل الصورة المتحركة</string>
+    <string name="txt_emoji_details">تفاصيل الايموجي</string>
+    <string name="txt_yes">نعم</string>
+    <string name="txt_no">لا</string>
+    <string name="txt_data_updated_successfully">تم تحديث البيانات بنجاح</string>
+    <string name="txt_send">إرسال</string>
+    <string name="txt_email_address">البريد الالكتروني</string>
+    <string name="txt_more_comments">تعليقات اكثر</string>
+    <string name="txt_admis_comments">تعليق المسؤول</string>
+    <string name="txt_user_comment">تعليق المستخدم</string>
+    <string name="txt_please_select_terms_condition">يرجى تحديد الشروط والأحكام</string>
+    <string name="txt_no_image_found">لا توجد صورة</string>
+    <string name="txt_featured">متميز</string>
+    <string name="change_language_arabic">تغيير اللغة</string>
+    <string name="txt_choose_sticker">اختر استكر </string>
+    <string name="text_choose_filter">اختر فلتر</string>
+    <string name="text_choose_emoji">اختر ايموجي</string>
 
+    <!---->
 
 </resources>

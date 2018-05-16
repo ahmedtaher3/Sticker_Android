@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
-import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.common.terms.TermsActivity;
 import com.sticker_android.controller.activities.corporate.CorporateProfileActivity;
 import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
@@ -28,8 +27,6 @@ import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
-
-import java.util.Locale;
 
 import retrofit2.Call;
 
@@ -86,7 +83,7 @@ public class SignUpActivity extends AppBaseActivity {
     }
 
     private void setLoginButtonData() {
-        btnSignUp.setText("Sign up");
+      //  btnSignUp.setText("Sign up");
     }
 
 
@@ -142,7 +139,7 @@ public class SignUpActivity extends AppBaseActivity {
                     if (checkBoxTerms.isChecked()) {
                         apiSignUp();
                     } else {
-                        Utils.showToast(SignUpActivity.this, "Please select terms and conditions ");
+                        Utils.showToast(SignUpActivity.this, getString(R.string.txt_please_select_terms_condition));
                     }
                 }
             }

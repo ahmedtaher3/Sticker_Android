@@ -51,6 +51,8 @@
                     android:layout_height="wrap_content"
                     >
                     <android.support.design.widget.TextInputEditText
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
                         style="@style/EditText"
                         android:backgroundTint="@color/edt_background_tint"
                         android:id="@+id/act_profile_edt_company_name"
@@ -68,6 +70,8 @@
                     >
 
                     <android.support.design.widget.TextInputEditText
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
                         android:backgroundTint="@color/edt_background_tint"
                         android:id="@+id/act_profile_edt_company_address"
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
@@ -93,6 +97,8 @@
                 android:layout_height="wrap_content"
                 >
                 <android.support.design.widget.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     style="@style/EditText"
                     android:backgroundTint="@color/edt_background_tint"
                     android:id="@+id/act_profile_edt_first_name"
@@ -110,6 +116,8 @@
                 >
 
                 <android.support.design.widget.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     android:backgroundTint="@color/edt_background_tint"
                     android:id="@+id/act_profile_edt_last_name"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
@@ -128,6 +136,8 @@
                 >
 
                 <android.support.design.widget.TextInputEditText
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     android:backgroundTint="@color/edt_background_tint"
                     android:id="@+id/act_signup_edt_email"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"

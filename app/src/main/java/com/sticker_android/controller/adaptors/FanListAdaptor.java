@@ -23,8 +23,6 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
-import com.sticker_android.constant.AppConstant;
-import com.sticker_android.controller.activities.fan.home.details.FanDetailsActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.DesignerActionListener;
@@ -209,14 +207,8 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 public void onClick(View view) {
                     int position = vh.getAdapterPosition();
                     Product product = mItems.get(position);
-                    Intent intent = new Intent(context, FanDetailsActivity.class);
-                    intent.putExtra(AppConstant.PRODUCT, product);
-                    ((Activity) context).startActivityForResult(intent, 0);
-                    ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
-                            R.anim.activity_animation_exit);
-
-
-                    // productItemClickListener.onProductItemClick(product);
+                  if(productItemClickListener!=null)
+                    productItemClickListener.onProductItemClick(product);
                 }
             });
             likeListener(vh);

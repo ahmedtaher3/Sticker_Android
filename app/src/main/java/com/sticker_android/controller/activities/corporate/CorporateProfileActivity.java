@@ -130,13 +130,13 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
     {
         if(edtCompanyName.getText().toString().trim().isEmpty())
         {
-            Utils.showToast(CorporateProfileActivity.this,"Please enter company name.");
+            Utils.showToast(CorporateProfileActivity.this,getString(R.string.txt_enter_company_name));
 
             //   CommonSnackBar.show(edtCompanyName, "Company name cannot be empty", Snackbar.LENGTH_SHORT);
             this.edtCompanyName.requestFocus();
             return false;
         }else if(edtCompanyAddress.getText().toString().trim().isEmpty()){
-            Utils.showToast(CorporateProfileActivity.this, "Please enter company address.");
+            Utils.showToast(CorporateProfileActivity.this, getString(R.string.txt_please_enter_company_address));
 
             //   CommonSnackBar.show(edtCompanyAddress, "Company address cannot be empty", Snackbar.LENGTH_SHORT);
             this.edtCompanyAddress.requestFocus();

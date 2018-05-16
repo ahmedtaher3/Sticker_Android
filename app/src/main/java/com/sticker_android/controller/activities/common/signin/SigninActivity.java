@@ -169,7 +169,7 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
         String deviceId = Utils.getDeviceId(this);
         final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
         progressDialogHandler.show();
-        Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(edtEmail.getText().toString(),
+        Call<ApiResponse> apiResponseCall=RestClient.getService().userLogin(getSelectedLanguage(),edtEmail.getText().toString(),
                 edtPassword.getText().toString(),"android",refreshedToken,deviceId,selectedOption);
         apiResponseCall.enqueue(new ApiCall(this) {
             @Override
@@ -191,6 +191,11 @@ public class SigninActivity extends AppBaseActivity implements View.OnClickListe
                 progressDialogHandler.hide();
             }
         });
+    }
+    public int getSelectedLanguage() {
+
+
+        return appPref.getLanguage(1);
     }
 
     private void moveToActivity() {

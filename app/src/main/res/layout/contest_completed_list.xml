@@ -62,7 +62,7 @@
                     android:background="@drawable/drawable_featured"
                     android:gravity="center"
                     android:paddingRight="@dimen/dp_5"
-                    android:text="Featured"
+                    android:text="@string/txt_featured"
                     android:textColor="@android:color/white" />
 
             </RelativeLayout>

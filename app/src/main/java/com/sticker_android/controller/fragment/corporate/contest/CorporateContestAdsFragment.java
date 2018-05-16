@@ -29,8 +29,8 @@ import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 
@@ -62,6 +62,7 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
     private ArrayList<Product> mProductList;
     private static final String TAG = CorporateContestAdsFragment.class.getSimpleName();
     private View view;
+    private EndlessRecyclerViewScrollListener scrollListener2;
 
 
     public CorporateContestAdsFragment() {
@@ -96,8 +97,28 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
         return view;
     }
 
+
+
+
+
     private void recListener() {
-        recAdsAndProductList.addOnScrollListener(new PaginationScrollListener(mLayoutManager) {
+
+        scrollListener2= new EndlessRecyclerViewScrollListener(mLayoutManager) {
+            @Override
+            public int getFooterViewType(int defaultNoFooterViewType) {
+
+                return 0;
+            }
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                getContestApi(false);
+                mAdapter.addLoader();
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recAdsAndProductList.addOnScrollListener(scrollListener2);
+    /*    recAdsAndProductList.addOnScrollListener(new PaginationScrollListener(mLayoutManager) {
             @Override
             protected void loadMoreItems() {
                 AppLogger.debug(TAG, "Load more items");
@@ -127,7 +148,7 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
             public boolean isLoading() {
                 return mAdapter.isLoaderVisible;
             }
-        });
+        });*/
     }
 
 
@@ -190,6 +211,7 @@ public class CorporateContestAdsFragment extends BaseFragment implements SwipeRe
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
+            scrollListener2.resetState();
             getContestApi(true);
         } else {
             swipeRefreshLayout.setRefreshing(false);

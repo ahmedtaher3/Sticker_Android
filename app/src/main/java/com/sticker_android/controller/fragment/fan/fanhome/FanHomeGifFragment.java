@@ -1,6 +1,7 @@
 package com.sticker_android.controller.fragment.fan.fanhome;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
+import com.sticker_android.controller.activities.fan.home.details.FanDetailsActivity;
+import com.sticker_android.controller.adaptors.DesignListAdapter;
 import com.sticker_android.controller.adaptors.FanListAdaptor;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
@@ -29,6 +33,7 @@ import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -64,6 +69,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
     private FanListAdaptor mAdapter;
     String filterdata="";
     private String categories="";
+    private EndlessRecyclerViewScrollListener scrollListener2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,7 +87,19 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
         mGifList = new ArrayList<>();
         mCurrentPage = 0;
         getGifFromServer(false, "","");
-        setRecScrollListener();
+     //   setRecScrollListener();
+        setScrollListener();
+        mAdapter.setOnProductClickListener(new DesignListAdapter.OnProductItemClickListener() {
+            @Override
+            public void onProductItemClick(Product product) {
+                Intent intent = new Intent(getActivity(), FanDetailsActivity.class);
+                intent.putExtra(AppConstant.PRODUCT, product);
+                getActivity().startActivityForResult(intent, 333);
+                getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                        R.anim.activity_animation_exit);
+
+            }
+        });
         return view;
     }
 
@@ -133,6 +151,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
         mGifList.clear();
         mAdapter.setData(mGifList);
         mCurrentPage=0;
+        scrollListener2.resetState();
         getGifFromServer(false,query ,"");
     }
     private void showNoDataFound() {
@@ -144,6 +163,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
     public void onRefresh() {mCurrentPage=0;
         categories="";
         if (Utils.isConnectedToInternet(mHostActivity)) {
+            scrollListener2.resetState();
             getGifFromServer(true, "","");
         } else {
             swipeRefresh.setRefreshing(false);
@@ -153,6 +173,26 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
         if(parentFrag!=null)
             parentFrag.closeSearch();
     }
+
+    private void setScrollListener() {
+
+        scrollListener2 = new EndlessRecyclerViewScrollListener(mLinearLayoutManager) {
+            @Override
+            public int getFooterViewType(int defaultNoFooterViewType) {
+
+                return 0;
+            }
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                getGifFromServer(false, "",categories);
+                mAdapter.addLoader();
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rcDesignList.addOnScrollListener(scrollListener2);
+    }
+
 
     public void setRecScrollListener() {
 
@@ -375,6 +415,7 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
         if (Utils.isConnectedToInternet(mHostActivity)) {
             mGifList.clear();
             this.filterdata=filterdata;
+            scrollListener2.resetState();
             getGifFromServer(false, "", categories);
         } else {
             swipeRefresh.setRefreshing(false);
@@ -387,10 +428,20 @@ public class FanHomeGifFragment extends BaseFragment implements SwipeRefreshLayo
         mCurrentPage=0;
         categories="";
         if (Utils.isConnectedToInternet(mHostActivity)) {
+            scrollListener2.resetState();
             getGifFromServer(true, "","");
         } else {
             swipeRefresh.setRefreshing(false);
             Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
         }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==333){
+            AppLogger.debug(TAG,"on activity result called +0 fragfme");
+            refreshApi();
+        }
+
     }
 }

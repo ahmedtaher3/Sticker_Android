@@ -8,157 +8,168 @@
     tools:ignore="MissingPrefix">
 
     <include layout="@layout/toolbar" />
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="@dimen/act_product_details_padding">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:background="@drawable/background_gray"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-
-            <ImageView
-                android:adjustViewBounds="true"
-                android:id="@+id/imvOfAds"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/image_height_product_details"
-                android:scaleType="fitXY" />
-            <ProgressBar
-                android:visibility="visible"
-                android:id="@+id/pgrImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
-            <TextView
-                android:visibility="gone"
-                android:alpha=".75"
-                android:textSize="15sp"
-                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                android:id="@+id/tvFeatured"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:background="@drawable/drawable_featured"
-                android:gravity="center"
-                android:paddingLeft="5dp"
-                android:paddingRight="@dimen/dp_5"
-                android:text="Featured"
-                android:textColor="@android:color/white" />
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10">
-
-            <TextView
-                android:id="@+id/tv_add_product_title"
-                style="@style/tvHome"
-                fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
-                android:layout_alignParentTop="true"
-                android:layout_marginRight="5dp"
-                android:layout_toLeftOf="@+id/imvBtnEditRemove"
-                android:layout_toStartOf="@+id/imvBtnEditRemove"
-
-                android:text="Header"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/txt_size_home_12sp" />
-
-            <ImageButton
-                android:id="@+id/imvBtnEditRemove"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:background="@android:color/transparent"
-                android:paddingBottom="7dp"
-                android:paddingStart="10dp"
-                app:srcCompat="@drawable/ic_more"
-                android:tint="@color/colorCorporateText" />
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_add_product_item_description"
-            fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:clickable="false"
-            android:gravity="start"
-            android:text="undo"
-            android:textSize="12sp" />
+            android:orientation="vertical"
+            android:padding="@dimen/act_product_details_padding">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/checkboxLike"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:button="@drawable/like_selector"
-                android:padding="@dimen/padding_like_8dp"
-                android:textSize="@dimen/txt_size_home_12sp" />
+                android:background="@drawable/background_gray">
 
-            <CheckBox
-                android:id="@+id/checkboxShare"
-                android:layout_width="wrap_content"
+
+                <ImageView
+                    android:id="@+id/imvOfAds"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/image_height_product_details"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY" />
+
+                <ProgressBar
+                    android:id="@+id/pgrImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tvFeatured"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:alpha=".75"
+                    android:background="@drawable/drawable_featured"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="@dimen/dp_5"
+                    android:text="@string/txt_featured"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_toRightOf="@+id/checkboxLike"
-                android:layout_toEndOf="@+id/checkboxLike"
+                android:layout_marginTop="@dimen/dp_10">
 
-                android:button="@drawable/share_selector"
-                android:padding="@dimen/padding_like_8dp"
-                android:textSize="@dimen/txt_size_home_12sp" />
+                <TextView
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
+                    android:id="@+id/tv_add_product_title"
+                    style="@style/tvHome"
+                    fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/imvBtnEditRemove"
+                    android:layout_toStartOf="@+id/imvBtnEditRemove"
+
+                    android:text="Header"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/txt_size_home_12sp" />
+
+                <ImageButton
+                    android:textDirection="locale"
+                    android:textAlignment="viewEnd"
+
+                    android:id="@+id/imvBtnEditRemove"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:background="@android:color/transparent"
+                    android:paddingBottom="7dp"
+                    android:paddingStart="10dp"
+                    android:tint="@color/colorCorporateText"
+                    app:srcCompat="@drawable/ic_more" />
+
+            </RelativeLayout>
 
             <TextView
-                android:id="@+id/tvTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="8dp"
-                android:layout_toRightOf="@+id/checkboxShare"
-                android:layout_toEndOf="@+id/checkboxShare"
-                android:drawableStart="@drawable/tv_svg_time"
-                android:drawablePadding="8dp"
-                android:gravity="center"
-                android:text="2 hour"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/txt_size_home_12sp" />
-
-            <TextView
-                android:id="@+id/tv_add_product_status"
-                style="@style/tvHome"
+                android:id="@+id/tv_add_product_item_description"
                 fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                android:layout_centerInParent="true"
-                android:gravity="end"
-                android:textColor="@android:color/holo_green_light"
-                android:textSize="@dimen/txt_size_home_12sp" />
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:gravity="start"
+                android:text="undo"
+                android:textSize="12sp" />
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
 
-        <RelativeLayout
-            android:id="@+id/rlJustificationHolder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+                <CheckBox
+                    android:id="@+id/checkboxLike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/like_selector"
+                    android:padding="@dimen/padding_like_8dp"
+                    android:textSize="@dimen/txt_size_home_12sp" />
 
-            <include layout="@layout/layout_justification_content"/>
-        </RelativeLayout>
+                <CheckBox
+                    android:id="@+id/checkboxShare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toEndOf="@+id/checkboxLike"
+                    android:layout_toRightOf="@+id/checkboxLike"
 
-    </LinearLayout>
+                    android:button="@drawable/share_selector"
+                    android:padding="@dimen/padding_like_8dp"
+                    android:textSize="@dimen/txt_size_home_12sp" />
+
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toEndOf="@+id/checkboxShare"
+                    android:layout_toRightOf="@+id/checkboxShare"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/tv_svg_time"
+                    android:gravity="center"
+                    android:text="2 hour"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/txt_size_home_12sp" />
+
+                <TextView
+                    android:id="@+id/tv_add_product_status"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:gravity="end"
+                    android:textColor="@android:color/holo_green_light"
+                    android:textSize="@dimen/txt_size_home_12sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlJustificationHolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <include layout="@layout/layout_justification_content" />
+            </RelativeLayout>
+
+        </LinearLayout>
     </ScrollView>
 
 </LinearLayout>

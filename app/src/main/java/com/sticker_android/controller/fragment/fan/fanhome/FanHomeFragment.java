@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.sticker_android.R;
@@ -545,10 +544,28 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
 
 
         }
-        if (requestCode == 0)
-            for (Fragment fragment : getChildFragmentManager().getFragments()) {
+        if (requestCode == 333)
+            AppLogger.debug("Fan home","on activity result called inside 333 fan home");
+        Fragment f1 = getChildFragmentManager().findFragmentById(R.id.container_fan_home);
+        if (f1 instanceof FanHomeAdsFragment) {
+            ((FanHomeAdsFragment) f).onActivityResult(requestCode, resultCode, data);
+        }
+        if (f1 instanceof FanHomeEmojiFragment) {
+            ((FanHomeEmojiFragment) f).onActivityResult(requestCode, resultCode, data);
+        }
+        if (f1 instanceof FanHomeGifFragment) {
+            ((FanHomeGifFragment) f).onActivityResult(requestCode, resultCode, data);
+        }
+        if (f1 instanceof FanHomeProductsFragment) {
+            ((FanHomeProductsFragment) f).onActivityResult(requestCode, resultCode, data);
+        }
+        if (f1 instanceof FanHomeStickerFragment) {
+            ((FanHomeStickerFragment) f).onActivityResult(requestCode, resultCode, data);
+        }
+
+      /*  for (Fragment fragment : getChildFragmentManager().getFragments()) {
                 fragment.onActivityResult(requestCode, resultCode, data);
-            }
+            }*/
 
     }
 

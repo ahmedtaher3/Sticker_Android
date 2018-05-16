@@ -13,7 +13,7 @@
     <RelativeLayout
         android:id="@+id/rlContestMain"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="@dimen/rk_contest_height">
 
         <ImageView
             android:id="@+id/imvBackground"
@@ -30,7 +30,9 @@
             app:contentPadding="8dp">
 
             <TextView
-                android:textDirection="anyRtl"
+                android:textDirection="locale"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="10dp"
                 android:id="@+id/tv_content_description"
                 style="@style/tvHome"
                 fontPath="fonts/SanFranciscoText-Semibold_0.ttf"

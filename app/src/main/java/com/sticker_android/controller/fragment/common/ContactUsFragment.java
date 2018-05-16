@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.fragment.base.BaseFragment;
@@ -70,12 +69,14 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
-                if(apiResponse.status){
-                  //  Toast.makeText(getActivity(),""+apiResponse.paylpad.getData().getMobile(),Toast.LENGTH_SHORT).show();
-                    tvContactUsContactNum.setText(apiResponse.paylpad.getData().getMobile());
-                    tvEmailContactUs.setText(apiResponse.paylpad.getData().getEmail());
-                    mMobileNumber=apiResponse.paylpad.getData().getMobile();
-                    mEmail=apiResponse.paylpad.getData().getEmail();
+                if(apiResponse.status) {
+                    if (apiResponse.paylpad.getData() != null) {
+                        //  Toast.makeText(getActivity(),""+apiResponse.paylpad.getData().getMobile(),Toast.LENGTH_SHORT).show();
+                        tvContactUsContactNum.setText(apiResponse.paylpad.getData().getMobile());
+                        tvEmailContactUs.setText(apiResponse.paylpad.getData().getEmail());
+                        mMobileNumber = apiResponse.paylpad.getData().getMobile();
+                        mEmail = apiResponse.paylpad.getData().getEmail();
+                    }
                 }
             }
 

@@ -19,7 +19,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -330,7 +329,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
 
                 if (v instanceof TextView) {
                     TextView txtView = (TextView) v;
-                    txtView.setGravity(Gravity.CENTER);
+                    txtView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                     Object object = dataSource.get(position);
 
                     if (object instanceof String) {
@@ -355,6 +354,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 }
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.text_size_edittext));
                 tv.setPadding(0, 0, 0, 0);
+                tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
 
                 Object object = dataSource.get(position);
 
@@ -599,7 +599,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                     progressDialogHandler.hide();
                     if (apiResponse.status) {
                         if (mProduct != null) {
-                            Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " updated successfully.");
+                            Utils.showToast(getApplicationContext(), getString(R.string.txt_data_updated_successfully));
                         } else {
                             Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " added successfully.");
                         }
