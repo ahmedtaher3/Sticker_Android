@@ -64,6 +64,7 @@
                     android:layout_marginTop="@dimen/add_corp_tv_margin_top">
 
                     <android.support.design.widget.TextInputEditText
+                        android:textAlignment="viewStart"
                         android:id="@+id/act_add_new_corp_edt_name"
                         style="@style/EditText"
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
@@ -81,6 +82,8 @@
                     android:layout_marginTop="@dimen/add_corp_tv_margin_top">
 
                     <android.support.design.widget.TextInputEditText
+                        android:textDirection="locale"
+                        android:textAlignment="viewStart"
                         android:id="@+id/act_add_new_ad_corp_edt_expire_date"
                         style="@style/EditText"
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
@@ -175,6 +178,8 @@
                             app:srcCompat="@drawable/ic_expand_more_black_24dp" />
 
                         <Spinner
+                            android:layout_toStartOf="@+id/imgDown2"
+                            android:layout_toLeftOf="@+id/imgDown2"
                             android:id="@+id/spnrRenewCategory"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -198,6 +203,9 @@
                     android:textSize="@dimen/text_size_contact_us" />
 
                 <EditText
+                    android:gravity="start"
+                    android:textDirection="locale"
+                    android:textAlignment="viewStart"
                     android:id="@+id/act_add_new_ad_corp_edt_description"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:layout_width="match_parent"
@@ -205,7 +213,6 @@
                     android:layout_marginLeft="2dp"
                     android:layout_marginTop="@dimen/act_add_corp_write_des_margin_top_10dp"
                     android:background="@drawable/btn_shadow_corner"
-                    android:gravity="start"
                     android:hint="@string/write_some_description"
                     android:inputType="text|textCapSentences|textNoSuggestions|textMultiLine"
                     android:minHeight="@dimen/act_add_corp_write_des_edt_heigh"

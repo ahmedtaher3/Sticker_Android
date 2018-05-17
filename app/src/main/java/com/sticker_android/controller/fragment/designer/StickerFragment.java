@@ -32,8 +32,8 @@ import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -68,6 +68,7 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
+    private EndlessRecyclerViewScrollListener scrollListener2;
 
     @Override
     public void onAttach(Context context) {
@@ -195,7 +196,22 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     public void setListenerOnViews() {
 
-        rcDesignList.addOnScrollListener(new PaginationScrollListener(mLinearLayoutManager) {
+           scrollListener2 = new EndlessRecyclerViewScrollListener(mLinearLayoutManager) {
+                @Override
+                public int getFooterViewType(int defaultNoFooterViewType) {
+
+                    return 0;
+                }
+
+                @Override
+                public void onLoadMore(int page, int totalItemsCount) {
+                    getDesignFromServer(false, "");
+                   // mAdapter.addLoader();
+                }
+            };
+            // Adds the scroll listener to RecyclerView
+            rcDesignList.addOnScrollListener(scrollListener2);
+      /*  rcDesignList.addOnScrollListener(new PaginationScrollListener(mLinearLayoutManager) {
             @Override
             protected void loadMoreItems() {
                 AppLogger.debug(TAG, "Load more items");
@@ -226,13 +242,14 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
             public boolean isLoading() {
                 return mAdapter.isLoaderVisible;
             }
-        });
+        });*/
     }
 
     public void searchByKeyword(String keyword){
         mCurrentPage = 0;
         mStickerList.clear();
         mAdapter.setData(mStickerList);
+        scrollListener2.resetState();
         getDesignFromServer(false, keyword);
     }
 
@@ -449,6 +466,7 @@ public class StickerFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
+            scrollListener2.resetState();
             getDesignFromServer(true, "");
         } else {
             swipeRefresh.setRefreshing(false);

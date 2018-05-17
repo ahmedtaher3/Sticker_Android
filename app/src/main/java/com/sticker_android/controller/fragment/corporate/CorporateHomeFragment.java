@@ -3,6 +3,7 @@ package com.sticker_android.controller.fragment.corporate;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -308,6 +309,14 @@ public class CorporateHomeFragment extends BaseFragment implements View.OnClickL
         setSearchIcons(searchView);
         searchView.setOnQueryTextListener(this);
         searchView.setMaxWidth(Integer.MAX_VALUE);
+        Configuration config = getResources().getConfiguration();
+        final boolean isLeftToRight;
+        isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
+        if (!isLeftToRight) {
+            View xIcon = ((ViewGroup) searchView.getChildAt(0)).getChildAt(2);
+            xIcon.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        }
+
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

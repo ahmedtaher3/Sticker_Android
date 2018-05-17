@@ -36,6 +36,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
+import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -296,21 +297,31 @@ public class AccountSettingFragment extends BaseFragment {
     }
 
     private void updatelanguageApi(final int language) {
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
+        progressDialogHandler.show();
 
         //final int language= appPref.getLanguage(1);
         Call<ApiResponse> apiResponseCall=  RestClient.getService().changeLanguage(userdata.getId(),language,userdata.getAuthrizedKey());
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
+                progressDialogHandler.hide();
+
                 if(apiResponse.status){
                     if(language==2){
                         iLanguageUpdate.updatelanguage("2");
-
+                        appPref.setLanguage(2);
+                        User user=appPref.getUserInfo();
+                        user.setLanguageId("2");
+                        appPref.saveUserObject(user);
                         AppLogger.debug(AccountSettingFragment.class.getSimpleName(),"language Account on update"+language);
 
                     }else {
                         iLanguageUpdate.updatelanguage("1");
-
+                        appPref.setLanguage(1);
+                        User user=appPref.getUserInfo();
+                        user.setLanguageId("1");
+                        appPref.saveUserObject(user);
                         AppLogger.debug(AccountSettingFragment.class.getSimpleName(),"language Account on update"+language);
 
                     }
@@ -320,6 +331,7 @@ public class AccountSettingFragment extends BaseFragment {
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
+                progressDialogHandler.hide();
 
             }
         });

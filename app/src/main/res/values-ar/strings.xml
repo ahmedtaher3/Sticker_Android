@@ -291,6 +291,9 @@
     <string name="txt_choose_sticker">اختر استكر </string>
     <string name="text_choose_filter">اختر فلتر</string>
     <string name="text_choose_emoji">اختر ايموجي</string>
+    <string name="txt_saving_image">حفظ الصورة</string>
+    <string name="txt_winner">الفائز</string>
+    <string name="txt_looser">واسع</string>
 
     <!---->
 

@@ -33,6 +33,7 @@
                 app:srcCompat="@drawable/ic_side_image_pink" />
 
             <TextView
+                android:textAlignment="textStart"
                 android:id="@+id/tvNotification"
                 fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                 android:layout_width="match_parent"
@@ -42,7 +43,6 @@
                 android:layout_marginStart="20dp"
                 android:layout_toEndOf="@+id/imvNotification"
                 android:layout_toRightOf="@+id/imvNotification"
-                android:gravity="start"
                 android:text="Lorem Ipsum is simply dummy text of thter took a galley of type"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/txt_size_home_12sp" />
@@ -58,6 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_toLeftOf="@+id/tvTimeNotification"
                     android:layout_toStartOf="@+id/tvTimeNotification"
                     android:gravity="center"

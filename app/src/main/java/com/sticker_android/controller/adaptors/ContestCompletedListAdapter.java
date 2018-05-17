@@ -51,11 +51,11 @@ public class ContestCompletedListAdapter extends RecyclerView.Adapter<ContestCom
         final ContestCompleted listItem = mItems.get(position);
 
         if (listItem.isWinner > 0) {
-            holder.tvContestStatus.setText("Winner");
+            holder.tvContestStatus.setText(R.string.txt_winner);
             holder.tvContestStatus.setTextColor(context.getResources().getColor(R.color.colorHomeGreen));
         } else {
             holder.tvContestStatus.setTextColor(Color.RED);
-            holder.tvContestStatus.setText("Loose");
+            holder.tvContestStatus.setText(R.string.txt_looser);
         }
         holder.totalNumberOfCount.setText(Utils.format(listItem.totalLike));
         if (listItem.productList.getImagePath() != null && !listItem.productList.getImagePath().isEmpty())

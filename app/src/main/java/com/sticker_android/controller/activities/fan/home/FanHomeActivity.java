@@ -1,6 +1,7 @@
 package com.sticker_android.controller.activities.fan.home;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -197,6 +198,10 @@ public class FanHomeActivity extends AppBaseActivity
     }
 
     private void actionBarToggle(Toolbar toolbar) {
+        Configuration config = getResources().getConfiguration();
+        final boolean isLeftToRight;
+        isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
+
 
         final ImageView imageView = (ImageView) toolbar.findViewById(R.id.imv_nav_drawer_menu);
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -210,7 +215,11 @@ public class FanHomeActivity extends AppBaseActivity
         drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-                mainView.setTranslationX(slideOffset * drawerView.getWidth());
+                if (isLeftToRight)
+                    mainView.setTranslationX(slideOffset * drawerView.getWidth());
+
+                else
+                    mainView.setTranslationX(-slideOffset * drawerView.getWidth());
                 drawer.bringChildToFront(drawerView);
                 drawer.requestLayout();
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));

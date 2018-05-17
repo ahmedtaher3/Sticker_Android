@@ -2,6 +2,7 @@ package com.sticker_android.controller.fragment.fan.fancustomization;
 
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -147,11 +148,19 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
         setSearchIcons(searchView);
         searchView.setOnQueryTextListener(this);
         searchView.setMaxWidth(Integer.MAX_VALUE);
+        Configuration config = getResources().getConfiguration();
+        final boolean isLeftToRight;
+        isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
+        if (!isLeftToRight) {
+            View xIcon = ((ViewGroup) searchView.getChildAt(0)).getChildAt(2);
+            xIcon.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        }
+
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
-
+              //  searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
+                setQueryHintText(searchView);
             }
         });
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
@@ -164,7 +173,19 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
 
         searchViewExpandListener(item);
     }
+    private void setQueryHintText(SearchView searchView) {
 
+        if (tabLayout.getSelectedTabPosition() == 0) {
+            searchView.setQueryHint(getString(R.string.txt_search_stickers_by_name));
+
+        } else if (tabLayout.getSelectedTabPosition() == 2) {
+            //type = DesignType.gif.getType().toUpperCase(Locale.US);
+            searchView.setQueryHint(getString(R.string.txt_search_gif_by_name));
+
+        } else if (tabLayout.getSelectedTabPosition() == 1) {
+            searchView.setQueryHint(getString(R.string.txt_search_emoji_by_name));
+        }
+    }
     /**
      * Method is used to get the type of posted product     *
      *
@@ -172,6 +193,7 @@ public class FanCustomizationFragment extends BaseFragment implements SearchView
      */
     public String getSelectedType() {
         String type = DesignType.stickers.getType();
+
         if (tabLayout.getSelectedTabPosition() == 0) {
             type = DesignType.stickers.getType();
 

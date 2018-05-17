@@ -63,6 +63,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
+            android:textAlignment="textStart"
+            android:textDirection="locale"
             android:textSize="@dimen/text_size_contact_us"
             android:id="@+id/tvContactUsContactNum"
             android:layout_marginLeft="@dimen/dp_2"

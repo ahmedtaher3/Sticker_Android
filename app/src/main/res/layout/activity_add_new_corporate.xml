@@ -73,6 +73,7 @@
                     android:layout_marginTop="@dimen/add_corp_tv_margin_top">
 
                     <android.support.design.widget.TextInputEditText
+                        android:textAlignment="viewStart"
                         android:id="@+id/act_add_new_corp_edt_name"
                         style="@style/EditText"
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
@@ -90,6 +91,7 @@
                     android:layout_marginTop="@dimen/add_corp_tv_margin_top">
 
                     <android.support.design.widget.TextInputEditText
+                        android:textAlignment="viewStart"
                         android:id="@+id/act_add_new_ad_corp_edt_expire_date"
                         style="@style/EditText"
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
@@ -166,6 +168,7 @@
                     android:textSize="@dimen/text_size_contact_us" />
 
                 <EditText
+                    android:textAlignment="viewStart"
                     android:id="@+id/edtDescription"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
                     android:layout_width="match_parent"

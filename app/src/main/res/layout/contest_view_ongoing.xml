@@ -70,15 +70,16 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <CheckBox
+                    android:layout_toStartOf="@+id/tv_name"
+                    android:layout_toLeftOf="@+id/tv_name"
                     android:layout_centerInParent="true"
                     android:layout_alignParentStart="true"
                     android:id="@+id/checkboxLike"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:button="@drawable/like_selector"
                     android:padding="@dimen/padding_like_8dp"

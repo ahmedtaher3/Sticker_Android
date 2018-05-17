@@ -32,8 +32,8 @@ import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -68,6 +68,7 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
+    private EndlessRecyclerViewScrollListener scrollListener2;
 
     @Override
     public void onAttach(Context context) {
@@ -146,6 +147,7 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         mCurrentPage = 0;
         mGifList.clear();
         mAdapter.setData(mGifList);
+        scrollListener2.resetState();
         getDesignFromServer(false, keyword);
     }
 
@@ -202,6 +204,20 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     public void setListenerOnViews() {
 
+        scrollListener2 = new EndlessRecyclerViewScrollListener(mLinearLayoutManager) {
+            @Override
+            public int getFooterViewType(int defaultNoFooterViewType) {
+
+                return 0;
+            }
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                getDesignFromServer(false, "");
+                // mAdapter.addLoader();
+            }
+        };
+/*
         rcDesignList.addOnScrollListener(new PaginationScrollListener(mLinearLayoutManager) {
             @Override
             protected void loadMoreItems() {
@@ -232,7 +248,7 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             public boolean isLoading() {
                 return mAdapter.isLoaderVisible;
             }
-        });
+        });*/
     }
 
     public void addNewGIF(Product gif){
@@ -448,6 +464,7 @@ public class GIFFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(mHostActivity)) {
+            scrollListener2.resetState();
             getDesignFromServer(true, "");
         } else {
             swipeRefresh.setRefreshing(false);

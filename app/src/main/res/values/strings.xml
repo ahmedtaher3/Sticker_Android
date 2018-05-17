@@ -292,5 +292,8 @@
     <string name="txt_choose_sticker">Choose Sticker</string>
     <string name="text_choose_filter">Choose Filter</string>
     <string name="text_choose_emoji">Choose Emoji</string>
+    <string name="txt_saving_image">Saving image</string>
+    <string name="txt_winner">Winner</string>
+    <string name="txt_looser">Loose</string>
 
 </resources>

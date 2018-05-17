@@ -632,7 +632,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog = getLoadingDialog(mContext, "Saving image", false);
+            dialog = getLoadingDialog(mContext, getString(R.string.txt_saving_image), false);
             dialog.show();
         }
 

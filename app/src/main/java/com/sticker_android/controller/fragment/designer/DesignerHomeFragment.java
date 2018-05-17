@@ -2,6 +2,7 @@ package com.sticker_android.controller.fragment.designer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,8 +26,6 @@ import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.designer.addnew.AddNewDesignActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
-import com.sticker_android.controller.fragment.corporate.ad.AdsFragment;
-import com.sticker_android.controller.fragment.corporate.product.ProductsFragment;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
@@ -119,7 +118,7 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(item != null){
+                if (item != null) {
                     item.collapseActionView();
                 }
                 switch (tab.getPosition()) {
@@ -155,7 +154,7 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onPause() {
         super.onPause();
-        if(item != null && searchView.getQuery().length() != 0){
+        if (item != null && searchView.getQuery().length() != 0) {
             item.collapseActionView();
         }
     }
@@ -181,17 +180,15 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
         }
     }
 
-    public void updateAttachedVisibleFragment(){
+    public void updateAttachedVisibleFragment() {
         Fragment fragment = mFragmentManager.findFragmentById(R.id.rlFragmentContainer);
 
-        if(fragment != null && fragment instanceof StickerFragment){
-            ((StickerFragment)fragment).updateTheFragment();
-        }
-        else if(fragment != null && fragment instanceof GIFFragment){
-            ((GIFFragment)fragment).updateTheFragment();
-        }
-        else if(fragment != null && fragment instanceof EmojiFragment){
-            ((EmojiFragment)fragment).updateTheFragment();
+        if (fragment != null && fragment instanceof StickerFragment) {
+            ((StickerFragment) fragment).updateTheFragment();
+        } else if (fragment != null && fragment instanceof GIFFragment) {
+            ((GIFFragment) fragment).updateTheFragment();
+        } else if (fragment != null && fragment instanceof EmojiFragment) {
+            ((EmojiFragment) fragment).updateTheFragment();
         }
 
     }
@@ -223,14 +220,12 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
 
     private void searchResult(String query) {
         Fragment fragment = mFragmentManager.findFragmentById(R.id.rlFragmentContainer);
-        if(fragment != null && fragment instanceof StickerFragment){
-            ((StickerFragment)fragment).searchByKeyword(query);
-        }
-        else if(fragment != null && fragment instanceof GIFFragment){
-            ((GIFFragment)fragment).searchByKeyword(query);
-        }
-        else if(fragment != null && fragment instanceof EmojiFragment){
-            ((EmojiFragment)fragment).searchByKeyword(query);
+        if (fragment != null && fragment instanceof StickerFragment) {
+            ((StickerFragment) fragment).searchByKeyword(query);
+        } else if (fragment != null && fragment instanceof GIFFragment) {
+            ((GIFFragment) fragment).searchByKeyword(query);
+        } else if (fragment != null && fragment instanceof EmojiFragment) {
+            ((EmojiFragment) fragment).searchByKeyword(query);
         }
     }
 
@@ -253,84 +248,73 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == ADD_NEW_DESIGN && resultCode == Activity.RESULT_OK && data != null){
+        if (requestCode == ADD_NEW_DESIGN && resultCode == Activity.RESULT_OK && data != null) {
 
             final Product product = data.getParcelableExtra(AppConstant.PRODUCT);
-            if(tabLayout.getSelectedTabPosition() == 0
-                    && product.getType().equalsIgnoreCase(DesignType.stickers.getType())){
+            if (tabLayout.getSelectedTabPosition() == 0
+                    && product.getType().equalsIgnoreCase(DesignType.stickers.getType())) {
 
                 Fragment fragment = mFragmentManager.findFragmentById(R.id.rlFragmentContainer);
-                if(fragment != null && fragment instanceof StickerFragment){
-                    ((StickerFragment)fragment).addNewSticker((Product) data.getParcelableExtra(AppConstant.PRODUCT));
+                if (fragment != null && fragment instanceof StickerFragment) {
+                    ((StickerFragment) fragment).addNewSticker((Product) data.getParcelableExtra(AppConstant.PRODUCT));
                 }
-            }
-            else if(tabLayout.getSelectedTabPosition() == 1
-                    && product.getType().equalsIgnoreCase(DesignType.gif.getType())){
+            } else if (tabLayout.getSelectedTabPosition() == 1
+                    && product.getType().equalsIgnoreCase(DesignType.gif.getType())) {
                 Fragment fragment = mFragmentManager.findFragmentById(R.id.rlFragmentContainer);
-                if(fragment != null && fragment instanceof GIFFragment){
-                    ((GIFFragment)fragment).addNewGIF((Product) data.getParcelableExtra(AppConstant.PRODUCT));
+                if (fragment != null && fragment instanceof GIFFragment) {
+                    ((GIFFragment) fragment).addNewGIF((Product) data.getParcelableExtra(AppConstant.PRODUCT));
                 }
-            }
-            else if(tabLayout.getSelectedTabPosition() == 2
-                    && product.getType().equalsIgnoreCase(DesignType.emoji.getType())){
+            } else if (tabLayout.getSelectedTabPosition() == 2
+                    && product.getType().equalsIgnoreCase(DesignType.emoji.getType())) {
                 Fragment fragment = mFragmentManager.findFragmentById(R.id.rlFragmentContainer);
-                if(fragment != null && fragment instanceof EmojiFragment){
-                    ((EmojiFragment)fragment).addNewEmoji((Product) data.getParcelableExtra(AppConstant.PRODUCT));
+                if (fragment != null && fragment instanceof EmojiFragment) {
+                    ((EmojiFragment) fragment).addNewEmoji((Product) data.getParcelableExtra(AppConstant.PRODUCT));
                 }
-            }
-            else {
+            } else {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        if(product.getType().equalsIgnoreCase(DesignType.stickers.getType())){
+                        if (product.getType().equalsIgnoreCase(DesignType.stickers.getType())) {
                             tabLayout.getTabAt(0).select();
-                        }
-                        else if(product.getType().equalsIgnoreCase(DesignType.gif.getType())){
+                        } else if (product.getType().equalsIgnoreCase(DesignType.gif.getType())) {
                             tabLayout.getTabAt(1).select();
-                        }
-                        else if(product.getType().equalsIgnoreCase(DesignType.emoji.getType())){
+                        } else if (product.getType().equalsIgnoreCase(DesignType.emoji.getType())) {
                             tabLayout.getTabAt(2).select();
                         }
                     }
                 });
             }
-        }
-        else if(requestCode == EDIT_DESIGN && resultCode == Activity.RESULT_OK && data != null){
+        } else if (requestCode == EDIT_DESIGN && resultCode == Activity.RESULT_OK && data != null) {
             final Product product = data.getParcelableExtra(AppConstant.PRODUCT);
 
-            if(tabLayout.getSelectedTabPosition() == 0
-                    && product.getType().equalsIgnoreCase(DesignType.stickers.getType())){
+            if (tabLayout.getSelectedTabPosition() == 0
+                    && product.getType().equalsIgnoreCase(DesignType.stickers.getType())) {
 
                 Fragment fragment = mFragmentManager.findFragmentById(R.id.rlFragmentContainer);
-                if(fragment != null && fragment instanceof StickerFragment){
-                    ((StickerFragment)fragment).editSticker((Product) data.getParcelableExtra(AppConstant.PRODUCT));
+                if (fragment != null && fragment instanceof StickerFragment) {
+                    ((StickerFragment) fragment).editSticker((Product) data.getParcelableExtra(AppConstant.PRODUCT));
                 }
-            }
-            else if(tabLayout.getSelectedTabPosition() == 1
-                    && product.getType().equalsIgnoreCase(DesignType.gif.getType())){
+            } else if (tabLayout.getSelectedTabPosition() == 1
+                    && product.getType().equalsIgnoreCase(DesignType.gif.getType())) {
                 Fragment fragment = mFragmentManager.findFragmentById(R.id.rlFragmentContainer);
-                if(fragment != null && fragment instanceof GIFFragment){
-                    ((GIFFragment)fragment).editGif((Product) data.getParcelableExtra(AppConstant.PRODUCT));
+                if (fragment != null && fragment instanceof GIFFragment) {
+                    ((GIFFragment) fragment).editGif((Product) data.getParcelableExtra(AppConstant.PRODUCT));
                 }
-            }
-            else if(tabLayout.getSelectedTabPosition() == 2
-                    && product.getType().equalsIgnoreCase(DesignType.emoji.getType())){
+            } else if (tabLayout.getSelectedTabPosition() == 2
+                    && product.getType().equalsIgnoreCase(DesignType.emoji.getType())) {
                 Fragment fragment = mFragmentManager.findFragmentById(R.id.rlFragmentContainer);
-                if(fragment != null && fragment instanceof EmojiFragment){
-                    ((EmojiFragment)fragment).editEmoji((Product) data.getParcelableExtra(AppConstant.PRODUCT));
+                if (fragment != null && fragment instanceof EmojiFragment) {
+                    ((EmojiFragment) fragment).editEmoji((Product) data.getParcelableExtra(AppConstant.PRODUCT));
                 }
-            }
-            else {
+            } else {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        if(product.getType().equalsIgnoreCase(DesignType.stickers.getType())){
+                        if (product.getType().equalsIgnoreCase(DesignType.stickers.getType())) {
                             tabLayout.getTabAt(0).select();
-                        }
-                        else if(product.getType().equalsIgnoreCase(DesignType.gif.getType())){
+                        } else if (product.getType().equalsIgnoreCase(DesignType.gif.getType())) {
                             tabLayout.getTabAt(1).select();
-                        }
-                        else if(product.getType().equalsIgnoreCase(DesignType.emoji.getType())){
+                        } else if (product.getType().equalsIgnoreCase(DesignType.emoji.getType())) {
                             tabLayout.getTabAt(2).select();
                         }
                     }
@@ -347,11 +331,32 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
         searchView = (SearchView) MenuItemCompat.getActionView(item);
         setSearchIcons(searchView);
         searchView.setMaxWidth(Integer.MAX_VALUE);
+        Configuration config = getResources().getConfiguration();
+        final boolean isLeftToRight;
+        isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
+        if (!isLeftToRight) {
+            View xIcon = ((ViewGroup) searchView.getChildAt(0)).getChildAt(2);
+            xIcon.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+
+        }
+
         searchView.setOnQueryTextListener(this);
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setQueryHint(getString(R.string.search) + " " + Utils.capitlizeText(getSelectedType()));
+
+                String type = DesignType.stickers.getType();
+                if (tabLayout.getSelectedTabPosition() == 0) {
+                    searchView.setQueryHint(getString(R.string.txt_search_stickers_by_name));
+
+                } else if (tabLayout.getSelectedTabPosition() == 1) {
+                    searchView.setQueryHint(getString(R.string.txt_search_gif_by_name));
+
+                } else if (tabLayout.getSelectedTabPosition() == 2) {
+                    searchView.setQueryHint(getString(R.string.txt_search_emoji_by_name));
+
+                }
+
             }
         });
 
@@ -412,7 +417,7 @@ public class DesignerHomeFragment extends BaseFragment implements View.OnClickLi
     }
 
     public void closeSearch() {
-        if(item!=null)
+        if (item != null)
             MenuItemCompat.collapseActionView(item);
     }
 }
