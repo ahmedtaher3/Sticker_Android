@@ -9,8 +9,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
@@ -98,6 +96,7 @@ public class GridViewAdapter extends BaseAdapter {
         public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
             viewHolder.progressImage.setVisibility(View.GONE);
 
+            e.printStackTrace();
             return false;
         }
 

@@ -10,7 +10,9 @@ public class ApiConstant {
     // public static final String BASE_API_URL = "http://18.188.13.98/web/index.php/mobile/";
     public static final String BASE_API_URL = "http://18.218.104.196/v3/index.php/mobile/";
    public static final String IMAGE_URl = " http://18.218.104.196";
-
+/* public static final String BASE_API_URL = "http://sportwidget.app/v3/index.php/mobile/";
+   public static final String IMAGE_URl = " http://sportwidget.app";
+*/
   //  public static final String IMAGE_URl = "http://18.188.13.98/v3/";
 
     public static final String API_LOGIN_URL = "userLogin/";
