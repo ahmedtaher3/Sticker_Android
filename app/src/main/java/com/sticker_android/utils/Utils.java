@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
@@ -35,6 +36,7 @@ import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.utils.helper.PermissionManager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -530,4 +532,20 @@ public class Utils {
     public static void setSystemLocale(Configuration config, Locale locale) {
         config.setLocale(locale);
     }
+
+
+    public static Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public static String getRealPathFromURI(Context inContext,Uri uri) {
+        Cursor cursor = inContext.getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
+
 }

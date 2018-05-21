@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +57,9 @@ public class FanSaveCustomization extends BaseFragment implements SwipeRefreshLa
     private TextView txtNoDataFoundTitle, txtNoDataFoundContent;
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
+    private RecyclerView recMyCustomization;
+    private ItemListAdaptor itemListAdaptor;
+    private LinearLayoutManager mLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,9 +71,18 @@ public class FanSaveCustomization extends BaseFragment implements SwipeRefreshLa
         PAGE_LIMIT = getResources().getInteger(R.integer.designed_item_page_limit);
         setViewReferences(view);
         setViewListeners();
-        setAdaptor();
+        recyclerViewLayout();
+        //  setAdaptor();
+        setRecAdaptor();
         getDownloadListApi(false);
         return view;
+    }
+
+    private void setRecAdaptor() {
+
+        itemListAdaptor = new ItemListAdaptor(getActivity());
+        recMyCustomization.setAdapter(itemListAdaptor);
+
     }
 
     private void init() {
@@ -96,6 +110,7 @@ public class FanSaveCustomization extends BaseFragment implements SwipeRefreshLa
         txtNoDataFoundContent = (TextView) view.findViewById(R.id.txtNoDataFoundContent);
         rlConnectionContainer = (RelativeLayout) view.findViewById(R.id.rlConnectionContainer);
         llLoaderView = (LinearLayout) view.findViewById(R.id.llLoader);
+        recMyCustomization = (RecyclerView) view.findViewById(R.id.recMyCustomization);
 
     }
 
@@ -130,8 +145,8 @@ public class FanSaveCustomization extends BaseFragment implements SwipeRefreshLa
                 }
                 if (apiResponse.status) {
                     if (apiResponse.paylpad.fanFilterArrayList != null && apiResponse.paylpad.downloadArrayList.size() != 0) {
-
-                        gridViewAdapter.setData(apiResponse.paylpad.downloadArrayList);
+                        itemListAdaptor.setData(apiResponse.paylpad.downloadArrayList);
+                        // gridViewAdapter.setData(apiResponse.paylpad.downloadArrayList);
 
                         AppLogger.debug(FanSaveCustomization.class.getSimpleName(), "inside not null");
                     } else {
@@ -300,6 +315,127 @@ public class FanSaveCustomization extends BaseFragment implements SwipeRefreshLa
             }
         }
 
+    }
+
+    /**
+     * Method is used to set the layout on recycler view
+     */
+    private void recyclerViewLayout() {
+
+        recMyCustomization.hasFixedSize();
+
+        mLayoutManager = new LinearLayoutManager(getContext());
+
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        recMyCustomization.setLayoutManager(mLayoutManager);
+    }
+/*Recycler view*/
+
+
+    public class ItemListAdaptor extends RecyclerView.Adapter<ItemListAdaptor.MyViewHolder> {
+
+
+        private Context context;
+        private LayoutInflater mLayoutInflater;
+        MyViewHolder viewHolder;
+        private List<Download> imageLists = new ArrayList<>();
+
+
+        ItemListAdaptor(Context context) {
+            this.context = context;
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            public ImageView image, imvOfCustomization, imvProductImage;
+
+            public ProgressBar progressImage;
+            public RequestListener requestListener;
+
+
+            public MyViewHolder(View view) {
+                super(view);
+                image = (ImageView) view.findViewById(R.id.imvOfCustomization);
+                progressImage = (ProgressBar) view.findViewById(R.id.pgrImage);
+                imvProductImage = (ImageView) view.findViewById(R.id.imvProductImage);
+            }
+        }
+
+
+        public void setData(List<Download> download) {
+            if (download != null) {
+                imageLists.clear();
+                imageLists = download;
+                AppLogger.debug(FanSaveCustomization.class.getSimpleName(), "FanSaveCustomization called" + download.size());
+                notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_view_my_customization, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
+
+        class Request implements RequestListener {
+
+            private final MyViewHolder viewHolder;
+
+            public Request(MyViewHolder viewHolder) {
+                this.viewHolder = viewHolder;
+            }
+
+            @Override
+            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+                viewHolder.progressImage.setVisibility(View.GONE);
+                viewHolder.imvProductImage.setVisibility(View.GONE);
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+                viewHolder.progressImage.setVisibility(View.GONE);
+                viewHolder.imvProductImage.setVisibility(View.GONE);
+
+                return false;
+            }
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, final int position) {
+            AppLogger.debug(FanSaveCustomization.class.getSimpleName(), "FanSaveCustomization called");
+            final Download fanFilter = imageLists.get(position);
+            holder.progressImage.setVisibility(View.VISIBLE);
+            if (fanFilter.imageUrl != null && !fanFilter.imageUrl.isEmpty()) {
+                Glide.with(context)
+                        .load(fanFilter.imageUrl)
+                        .listener(new Request(holder))
+                        .into(holder.image);
+                holder.image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), FanDownloadedImageActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("image", imageLists.get(position));
+                        intent.putExtra("image", imageLists.get(position).imageUrl);
+                        intent.putExtras(bundle);
+                        startActivityForResult(intent, 444);
+                        getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                                R.anim.activity_animation_exit);
+
+
+                    }
+                });
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return imageLists.size();
+        }
     }
 
 }

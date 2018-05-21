@@ -116,7 +116,6 @@ public abstract class ApiCall implements Callback<ApiResponse> {
                 mActivity.startActivity(logoutIntent);
                 mActivity.overridePendingTransition(R.anim.activity_animation_enter, R.anim.activity_animation_exit);
 
-
             }
         });
         alertDialog.show();

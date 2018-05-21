@@ -24,6 +24,7 @@ import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
@@ -217,6 +218,7 @@ public class FanContestFragment extends BaseFragment implements SwipeRefreshLayo
         rcDesignList.setVisibility(View.VISIBLE);
         if (mStickerList != null) {
             ArrayList<FanContest> tempList = mAdapter.filter(trim);
+            AppLogger.debug(ContestListAdaptor.class.getSimpleName(),"ContestListAdaptor"+tempList.size());
             if (tempList != null) {
                 if (tempList.size() == 0) {
                     llNoDataFound.setVisibility(View.VISIBLE);
@@ -229,7 +231,6 @@ public class FanContestFragment extends BaseFragment implements SwipeRefreshLayo
                 llNoDataFound.setVisibility(View.VISIBLE);
                 txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
                 showNoDataFound();
-
                 rcDesignList.setVisibility(View.GONE);
             }
 

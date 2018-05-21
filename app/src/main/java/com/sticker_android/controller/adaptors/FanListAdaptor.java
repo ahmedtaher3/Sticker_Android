@@ -4,6 +4,9 @@ package com.sticker_android.controller.adaptors;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -23,6 +26,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.fan.home.fandownloadmage.FanDownloadedImageActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.DesignerActionListener;
@@ -30,10 +34,13 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
+import com.sticker_android.utils.DownloadImage;
+import com.sticker_android.utils.FileUtil;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -207,8 +214,8 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 public void onClick(View view) {
                     int position = vh.getAdapterPosition();
                     Product product = mItems.get(position);
-                  if(productItemClickListener!=null)
-                    productItemClickListener.onProductItemClick(product);
+                    if (productItemClickListener != null)
+                        productItemClickListener.onProductItemClick(product);
                 }
             });
             likeListener(vh);
@@ -231,7 +238,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 String shareSub = "Share data";
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                context.startActivity(Intent.createChooser(sharingIntent, "Share using"));
+                context.startActivity(Intent.createChooser(sharingIntent, context.getString(R.string.txt_share) + " :" + mUserdata.getEmail()));
                 shareApi(product, 1, position);
 
             }
@@ -246,9 +253,32 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 int position = vh.getAdapterPosition();
                 Product product = mItems.get(position);
                 downloadApi(product, 1, position);
+                //  if(product.statics.downloadCount==0)
+                saveToLocal(product);
             }
         });
 
+
+    }
+
+    private void saveToLocal(Product product) {
+        if (Utils.isConnectedToInternet(context)) {
+            new DownloadImage(new DownloadImage.ISaveImageToLocal() {
+                @Override
+                public void imageResult(Bitmap result) {
+                    Uri tempUri = Utils.getImageUri(context, result);
+
+                    // CALL THIS METHOD TO GET THE ACTUAL PATH
+                    File finalFile = new File(Utils.getRealPathFromURI(context, tempUri));
+                    if (finalFile != null) {
+                        FileUtil.albumUpdate(context, finalFile.getAbsolutePath());
+                        MediaScannerConnection.scanFile(context, new String[] { finalFile.getPath() }, new String[] { "image/jpeg" }, null);
+
+                        Utils.showToast(context, "Image Saved Successfully.");
+                    } AppLogger.debug(FanDownloadedImageActivity.class.getSimpleName(), "called here" + finalFile);
+                }
+            }).execute(product.getImagePath());
+        }
     }
 
     private void likeListener(final ViewHolder vh) {
@@ -324,21 +354,21 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             if (productItem.getImagePath() != null && !productItem.getImagePath().isEmpty()) {
                 itemHolder.pbLoader.setVisibility(View.VISIBLE);
-                AppLogger.debug(TAG,"loading ...");
+                AppLogger.debug(TAG, "loading ...");
                 Glide.with(context)
                         .load(productItem.getImagePath())
                         .listener(new RequestListener<String, GlideDrawable>() {
                             @Override
                             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                                 itemHolder.pbLoader.setVisibility(View.GONE);
-                                AppLogger.debug(TAG,"loading ... on Exception");
+                                AppLogger.debug(TAG, "loading ... on Exception");
                                 return false;
                             }
 
                             @Override
                             public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                                 itemHolder.pbLoader.setVisibility(View.GONE);
-                                AppLogger.debug(TAG,"loading ... ready");
+                                AppLogger.debug(TAG, "loading ... ready");
                                 return false;
                             }
                         })

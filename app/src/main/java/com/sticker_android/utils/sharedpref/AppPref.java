@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
+import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Category;
 import com.sticker_android.model.data.CategoryDataWrapper;
@@ -164,6 +165,7 @@ public class AppPref {
         saveUserObject(new User());
         setLoginFlag(false);
         saveNewMessagesCount(0);
+        LocalNotification.clearNotifications(context);
     }
 
 }

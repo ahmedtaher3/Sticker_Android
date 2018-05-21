@@ -2,6 +2,7 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:viewportWidth="24"
     android:viewportHeight="24"
+    android:autoMirrored="true"
     android:width="@dimen/home_icon_color_size"
     android:height="@dimen/home_icon_color_size">
     <path

@@ -5,41 +5,117 @@
     android:id="@+id/activity_fan_download_image"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="MissingPrefix">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
-    <RelativeLayout
-        android:layout_margin="@dimen/dimen_image_my_cus"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="425dp"
-        android:layout_gravity="center">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.CardView
-            app:cardBackgroundColor="@android:color/white"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
-            app:cardCornerRadius="7dp"
-            app:cardElevation="0dp">
+            android:layout_marginBottom="5dp"
+            android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/pgrImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-
-            <ImageView
-                android:id="@+id/image"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop" />
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dimen_image_my_cus">
 
-        </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="7dp"
+                    app:cardElevation="0dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ProgressBar
+                            android:id="@+id/pgrImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true" />
+
+                        <ImageView
+                            android:id="@+id/image"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:scaleType="center" />
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
 
 
+            </RelativeLayout>
 
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="@dimen/filter_action_top_margin"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/btnDelete"
+                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/filter_btn_size"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/fan_btn_background"
+                        android:elevation="@dimen/dp_5"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/filter_btn_left_right_margin"
+                        android:paddingRight="@dimen/filter_btn_left_right_margin"
+                        android:text="@string/txt_delete"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_size_contact_us" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/btnSave"
+                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/filter_btn_size"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/fan_btn_background"
+                        android:elevation="@dimen/dp_5"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/filter_btn_left_right_margin"
+                        android:paddingRight="@dimen/filter_btn_left_right_margin"
+                        android:text="@string/save"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_size_contact_us" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

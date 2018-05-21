@@ -3,6 +3,7 @@ package com.sticker_android.controller.adaptors;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -22,6 +23,7 @@ import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.fan.home.contest.FanContestListActivity;
 import com.sticker_android.model.contest.FanContest;
+import com.sticker_android.utils.AppLogger;
 
 import java.util.ArrayList;
 
@@ -53,8 +55,18 @@ public class ContestListAdaptor extends RecyclerView.Adapter<ContestListAdaptor.
         Bitmap blurredBitmap = blur(bitmap,context);
         holder.imvBackground.setImageBitmap(blurredBitmap);
 */
-     //   holder.cardView.setBackgroundResource(R.drawable.contest_defaul);
-        holder.imvBackground.setImageResource(R.drawable.contest_hdpi);
+        //   holder.cardView.setBackgroundResource(R.drawable.contest_defaul);
+        Configuration config = context.getResources().getConfiguration();
+        final boolean isLeftToRight;
+        isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
+        if (isLeftToRight) {
+            holder.imvBackground.setImageResource(R.drawable.contest_hdpi);
+        }else{
+            holder.imvBackground.setImageResource(R.drawable.contest_ldrtl_hdpi);
+
+        }
+
+        //   holder.imvBackground.setImageResource(R.drawable.contest_hdpi);
         holder.imvBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,10 +102,10 @@ public class ContestListAdaptor extends RecyclerView.Adapter<ContestListAdaptor.
 
         public ContestViewHolder(View view) {
             super(view);
-            tvDescription   =   (TextView) view.findViewById(R.id.tv_content_description);
-            imbNext         =   (ImageButton) view.findViewById(R.id.imbNext);
-          //  cardView        =   (CardView) view.findViewById(R.id.card_view);
-            imvBackground   =   (ImageView)view.findViewById(R.id.imvBackground);
+            tvDescription = (TextView) view.findViewById(R.id.tv_content_description);
+            imbNext = (ImageButton) view.findViewById(R.id.imbNext);
+            //  cardView        =   (CardView) view.findViewById(R.id.card_view);
+            imvBackground = (ImageView) view.findViewById(R.id.imvBackground);
         }
     }
 
@@ -134,8 +146,10 @@ public class ContestListAdaptor extends RecyclerView.Adapter<ContestListAdaptor.
 
         return mFanList;
     }
+
     private static final float BLUR_RADIUS = 12f;
-    public  static Bitmap blur(Bitmap image,Context context) {
+
+    public static Bitmap blur(Bitmap image, Context context) {
         if (null == image) return null;
         Bitmap outputBitmap = Bitmap.createBitmap(image);
         final RenderScript renderScript = RenderScript.create(context);

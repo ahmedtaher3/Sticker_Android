@@ -651,8 +651,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 rlPlaceHolderClick.setVisibility(View.VISIBLE);
                 makeSaveButtonEnable(false);
                 makeFilterOptionEnable(false);
-                Toast.makeText(mHostActivity, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
-                /*if (rlFilterOptionContainer.getVisibility() == View.INVISIBLE) {
+                  /*if (rlFilterOptionContainer.getVisibility() == View.INVISIBLE) {
                     mHostActivity.onBackPressed();
                 }*/
             } else {
@@ -727,6 +726,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
+                    Toast.makeText(mHostActivity, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
                     if (rlFilterOptionContainer.getVisibility() == View.INVISIBLE) {
                         mHostActivity.onBackPressed();
                     }

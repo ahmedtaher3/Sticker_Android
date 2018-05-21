@@ -322,7 +322,9 @@ public class FanDetailsActivity extends AppBaseActivity {
                 String shareSub = "Share data";
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(sharingIntent, "Share using"));
+                startActivity(Intent.createChooser(sharingIntent, getString(R.string.txt_share) + " :" + userdata.getEmail()));
+
+
                 shareApi(1);
             }
         });
@@ -382,7 +384,7 @@ public class FanDetailsActivity extends AppBaseActivity {
             public void onSuccess(ApiResponse apiResponse) {
                 if (apiResponse.status) {
                     mProduct.statics.downloadCount = apiResponse.paylpad.statics.downloadCount;
-                //    mProduct.statics.downloadCount++;
+                    //    mProduct.statics.downloadCount++;
                     tvDownloads.setText("" + mProduct.statics.downloadCount);
                 }
             }

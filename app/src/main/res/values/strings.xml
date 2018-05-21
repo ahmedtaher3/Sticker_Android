@@ -295,5 +295,6 @@
     <string name="txt_saving_image">Saving image</string>
     <string name="txt_winner">Winner</string>
     <string name="txt_looser">Loose</string>
+    <string name="txt_share">Hi there, This is SportWidget app. This information shared with you by</string>
 
 </resources>

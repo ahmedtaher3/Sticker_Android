@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -966,7 +967,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
-            public ImageView imvOfAds;
+            public ImageView imvOfAds,imvBackground;
             public TextView tvProductTitle, tvStatus, tvDesciption, tvTime, tvDownloads;
             public CheckBox checkboxLike, checkboxShare;
             public ImageButton imvBtnEditRemove;
@@ -994,6 +995,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 rlProduct = (RelativeLayout) view.findViewById(R.id.rlProduct);
                 rlContest = (RelativeLayout) view.findViewById(R.id.rlContest);
                 rlContestMain = (RelativeLayout) view.findViewById(R.id.rlContestMain);
+                imvBackground =(ImageView)view.findViewById(R.id.imvBackground);
             }
         }
 
@@ -1253,6 +1255,16 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     itemHolder.rlProduct.setVisibility(View.GONE);
                     itemHolder.rlContest.setVisibility(View.VISIBLE);
                     itemHolder.contestname.setText(productItem.getProductname());
+
+                    Configuration config = context.getResources().getConfiguration();
+                    final boolean isLeftToRight;
+                    isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
+                    if (isLeftToRight) {
+                        itemHolder.imvBackground.setImageResource(R.drawable.contest_hdpi);
+                    }else{
+                        itemHolder.imvBackground.setImageResource(R.drawable.contest_ldrtl_hdpi);
+
+                    }
                 }
             }
         }

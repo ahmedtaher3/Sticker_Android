@@ -199,7 +199,7 @@
     <string name="by_championship">البحث بالبطولة</string>
     <string name="txt_all">الجميع</string>
     <string name="txt_apply">تقدم</string>
-    <string name="txt_filter">فتلر</string>
+    <string name="txt_filter">فلتر</string>
     <string name="txt_no_downloaded_stickers_found">لم يتم تحميل اي استكرات</string>
     <string name="txt_no_downloaded_emoji_found">لم يتم تحميل اي ايموجي</string>
     <string name="txt_no_downloaded_gif_found">لم يتم تحميل اي صور متحركة</string>
@@ -286,7 +286,7 @@
     <string name="txt_user_comment">تعليق المستخدم</string>
     <string name="txt_please_select_terms_condition">يرجى تحديد الشروط والأحكام</string>
     <string name="txt_no_image_found">لا توجد صورة</string>
-    <string name="txt_featured">متميز</string>
+    <string name="txt_featured">اعلان</string>
     <string name="change_language_arabic">تغيير اللغة</string>
     <string name="txt_choose_sticker">اختر استكر </string>
     <string name="text_choose_filter">اختر فلتر</string>
@@ -294,6 +294,7 @@
     <string name="txt_saving_image">حفظ الصورة</string>
     <string name="txt_winner">الفائز</string>
     <string name="txt_looser">واسع</string>
+    <string name="txt_share">Hi there, This is SportWidget app. This information shared with you by</string>
 
     <!---->
 
