@@ -1,7 +1,10 @@
 package com.sticker_android.controller.adaptors;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +19,8 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
+import com.sticker_android.controller.activities.common.contestDetails.ContestCompletedDetailsActivity;
 import com.sticker_android.model.contest.ContestCompleted;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
@@ -84,6 +89,12 @@ public class ContestCompletedListAdapter extends RecyclerView.Adapter<ContestCom
         else
             holder.tvFeatured.setVisibility(View.GONE);
 
+        holder.cardItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToDetails(listItem);
+            }
+        });
     }
 
     @Override
@@ -120,6 +131,23 @@ public class ContestCompletedListAdapter extends RecyclerView.Adapter<ContestCom
         }
 
 
+    }
+
+    private void moveToDetails(ContestCompleted product) {
+        Bundle bundle = new Bundle();
+
+        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
+        bundle.putString("userContestId",""+ product.contestId);
+
+        Intent intent = new Intent(context, ContestCompletedDetailsActivity.class);
+        intent.putExtra("contestType", "Completed");
+        intent.putExtras(bundle);
+
+
+        ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
+
+        ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
     }
 
 }

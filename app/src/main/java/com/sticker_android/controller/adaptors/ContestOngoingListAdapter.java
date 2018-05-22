@@ -18,7 +18,10 @@ import java.util.ArrayList;
 
 */
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -34,7 +37,12 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
+import com.sticker_android.constant.AppConstant;
+import com.sticker_android.controller.activities.common.contestDetails.ContestDetailsActivity;
+import com.sticker_android.controller.activities.common.contestlist.ContestAllItemListActivity;
 import com.sticker_android.model.contest.OngoingContest;
+import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 
@@ -76,7 +84,7 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
             holder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
         }
-        holder.checkboxLike.setText(""+listItem.productList.statics.likeCount);
+        holder.checkboxLike.setText("" + listItem.productList.statics.likeCount);
         if (listItem.productList.getImagePath() != null && !listItem.productList.getImagePath().isEmpty())
             Glide.with(context)
                     .load(listItem.productList.getImagePath()).fitCenter()
@@ -103,6 +111,13 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
         else
             holder.tvFeatured.setVisibility(View.GONE);
 
+
+        holder.cardItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToDetails(listItem.productList, listItem);
+            }
+        });
     }
 
     @Override
@@ -141,5 +156,20 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
         }
 
 
+    }
+
+
+    private void moveToDetails(Product product, OngoingContest listItem) {
+        Bundle bundle = new Bundle();
+
+        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
+        bundle.putString("userContestId",""+ listItem.contestId);
+        Intent intent = new Intent(context, ContestDetailsActivity.class);
+        intent.putExtras(bundle);
+        AppLogger.debug(ContestAllItemListActivity.class.getSimpleName(),"userContestId"+listItem.userContestId);
+        ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
+
+        ((Activity) context).overridePendingTransition(R.anim.activity_animation_enter,
+                R.anim.activity_animation_exit);
     }
 }

@@ -17,7 +17,7 @@ public interface StickerService {
 
     @FormUrlEncoded
     @POST(ApiConstant.API_LOGIN_URL)
-    public Call<ApiResponse> userLogin(@Field("language_id") int languageId,@Field("email") String email_id, @Field("password") String password, @Field("device_type") String deviceType
+    public Call<ApiResponse> userLogin(@Field("language_id") int languageId, @Field("email") String email_id, @Field("password") String password, @Field("device_type") String deviceType
             , @Field("device_token") String deviceToken,
                                        @Field("device_udid") String deviceId, @Field("user_type") String accountType);
 
@@ -208,6 +208,12 @@ public interface StickerService {
     @FormUrlEncoded
     @POST(ApiConstant.API_DELETE_CUSTOMIZED_IMAGE)
     public Call<ApiResponse> deleteCustomizeImage(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
-                                                @Field("user_id") String userId, @Field("user_my_id") String userMyId);
+                                                  @Field("user_id") String userId, @Field("user_my_id") String userMyId);
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_GET_USER_PRODUCT_CONTEST_LIST)
+    public Call<ApiResponse> getUserContestProductList(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                                       @Field("user_id") String userId, @Field("contest_id") String contestId, @Field("key_name") String name, @Field("index") int index,
+                                                       @Field("limit") int limit);
 
 }

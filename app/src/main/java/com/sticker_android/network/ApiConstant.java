@@ -8,8 +8,8 @@ package com.sticker_android.network;
 public class ApiConstant {
     // public static final String BASE_API_URL = "http://localhost/vivek/index.php/";
     // public static final String BASE_API_URL = "http://18.188.13.98/web/index.php/mobile/";
-    public static final String BASE_API_URL = "http://18.218.104.196/v3/index.php/mobile/";
-   public static final String IMAGE_URl = " http://18.218.104.196";
+    public static final String BASE_API_URL = "http://sportwidget.app/v3/index.php/mobile/";
+   public static final String IMAGE_URl = " http://sportwidget.app";
 /* public static final String BASE_API_URL = "http://sportwidget.app/v3/index.php/mobile/";
    public static final String IMAGE_URl = " http://sportwidget.app";
 */
@@ -51,5 +51,8 @@ public class ApiConstant {
     public static final String API_SAVE_CUSTOMIZED_IMAGE = "SaveMyDownload";
 
     public static final String API_DELETE_CUSTOMIZED_IMAGE = "deleteMyDownload";
+
+
+ public static final String API_GET_USER_PRODUCT_CONTEST_LIST = "getUserContestProductList/";
 
 }

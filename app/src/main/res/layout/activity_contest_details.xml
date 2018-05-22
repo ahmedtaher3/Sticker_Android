@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_contest_details"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sticker_android.controller.activities.common.contestDetails.ContestDetailsActivity">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include layout="@layout/toolbar"/>
+    <include layout="@layout/contest_view_ongoing" />
+</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabShowAllItems"
+        app:backgroundTint="@color/colorFloatingCorporate"
+        app:srcCompat="@drawable/ic_other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/add_corp_margin"
+        android:elevation="6dp" />
+</RelativeLayout>

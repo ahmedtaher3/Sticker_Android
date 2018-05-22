@@ -138,7 +138,7 @@
     <string name="time_ago_years">%d years</string>
     <string name="no_ads_uploaded_yet">No Ads uploaded Yet.</string>
     <string name="no_product_uploaded_yet">No Products uploaded Yet.</string>
-    <string name="no_search_found">No Search found.</string>
+    <string name="no_search_found">please adjust your search keywords and try again.</string>
     <string name="emoji">Emoji</string>
     <string name="gif">GIF</string>
     <string name="stickers">Stickers</string>
@@ -272,7 +272,7 @@
     <string name="txt_profile_updated_successfully">Profile updated successfully</string>
     <string name="txt_filter_by">Filter By</string>
     <string name="txt_deleted_successfully">Deleted successfully</string>
-    <string name="txt_ads_details">Ads Detsils</string>
+    <string name="txt_ads_details">Ads Details</string>
     <string name="txt_product_details">Product Details</string>
     <string name="txt_sticker_details">Sticker Details</string>
     <string name="txt_gif_details">GIF Details</string>
@@ -296,5 +296,6 @@
     <string name="txt_winner">Winner</string>
     <string name="txt_looser">Loose</string>
     <string name="txt_share">Hi there, This is SportWidget app. This information shared with you by</string>
+    <string name="txt_all_ongoing_contest">All Ongoing Contest</string>
 
 </resources>
