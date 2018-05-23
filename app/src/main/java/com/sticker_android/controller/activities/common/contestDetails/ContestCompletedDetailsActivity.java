@@ -18,7 +18,7 @@ import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
-import com.sticker_android.controller.activities.common.contestlist.ContestAllItemListActivity;
+import com.sticker_android.controller.activities.common.contestlist.ContestCompletedAllUserActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.contest.ContestCompleted;
 import com.sticker_android.utils.AppLogger;
@@ -101,26 +101,11 @@ public class ContestCompletedDetailsActivity extends AppBaseActivity  implements
         cardItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveToDetails(productObj);
+
             }
         });
     }
 
-    private void moveToDetails(ContestCompleted product) {
-        Bundle bundle = new Bundle();
-
-        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
-
-        Intent intent = new Intent(this, ContestAllItemListActivity.class);
-        intent.putExtra("contestType", "Completed");
-        intent.putExtras(bundle);
-
-
-       startActivityForResult(intent, AppConstant.INTENT_PRODUCT_DETAILS);
-
-       overridePendingTransition(R.anim.activity_animation_enter,
-                R.anim.activity_animation_exit);
-    }
 
 
     @Override
@@ -195,7 +180,7 @@ public class ContestCompletedDetailsActivity extends AppBaseActivity  implements
 
         bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, productObj.productList);
 
-        Intent intent = new Intent(this, ContestAllItemListActivity.class);
+        Intent intent = new Intent(this, ContestCompletedAllUserActivity.class);
 
         intent.putExtras(bundle);
         intent.putExtra("userContestId", userContestId);

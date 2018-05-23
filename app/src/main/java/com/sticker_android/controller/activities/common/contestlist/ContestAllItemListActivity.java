@@ -27,7 +27,7 @@ import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.DesignListAdapter;
 import com.sticker_android.model.User;
-import com.sticker_android.model.contest.FanContestAll;
+import com.sticker_android.model.contest.OngoingContest;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.DesignerActionListener;
 import com.sticker_android.model.interfaces.MessageEventListener;
@@ -73,8 +73,8 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
     private ProgressBar progressBarLoadMore;
     private EndlessRecyclerViewScrollListener scrollListener2;
     private SwipeRefreshLayout swiperefresh;
-    private ArrayList<FanContestAll> mContestList;
-    private FanAllContestListAdaptor mAdapter;
+    private ArrayList<OngoingContest> mContestList;
+    private OngoingContestAllListAdaptor mAdapter;
     private String userContestId;
 
     @Override
@@ -101,7 +101,7 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
         llNoDataFound.setVisibility(View.GONE);
         mContestList = new ArrayList<>();
         recyclerViewLayout();
-        mAdapter=new FanAllContestListAdaptor(this);
+        mAdapter = new OngoingContestAllListAdaptor(this);
         recOngoingContestCorp.setAdapter(mAdapter);
         getContestApi(false);
         newListeneradded();
@@ -134,7 +134,7 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
 
         if (userContestId != null) {
             Call<ApiResponse> apiResponseCall = RestClient.getService().getUserContestProductList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
-                    "" + userContestId, "fan_contest_list_all", index, limit);
+                    "" + userContestId, "contest_list", index, limit);
             apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
@@ -156,31 +156,31 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
 
                                 if (isRefreshing) {
 
-                                    if (payload.fanContestAllArrayList != null && payload.fanContestAllArrayList.size() != 0) {
+                                    if (payload.ongoingContests != null && payload.ongoingContests.size() != 0) {
                                         mContestList.clear();
-                                        mContestList.addAll(payload.fanContestAllArrayList);
+                                        mContestList.addAll(payload.ongoingContests);
                                         llNoDataFound.setVisibility(View.GONE);
                                         recOngoingContestCorp.setVisibility(View.VISIBLE);
                                         mAdapter.setData(mContestList);
                                         mCurrentPage = 0;
                                         mCurrentPage++;
-                                        AppLogger.debug(TAG,"ContestAllItemList called if ");
+                                        AppLogger.debug(TAG, "ContestAllItemList called if ");
 
                                     } else {
                                         mContestList.clear();
                                         mAdapter.setData(mContestList);
                                         txtNoDataFoundContent.setText(R.string.txt_no_contest_found);
-                                        AppLogger.debug(TAG,"ContestAllItemList called else ");
+                                        AppLogger.debug(TAG, "ContestAllItemList called else ");
 
                                         showNoDataFound();
                                     }
                                 } else {
-                                    AppLogger.debug(TAG,"ContestAllItemList called else else ");
+                                    AppLogger.debug(TAG, "ContestAllItemList called else else ");
 
                                     if (mCurrentPage == 0) {
                                         mContestList.clear();
-                                        if (payload.fanContestAllArrayList != null) {
-                                            mContestList.addAll(payload.fanContestAllArrayList);
+                                        if (payload.ongoingContests != null) {
+                                            mContestList.addAll(payload.ongoingContests);
                                         }
 
                                         if (mContestList.size() != 0) {
@@ -197,8 +197,8 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
                                     } else {
                                         AppLogger.error(TAG, "Remove loader...");
                                         mAdapter.removeLoader();
-                                        if (payload.fanContestAllArrayList != null && payload.fanContestAllArrayList.size() != 0) {
-                                            mContestList.addAll(payload.fanContestAllArrayList);
+                                        if (payload.ongoingContests != null && payload.ongoingContests.size() != 0) {
+                                            mContestList.addAll(payload.ongoingContests);
                                             mAdapter.setData(mContestList);
                                         }
                                     }
@@ -229,7 +229,7 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
 
                 @Override
                 public void onFail(final Call<ApiResponse> call, Throwable t) {
-
+                    t.printStackTrace();
                     if (getActivity() != null) {
                         llLoaderView.setVisibility(View.GONE);
                         mAdapter.removeLoader();
@@ -268,7 +268,6 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
     }
 
 
-
     /**
      * Method is used to set the layout on recycler view
      */
@@ -281,7 +280,6 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
 
         recOngoingContestCorp.setLayoutManager(mLayoutManager);
     }
-
 
 
     /**
@@ -313,8 +311,8 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
             if (productObj != null)
                 setToolBarTitle(productObj.getType());
         }
-        userContestId =getIntent().getExtras().getString("userContestId");
-        AppLogger.debug(ContestAllItemListActivity.class.getSimpleName(),"userContestId"+userContestId);
+        userContestId = getIntent().getExtras().getString("userContestId");
+        AppLogger.debug(ContestAllItemListActivity.class.getSimpleName(), "userContestId" + userContestId);
     }
 
     @Override
@@ -325,7 +323,7 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
     @Override
     protected void setViewReferences() {
 
-        swiperefresh =(SwipeRefreshLayout)findViewById(R.id.swiperefresh);
+        swiperefresh = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         recOngoingContestCorp = (RecyclerView) findViewById(R.id.recOngoingContestCorp);
         progressBarLoadMore = (ProgressBar) findViewById(R.id.progressBarLoadMore);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshAds);
@@ -356,6 +354,8 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
+                getContestApi(false);
+                mAdapter.addLoader();
             /*    getProductFromServer(false, "");
                 corporateListAdaptor.addLoader();
      */
@@ -374,14 +374,22 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
 
     @Override
     public void onRefresh() {
-
+        if (Utils.isConnectedToInternet(this)) {
+            mAdapter.setData(new ArrayList<OngoingContest>());
+            scrollListener2.resetState();
+            mCurrentPage=0;
+            getContestApi(true);
+        } else {
+            swipeRefreshLayout.setRefreshing(false);
+            Utils.showToastMessage(this, getString(R.string.pls_check_ur_internet_connection));
+        }
     }
 
     /*new adaptor*/
-    public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public class OngoingContestAllListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private final String TAG = FanAllContestListAdaptor.class.getSimpleName();
-        private ArrayList<FanContestAll> mItems;
+        private final String TAG = OngoingContestAllListAdaptor.class.getSimpleName();
+        private ArrayList<OngoingContest> mItems;
         private Context context;
         public boolean isLoaderVisible;
 
@@ -405,6 +413,7 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
             public TextView tvEndDate;
             public CheckBox checkboxLike;
             public TextView tvFeatured;
+
             public ViewHolder(View view) {
                 super(view);
                 cardItem = (CardView) view.findViewById(R.id.card_view);
@@ -430,7 +439,7 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
         }
 
         // Provide a suitable constructor (depends on the kind of dataset)
-        public FanAllContestListAdaptor(Context cnxt) {
+        public OngoingContestAllListAdaptor(Context cnxt) {
             mItems = new ArrayList<>();
             context = cnxt;
             appPref = new AppPref(context);
@@ -445,27 +454,27 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
             this.productItemClickListener = productClickListener;
         }
 
-        public void setData(ArrayList<FanContestAll> data) {
-            AppLogger.debug(TAG,"ContestAllItemList called"+data.size());
+        public void setData(ArrayList<OngoingContest> data) {
+            AppLogger.debug(TAG, "ContestAllItemList called" + data.size());
 
             if (data != null) {
                 mItems = new ArrayList<>();
                 mItems.addAll(data);
                 notifyDataSetChanged();
                 isLoaderVisible = false;
-                AppLogger.debug(TAG,"ContestAllItemList called"+data.size());
+                AppLogger.debug(TAG, "ContestAllItemList called" + data.size());
 
             }
         }
 
-        public void updateAdapterData(ArrayList<FanContestAll> data) {
+        public void updateAdapterData(ArrayList<OngoingContest> data) {
             mItems = new ArrayList<>();
             mItems.addAll(data);
         }
 
         public void addLoader() {
             AppLogger.error(TAG, "Add loader... in adapter");
-            FanContestAll postItem = new FanContestAll();
+            OngoingContest postItem = new OngoingContest();
             postItem.dummyId = -1;
             mItems.add(postItem);
             new Handler().post(new Runnable() {
@@ -479,7 +488,7 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
 
         public void removeLoader() {
             AppLogger.error(TAG, "Remove loader... from adapter");
-            FanContestAll postItem = new FanContestAll();
+            OngoingContest postItem = new OngoingContest();
             postItem.dummyId = -1;
             int index = mItems.indexOf(postItem);
             AppLogger.error(TAG, "Loader index => " + index);
@@ -509,7 +518,7 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
             }
         }
 
-        public void updateModifiedItem(FanContestAll postItem) {
+        public void updateModifiedItem(OngoingContest postItem) {
             int index = mItems.indexOf(postItem);
             if (index != -1) {
                 mItems.set(index, postItem);
@@ -524,22 +533,13 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
             if (viewType == ITEM_FOOTER) {
                 View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_loader_view, parent, false);
                 // set the view's size, margins, paddings and layout parameters
-                final FanAllContestListAdaptor.LoaderViewHolder vh = new FanAllContestListAdaptor.LoaderViewHolder(v);
+                final OngoingContestAllListAdaptor.LoaderViewHolder vh = new OngoingContestAllListAdaptor.LoaderViewHolder(v);
                 return vh;
             } else {
                 // create a new view
                 View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.contest_view_ongoing, parent, false);
                 // set the view's size, margins, paddings and layout parameters
-                final FanAllContestListAdaptor.ViewHolder vh = new FanAllContestListAdaptor.ViewHolder(v);
-
-                vh.cardItem.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int position = vh.getAdapterPosition();
-                        FanContestAll product = mItems.get(position);
-                        // productItemClickListener.onProductItemClick(product);
-                    }
-                });
+                final OngoingContestAllListAdaptor.ViewHolder vh = new OngoingContestAllListAdaptor.ViewHolder(v);
 
                 return vh;
             }
@@ -556,12 +556,12 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
             if (itemType == ITEM_FOOTER) {
 
             } else {
-                AppLogger.debug(TAG,"ContestAllItemList called");
-                final FanAllContestListAdaptor.ViewHolder itemHolder = (FanAllContestListAdaptor.ViewHolder) holder;
-                final Product listItem = mItems.get(position).product;
+                AppLogger.debug(TAG, "ContestAllItemList called");
+                final OngoingContestAllListAdaptor.ViewHolder itemHolder = (OngoingContestAllListAdaptor.ViewHolder) holder;
+                final Product listItem = mItems.get(position).productList;
 
 
-                itemHolder.tvEndDate.setText(Utils.dateModify(listItem.getExpireDate()));
+                itemHolder.tvEndDate.setText(Utils.dateModify(mItems.get(position).contestInfo.expireDate));
                 itemHolder.checkboxLike.setText(Utils.format(listItem.statics.likeCount));
                 if (listItem.statics.likeCount > 0) {
                     itemHolder.checkboxLike.setChecked(true);
@@ -571,7 +571,7 @@ public class ContestAllItemListActivity extends AppBaseActivity implements Swipe
                     itemHolder.checkboxLike.setButtonDrawable(context.getResources().getDrawable(R.drawable.ic_like));
 
                 }
-                itemHolder.checkboxLike.setText(""+listItem.statics.likeCount);
+                itemHolder.checkboxLike.setText("" + listItem.statics.likeCount);
                 if (listItem.getImagePath() != null && !listItem.getImagePath().isEmpty())
                     Glide.with(context)
                             .load(listItem.getImagePath()).fitCenter()

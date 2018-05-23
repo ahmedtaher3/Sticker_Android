@@ -297,5 +297,6 @@
     <string name="txt_looser">Loose</string>
     <string name="txt_share">Hi there, This is SportWidget app. This information shared with you by</string>
     <string name="txt_all_ongoing_contest">All Ongoing Contest</string>
+    <string name="txt_all_completed">All Completed Contest</string>
 
 </resources>

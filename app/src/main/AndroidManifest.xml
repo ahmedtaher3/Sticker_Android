@@ -167,10 +167,10 @@
         <activity
             android:name=".controller.activities.fan.home.fandownloadmage.FanDownloadedImageActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".controller.activities.common.contestDetails.ContestDetailsActivity" />
-        <activity android:name=".controller.activities.common.contestlist.ContestAllItemListActivity" />
-        <activity android:name=".controller.activities.common.contestDetails.ContestCompletedDetailsActivity" />
-        <activity android:name=".controller.activities.common.contestlist.ContestCompletedAllUserActivity"></activity>
+        <activity  android:screenOrientation="portrait"  android:name=".controller.activities.common.contestDetails.ContestDetailsActivity" />
+        <activity  android:screenOrientation="portrait" android:name=".controller.activities.common.contestlist.ContestAllItemListActivity" />
+        <activity  android:screenOrientation="portrait" android:name=".controller.activities.common.contestDetails.ContestCompletedDetailsActivity" />
+        <activity  android:screenOrientation="portrait" android:name=".controller.activities.common.contestlist.ContestCompletedAllUserActivity"></activity>
     </application>
 
 </manifest>

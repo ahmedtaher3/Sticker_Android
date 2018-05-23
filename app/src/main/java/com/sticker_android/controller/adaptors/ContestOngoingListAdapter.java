@@ -162,7 +162,7 @@ public class ContestOngoingListAdapter extends RecyclerView.Adapter<ContestOngoi
     private void moveToDetails(Product product, OngoingContest listItem) {
         Bundle bundle = new Bundle();
 
-        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, product);
+        bundle.putParcelable(AppConstant.PRODUCT_OBJ_KEY, listItem);
         bundle.putString("userContestId",""+ listItem.contestId);
         Intent intent = new Intent(context, ContestDetailsActivity.class);
         intent.putExtras(bundle);

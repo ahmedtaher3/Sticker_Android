@@ -22,6 +22,7 @@ import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.contestlist.ContestAllItemListActivity;
 import com.sticker_android.model.User;
+import com.sticker_android.model.contest.OngoingContest;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
@@ -43,6 +44,7 @@ public class ContestDetailsActivity extends AppBaseActivity implements View.OnCl
     public TextView tvFeatured;
     RelativeLayout rlcontestCompleted;
     private String userContestId;
+    private OngoingContest ongoingContest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,7 @@ public class ContestDetailsActivity extends AppBaseActivity implements View.OnCl
     }
 
     private void setProductData() {
-        tvEndDate.setText(Utils.dateModify(productObj.getExpireDate()));
+        tvEndDate.setText(Utils.dateModify(ongoingContest.contestInfo.expireDate));
         checkboxLike.setText(Utils.format(productObj.statics.likeCount));
         if (productObj.statics.likeCount > 0) {
             checkboxLike.setChecked(true);
@@ -190,7 +192,8 @@ public class ContestDetailsActivity extends AppBaseActivity implements View.OnCl
 
         if (getIntent().getExtras() != null) {
 
-            productObj = getIntent().getExtras().getParcelable(AppConstant.PRODUCT_OBJ_KEY);
+             ongoingContest = getIntent().getExtras().getParcelable(AppConstant.PRODUCT_OBJ_KEY);
+            productObj=ongoingContest.productList;
             if (productObj != null)
                 setToolBarTitle(productObj.getType());
             userContestId = getIntent().getExtras().getString("userContestId");

@@ -28,7 +28,7 @@ import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.adaptors.DesignListAdapter;
 import com.sticker_android.controller.fragment.corporate.contest.CorporateContestOngoingFragment;
 import com.sticker_android.model.User;
-import com.sticker_android.model.contest.FanContestAll;
+import com.sticker_android.model.contest.ContestCompleted;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.DesignerActionListener;
 import com.sticker_android.model.interfaces.MessageEventListener;
@@ -41,6 +41,7 @@ import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 
@@ -60,7 +61,7 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
     private Context mContext;
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
-    private FanAllContestListAdaptor mAdapter;
+    private CompleteAllContestList mAdapter;
     private RelativeLayout rlContent;
     private LinearLayout llLoaderView;
     private RelativeLayout rlConnectionContainer;
@@ -71,7 +72,8 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
     private Product productObj;
     private Toolbar toolbar;
     private String userContestId;
-    private ArrayList<FanContestAll> mContestList;
+    private ArrayList<ContestCompleted> mContestList;
+    private EndlessRecyclerViewScrollListener scrollListener2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +101,7 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarCorporate));
 
 
-        mAdapter=new FanAllContestListAdaptor(this);
+        mAdapter=new CompleteAllContestList(this);
         llNoDataFound.setVisibility(View.GONE);
         mContestList = new ArrayList<>();
         mCurrentPage = 0;
@@ -108,7 +110,7 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
         recyclerViewLayout();
 
 
-
+        newListeneradded();
     }
 
     private void init() {
@@ -144,9 +146,33 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
 
     private void setToolBarTitle(String type) {
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText(R.string.txt_all_ongoing_contest);
+        textView.setText(R.string.txt_all_completed);
 
         toolbar.setTitle("");
+    }
+
+
+    private void newListeneradded() {
+
+        scrollListener2 = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+            @Override
+            public int getFooterViewType(int defaultNoFooterViewType) {
+
+                return 0;
+            }
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                getContestApi(false);
+               // mAdapter.addLoader();
+            /*    getProductFromServer(false, "");
+                corporateListAdaptor.addLoader();
+     */
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recOngoingContestCorp.addOnScrollListener(scrollListener2);
+
     }
 
 
@@ -182,6 +208,9 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
     @Override
     public void onRefresh() {
         if (Utils.isConnectedToInternet(this)) {
+            mAdapter.setData(new ArrayList<ContestCompleted>());
+            scrollListener2.resetState();
+            mCurrentPage=0;
             getContestApi(true);
         } else {
             swipeRefreshLayout.setRefreshing(false);
@@ -222,7 +251,7 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
 
         if (userContestId != null) {
             Call<ApiResponse> apiResponseCall = RestClient.getService().getUserContestProductList(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId(),
-                    "" + userContestId, "fan_contest_list_all", index, limit);
+                    "" + userContestId, "completed_contest_list", index, limit);
             apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
@@ -244,9 +273,9 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
 
                                 if (isRefreshing) {
 
-                                    if (payload.fanContestAllArrayList != null && payload.fanContestAllArrayList.size() != 0) {
+                                    if (payload.completedArrayList != null && payload.completedArrayList.size() != 0) {
                                         mContestList.clear();
-                                        mContestList.addAll(payload.fanContestAllArrayList);
+                                        mContestList.addAll(payload.completedArrayList);
                                         llNoDataFound.setVisibility(View.GONE);
                                         recOngoingContestCorp.setVisibility(View.VISIBLE);
                                         mAdapter.setData(mContestList);
@@ -262,8 +291,8 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
                                 } else {
                                     if (mCurrentPage == 0) {
                                         mContestList.clear();
-                                        if (payload.fanContestAllArrayList != null) {
-                                            mContestList.addAll(payload.fanContestAllArrayList);
+                                        if (payload.completedArrayList != null) {
+                                            mContestList.addAll(payload.completedArrayList);
                                         }
 
                                         if (mContestList.size() != 0) {
@@ -280,13 +309,13 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
                                     } else {
                                         AppLogger.error(TAG, "Remove loader...");
                                         mAdapter.removeLoader();
-                                        if (payload.fanContestAllArrayList != null && payload.fanContestAllArrayList.size() != 0) {
-                                            mContestList.addAll(payload.fanContestAllArrayList);
+                                        if (payload.completedArrayList != null && payload.completedArrayList.size() != 0) {
+                                            mContestList.addAll(payload.completedArrayList);
                                             mAdapter.setData(mContestList);
                                         }
                                     }
 
-                                    if (payload.fanContestAllArrayList != null && payload.fanContestAllArrayList.size() != 0) {
+                                    if (payload.completedArrayList != null && payload.completedArrayList.size() != 0) {
                                         mCurrentPage++;
                                     }
                                 }
@@ -313,6 +342,7 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
                 @Override
                 public void onFail(final Call<ApiResponse> call, Throwable t) {
 
+                    t.printStackTrace();
                     if (getActivity() != null) {
                         llLoaderView.setVisibility(View.GONE);
                         mAdapter.removeLoader();
@@ -368,10 +398,10 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
 
 
     /*new adaptor*/
-    public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public class CompleteAllContestList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private final String TAG = FanAllContestListAdaptor.class.getSimpleName();
-        private ArrayList<FanContestAll> mItems;
+        private final String TAG = CompleteAllContestList.class.getSimpleName();
+        private ArrayList<ContestCompleted> mItems;
         private Context context;
         public boolean isLoaderVisible;
 
@@ -420,7 +450,7 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
         }
 
         // Provide a suitable constructor (depends on the kind of dataset)
-        public FanAllContestListAdaptor(Context cnxt) {
+        public CompleteAllContestList(Context cnxt) {
             mItems = new ArrayList<>();
             context = cnxt;
             appPref = new AppPref(context);
@@ -435,7 +465,7 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
             this.productItemClickListener = productClickListener;
         }
 
-        public void setData(ArrayList<FanContestAll> data) {
+        public void setData(ArrayList<ContestCompleted> data) {
             if (data != null) {
                 mItems = new ArrayList<>();
                 mItems.addAll(data);
@@ -444,14 +474,14 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
             }
         }
 
-        public void updateAdapterData(ArrayList<FanContestAll> data) {
+        public void updateAdapterData(ArrayList<ContestCompleted> data) {
             mItems = new ArrayList<>();
             mItems.addAll(data);
         }
 
         public void addLoader() {
             AppLogger.error(TAG, "Add loader... in adapter");
-            FanContestAll postItem = new FanContestAll();
+            ContestCompleted postItem = new ContestCompleted();
             postItem.dummyId = -1;
             mItems.add(postItem);
             new Handler().post(new Runnable() {
@@ -465,7 +495,7 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
 
         public void removeLoader() {
             AppLogger.error(TAG, "Remove loader... from adapter");
-            FanContestAll postItem = new FanContestAll();
+            ContestCompleted postItem = new ContestCompleted();
             postItem.dummyId = -1;
             int index = mItems.indexOf(postItem);
             AppLogger.error(TAG, "Loader index => " + index);
@@ -495,7 +525,7 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
             }
         }
 
-        public void updateModifiedItem(FanContestAll postItem) {
+        public void updateModifiedItem(ContestCompleted postItem) {
             int index = mItems.indexOf(postItem);
             if (index != -1) {
                 mItems.set(index, postItem);
@@ -508,24 +538,16 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
             if (viewType == ITEM_FOOTER) {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.contest_completed_list, parent, false);
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_loader_view, parent, false);
                 // set the view's size, margins, paddings and layout parameters
-                final FanAllContestListAdaptor.LoaderViewHolder vh = new FanAllContestListAdaptor.LoaderViewHolder(v);
+                final CompleteAllContestList.LoaderViewHolder vh = new CompleteAllContestList.LoaderViewHolder(v);
                 return vh;
             } else {
                 // create a new view
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rec_item_fan, parent, false);
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.contest_completed_list, parent, false);
                 // set the view's size, margins, paddings and layout parameters
-                final FanAllContestListAdaptor.ViewHolder vh = new FanAllContestListAdaptor.ViewHolder(v);
+                final CompleteAllContestList.ViewHolder vh = new CompleteAllContestList.ViewHolder(v);
 
-                vh.cardItem.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int position = vh.getAdapterPosition();
-                        Product product = mItems.get(position).product;
-                        // productItemClickListener.onProductItemClick(product);
-                    }
-                });
 
                 return vh;
             }
@@ -542,11 +564,11 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
             if (itemType == ITEM_FOOTER) {
 
             } else {
-                final FanAllContestListAdaptor.ViewHolder itemHolder = (FanAllContestListAdaptor.ViewHolder) holder;
+                final CompleteAllContestList.ViewHolder itemHolder = (CompleteAllContestList.ViewHolder) holder;
              //   final Product listItem = mItems.get(position).product;
 
 
-                final Product listItem = mItems.get(position).product;
+                final Product listItem = mItems.get(position).productList;
 
                 if (position == 0) {
                     itemHolder.tvContestStatus.setText(R.string.txt_winner);

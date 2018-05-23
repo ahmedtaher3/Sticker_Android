@@ -11,6 +11,7 @@ import com.sticker_android.model.corporateproduct.Product;
  */
 
 public class ContestCompleted implements Parcelable {
+
     @SerializedName("user_contest_id")
     public int userContestId;
     @SerializedName("user_id")
@@ -28,6 +29,7 @@ public class ContestCompleted implements Parcelable {
     public long totalLike;
     @SerializedName("is_winner")
     public int isWinner;
+    public int dummyId;
 
     @Override
     public int describeContents() {
