@@ -1,6 +1,10 @@
 [
     {
+<<<<<<< HEAD
+        "outputFile": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values-zh/values-zh.xml",
+=======
         "outputFile": "/home/user/Sticker_Android/cropper/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values-zh/values-zh.xml",
+>>>>>>> 34c59fd38d1b5db8bdee2224461341d2f2ca444c
         "map": [
             {
                 "to": {
@@ -11,7 +15,11 @@
                     "endOffset": 102
                 },
                 "from": {
+<<<<<<< HEAD
+                    "file": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/bundles/debug/res/values-zh/values-zh.xml",
+=======
                     "file": "/home/user/Sticker_Android/cropper/build/intermediates/bundles/debug/res/values-zh/values-zh.xml",
+>>>>>>> 34c59fd38d1b5db8bdee2224461341d2f2ca444c
                     "position": {
                         "startLine": 2,
                         "startColumn": 4,
@@ -30,7 +38,11 @@
                     "endOffset": 164
                 },
                 "from": {
+<<<<<<< HEAD
+                    "file": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/bundles/debug/res/values-zh/values-zh.xml",
+=======
                     "file": "/home/user/Sticker_Android/cropper/build/intermediates/bundles/debug/res/values-zh/values-zh.xml",
+>>>>>>> 34c59fd38d1b5db8bdee2224461341d2f2ca444c
                     "position": {
                         "startLine": 3,
                         "startColumn": 4,
@@ -49,7 +61,11 @@
                     "endOffset": 227
                 },
                 "from": {
+<<<<<<< HEAD
+                    "file": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/bundles/debug/res/values-zh/values-zh.xml",
+=======
                     "file": "/home/user/Sticker_Android/cropper/build/intermediates/bundles/debug/res/values-zh/values-zh.xml",
+>>>>>>> 34c59fd38d1b5db8bdee2224461341d2f2ca444c
                     "position": {
                         "startLine": 4,
                         "startColumn": 4,
@@ -68,7 +84,11 @@
                     "endOffset": 292
                 },
                 "from": {
+<<<<<<< HEAD
+                    "file": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/bundles/debug/res/values-zh/values-zh.xml",
+=======
                     "file": "/home/user/Sticker_Android/cropper/build/intermediates/bundles/debug/res/values-zh/values-zh.xml",
+>>>>>>> 34c59fd38d1b5db8bdee2224461341d2f2ca444c
                     "position": {
                         "startLine": 5,
                         "startColumn": 4,

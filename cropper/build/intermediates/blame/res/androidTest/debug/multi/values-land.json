@@ -1,6 +1,10 @@
 [
     {
+<<<<<<< HEAD
+        "outputFile": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values-land/values-land.xml",
+=======
         "outputFile": "/home/user/Sticker_Android/cropper/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values-land/values-land.xml",
+>>>>>>> 34c59fd38d1b5db8bdee2224461341d2f2ca444c
         "map": [
             {
                 "to": {
@@ -11,7 +15,11 @@
                     "endOffset": 120
                 },
                 "from": {
+<<<<<<< HEAD
+                    "file": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/values-land/values-land.xml",
+=======
                     "file": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/values-land/values-land.xml",
+>>>>>>> 34c59fd38d1b5db8bdee2224461341d2f2ca444c
                     "position": {
                         "startLine": 2,
                         "startColumn": 4,
@@ -30,7 +38,11 @@
                     "endOffset": 184
                 },
                 "from": {
+<<<<<<< HEAD
+                    "file": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/values-land/values-land.xml",
+=======
                     "file": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/values-land/values-land.xml",
+>>>>>>> 34c59fd38d1b5db8bdee2224461341d2f2ca444c
                     "position": {
                         "startLine": 3,
                         "startColumn": 4,
@@ -49,7 +61,11 @@
                     "endOffset": 255
                 },
                 "from": {
+<<<<<<< HEAD
+                    "file": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/values-land/values-land.xml",
+=======
                     "file": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/values-land/values-land.xml",
+>>>>>>> 34c59fd38d1b5db8bdee2224461341d2f2ca444c
                     "position": {
                         "startLine": 4,
                         "startColumn": 4,
@@ -68,7 +84,11 @@
                     "endOffset": 323
                 },
                 "from": {
+<<<<<<< HEAD
+                    "file": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/values-land/values-land.xml",
+=======
                     "file": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/values-land/values-land.xml",
+>>>>>>> 34c59fd38d1b5db8bdee2224461341d2f2ca444c
                     "position": {
                         "startLine": 5,
                         "startColumn": 4,

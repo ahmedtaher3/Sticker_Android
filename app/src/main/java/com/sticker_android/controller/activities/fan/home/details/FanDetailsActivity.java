@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
@@ -32,6 +34,10 @@ import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
 
+import org.json.JSONObject;
+
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
 import retrofit2.Call;
 
 public class FanDetailsActivity extends AppBaseActivity {
@@ -53,6 +59,8 @@ public class FanDetailsActivity extends AppBaseActivity {
     private TimeUtility timeUtility = new TimeUtility();
     private TextView tvDescription;
     private TextView tvFeatured;
+
+    private boolean isSharedEnabled = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +90,11 @@ public class FanDetailsActivity extends AppBaseActivity {
         measureImageWidthHeight();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        this.setIntent(intent);
+    }
+
     private void getIntentValues() {
         Intent intent = getIntent();
         if (intent != null) {
@@ -108,25 +121,54 @@ public class FanDetailsActivity extends AppBaseActivity {
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Branch branch = Branch.getInstance();
+
+        // Branch init
+        branch.initSession(new Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject referringParams, BranchError error) {
+                if (error == null) {
+                    // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
+                    // params will be empty if no data found
+                    // ... insert custom logic here ...
+                    Log.e("BRANCH SDK", referringParams.toString());
+                    String property1 = referringParams.optString("property1", "");
+                    if(property1 != null){
+                        Gson gson = new Gson();
+                        mProduct = gson.fromJson(property1, Product.class);
+                        if(mProduct != null){
+                            isSharedEnabled = false;
+                            setProductDetail();
+                        }
+                    }
+                } else {
+                    Log.i("BRANCH SDK", error.getMessage());
+                }
+            }
+        }, this.getIntent().getData(), this);
+    }
 
     private void viewCountApi() {
 
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId()
-                , "", mProduct.getProductid(), "1", "statics", "view_count");
-        apiResponseCall.enqueue(new ApiCall(this) {
-            @Override
-            public void onSuccess(ApiResponse apiResponse) {
-                if (apiResponse.status) {
+        if(mProduct != null){
+            Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId()
+                    , "", mProduct.getProductid(), "1", "statics", "view_count");
+            apiResponseCall.enqueue(new ApiCall(this) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
+                    if (apiResponse.status) {
+                    }
                 }
-            }
 
-            @Override
-            public void onFail(Call<ApiResponse> call, Throwable t) {
+                @Override
+                public void onFail(Call<ApiResponse> call, Throwable t) {
 
-            }
-        });
-
-
+                }
+            });
+        }
     }
 
     /**
@@ -135,6 +177,7 @@ public class FanDetailsActivity extends AppBaseActivity {
     private void setProductDetail() {
 
         if (mProduct != null) {
+            setToolbar();
             if (mProduct.getType().equalsIgnoreCase(DesignType.stickers.getType().toLowerCase()) || mProduct.getType().equalsIgnoreCase(DesignType.gif.getType()) || mProduct.getType().equalsIgnoreCase(DesignType.emoji.getType())) {
                 tvDescription.setVisibility(View.GONE);
                 tvDownloads.setVisibility(View.VISIBLE);
@@ -306,7 +349,9 @@ public class FanDetailsActivity extends AppBaseActivity {
         checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                share();
+                if(isSharedEnabled){
+                    share();
+                }
             }
         });
     }
@@ -331,6 +376,10 @@ public class FanDetailsActivity extends AppBaseActivity {
     }
 
     private void likeApi(final int i) {
+
+        if(!isSharedEnabled){
+            return;
+        }
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId()
                 , "", mProduct.getProductid(), "" + i, "statics", "like_count");
@@ -368,7 +417,10 @@ public class FanDetailsActivity extends AppBaseActivity {
         tvDownloads.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downloadApi(1);
+
+                if(isSharedEnabled){
+                    downloadApi(1);
+                }
             }
         });
 
