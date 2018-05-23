@@ -120,12 +120,12 @@
         "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_dialog_material_background.xml"
     },
     {
-        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/debug/drawable/abc_ratingbar_material.xml",
-        "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_ratingbar_material.xml"
-    },
-    {
         "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/debug/drawable/abc_ratingbar_indicator_material.xml",
         "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_ratingbar_indicator_material.xml"
+    },
+    {
+        "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/debug/drawable/abc_ratingbar_material.xml",
+        "source": "/home/user/Sticker_Android/cropper/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/res/drawable/abc_ratingbar_material.xml"
     },
     {
         "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/debug/drawable/abc_list_selector_background_transition_holo_light.xml",

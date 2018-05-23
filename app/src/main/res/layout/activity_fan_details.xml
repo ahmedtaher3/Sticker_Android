@@ -140,7 +140,7 @@
                             android:textDirection="locale"
                             android:textAlignment="viewStart"
                             android:maxLines="1"
-                            android:text="dcdjcvkldvdflvflvkfjvldfjvlfkvdfjlvkfvjdfkvfjvkfvjfkvfjvkfjvjvkfvfkvl"
+                            android:text=""
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/txt_size_home_12sp" />
 
@@ -211,7 +211,7 @@
                                 android:drawablePadding="8dp"
                                 android:drawableStart="@drawable/tv_svg_time"
                                 android:gravity="center"
-                                android:text="2 hour"
+                                android:text=""
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/txt_size_home_12sp" />
 
@@ -228,7 +228,7 @@
 
                                 android:drawableStart="@drawable/ic_svg_drawable_download"
                                 android:gravity="center"
-                                android:text="2 hour"
+                                android:text=""
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/txt_size_home_12sp" />
 

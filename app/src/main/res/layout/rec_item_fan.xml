@@ -7,6 +7,9 @@
     tools:ignore="MissingPrefix">
 
     <android.support.v7.widget.CardView
+
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
         android:elevation="3dp"
         android:id="@+id/card_view"
         android:layout_width="match_parent"
@@ -76,7 +79,7 @@
                     android:textDirection="locale"
                     android:textAlignment="viewStart"
                     android:maxLines="1"
-                    android:text="dcdjcvkldvdflvflvkfjvldfjvlfkvdfjlvkfvjdfkvfjvkfvjfkvfjvkfjvjvkfvfkvl"
+                    android:text=""
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/txt_size_home_12sp" />
 

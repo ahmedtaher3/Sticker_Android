@@ -16,6 +16,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 
+import io.branch.referral.Branch;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -35,6 +36,9 @@ public class StickerApp extends Application {
         MultiDex.install(this);
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setFontAttrId(uk.co.chrisjenx.calligraphy.R.attr.fontPath).build());
         mInstance = this;
+
+        // Initialize the Branch object
+        Branch.getAutoInstance(this);
 
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
                 this)

@@ -137,7 +137,7 @@
     <string name="time_ago_years">%d سنوات</string>
     <string name="no_ads_uploaded_yet">لم يتم رفع اعلانات بعد</string>
     <string name="no_product_uploaded_yet">لم يتم رفع منتجات اعلانية بعد</string>
-    <string name="no_search_found">لايوجد نتائج</string>
+    <string name="no_search_found">لايوجد نتائج تتوافق مع بحثك، فضلا اعد البحث بإستعمال كلمات مختلفة</string>
     <string name="emoji">ايموجي</string>
     <string name="gif">صور متحركة</string>
     <string name="stickers">استكرات</string>
@@ -294,9 +294,9 @@
     <string name="txt_saving_image">حفظ الصورة</string>
     <string name="txt_winner">الفائز</string>
     <string name="txt_looser">واسع</string>
-    <string name="txt_share">Hi there, This is SportWidget app. This information shared with you by</string>
-    <string name="txt_all_ongoing_contest">All Ongoing Contest</string>
-    <string name="txt_all_completed">All Completed Contest</string>
+    <string name="txt_share">تم مشاركة هذه الصوره من تطبيق SportWidget, حمل تطبيقنا واستمتع بمئات الصور الرياضية المجانية</string>
+    <string name="txt_all_ongoing_contest">جميع المسابقات الجارية</string>
+    <string name="txt_all_completed">جميع المسابقات المنتهية</string>
 
     <!---->
 

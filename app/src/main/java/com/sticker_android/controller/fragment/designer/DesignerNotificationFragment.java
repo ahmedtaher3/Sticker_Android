@@ -113,7 +113,6 @@ public class DesignerNotificationFragment extends BaseFragment implements SwipeR
                 else
                     llLoaderView.setVisibility(View.GONE);
 
-                swipeRefreshNotification.setRefreshing(false);
                 if (apiResponse.status) {
 
                     mNotificationList = apiResponse.paylpad.notificationArrayList;

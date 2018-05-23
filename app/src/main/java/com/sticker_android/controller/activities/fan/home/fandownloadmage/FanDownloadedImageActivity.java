@@ -22,9 +22,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.fandownload.Download;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
@@ -38,6 +40,12 @@ import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.io.File;
 
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.SharingHelper;
+import io.branch.referral.util.LinkProperties;
+import io.branch.referral.util.ShareSheetStyle;
 import retrofit2.Call;
 
 public class FanDownloadedImageActivity extends AppBaseActivity implements View.OnClickListener {
@@ -224,10 +232,13 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
                 deleteProductApi();
                 break;
             case R.id.btnSave:
+                final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+                progressDialogHandler.show();
                 if (Utils.isConnectedToInternet(getActivity())) {
                     new DownloadImage(new DownloadImage.ISaveImageToLocal() {
                         @Override
                         public void imageResult(Bitmap result) {
+                            progressDialogHandler.hide();
                             Uri tempUri = Utils.getImageUri(getApplicationContext(), result);
 
                             // CALL THIS METHOD TO GET THE ACTUAL PATH
@@ -244,6 +255,74 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
                 break;
         }
     }
+
+
+
+    private void createDeepLink(final Product product){
+        Gson gson = new Gson();
+
+        BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
+                .setCanonicalIdentifier("item/" + product.getProductid())
+                .setTitle(getString(R.string.app_name))
+                .setContentDescription(product.getProductname())
+                .setContentImageUrl(product.getImagePath())
+                .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+                .addContentMetadata("property1", gson.toJson(product));
+
+        LinkProperties linkProperties = new LinkProperties()
+                .setChannel("facebook")
+                .setFeature("sharing");
+                /*.addControlParameter("$desktop_url", "http://www.google.com")
+                .addControlParameter("$ios_url", "http://example.com/ios");*/
+
+        ShareSheetStyle shareSheetStyle = new ShareSheetStyle(this, "Check this out!", "")
+                .setCopyUrlStyle(getResources().getDrawable(android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
+                .setMoreOptionStyle(getResources().getDrawable(android.R.drawable.ic_menu_search), "Show more")
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.FACEBOOK)
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.TWITTER)
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.EMAIL)
+                .setAsFullWidthStyle(true)
+                .setSharingTitle("Share With");
+
+        branchUniversalObject.showShareSheet(this,
+                linkProperties,
+                shareSheetStyle,
+                new Branch.BranchLinkShareListener() {
+                    @Override
+                    public void onShareLinkDialogLaunched() {
+                    }
+                    @Override
+                    public void onShareLinkDialogDismissed() {
+                    }
+                    @Override
+                    public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
+
+                      //  Log.e(TAG, "Shared link => " + sharedLink);
+                    }
+                    @Override
+                    public void onChannelSelected(String channelName) {
+                    }
+                });
+
+        branchUniversalObject.generateShortUrl(this, linkProperties, new Branch.BranchLinkCreateListener() {
+            @Override
+            public void onLinkCreate(String url, BranchError error) {
+                if (error == null) {
+                    /*Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    String shareBody = "Image url " + product.getImagePath();
+                    String shareSub = "Share data";
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody + "\n" + url);
+                    context.startActivity(Intent.createChooser(sharingIntent, context.getString(R.string.txt_share) + " :" + mUserdata.getEmail()));*/
+                }
+            }
+        });
+
+
+    }
+
+
 
 
 }

@@ -100,13 +100,14 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
                 if (apiResponse.status) {
 
                     mNotificationList = apiResponse.paylpad.notificationArrayList;
-                    if (mNotificationList != null) {
+                    if (mNotificationList != null && mNotificationList.size() != 0) {
                         notificationAdaptor.setData(filterData(mNotificationList));
                         llNoDataFound.setVisibility(View.GONE);
                     }
                     if(mNotificationList!=null&&mNotificationList.size()==0){
                         txtNoDataFoundContent.setText(R.string.txt_no_notification_found);
                         showNoDataFound();
+                        recNotification.setVisibility(View.GONE);
                     }
                 }
             }
@@ -143,7 +144,7 @@ public class FanNotification extends BaseFragment implements SwipeRefreshLayout.
         ArrayList<NotificationApp> tempList = new ArrayList<>();
         for (NotificationApp notificationApp :
                 mNotificationList) {
-            if (notificationApp.acme.contestObj.status == 5) {
+            if (notificationApp.acme.contestObj.status == 5||notificationApp.acme.contestObj.status==10) {
 
                 tempList.add(notificationApp);
             }

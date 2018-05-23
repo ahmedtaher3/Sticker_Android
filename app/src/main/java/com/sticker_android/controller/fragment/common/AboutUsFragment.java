@@ -117,7 +117,7 @@ public class AboutUsFragment extends BaseFragment {
 
     @Override
     protected void setViewReferences(View view) {
-        textView = view.findViewById(R.id.tv_terms_conditions);
+        textView = (TextView) view.findViewById(R.id.tv_terms_conditions);
         webView = (WebView) view.findViewById(R.id.webView);
         pgr  =(ProgressBar)view.findViewById(R.id.pgr);
     }

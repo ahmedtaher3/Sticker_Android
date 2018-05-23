@@ -2,11 +2,11 @@ package com.sticker_android.controller.adaptors;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 import com.sticker_android.R;
 import com.sticker_android.model.User;
 import com.sticker_android.model.contest.FanContestAll;
@@ -36,6 +37,12 @@ import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.util.ArrayList;
 
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.SharingHelper;
+import io.branch.referral.util.LinkProperties;
+import io.branch.referral.util.ShareSheetStyle;
 import retrofit2.Call;
 
 /**
@@ -224,17 +231,86 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
                 int position = vh.getAdapterPosition();
                 final FanContestAll product = mItems.get(position);
 
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+               /* Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 String shareBody = "Image url " + product.product.getImagePath();
                 String shareSub = "Share data";
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 context.startActivity(Intent.createChooser(sharingIntent, "Share using"));
-                shareApi(product, 1, position);
+            */    shareApi(product, 1, position);
+                createDeepLink(product.product);
             }
         });
     }
+
+
+
+    private void createDeepLink(final Product product){
+        Gson gson = new Gson();
+
+        BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
+                .setCanonicalIdentifier("item/" + product.getProductid())
+                .setTitle(context.getString(R.string.app_name))
+                .setContentDescription(product.getProductname())
+                .setContentImageUrl(product.getImagePath())
+                .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+                .addContentMetadata("property1", gson.toJson(product));
+
+        LinkProperties linkProperties = new LinkProperties()
+                .setChannel("facebook")
+                .setFeature("sharing");
+                /*.addControlParameter("$desktop_url", "http://www.google.com")
+                .addControlParameter("$ios_url", "http://example.com/ios");*/
+
+        ShareSheetStyle shareSheetStyle = new ShareSheetStyle(context, "Check this out!", "")
+                .setCopyUrlStyle(context.getResources().getDrawable(android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
+                .setMoreOptionStyle(context.getResources().getDrawable(android.R.drawable.ic_menu_search), "Show more")
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.FACEBOOK)
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.TWITTER)
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.EMAIL)
+                .setAsFullWidthStyle(true)
+                .setSharingTitle(context.getResources().getString(R.string.txt_share));
+
+        branchUniversalObject.showShareSheet((Activity) context,
+                linkProperties,
+                shareSheetStyle,
+                new Branch.BranchLinkShareListener() {
+                    @Override
+                    public void onShareLinkDialogLaunched() {
+                    }
+                    @Override
+                    public void onShareLinkDialogDismissed() {
+                    }
+                    @Override
+                    public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
+
+                        Log.e(TAG, "Shared link => " + sharedLink);
+                    }
+                    @Override
+                    public void onChannelSelected(String channelName) {
+                    }
+                });
+
+        branchUniversalObject.generateShortUrl(context, linkProperties, new Branch.BranchLinkCreateListener() {
+            @Override
+            public void onLinkCreate(String url, BranchError error) {
+                if (error == null) {
+                    /*Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    String shareBody = "Image url " + product.getImagePath();
+                    String shareSub = "Share data";
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody + "\n" + url);
+                    context.startActivity(Intent.createChooser(sharingIntent, context.getString(R.string.txt_share) + " :" + mUserdata.getEmail()));*/
+                }
+            }
+        });
+
+
+    }
+
+
 
     private void shareApi(FanContestAll product, int i, final int position) {
 

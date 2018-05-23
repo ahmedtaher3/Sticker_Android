@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
@@ -19,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
@@ -32,6 +35,14 @@ import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
 
+import org.json.JSONObject;
+
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.SharingHelper;
+import io.branch.referral.util.LinkProperties;
+import io.branch.referral.util.ShareSheetStyle;
 import retrofit2.Call;
 
 public class FanDetailsActivity extends AppBaseActivity {
@@ -54,6 +65,8 @@ public class FanDetailsActivity extends AppBaseActivity {
     private TextView tvDescription;
     private TextView tvFeatured;
 
+    private boolean isSharedEnabled = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,16 +76,7 @@ public class FanDetailsActivity extends AppBaseActivity {
         setViewReferences();
         setViewListeners();
         getIntentValues();
-        setToolbar();
-        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
-
-        toolbar.setNavigationIcon(R.drawable.back_arrow_small);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        setToolbarItem();
 
         setImageHeight();
 
@@ -80,6 +84,17 @@ public class FanDetailsActivity extends AppBaseActivity {
             setProductDetail();
         }
         measureImageWidthHeight();
+    }
+
+    private void setToolbarItem(){
+
+        setToolbar();
+        changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        this.setIntent(intent);
     }
 
     private void getIntentValues() {
@@ -108,25 +123,58 @@ public class FanDetailsActivity extends AppBaseActivity {
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Branch branch = Branch.getInstance();
+
+        // Branch init
+        branch.initSession(new Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject referringParams, BranchError error) {
+                if (error == null) {
+                    // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
+                    // params will be empty if no data found
+                    // ... insert custom logic here ...
+                    Log.e("BRANCH SDK", referringParams.toString());
+
+                    if(referringParams.has("property1")){
+                        String property1 = referringParams.optString("property1", "");
+                        if(property1 != null){
+                            Gson gson = new Gson();
+                            mProduct = gson.fromJson(property1, Product.class);
+                            if(mProduct != null){
+                                isSharedEnabled = false;
+                                setToolbarItem();
+                                setProductDetail();
+                            }
+                        }
+                    }
+                } else {
+                    Log.i("BRANCH SDK", error.getMessage());
+                }
+            }
+        }, this.getIntent().getData(), this);
+    }
 
     private void viewCountApi() {
 
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId()
-                , "", mProduct.getProductid(), "1", "statics", "view_count");
-        apiResponseCall.enqueue(new ApiCall(this) {
-            @Override
-            public void onSuccess(ApiResponse apiResponse) {
-                if (apiResponse.status) {
+        if(mProduct != null){
+            Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId()
+                    , "", mProduct.getProductid(), "1", "statics", "view_count");
+            apiResponseCall.enqueue(new ApiCall(this) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
+                    if (apiResponse.status) {
+                    }
                 }
-            }
 
-            @Override
-            public void onFail(Call<ApiResponse> call, Throwable t) {
+                @Override
+                public void onFail(Call<ApiResponse> call, Throwable t) {
 
-            }
-        });
-
-
+                }
+            });
+        }
     }
 
     /**
@@ -134,7 +182,10 @@ public class FanDetailsActivity extends AppBaseActivity {
      */
     private void setProductDetail() {
 
+        Gson gson = new Gson();
+        Log.e(TAG, "Product => " + gson.toJson(mProduct));
         if (mProduct != null) {
+            setToolbar();
             if (mProduct.getType().equalsIgnoreCase(DesignType.stickers.getType().toLowerCase()) || mProduct.getType().equalsIgnoreCase(DesignType.gif.getType()) || mProduct.getType().equalsIgnoreCase(DesignType.emoji.getType())) {
                 tvDescription.setVisibility(View.GONE);
                 tvDownloads.setVisibility(View.VISIBLE);
@@ -239,6 +290,16 @@ public class FanDetailsActivity extends AppBaseActivity {
         setToolbarBackground();
         setToolBarTitle();
         setSupportActionBar(toolbar);
+
+        toolbar.setNavigationIcon(R.drawable.back_arrow_small);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+                // AppLogger.debug(FanDetailsActivity.class.getSimpleName(),"on Backpress called.");
+            }
+        });
     }
 
     /**
@@ -306,7 +367,9 @@ public class FanDetailsActivity extends AppBaseActivity {
         checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                share();
+                if(isSharedEnabled){
+                    share();
+                }
             }
         });
     }
@@ -316,21 +379,94 @@ public class FanDetailsActivity extends AppBaseActivity {
         checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+              /*  Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 String shareBody = "Image url " + mProduct.getImagePath();
                 String shareSub = "Share data";
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, getString(R.string.txt_share) + " :" + userdata.getEmail()));
-
-
-                shareApi(1);
+*/
+                if(mProduct!=null) {
+                    createDeepLink(mProduct);
+                    shareApi(1);
+                }
             }
         });
     }
 
+
+    private void createDeepLink(final Product product){
+        Gson gson = new Gson();
+
+        BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
+                .setCanonicalIdentifier("item/" + product.getProductid())
+                .setTitle(getString(R.string.app_name))
+                .setContentDescription(product.getProductname())
+                .setContentImageUrl(product.getImagePath())
+                .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+                .addContentMetadata("property1", gson.toJson(product));
+
+        LinkProperties linkProperties = new LinkProperties()
+                .setChannel("facebook")
+                .setFeature("sharing");
+                /*.addControlParameter("$desktop_url", "http://www.google.com")
+                .addControlParameter("$ios_url", "http://example.com/ios");*/
+
+        ShareSheetStyle shareSheetStyle = new ShareSheetStyle(this, "Check this out!", "")
+                .setCopyUrlStyle(getResources().getDrawable(android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
+                .setMoreOptionStyle(getResources().getDrawable(android.R.drawable.ic_menu_search), "Show more")
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.FACEBOOK)
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.TWITTER)
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.EMAIL)
+                .setAsFullWidthStyle(true)
+                .setSharingTitle(getResources().getString(R.string.txt_share));
+
+        branchUniversalObject.showShareSheet(this,
+                linkProperties,
+                shareSheetStyle,
+                new Branch.BranchLinkShareListener() {
+                    @Override
+                    public void onShareLinkDialogLaunched() {
+                    }
+                    @Override
+                    public void onShareLinkDialogDismissed() {
+                    }
+                    @Override
+                    public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
+
+                        Log.e(TAG, "Shared link => " + sharedLink);
+                    }
+                    @Override
+                    public void onChannelSelected(String channelName) {
+                    }
+                });
+
+        branchUniversalObject.generateShortUrl(this, linkProperties, new Branch.BranchLinkCreateListener() {
+            @Override
+            public void onLinkCreate(String url, BranchError error) {
+                if (error == null) {
+                    /*Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    String shareBody = "Image url " + product.getImagePath();
+                    String shareSub = "Share data";
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody + "\n" + url);
+                    context.startActivity(Intent.createChooser(sharingIntent, context.getString(R.string.txt_share) + " :" + mUserdata.getEmail()));*/
+                }
+            }
+        });
+
+
+    }
+
+
+
     private void likeApi(final int i) {
+
+        if(!isSharedEnabled){
+            return;
+        }
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(userdata.getLanguageId(), userdata.getAuthrizedKey(), userdata.getId()
                 , "", mProduct.getProductid(), "" + i, "statics", "like_count");
@@ -368,7 +504,10 @@ public class FanDetailsActivity extends AppBaseActivity {
         tvDownloads.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downloadApi(1);
+
+                if(isSharedEnabled){
+                    downloadApi(1);
+                }
             }
         });
 
@@ -421,10 +560,18 @@ public class FanDetailsActivity extends AppBaseActivity {
 
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onBackPressed();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         setResult(RESULT_OK);
+
     }
 }

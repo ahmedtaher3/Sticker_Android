@@ -16,6 +16,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -25,11 +26,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.fan.home.contest.FanContestListActivity;
+import com.sticker_android.controller.activities.fan.home.details.FanDetailsActivity;
 import com.sticker_android.controller.fragment.common.AccountSettingFragment;
 import com.sticker_android.controller.fragment.common.ProfileFragment;
 import com.sticker_android.controller.fragment.designer.contentapproval.DesignerContentApprovalFragment;
@@ -39,6 +42,7 @@ import com.sticker_android.controller.fragment.fan.fansavecustomization.FanSaveC
 import com.sticker_android.controller.fragment.fan.notification.FanNotification;
 import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.notification.Acme;
 import com.sticker_android.model.notification.AppNotification;
 import com.sticker_android.model.notification.ContestObj;
@@ -54,6 +58,10 @@ import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import org.json.JSONObject;
+
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
 import retrofit2.Call;
 
 public class FanHomeActivity extends AppBaseActivity
@@ -527,7 +535,6 @@ public class FanHomeActivity extends AppBaseActivity
 */
 
     }
-
 
     private void setIntentData(AppNotification appNotification) {
 

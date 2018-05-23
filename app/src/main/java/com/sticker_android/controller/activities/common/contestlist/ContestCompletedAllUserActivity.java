@@ -570,7 +570,7 @@ public class ContestCompletedAllUserActivity extends AppBaseActivity  implements
 
                 final Product listItem = mItems.get(position).productList;
 
-                if (position == 0) {
+                if (mItems.get(position).isWinner>0) {
                     itemHolder.tvContestStatus.setText(R.string.txt_winner);
                     itemHolder.tvContestStatus.setTextColor(context.getResources().getColor(R.color.colorHomeGreen));
                 } else {
