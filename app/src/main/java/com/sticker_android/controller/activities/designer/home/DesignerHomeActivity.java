@@ -305,10 +305,10 @@ public class DesignerHomeActivity extends AppBaseActivity implements
             //  textView.setText("Content Approval");
         } else if (id == R.id.nav_report) {
             fragmentClass = new DesignerReportFragment();
-            textView.setText("Report");
+            textView.setText(getResources().getString(R.string.txt_report));
         } else if (id == R.id.nav_contest) {
             fragmentClass = new DesignerContestFragment();
-            textView.setText("Contest");
+            textView.setText(getResources().getString(R.string.txt_contest));
         } else if (id == R.id.nav_profile) {
             // startNewActivity(ViewProfileActivity.class);
             //  fragmentClass = new DesignerHomeFragment();

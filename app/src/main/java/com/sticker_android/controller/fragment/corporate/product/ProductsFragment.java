@@ -1226,9 +1226,9 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                     final boolean isLeftToRight;
                     isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
                     if (isLeftToRight) {
-                        itemHolder.imvBackground.setImageResource(R.drawable.contest_hdpi);
+                        itemHolder.imvBackground.setBackgroundResource(R.drawable.contest_hdpi);
                     }else{
-                        itemHolder.imvBackground.setImageResource(R.drawable.contest_ldrtl_hdpi);
+                        itemHolder.imvBackground.setBackgroundResource(R.drawable.contest_ldrtl_hdpi);
 
                     }
                 }

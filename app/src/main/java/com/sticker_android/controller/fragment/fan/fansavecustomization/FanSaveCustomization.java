@@ -147,13 +147,16 @@ public class FanSaveCustomization extends BaseFragment implements SwipeRefreshLa
                     if (apiResponse.paylpad.fanFilterArrayList != null && apiResponse.paylpad.downloadArrayList.size() != 0) {
                         itemListAdaptor.setData(apiResponse.paylpad.downloadArrayList);
                         // gridViewAdapter.setData(apiResponse.paylpad.downloadArrayList);
+                        itemListAdaptor.notifyDataSetChanged();
 
+                        recMyCustomization.setVisibility(View.VISIBLE);
                         AppLogger.debug(FanSaveCustomization.class.getSimpleName(), "inside not null");
                     } else {
                         AppLogger.debug(FanSaveCustomization.class.getSimpleName(), "inside null");
                         showNoDataFound();
                         txtNoDataFoundContent.setText(R.string.txt_no_image_found);
                         gridView.setVisibility(View.GONE);
+                        recMyCustomization.setVisibility(View.GONE);
                     }
                    /* if (apiResponse.paylpad.downloadArrayList == null) {
                         AppLogger.debug(FanSaveCustomization.class.getSimpleName(), "inside null");
@@ -310,6 +313,8 @@ public class FanSaveCustomization extends BaseFragment implements SwipeRefreshLa
         if (resultCode == getActivity().RESULT_OK) {
             switch (requestCode) {
                 case 444:
+                    if(itemListAdaptor!=null)
+                        itemListAdaptor.notifyDataSetChanged();
                     onRefresh();
                     break;
             }

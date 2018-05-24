@@ -354,9 +354,12 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
                 boolean checked = isChecked;
                 if (buttonView.isPressed()) {
                     if (product.product.isLike > 0) {
-                        likeApi(product.product, 0, position);
+                        vh.checkboxLike.setEnabled(false);
+                        likeApi(product.product, 0, position,vh);
+
                     } else {
-                        likeApi(product.product, 1, position);
+                        vh.checkboxLike.setEnabled(false);
+                        likeApi(product.product, 1, position, vh);
                     }
                 }
 
@@ -462,7 +465,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
     }
 
 
-    private void likeApi(final Product product, final int i, final int position) {
+    private void likeApi(final Product product, final int i, final int position, final ViewHolder vh) {
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
                 , "" + product.userContestId, product.getProductid(), "" + i, "statics", "like_count");
@@ -473,6 +476,7 @@ public class FanAllContestListAdaptor extends RecyclerView.Adapter<RecyclerView.
                     product.isLike = i;
                     mItems.get(position).product.statics.likeCount = apiResponse.paylpad.statics.likeCount;
                     notifyDataSetChanged();
+                    vh.checkboxLike.setEnabled(true);
                 }
             }
 

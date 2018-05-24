@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sticker_android.R;
@@ -34,6 +36,10 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
     private TextView tvContactUsContactNum;
     private String mMobileNumber;
     private String mEmail="abc@abc.com";
+    private WebView webView;
+    final String mimeType = "text/html";
+    final String encoding = "UTF-8";
+    private ProgressBar pgr;
 
     public ContactUsFragment() {
         // Required empty public constructor
@@ -64,24 +70,29 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
 
 
     private void getContactApi() {
+        pgr.setVisibility(View.VISIBLE);
         AppLogger.debug(ContactUsFragment.class.getSimpleName(),"inside get  contact api");
         Call<ApiResponse> apiResponseCall= RestClient.getService().apiGetContent("4");
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 if(apiResponse.status) {
+                    pgr.setVisibility(View.GONE);
                     if (apiResponse.paylpad.getData() != null) {
+                        webView.loadDataWithBaseURL("", apiResponse.paylpad.getData().getInfoText(), mimeType, encoding, "");
+
                         //  Toast.makeText(getActivity(),""+apiResponse.paylpad.getData().getMobile(),Toast.LENGTH_SHORT).show();
-                        tvContactUsContactNum.setText(apiResponse.paylpad.getData().getMobile());
+                      /*  tvContactUsContactNum.setText(apiResponse.paylpad.getData().getMobile());
                         tvEmailContactUs.setText(apiResponse.paylpad.getData().getEmail());
                         mMobileNumber = apiResponse.paylpad.getData().getMobile();
                         mEmail = apiResponse.paylpad.getData().getEmail();
-                    }
+                   */ }
                 }
             }
 
             @Override
             public void onFail(Call<ApiResponse> call, Throwable t) {
+                pgr.setVisibility(View.GONE);
             }
         });
     }
@@ -120,6 +131,8 @@ public class ContactUsFragment extends BaseFragment implements View.OnClickListe
     protected void setViewReferences(View view) {
         tvEmailContactUs=(TextView)view.findViewById(R.id.tvEmailContactUs);
         tvContactUsContactNum=(TextView)view.findViewById(R.id.tvContactUsContactNum);
+        webView=(WebView)view.findViewById(R.id.webView);
+        pgr =(ProgressBar)view.findViewById(R.id.pgr);
     }
 
     @Override

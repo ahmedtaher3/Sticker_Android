@@ -23,7 +23,6 @@ import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.fan.home.contest.FanContestListActivity;
 import com.sticker_android.model.contest.FanContest;
-import com.sticker_android.utils.AppLogger;
 
 import java.util.ArrayList;
 
@@ -60,9 +59,9 @@ public class ContestListAdaptor extends RecyclerView.Adapter<ContestListAdaptor.
         final boolean isLeftToRight;
         isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
         if (isLeftToRight) {
-            holder.imvBackground.setImageResource(R.drawable.contest_hdpi);
+            holder.imvBackground.setBackgroundResource(R.drawable.contest_hdpi);
         }else{
-            holder.imvBackground.setImageResource(R.drawable.contest_ldrtl_hdpi);
+            holder.imvBackground.setBackgroundResource(R.drawable.contest_ldrtl_hdpi);
 
         }
 

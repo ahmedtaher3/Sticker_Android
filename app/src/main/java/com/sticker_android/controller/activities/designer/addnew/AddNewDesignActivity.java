@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Movie;
@@ -329,7 +330,14 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
 
                 if (v instanceof TextView) {
                     TextView txtView = (TextView) v;
-                    txtView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                    Configuration config = context.getResources().getConfiguration();
+                    final boolean isLeftToRight;
+                    isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
+                    if (isLeftToRight) {
+                    }else{
+                        txtView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                    }
+
                     Object object = dataSource.get(position);
 
                     if (object instanceof String) {
@@ -354,7 +362,16 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 }
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.text_size_edittext));
                 tv.setPadding(0, 0, 0, 0);
-                tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                Configuration config = context.getResources().getConfiguration();
+                final boolean isLeftToRight;
+                isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
+                if (isLeftToRight) {
+                    tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                }else{
+
+                }
+
+              //  tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
 
                 Object object = dataSource.get(position);
 
@@ -601,7 +618,17 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                         if (mProduct != null) {
                             Utils.showToast(getApplicationContext(), getString(R.string.txt_data_updated_successfully));
                         } else {
-                            Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " added successfully.");
+
+                            if(type.equalsIgnoreCase("stickers")){
+                                Utils.showToast(getApplicationContext(), getResources().getString(R.string.stickers)+" "+getString(R.string.txt_added_successfully));
+
+                            }else if(type.equalsIgnoreCase("emoji")){
+                                Utils.showToast(getApplicationContext(), getResources().getString(R.string.emoji)+" "+getString(R.string.txt_added_successfully));
+
+                            }else{
+                                Utils.showToast(getApplicationContext(), getResources().getString(R.string.gif)+" "+getString(R.string.txt_added_successfully));
+
+                            }
                         }
 
 
@@ -673,9 +700,29 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
                     if (mProduct != null) {
-                        Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " updated successfully.");
+                        if(type.equalsIgnoreCase("stickers")){
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.stickers)+" "+getString(R.string.txt_data_updated_successfully));
+
+                        }else if(type.equalsIgnoreCase("emoji")){
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.emoji)+" "+getString(R.string.txt_data_updated_successfully));
+
+                        }else{
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.gif)+" "+getString(R.string.txt_data_updated_successfully));
+
+                        }
+                        //Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " updated successfully.");
                     } else {
-                        Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " added successfully.");
+                        if(type.equalsIgnoreCase("stickers")){
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.stickers)+" "+getString(R.string.txt_added_successfully));
+
+                        }else if(type.equalsIgnoreCase("emoji")){
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.emoji)+" "+getString(R.string.txt_added_successfully));
+
+                        }else{
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.gif)+" "+getString(R.string.txt_added_successfully));
+
+                        }
+                      //  Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " added successfully.");
                     }
 
 

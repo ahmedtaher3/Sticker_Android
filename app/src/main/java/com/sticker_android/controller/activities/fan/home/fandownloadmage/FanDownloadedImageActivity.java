@@ -167,7 +167,7 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
                 public void onSuccess(ApiResponse apiResponse) {
                     progressDialogHandler.hide();
                     if (apiResponse.status) {
-                        Utils.showToast(getActivity(), "Deleted successfully");
+                        Utils.showToast(getActivity(), getResources().getString(R.string.deleted_successfully));
                         setResult(RESULT_OK);
                         onBackPressed();
 
@@ -229,7 +229,7 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnDelete:
-                deleteProductApi();
+                showDeleteDialog();
                 break;
             case R.id.btnSave:
                 final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
@@ -247,7 +247,7 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
                                 FileUtil.albumUpdate(getApplicationContext(), finalFile.getAbsolutePath());
                                 MediaScannerConnection.scanFile(getActivity(), new String[] { finalFile.getPath() }, new String[] { "image/jpeg" }, null);
                             }
-                                Utils.showToast(getActivity(), "Image Saved Successfully.");
+                                Utils.showToast(getActivity(), getString(R.string.txt_image_saved_successfully));
                             AppLogger.debug(FanDownloadedImageActivity.class.getSimpleName(), "called here" + finalFile);
                         }
                     }).execute(downloadImageObj.imageUrl);
