@@ -42,6 +42,7 @@ import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
+import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumStickers.ImageAlbumStickers;
 import com.sticker_android.model.User;
 import com.sticker_android.model.filter.FanFilter;
 import com.sticker_android.model.interfaces.ImagePickerListener;
@@ -550,10 +551,21 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             //Toast.makeText(mHostActivity, R.string.select_image_for_filter, Toast.LENGTH_SHORT).show();
             return;
         }
-        Intent intent = new Intent(getActivity(), ImageAlbumActivity.class);
-        intent.putExtra(ImageAlbumActivity.FILTER_IMAGE_TYPE, type);
-        startActivityForResult(intent, CHOOSE_GALLERY_FILTER);
-    }
+
+        if(type.equalsIgnoreCase("filter")){
+            Intent intent = new Intent(getActivity(), ImageAlbumActivity.class);
+            intent.putExtra(ImageAlbumActivity.FILTER_IMAGE_TYPE, type);
+            startActivityForResult(intent, CHOOSE_GALLERY_FILTER);
+
+        }else{
+            Intent intent = new Intent(getActivity(), ImageAlbumStickers.class);
+            intent.putExtra(ImageAlbumActivity.FILTER_IMAGE_TYPE, type);
+            startActivityForResult(intent, CHOOSE_GALLERY_FILTER);
+
+        }
+
+
+        }
 
     private void pickGalleryImage() {
         Intent openGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

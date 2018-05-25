@@ -299,6 +299,9 @@
     <string name="txt_all_completed">جميع المسابقات المنتهية</string>
     <string name="txt_image_saved_successfully">تم حفظ الصورة بنجاح</string>
     <string name="txt_added_successfully">البحث عن اعلان بالاسم</string>
+    <string name="txt_designer_stickers">Designer Stickers</string>
+    <string name="txt_designer_emoji">Designer Emoji</string>
+    <string name="txt_all_fan_home">All</string>
 
     <!---->
 

@@ -216,4 +216,26 @@ public interface StickerService {
                                                        @Field("user_id") String userId, @Field("contest_id") String contestId, @Field("key_name") String name, @Field("index") int index,
                                                        @Field("limit") int limit);
 
+    @FormUrlEncoded
+    @POST(ApiConstant.API_GET_FAN_PRODUCT_LIST_ALL)
+    public Call<ApiResponse> getAllProductWithFeature
+            (@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+             @Field("user_id") String userId, @Field("index") int index,
+             @Field("limit") int limit, @Field("type") String type, @Field("key_name") String name, @Field("search") String search, @Field("category_id") String categoryId, @Field("filter") String filter);
+
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_FILTER_LIST__FAN_All)
+    public Call<ApiResponse> apiFilterListCorporateAndDesigner(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                           @Field("user_id") String userId, @Field("index") int index,
+                                           @Field("limit") int limit, @Field("search") String search, @Field("key_name") String name, @Field("type") String type);
+
+
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_GET_RANDOM_FEATURED_PRODUCT)
+    public Call<ApiResponse> getRandomFeaturedProduct(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
+                                                       @Field("user_id") String userId);
+
+
 }

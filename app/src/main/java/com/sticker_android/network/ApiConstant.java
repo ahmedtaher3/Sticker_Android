@@ -54,5 +54,8 @@ public class ApiConstant {
 
 
  public static final String API_GET_USER_PRODUCT_CONTEST_LIST = "getUserContestProductList/";
+ public static final String API_GET_FAN_PRODUCT_LIST_ALL = "getAllProductWithFeatureProduct/";
+ public static final String API_FILTER_LIST__FAN_All = "getDesignerCoporateProduct/";
+ public static final String API_GET_RANDOM_FEATURED_PRODUCT = "getRandomFeatureProduct/";
 
 }

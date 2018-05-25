@@ -300,5 +300,8 @@
     <string name="txt_all_completed">All Completed Contest</string>
     <string name="txt_image_saved_successfully">Image Saved Successfully.</string>
     <string name="txt_added_successfully">Added Successfully</string>
+    <string name="txt_designer_stickers">Designer Stickers</string>
+    <string name="txt_designer_emoji">Designer Emoji</string>
+    <string name="txt_all_fan_home">All</string>
 
 </resources>
