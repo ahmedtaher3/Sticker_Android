@@ -189,7 +189,7 @@
     <string name="txt_completed_contest">مسابقة مكتملة</string>
     <string name="txt_won">فائز</string>
     <string name="txt_successfully_applied_for_contest">تم المشاركة في المسابقة بنجاح</string>
-    <string name="txt_no_contest_found">لايوجد مسابقات.</string>
+    <string name="txt_no_contest_found">لايوجد مسابقة في هذا الوقت</string>
     <string name="txt_apply_for_context">فضلا تقدم بالمشاركة في المسابقة</string>
     <string name="txt_no_onging_contest_found">يوجد مسابقات مستمرة</string>
     <string name="txt_pending_content">محتموى بإنتظار الموافقة</string>
