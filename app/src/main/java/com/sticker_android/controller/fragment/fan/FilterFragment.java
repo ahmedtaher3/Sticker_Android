@@ -94,12 +94,6 @@ import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_
 
 public class FilterFragment extends Fragment implements View.OnClickListener {
 
-
-    private RelativeLayout rlContent;
-    private LinearLayout llLoaderView;
-    private RelativeLayout rlConnectionContainer;
-    private TextView txtNoDataFoundTitle, txtNoDataFoundContent;
-
     private final String TAG = FilterFragment.class.getSimpleName();
     private Context mContext;
     private AppBaseActivity mHostActivity;
@@ -113,6 +107,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rlImageContainer, rlPlaceHolderClick, rlResetButtonHolder;
     private LinearLayout rlFilterOptionContainer, llFilter, llSticker, llEmoji;
     private Button btnReset, btnSave;
+    private FrameLayout mWorkSpaceFrame;
 
     private SaveImageTask mSaveImageTask;
     private LoadImageTask mLoadImageTask;
@@ -131,6 +126,11 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     public static final String IMAGE_PATH = "image_path";
     public static final String STICKER_IMAGE_PATH = "sticker_image_path";
     private Product adObj = null;
+
+    public interface OnImageLoadingListener{
+        void onImageLoadCompletion();
+        void onImageLoadFailure();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -166,7 +166,20 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 mSelectedFilter = new FanFilter();
                 mSelectedFilter.type = "sticker";
                 mSelectedFilter.imageUrl = stickerPath;
-                setSelectedFilter();
+
+                if(mLoadImageTask != null){
+                    mLoadImageTask.setImageLoadingListener(new OnImageLoadingListener() {
+                        @Override
+                        public void onImageLoadCompletion() {
+                            setSelectedFilter();
+                        }
+
+                        @Override
+                        public void onImageLoadFailure() {
+
+                        }
+                    });
+                }
 
                 rlFilterOptionContainer.setVisibility(View.VISIBLE);
                 rlResetButtonHolder.setVisibility(View.VISIBLE);
@@ -269,6 +282,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         imgFilterMask = (ImageView) inflatedView.findViewById(R.id.imgFilterMask);
         rlPlaceHolderClick = (RelativeLayout) inflatedView.findViewById(R.id.rlPlaceHolderClick);
         rlResetButtonHolder = (RelativeLayout) inflatedView.findViewById(R.id.rlResetButtonHolder);
+        mWorkSpaceFrame = (FrameLayout) inflatedView.findViewById(R.id.work_space);
     }
 
     public void setListenerOnViews() {
@@ -481,14 +495,6 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         imgFilterMask.buildDrawingCache(true);
 
         mSaveImageTask = new SaveImageTask();
-     //   if (mSelectedFilter.type.contains("filter")) {
-        /*if(mSelectedFilter.type.contains("filter")){
->>>>>>> fa686b6f343100522563e02972390c343f64386d
-            mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), imgFilterMask.getDrawingCache(), true));
-        } else {
-            mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), mStickerView.getDrawingCache(), false));
-        }*/
-
         mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), mStickerView.getDrawingCache(), imgFilterMask.getDrawingCache()));
     }
 
@@ -625,6 +631,12 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
     private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
 
+        public OnImageLoadingListener imageLoadingListener;
+
+        public void setImageLoadingListener(OnImageLoadingListener listener){
+            imageLoadingListener = listener;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -654,12 +666,6 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 System.gc();
             }
 
-            if(result != null){
-                Log.e(TAG, "result is not null");
-            }
-            else{
-                Log.e(TAG, "result is null");
-            }
             mainBitmap = result;
             mainImage.setImageBitmap(result);
             mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
@@ -667,6 +673,11 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             mStickerView.mainBitmap = mainBitmap;
             mStickerView.mainImage = mainImage;
             mStickerView.setVisibility(View.VISIBLE);
+            mWorkSpaceFrame.requestLayout();
+
+            if(imageLoadingListener != null){
+                imageLoadingListener.onImageLoadCompletion();
+            }
         }
     }
 
@@ -818,7 +829,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         if (adObj != null) {
             final Dialog dialog = new Dialog(getActivity());
             dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(getLayoutInflater().inflate(R.layout.image_dialog, null));
+            dialog.setContentView(LayoutInflater.from(getActivity()).inflate(R.layout.image_dialog, null));
             dialog.show();
             dialog.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
                 @Override
