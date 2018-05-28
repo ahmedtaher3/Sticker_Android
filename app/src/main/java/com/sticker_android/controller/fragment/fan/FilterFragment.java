@@ -492,6 +492,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 makeFilterOptionEnable(false);
                 break;
             case R.id.btnSave:
+                adDialog();
                 if (mSelectedFilter.type.contains("filter")
                         || mStickerView.getBank().size() != 0) {
                     mStickerView.hideHelpBoxTool();
