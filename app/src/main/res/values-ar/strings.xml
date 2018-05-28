@@ -64,7 +64,7 @@
 
     <string name="frag_change_pass_text_hint_old_password">كلمة المرور القديمة </string>
 
-    <string name="frag_change_pass_text_hint_confirm_password">لايمكن ترك تأكيد كلمة المرور فارغة</string>
+    <string name="frag_change_pass_text_hint_confirm_password">تأكيد كلمة المرور</string>
 
     <!--Contact Us-->
     <string name="contact_us_txt_hint_Email_address">البريد الالكتروني:</string>
@@ -189,7 +189,7 @@
     <string name="txt_completed_contest">مسابقة مكتملة</string>
     <string name="txt_won">فائز</string>
     <string name="txt_successfully_applied_for_contest">تم المشاركة في المسابقة بنجاح</string>
-    <string name="txt_no_contest_found">لايوجد مسابقات.</string>
+    <string name="txt_no_contest_found">لايوجد مسابقة في هذا الوقت</string>
     <string name="txt_apply_for_context">فضلا تقدم بالمشاركة في المسابقة</string>
     <string name="txt_no_onging_contest_found">يوجد مسابقات مستمرة</string>
     <string name="txt_pending_content">محتموى بإنتظار الموافقة</string>
@@ -251,7 +251,7 @@
     <string name="txt_company_address">عنوان الشركة</string>
     <string name="txt_search_ad_by_name">البحث عن اعلان بالاسم</string>
     <string name="search_product_by_name">بحث المنتج بالاسم</string>
-    <string name="txt_just_now">الآن فقط</string>
+    <string name="txt_just_now">الان</string>
     <string name="txt_second">ثانيا</string>
     <string name="txt_delete">حذف</string>
     <string name="txt_search_filter_by_name">تصفية البحث بالاسم</string>
@@ -297,6 +297,11 @@
     <string name="txt_share">تم مشاركة هذه الصوره من تطبيق SportWidget, حمل تطبيقنا واستمتع بمئات الصور الرياضية المجانية</string>
     <string name="txt_all_ongoing_contest">جميع المسابقات الجارية</string>
     <string name="txt_all_completed">جميع المسابقات المنتهية</string>
+    <string name="txt_image_saved_successfully">تم حفظ الصورة بنجاح</string>
+    <string name="txt_added_successfully">البحث عن اعلان بالاسم</string>
+    <string name="txt_designer_stickers">Designer Stickers</string>
+    <string name="txt_designer_emoji">Designer Emoji</string>
+    <string name="txt_all_fan_home">All</string>
 
     <!---->
 

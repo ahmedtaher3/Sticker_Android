@@ -165,21 +165,26 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                         break;
                     case 2:
                         setItemVisible();
-                        replaceFragment(new FanHomeStickerFragment());
+                        replaceFragment(new FanHomeAllFragment());
                         break;
+
                     case 3:
                         setItemVisible();
-                        replaceFragment(new FanHomeGifFragment());
+                        replaceFragment(new FanHomeStickerFragment());
                         break;
                     case 4:
                         setItemVisible();
-                        replaceFragment(new FanHomeEmojiFragment());
+                        replaceFragment(new FanHomeGifFragment());
                         break;
                     case 5:
                         setItemVisible();
-                        replaceFragment(new FanHomeAdsFragment());
+                        replaceFragment(new FanHomeEmojiFragment());
                         break;
                     case 6:
+                        setItemVisible();
+                        replaceFragment(new FanHomeAdsFragment());
+                        break;
+                    case 7:
                         setItemVisible();
                         replaceFragment(new FanHomeProductsFragment());
                         break;
@@ -449,6 +454,9 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         contestTab.setText(R.string.txt_contest); // set the Text for the first Tab
         tabLayout.addTab(contestTab);
 
+        TabLayout.Tab contestTabAll = tabLayout.newTab();
+        contestTabAll.setText(R.string.txt_all_fan_home); // set the Text for the first Tab
+        tabLayout.addTab(contestTabAll);
 
         TabLayout.Tab stickerTab = tabLayout.newTab();
         stickerTab.setText(getString(R.string.stickers)); // set the Text for the first Tab
@@ -511,6 +519,10 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         if (fragment instanceof FanHomeStickerFragment) {
             ((FanHomeStickerFragment) fragment).searchData(query.trim());
         }
+
+        if (fragment instanceof FanHomeAllFragment) {
+            ((FanHomeAllFragment) fragment).searchData(query.trim());
+        }
         if (fragment instanceof FanHomeEmojiFragment) {
             ((FanHomeEmojiFragment) fragment).searchData(query.trim());
         }
@@ -570,7 +582,9 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         if (f1 instanceof FanHomeStickerFragment) {
             ((FanHomeStickerFragment) f).onActivityResult(requestCode, resultCode, data);
         }
-
+        if (f1 instanceof FanHomeAllFragment) {
+            ((FanHomeAllFragment) f).onActivityResult(requestCode, resultCode, data);
+        }
       /*  for (Fragment fragment : getChildFragmentManager().getFragments()) {
                 fragment.onActivityResult(requestCode, resultCode, data);
             }*/

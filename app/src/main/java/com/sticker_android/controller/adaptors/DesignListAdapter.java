@@ -348,9 +348,9 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 final boolean isLeftToRight;
                 isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
                 if (isLeftToRight) {
-                    itemHolder.imvBackground.setImageResource(R.drawable.contest_hdpi);
+                    itemHolder.imvBackground.setBackgroundResource(R.drawable.contest_hdpi);
                 }else{
-                    itemHolder.imvBackground.setImageResource(R.drawable.contest_ldrtl_hdpi);
+                    itemHolder.imvBackground.setBackgroundResource(R.drawable.contest_ldrtl_hdpi);
 
                 }
             }

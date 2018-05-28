@@ -852,7 +852,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             } else {
                 ((ProductHolder) holder).contestname.setVisibility(View.VISIBLE);
                 ((ProductHolder) holder).contestname.setText(product.getProductname());
-            }
+
+               }
         }
 
 
@@ -1260,9 +1261,9 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                     final boolean isLeftToRight;
                     isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
                     if (isLeftToRight) {
-                        itemHolder.imvBackground.setImageResource(R.drawable.contest_hdpi);
+                        itemHolder.imvBackground.setBackgroundResource(R.drawable.contest_hdpi);
                     }else{
-                        itemHolder.imvBackground.setImageResource(R.drawable.contest_ldrtl_hdpi);
+                        itemHolder.imvBackground.setBackgroundResource(R.drawable.contest_ldrtl_hdpi);
 
                     }
                 }

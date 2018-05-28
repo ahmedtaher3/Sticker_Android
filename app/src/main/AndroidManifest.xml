@@ -43,8 +43,7 @@
             android:label="@string/title_activity_fan_home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden"/>
-
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".controller.activities.common.profile.ProfileActivity"
             android:screenOrientation="portrait"
@@ -145,12 +144,17 @@
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".controller.activities.fan.home.details.FanDetailsActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+
             <!-- Branch URI scheme -->
             <intent-filter>
-                <data android:scheme="sportwidget" android:host="open" />
+                <data
+                    android:host="open"
+                    android:scheme="sportwidget" />
+
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
@@ -158,9 +162,13 @@
             <!-- Branch App Links -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="sportwiget.app.link" />
+
+                <data
+                    android:host="sportwiget.app.link"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
@@ -185,28 +193,42 @@
         <activity
             android:name=".controller.activities.fan.home.fandownloadmage.FanDownloadedImageActivity"
             android:screenOrientation="portrait" />
-
-        <activity  android:screenOrientation="portrait"  android:name=".controller.activities.common.contestDetails.ContestDetailsActivity" />
-        <activity  android:screenOrientation="portrait" android:name=".controller.activities.common.contestlist.ContestAllItemListActivity" />
-        <activity  android:screenOrientation="portrait" android:name=".controller.activities.common.contestDetails.ContestCompletedDetailsActivity" />
-        <activity  android:screenOrientation="portrait" android:name=".controller.activities.common.contestlist.ContestCompletedAllUserActivity"></activity>
-
-
+        <activity
+            android:name=".controller.activities.common.contestDetails.ContestDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".controller.activities.common.contestlist.ContestAllItemListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".controller.activities.common.contestDetails.ContestCompletedDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".controller.activities.common.contestlist.ContestCompletedAllUserActivity"
+            android:screenOrientation="portrait" />
 
         <!-- Branch init -->
-        <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_dmB5svfQ33SmlJbbGnTYwdcfvAlDKjLO" />
-        <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_mcw7DwiR47UebJogVgP5tcloAAfsReHZ" />
+        <meta-data
+            android:name="io.branch.sdk.BranchKey"
+            android:value="key_live_dmB5svfQ33SmlJbbGnTYwdcfvAlDKjLO" />
+        <meta-data
+            android:name="io.branch.sdk.BranchKey.test"
+            android:value="key_test_mcw7DwiR47UebJogVgP5tcloAAfsReHZ" />
 
         <!-- Branch testing (TestMode "true" to simulate fresh installs on dev environment) -->
-        <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />
+        <meta-data
+            android:name="io.branch.sdk.TestMode"
+            android:value="false" />
 
         <!-- Branch install referrer tracking -->
-        <receiver android:name="io.branch.referral.InstallListener" android:exported="true">
+        <receiver
+            android:name="io.branch.referral.InstallListener"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
 
+        <activity android:name=".controller.activities.fan.home.imagealbum.ImageAlbumStickers.ImageAlbumStickers"></activity>
     </application>
 
 </manifest>

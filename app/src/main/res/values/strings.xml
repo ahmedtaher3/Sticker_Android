@@ -243,7 +243,7 @@
     <string name="act_txt_update_add_new_design">Update</string>
     <string name="txt_please_select_a_valid_gif">Please select a valid gif</string>
     <string name="txt_could_not_find_file_path">Could not find the filepath of the selected file</string>
-    <string name="txt_add_added_successfully">" Product added successfully."</string>
+    <string name="txt_add_added_successfully">" Ads added successfully."</string>
     <string name="txt_product_added_successfully">Product added successfully</string>
     <string name="act_renew_product_txt_data_updated_successfully">Data updated successfully.</string>
     <string name="txt_change_language">Change Language</string>
@@ -298,5 +298,10 @@
     <string name="txt_share">This image shared with you from SportWidget, Download the mobile app and use hundreds of sport images for free</string>
     <string name="txt_all_ongoing_contest">All Ongoing Contest</string>
     <string name="txt_all_completed">All Completed Contest</string>
+    <string name="txt_image_saved_successfully">Image Saved Successfully.</string>
+    <string name="txt_added_successfully">Added Successfully</string>
+    <string name="txt_designer_stickers">Designer Stickers</string>
+    <string name="txt_designer_emoji">Designer Emoji</string>
+    <string name="txt_all_fan_home">All</string>
 
 </resources>
