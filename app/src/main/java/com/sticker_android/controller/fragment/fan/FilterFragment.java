@@ -199,6 +199,8 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         AppLogger.debug(TAG, "Outside onCreateView() method");
         /*if (new AppPref(getActivity()).getAds() != null)
             adDialog();*/
+
+        getRandomAdApi();
         return inflatedView;
     }
 
@@ -844,6 +846,30 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                     .into(image);
 
         }
+    }
+
+
+    private void getRandomAdApi() {
+        final AppPref appPref=new AppPref(getActivity());
+        if (appPref.getLoginFlag(false)) {
+            User adObj= appPref.getUserInfo();
+            Call<ApiResponse> apiResponseCall = RestClient.getService().getRandomFeaturedProduct(adObj.getLanguageId(), adObj.getAuthrizedKey(), adObj.getId(), "product");
+
+            apiResponseCall.enqueue(new ApiCall(getActivity()) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
+                    if (apiResponse.status) {
+                        appPref.saveAds(apiResponse.paylpad.product);
+                    }
+                }
+
+                @Override
+                public void onFail(Call<ApiResponse> call, Throwable t) {
+
+                }
+            });
+        }
+
     }
 
 }
