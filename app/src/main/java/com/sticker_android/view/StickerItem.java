@@ -11,12 +11,9 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import com.sticker_android.R;
-import com.sticker_android.utils.AppConstants;
 import com.sticker_android.utils.RectUtil;
 
 /**
