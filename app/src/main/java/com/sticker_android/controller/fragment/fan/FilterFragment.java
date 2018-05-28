@@ -36,6 +36,14 @@ import android.widget.Toast;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.bumptech.glide.DrawableTypeRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.sticker_android.R;
@@ -150,8 +158,8 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 mSelectedFilter.imageUrl = stickerPath;
                 setSelectedFilter();
 
-                rlFilterOptionContainer.setVisibility(View.INVISIBLE);
-                rlResetButtonHolder.setVisibility(View.GONE);
+                rlFilterOptionContainer.setVisibility(View.VISIBLE);
+                rlResetButtonHolder.setVisibility(View.VISIBLE);
                 makeSaveButtonEnable(true);
             } else {
                 makeSaveButtonEnable(false);
@@ -303,9 +311,9 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                     mSelectedFilter = data.getParcelableExtra(ImageAlbumActivity.SELECTED_FILTER);
                     AppLogger.error(TAG, "Inside onActivityResult()" + mSelectedFilter.type);
                     if (mSelectedFilter != null) {
-                        mStickerView.clear();
+                        /*mStickerView.clear();
                         imgFilterMask.setImageBitmap(null);
-                        imgFilterMask.setVisibility(View.GONE);
+                        imgFilterMask.setVisibility(View.GONE);*/
                         makeSaveButtonEnable(true);
                         setSelectedFilter();
                     }
@@ -317,52 +325,62 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     private void setSelectedFilter() {
         final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(mHostActivity);
         progressDialogHandler.show();
-        mHostActivity.imageLoader.loadImage(mSelectedFilter.imageUrl, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String s, View view) {
 
+        DrawableTypeRequest request = Glide.with(this).load(mSelectedFilter.imageUrl);
+        request.listener(new RequestListener<String, GlideDrawable>() {
+            @Override
+            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                progressDialogHandler.hide();
+                return false;
             }
 
             @Override
-            public void onLoadingFailed(String s, View view, FailReason failReason) {
-                progressDialogHandler.hide();
-            }
-
-            @Override
-            public void onLoadingComplete(String s, View view, final Bitmap bitmap) {
-                progressDialogHandler.hide();
-                if (mSelectedFilter.type.contains("filter")) {
-                    mStickerView.setVisibility(View.GONE);
-                    imgFilterMask.setVisibility(View.VISIBLE);
-
-                    imgFilterMask.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            imgFilterMask.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            int width = imgFilterMask.getWidth();
-                            int height = imgFilterMask.getHeight();
-                            Log.e(TAG, "Set filter height");
-
-                            int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
-                            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
-                            params.height = imgHeight;
-                            imgFilterMask.setLayoutParams(params);
-
-                            imgFilterMask.setImageBitmap(bitmap);
-                        }
-                    });
-                } else {
-                    mStickerView.setVisibility(View.VISIBLE);
-                    imgFilterMask.setVisibility(View.GONE);
-                    setSelectedStickerItem(bitmap);
-                }
-            }
-
-            @Override
-            public void onLoadingCancelled(String s, View view) {
-                progressDialogHandler.hide();
+            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                return false;
             }
         });
+        request.asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(final Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                        progressDialogHandler.hide();
+
+                        if (mSelectedFilter.type.contains("filter")) {
+                            /* mStickerView.setVisibility(View.GONE);*/
+                            imgFilterMask.setVisibility(View.VISIBLE);
+
+                            int width = imgFilterMask.getWidth();
+                            if(width != 0){
+                                int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
+                                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
+                                params.height = imgHeight;
+                                imgFilterMask.setLayoutParams(params);
+                                imgFilterMask.setImageBitmap(bitmap);
+                            }
+                            else {
+                                imgFilterMask.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                    @Override
+                                    public void onGlobalLayout() {
+                                        imgFilterMask.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                        int width = imgFilterMask.getWidth();
+                                        int height = imgFilterMask.getHeight();
+
+                                        int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
+                                        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
+                                        params.height = imgHeight;
+                                        imgFilterMask.setLayoutParams(params);
+                                        imgFilterMask.setImageBitmap(bitmap);
+                                    }
+                                });
+                            }
+
+                        } else {
+                            mStickerView.setVisibility(View.VISIBLE);
+                            /*imgFilterMask.setVisibility(View.GONE);*/
+                            setSelectedStickerItem(bitmap);
+                        }
+                    }
+                });
     }
 
     private void openCropActivity(String url) {
@@ -438,7 +456,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         }
 
         saveFilePath = Utils.getCustomImagePath(mHostActivity, null).getAbsolutePath();
-      //  beginUpload(saveFilePath);
+        //  beginUpload(saveFilePath);
         mainImage.setDrawingCacheEnabled(true);
         mainImage.buildDrawingCache(true);
 
@@ -449,21 +467,33 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         imgFilterMask.buildDrawingCache(true);
 
         mSaveImageTask = new SaveImageTask();
-        if(mSelectedFilter.type.contains("filter")){
+        /*if(mSelectedFilter.type.contains("filter")){
             mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), imgFilterMask.getDrawingCache(), true));
         }
         else{
             mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), mStickerView.getDrawingCache(), false));
-        }
+        }*/
+
+        mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), mStickerView.getDrawingCache(), imgFilterMask.getDrawingCache()));
     }
 
-    public static Bitmap mergeBitmap(Bitmap bmp1, Bitmap bmp2, boolean alignBottom) {
+    /**
+     * will merge the filter bitmap and sticker or emoji bitmap with original image bitmap
+     * @param bmp1 original image
+     * @param bmp2 sticker or emoji
+     * @param bmp3 filter
+     * @return Merged bitmap
+     */
+    public static Bitmap mergeBitmap(Bitmap bmp1, Bitmap bmp2, Bitmap bmp3) {
         Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(bmp1, new Matrix(), null);
-        if (alignBottom) {
-            canvas.drawBitmap(bmp2, 0, bmp1.getHeight() - bmp2.getHeight(), null);
-        } else {
+
+        if (bmp3 != null) {
+            canvas.drawBitmap(bmp3, 0, bmp1.getHeight() - bmp3.getHeight(), null);
+        }
+
+        if(bmp2 != null){
             canvas.drawBitmap(bmp2, 0, 0, null);
         }
         return bmOverlay;
@@ -492,7 +522,6 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.llFilter:
                 openFilterGallery("filter");
-
                 break;
             case R.id.llSticker:
                 openFilterGallery("stickers");
@@ -569,6 +598,13 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     }
 
     private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mStickerView.setVisibility(View.GONE);
+        }
+
         @Override
         protected Bitmap doInBackground(String... params) {
             try {
@@ -590,6 +626,13 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 mainBitmap.recycle();
                 mainBitmap = null;
                 System.gc();
+            }
+
+            if(result != null){
+                Log.e(TAG, "result is not null");
+            }
+            else{
+                Log.e(TAG, "result is null");
             }
             mainBitmap = result;
             mainImage.setImageBitmap(result);
@@ -692,7 +735,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 Log.d(TAG, "onStateChanged: " + id + ", " + state);
                 if (TransferState.COMPLETED == state) {
                     if(progressDialogHandler!=null)
-                    progressDialogHandler.hide();
+                        progressDialogHandler.hide();
                     String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
                     saveImageApi(imagePath);
                 }
@@ -707,7 +750,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onError(int id, Exception ex) {
                 if(progressDialogHandler!=null)
-                progressDialogHandler.hide();
+                    progressDialogHandler.hide();
                 Log.e(TAG, "Error during upload: " + id, ex);
             }
 
