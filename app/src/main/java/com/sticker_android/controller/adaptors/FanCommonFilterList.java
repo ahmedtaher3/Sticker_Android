@@ -153,7 +153,7 @@ public class FanCommonFilterList extends RecyclerView.Adapter<RecyclerView.ViewH
             return vh;
         } else {
             // create a new view
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_grid_item, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_grid_album, parent, false);
             // set the view's size, margins, paddings and layout parameters
             final FanCommonFilterList.ViewHolder vh = new FanCommonFilterList.ViewHolder(v);
 

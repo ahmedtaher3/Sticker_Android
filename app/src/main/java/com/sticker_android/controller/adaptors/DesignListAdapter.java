@@ -66,7 +66,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private TimeUtility timeUtility = new TimeUtility();
 
-    public interface OnProductItemClickListener{
+    public interface OnProductItemClickListener {
         void onProductItemClick(Product product);
     }
 
@@ -75,15 +75,15 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView imvOfAds,imvBackground;
+        public ImageView imvOfAds, imvBackground;
         public TextView tvProductTitle, tvStatus, tvDesciption, tvTime, tvDownloads;
         public CheckBox checkboxLike, checkboxShare;
         public ImageButton imvBtnEditRemove;
         public CardView cardItem;
         public ProgressBar pbLoader;
 
-        public TextView contestname;
-        public RelativeLayout rlProduct,rlContest,rlContestMain;
+        public TextView contestname, tvContestApplyVote;
+        public RelativeLayout rlProduct, rlContest, rlContestMain;
 
 
         public ViewHolder(View view) {
@@ -101,9 +101,10 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             pbLoader = (ProgressBar) view.findViewById(R.id.pgrImage);
             contestname = (TextView) view.findViewById(R.id.tv_content_description);
             rlProduct = (RelativeLayout) view.findViewById(R.id.rlProduct);
-            rlContest=(RelativeLayout)view.findViewById(R.id.rlContest);
-            rlContestMain=(RelativeLayout)view.findViewById(R.id.rlContestMain);
-            imvBackground =(ImageView)view.findViewById(R.id.imvBackground);
+            rlContest = (RelativeLayout) view.findViewById(R.id.rlContest);
+            rlContestMain = (RelativeLayout) view.findViewById(R.id.rlContestMain);
+            imvBackground = (ImageView) view.findViewById(R.id.imvBackground);
+            tvContestApplyVote = (TextView) view.findViewById(R.id.tvContestText);
 
         }
     }
@@ -124,11 +125,11 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         context = cnxt;
     }
 
-    public void setDesignerActionListener(DesignerActionListener actionListener){
+    public void setDesignerActionListener(DesignerActionListener actionListener) {
         this.designerActionListener = actionListener;
     }
 
-    public void setOnProductClickListener(OnProductItemClickListener productClickListener){
+    public void setOnProductClickListener(OnProductItemClickListener productClickListener) {
         this.productItemClickListener = productClickListener;
     }
 
@@ -139,7 +140,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         isLoaderVisible = false;
     }
 
-    public void updateAdapterData(ArrayList<Product> data){
+    public void updateAdapterData(ArrayList<Product> data) {
         mItems = new ArrayList<>();
         mItems.addAll(data);
     }
@@ -163,7 +164,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         Product postItem = new Product();
         postItem.setProductid(-1);
         int index = mItems.indexOf(postItem);
-        AppLogger.error(TAG, "Loader index => "+ index);
+        AppLogger.error(TAG, "Loader index => " + index);
         if (index != -1) {
             mItems.remove(index);
             //notifyDataSetChanged();
@@ -173,7 +174,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public void removeProductData(int index){
+    public void removeProductData(int index) {
         if (index != -1) {
             mItems.remove(index);
             notifyItemRemoved(index);
@@ -181,7 +182,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public void removeProductData(Product product){
+    public void removeProductData(Product product) {
         int index = mItems.indexOf(product);
         if (index != -1) {
             mItems.remove(index);
@@ -221,10 +222,9 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     productItemClickListener.onProductItemClick(product);
                     Intent intent = new Intent(context, DesignDetailActivity.class);
                     intent.putExtra(AppConstant.PRODUCT, product);
-                    ((Activity)context).startActivityForResult(intent, 0);
+                    ((Activity) context).startActivityForResult(intent, 0);
                 }
             });
-
 
 
             vh.rlContestMain.setOnClickListener(new View.OnClickListener() {
@@ -242,7 +242,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     notification.acme = acme;
                     bundle.putParcelable(AppConstant.NOTIFICATION_OBJ, notification);
                     intent.putExtras(bundle);
-                    ((Activity)context).startActivityForResult(intent, AppConstant.INTENT_NOTIFICATION_CODE);
+                    ((Activity) context).startActivityForResult(intent, AppConstant.INTENT_NOTIFICATION_CODE);
 
                 }
             });
@@ -263,7 +263,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         } else {
             final ViewHolder itemHolder = (ViewHolder) holder;
             final Product productItem = mItems.get(position);
-            if (productItem.getType().equals("stickers")||productItem.getType().equals("emoji")||productItem.getType().equals("gif")) {
+            if (productItem.getType().equals("stickers") || productItem.getType().equals("emoji") || productItem.getType().equals("gif")) {
                 itemHolder.rlProduct.setVisibility(View.VISIBLE);
                 itemHolder.rlContest.setVisibility(View.GONE);
 
@@ -341,6 +341,8 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
                 }
             } else {
+                itemHolder.tvContestApplyVote.setVisibility(View.VISIBLE);
+                itemHolder.tvContestApplyVote.setText(R.string.txt_paricipate_in_contest);
                 itemHolder.rlProduct.setVisibility(View.GONE);
                 itemHolder.rlContest.setVisibility(View.VISIBLE);
                 itemHolder.contestname.setText(productItem.getProductname());
@@ -349,7 +351,7 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
                 if (isLeftToRight) {
                     itemHolder.imvBackground.setBackgroundResource(R.drawable.contest_hdpi);
-                }else{
+                } else {
                     itemHolder.imvBackground.setBackgroundResource(R.drawable.contest_ldrtl_hdpi);
 
                 }
@@ -374,7 +376,8 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     /**
      * Method is used to show the popup with edit and delete option     *
-     * @param v view on which click is perfomed
+     *
+     * @param v        view on which click is perfomed
      * @param position position of item
      * @param product
      */
@@ -383,11 +386,10 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final int removeId = 2;
         final int reSubmitId = 3;
         PopupMenu popup = new PopupMenu(context, v);
-        if(product.productStatus==3){
+        if (product.productStatus == 3) {
             popup.getMenu().add(1, reSubmitId, reSubmitId, R.string.txt_resubmit);
             popup.getMenu().add(1, removeId, removeId, R.string.remove);
-        }
-        else{
+        } else {
             popup.getMenu().add(1, editId, editId, R.string.edit);
             popup.getMenu().add(1, removeId, removeId, R.string.remove);
         }
@@ -402,15 +404,14 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         break;
                     case removeId:
                         AppLogger.error(TAG, "Remove item");
-                        if(Utils.isConnectedToInternet(context)){
+                        if (Utils.isConnectedToInternet(context)) {
                             Utils.deleteDialog(context.getString(R.string.txt_are_you_sure), (Activity) context, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     removeProductApi(product);
                                 }
                             });
-                        }
-                        else{
+                        } else {
                             Utils.showToastMessage(context, context.getString(R.string.pls_check_ur_internet_connection));
                         }
                         break;

@@ -227,7 +227,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".controller.activities.fan.home.imagealbum.ImageAlbumStickers.ImageAlbumStickers"></activity>
+        <activity android:screenOrientation="portrait"  android:name=".controller.activities.fan.home.imagealbum.ImageAlbumStickers.ImageAlbumStickers"></activity>
     </application>
 
 </manifest>

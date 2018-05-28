@@ -975,7 +975,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
             public CardView cardItem;
             public ProgressBar pbLoader;
             TextView tvFeatured;
-            public TextView contestname;
+            public TextView contestname,tvContestVoteText;
             public RelativeLayout rlProduct, rlContest, rlContestMain;
 
             public ViewHolder(View view) {
@@ -997,6 +997,7 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                 rlContest = (RelativeLayout) view.findViewById(R.id.rlContest);
                 rlContestMain = (RelativeLayout) view.findViewById(R.id.rlContestMain);
                 imvBackground =(ImageView)view.findViewById(R.id.imvBackground);
+                tvContestVoteText =(TextView) view.findViewById(R.id.tvContestText);
             }
         }
 
@@ -1253,6 +1254,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
                         itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
                     }
                 } else {
+                    itemHolder.tvContestVoteText.setVisibility(View.VISIBLE);
+                    itemHolder.tvContestVoteText.setText(R.string.txt_paricipate_in_contest);
                     itemHolder.rlProduct.setVisibility(View.GONE);
                     itemHolder.rlContest.setVisibility(View.VISIBLE);
                     itemHolder.contestname.setText(productItem.getProductname());
@@ -1307,6 +1310,8 @@ public class AdsFragment extends BaseFragment implements SwipeRefreshLayout.OnRe
         }
     }
 
+
+    public void imageUpload(){}
 
 }
 

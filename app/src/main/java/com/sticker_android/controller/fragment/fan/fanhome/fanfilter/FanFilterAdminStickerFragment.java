@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +25,9 @@ import com.sticker_android.model.interfaces.NetworkPopupEventListener;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
-import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
-import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.view.EndlessRecyclerViewScrollListener;
 import com.sticker_android.view.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
@@ -68,6 +66,7 @@ public class FanFilterAdminStickerFragment extends BaseFragment implements Swipe
 
     private String mParam1;
     private String mParam2;
+    private EndlessRecyclerViewScrollListener scrollListener2;
 
 
     public FanFilterAdminStickerFragment() {
@@ -146,16 +145,23 @@ public class FanFilterAdminStickerFragment extends BaseFragment implements Swipe
         // in content do not change the layout size of the RecyclerView
         rcItemStickers.setHasFixedSize(true);
 
-        mLinearLayoutManager = new GridLayoutManager(mContext,4, LinearLayoutManager.VERTICAL,false);
+      /*  mLinearLayoutManager = new GridLayoutManager(mContext,4);
         // use a linear layout manager
         rcItemStickers.setLayoutManager(mLinearLayoutManager);
         int spanCount = 4; // 3 columns
         int spacing = 5; // 50px
         boolean includeEdge = false;
-
-        rcItemStickers.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
+        ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getActivity(), R.dimen.dp_1);
+        rcItemStickers.addItemDecoration(itemDecoration);*/
+     /*   rcItemStickers.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, includeEdge));
         rcItemStickers.setNestedScrollingEnabled(true);
+*/
 
+        /*New code*/
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext,5);
+        rcItemStickers.addItemDecoration(new GridSpacingItemDecoration(5, 1, true));
+        rcItemStickers.setLayoutManager(gridLayoutManager);
     }
 
     private void showNoDataFound() {
@@ -180,8 +186,22 @@ public class FanFilterAdminStickerFragment extends BaseFragment implements Swipe
     }
 
     public void setRecScrollListener() {
+        scrollListener2 = new EndlessRecyclerViewScrollListener(mLinearLayoutManager) {
+            @Override
+            public int getFooterViewType(int defaultNoFooterViewType) {
 
-        rcItemStickers.addOnScrollListener(new PaginationScrollListener(mLinearLayoutManager) {
+                return 0;
+            }
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                getDesignFromServer(false, "");
+                mAdapter.addLoader();
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rcItemStickers.addOnScrollListener(scrollListener2);
+      /*  rcItemStickers.addOnScrollListener(new PaginationScrollListener(mLinearLayoutManager) {
             @Override
             protected void loadMoreItems() {
                 AppLogger.debug(TAG, "Load more items");
@@ -212,7 +232,7 @@ public class FanFilterAdminStickerFragment extends BaseFragment implements Swipe
             public boolean isLoading() {
                 return mAdapter.isLoaderVisible;
             }
-        });
+        });*/
     }
 
 

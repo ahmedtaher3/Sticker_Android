@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Category;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.data.CategoryDataWrapper;
 
 import java.util.ArrayList;
@@ -33,8 +34,8 @@ public class AppPref {
 
         String userInfo = settings.getString("user_data", null);
         User user = new Gson().fromJson(userInfo, User.class);
-        if(user ==null) {
-            user =new User();
+        if (user == null) {
+            user = new User();
         }
         return user;
     }
@@ -55,22 +56,21 @@ public class AppPref {
         prefsEditor.commit();
     }
 
-    public ArrayList<Category> getCategoryList(){
+    public ArrayList<Category> getCategoryList() {
         SharedPreferences settings = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
         String categoryInfo = settings.getString("category_data", null);
         CategoryDataWrapper categoryDataWrapper = new Gson().fromJson(categoryInfo, CategoryDataWrapper.class);
 
-        if(categoryDataWrapper == null
+        if (categoryDataWrapper == null
                 || (categoryDataWrapper != null && categoryDataWrapper.categories != null
-                && categoryDataWrapper.categories.size() == 0)){
+                && categoryDataWrapper.categories.size() == 0)) {
             return new ArrayList<>();
-        }
-        else{
+        } else {
             return categoryDataWrapper.categories;
         }
     }
 
-    public void clearCategoryList(){
+    public void clearCategoryList() {
         SharedPreferences sp = context.getSharedPreferences(SHARED_PREFS_NAME, 0);
         SharedPreferences.Editor prefsEditor = sp.edit();
         prefsEditor.remove("category_data");
@@ -81,7 +81,7 @@ public class AppPref {
     * setLoginFlag() method is used to set Login Flag value in SharedPreference.
      * */
 
-    public void setLoginFlag( boolean value) {
+    public void setLoginFlag(boolean value) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean("login", value);
@@ -102,7 +102,7 @@ public class AppPref {
     * setLanguage() method is used to set Login Flag value in SharedPreference.
      * */
 
-    public void setLanguage( int value) {
+    public void setLanguage(int value) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
         editor.putInt("language", value);
@@ -121,7 +121,7 @@ public class AppPref {
     * setLoginFlag() method is used to set Login Flag value in SharedPreference.
      * */
 
-    public void setLanguageStatus( boolean value) {
+    public void setLanguageStatus(boolean value) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean("languageShow", value);
@@ -138,12 +138,12 @@ public class AppPref {
     }
 
 
-
     /**
      * This method is to save the new messages count
-     *@param value
+     *
+     * @param value
      */
-    public  void saveNewMessagesCount( int value){
+    public void saveNewMessagesCount(int value) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sp.edit();
         editor.putInt("messageCount", value);
@@ -153,19 +153,42 @@ public class AppPref {
 
     /**
      * This method is to get the new messages count
-     *@return message count
+     *
+     * @return message count
      */
-    public  int getNewMessagesCount(int defVal){
+    public int getNewMessagesCount(int defVal) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt("messageCount", defVal);
     }
 
-    public void userLogout(){
+    public void userLogout() {
 
         saveUserObject(new User());
         setLoginFlag(false);
         saveNewMessagesCount(0);
         LocalNotification.clearNotifications(context);
     }
+
+
+    public void saveAds(Product product) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor prefsEditor = sp.edit();
+        prefsEditor.putString("ads_data", new Gson().toJson(product));
+        prefsEditor.apply();
+
+    }
+
+    public Product getAds() {
+
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+
+        String userInfo = settings.getString("ads_data", null);
+        Product productObj = new Gson().fromJson(userInfo, Product.class);
+
+        return productObj;
+
+    }
+
 
 }

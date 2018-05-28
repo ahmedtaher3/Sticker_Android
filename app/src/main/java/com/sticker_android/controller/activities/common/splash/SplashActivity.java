@@ -18,11 +18,16 @@ import com.sticker_android.controller.activities.designer.home.DesignerHomeActiv
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.BadgeUtils;
 
 import java.util.Locale;
+
+import retrofit2.Call;
 
 public class SplashActivity extends AppBaseActivity {
 
@@ -37,6 +42,7 @@ public class SplashActivity extends AppBaseActivity {
         changeStatusBarColor(Color.BLACK);
         BadgeUtils.setBadge(this,0);
         LocalNotification.clearNotifications(this);
+        getRandomAdApi();
     }
 
     private void init() {
@@ -147,5 +153,29 @@ public class SplashActivity extends AppBaseActivity {
       }
 
   }
+
+
+    private void getRandomAdApi() {
+
+        if (appPref.getLoginFlag(false)) {
+           User adObj= appPref.getUserInfo();
+            Call<ApiResponse> apiResponseCall = RestClient.getService().getRandomFeaturedProduct(adObj.getLanguageId(), adObj.getAuthrizedKey(), adObj.getId(), "product");
+
+            apiResponseCall.enqueue(new ApiCall(getActivity()) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
+                    if (apiResponse.status) {
+                        appPref.saveAds(apiResponse.paylpad.product);
+                    }
+                }
+
+                @Override
+                public void onFail(Call<ApiResponse> call, Throwable t) {
+
+                }
+            });
+        }
+
+    }
 
 }

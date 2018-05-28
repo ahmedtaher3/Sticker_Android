@@ -25,10 +25,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +38,10 @@ import android.widget.Toast;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.sticker_android.R;
@@ -44,6 +50,7 @@ import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumActivity;
 import com.sticker_android.controller.activities.fan.home.imagealbum.ImageAlbumStickers.ImageAlbumStickers;
 import com.sticker_android.model.User;
+import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.filter.FanFilter;
 import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.network.ApiCall;
@@ -114,6 +121,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     private FanFilter mSelectedFilter;
     public static final String IMAGE_PATH = "image_path";
     public static final String STICKER_IMAGE_PATH = "sticker_image_path";
+    private Product adObj = null;
 
     @Override
     public void onAttach(Context context) {
@@ -180,6 +188,8 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         });
 
         AppLogger.debug(TAG, "Outside onCreateView() method");
+        /*if (new AppPref(getActivity()).getAds() != null)
+            adDialog();*/
         return inflatedView;
     }
 
@@ -439,7 +449,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         }
 
         saveFilePath = Utils.getCustomImagePath(mHostActivity, null).getAbsolutePath();
-      //  beginUpload(saveFilePath);
+        //  beginUpload(saveFilePath);
         mainImage.setDrawingCacheEnabled(true);
         mainImage.buildDrawingCache(true);
 
@@ -450,10 +460,9 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         imgFilterMask.buildDrawingCache(true);
 
         mSaveImageTask = new SaveImageTask();
-        if(mSelectedFilter.type.contains("filter")){
+        if (mSelectedFilter.type.contains("filter")) {
             mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), imgFilterMask.getDrawingCache(), true));
-        }
-        else{
+        } else {
             mSaveImageTask.execute(mergeBitmap(mainImage.getDrawingCache(), mStickerView.getDrawingCache(), false));
         }
     }
@@ -552,12 +561,12 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        if(type.equalsIgnoreCase("filter")){
+        if (type.equalsIgnoreCase("filter")) {
             Intent intent = new Intent(getActivity(), ImageAlbumActivity.class);
             intent.putExtra(ImageAlbumActivity.FILTER_IMAGE_TYPE, type);
             startActivityForResult(intent, CHOOSE_GALLERY_FILTER);
 
-        }else{
+        } else {
             Intent intent = new Intent(getActivity(), ImageAlbumStickers.class);
             intent.putExtra(ImageAlbumActivity.FILTER_IMAGE_TYPE, type);
             startActivityForResult(intent, CHOOSE_GALLERY_FILTER);
@@ -565,7 +574,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         }
 
 
-        }
+    }
 
     private void pickGalleryImage() {
         Intent openGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -703,8 +712,8 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             public void onStateChanged(int id, TransferState state) {
                 Log.d(TAG, "onStateChanged: " + id + ", " + state);
                 if (TransferState.COMPLETED == state) {
-                    if(progressDialogHandler!=null)
-                    progressDialogHandler.hide();
+                    if (progressDialogHandler != null)
+                        progressDialogHandler.hide();
                     String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
                     saveImageApi(imagePath);
                 }
@@ -718,8 +727,8 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onError(int id, Exception ex) {
-                if(progressDialogHandler!=null)
-                progressDialogHandler.hide();
+                if (progressDialogHandler != null)
+                    progressDialogHandler.hide();
                 Log.e(TAG, "Error during upload: " + id, ex);
             }
 
@@ -752,6 +761,36 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+    }
+
+
+    public void adDialog() {
+        adObj = new AppPref(mContext).getAds();
+        if (adObj != null) {
+            Dialog dialog = new Dialog(getActivity());
+            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(getLayoutInflater().inflate(R.layout.image_dialog, null));
+            dialog.show();
+            final ProgressBar pgrImage = dialog.findViewById(R.id.pgrImage);
+            ImageView image = dialog.findViewById(R.id.image);
+            Glide.with(getActivity())
+                    .load(adObj.getImagePath())
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            pgrImage.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            pgrImage.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(image);
+
+        }
     }
 
 }

@@ -20,7 +20,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/contest_ldrtl_hdpi"></ImageView>
-
+        <TextView
+            android:id="@+id/tvContestText"
+            fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:alpha=".75"
+            android:background="@drawable/drawable_featured"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:text="@string/txt_featured"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:visibility="gone" />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

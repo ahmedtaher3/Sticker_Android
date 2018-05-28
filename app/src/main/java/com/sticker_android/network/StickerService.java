@@ -235,7 +235,7 @@ public interface StickerService {
     @FormUrlEncoded
     @POST(ApiConstant.API_GET_RANDOM_FEATURED_PRODUCT)
     public Call<ApiResponse> getRandomFeaturedProduct(@Field("language_id") String languageId, @Field("authrized_key") String authKey,
-                                                       @Field("user_id") String userId);
+                                                       @Field("user_id") String userId, @Field("key_name") String name);
 
 
 }

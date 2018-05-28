@@ -60,11 +60,12 @@ public class ContestListAdaptor extends RecyclerView.Adapter<ContestListAdaptor.
         isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
         if (isLeftToRight) {
             holder.imvBackground.setBackgroundResource(R.drawable.contest_hdpi);
-        }else{
+        } else {
             holder.imvBackground.setBackgroundResource(R.drawable.contest_ldrtl_hdpi);
 
         }
-
+        holder.tvContestApplyVote.setVisibility(View.VISIBLE);
+        holder.tvContestApplyVote.setText(R.string.txt_give_your_vote);
         //   holder.imvBackground.setImageResource(R.drawable.contest_hdpi);
         holder.imvBackground.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +95,7 @@ public class ContestListAdaptor extends RecyclerView.Adapter<ContestListAdaptor.
 
 
     class ContestViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvContestApplyVote;
         TextView tvDescription;
         ImageButton imbNext;
         CardView cardView;
@@ -105,6 +107,7 @@ public class ContestListAdaptor extends RecyclerView.Adapter<ContestListAdaptor.
             imbNext = (ImageButton) view.findViewById(R.id.imbNext);
             //  cardView        =   (CardView) view.findViewById(R.id.card_view);
             imvBackground = (ImageView) view.findViewById(R.id.imvBackground);
+            tvContestApplyVote = (TextView) view.findViewById(R.id.tvContestText);
         }
     }
 

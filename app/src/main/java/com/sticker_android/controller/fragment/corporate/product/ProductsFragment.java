@@ -944,7 +944,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
             public ImageButton imvBtnEditRemove;
             public CardView cardItem;
             public ProgressBar pbLoader;
-            TextView tvFeatured;
+            TextView tvFeatured,tvContestVoteText;
             public TextView contestname;
             public RelativeLayout rlProduct,rlContest,rlContestMain;
 
@@ -967,6 +967,7 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                 rlContest=(RelativeLayout)view.findViewById(R.id.rlContest);
                 rlContestMain=(RelativeLayout)view.findViewById(R.id.rlContestMain);
                 imvBackground =(ImageView)view.findViewById(R.id.imvBackground);
+                tvContestVoteText =(TextView) view.findViewById(R.id.tvContestText);
             }
         }
 
@@ -1219,6 +1220,8 @@ public class ProductsFragment extends BaseFragment implements SwipeRefreshLayout
                         itemHolder.imvOfAds.setBackgroundColor(ContextCompat.getColor(context, R.color.image_background_color));
                     }
                 } else {
+                    itemHolder.tvContestVoteText.setVisibility(View.VISIBLE);
+                    itemHolder.tvContestVoteText.setText(R.string.txt_paricipate_in_contest);
                     itemHolder.rlProduct.setVisibility(View.GONE);
                     itemHolder.rlContest.setVisibility(View.VISIBLE);
                     itemHolder.contestname.setText(productItem.getProductname());

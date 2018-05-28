@@ -57,13 +57,13 @@
             android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
+                android:background="#e5e5e5"
                 android:id="@+id/rcItemStickers"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="@dimen/dp_5"
                 android:paddingBottom="48dp"
-                android:clipToPadding="false"
-                android:scrollbars="none" />
+                android:clipToPadding="false" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
