@@ -58,12 +58,15 @@ public class StickerView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int displayW = mainBitmap.getWidth() * getMeasuredHeight() / mainBitmap.getHeight();
-        int displayH = mainBitmap.getHeight() * getMeasuredWidth() / mainBitmap.getWidth();
-        leftX = (mainImage.getMeasuredWidth() - displayW) >> 1;
-        rightX = leftX + displayW;
-        topY = (mainImage.getMeasuredHeight() - displayH) >> 1;
-        bottomY = topY + displayH;
+
+        if(mainBitmap != null){
+            int displayW = mainBitmap.getWidth() * getMeasuredHeight() / mainBitmap.getHeight();
+            int displayH = mainBitmap.getHeight() * getMeasuredWidth() / mainBitmap.getWidth();
+            leftX = (mainImage.getMeasuredWidth() - displayW) >> 1;
+            rightX = leftX + displayW;
+            topY = (mainImage.getMeasuredHeight() - displayH) >> 1;
+            bottomY = topY + displayH;
+        }
     }
 
     public StickerView(Context context, AttributeSet attrs, int defStyleAttr) {

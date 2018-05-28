@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_fan_ad_share"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.sticker_android.controller.activities.fan.home.FanAdShare.FanAdShareActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbarThumbVertical="@android:color/transparent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp"
+                app:cardCornerRadius="0dp"
+                app:contentPadding="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_gray">
+
+
+                        <ImageView
+                            android:id="@+id/imvOfCustomization"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/image_height_add_product"
+                            android:adjustViewBounds="true"
+                            android:scaleType="centerCrop" />
+
+                        <ImageView
+                            android:id="@+id/imvProductImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true" />
+
+                        <ProgressBar
+                            android:id="@+id/pgrImage1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true" />
+
+                        <ImageView
+                            android:id="@+id/imvSelected"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true" />
+
+                        <ImageView
+                            android:padding="5dp"
+                            android:foreground="@drawable/drawable_share_rounded"
+                            android:id="@+id/imvShare"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_margin="5dp"
+                            app:srcCompat="@drawable/ic_share_black_24dp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp"
+                    app:cardCornerRadius="0dp"
+                    app:contentPadding="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:id="@+id/rlAds"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:text="SPONCERED "
+                                android:textColor="@color/colorFanText" />
+
+                        </RelativeLayout>
+
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/imvOfAds"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/image_height_add_product"
+                                android:adjustViewBounds="true"
+                                android:background="@color/image_background_color"
+                                android:scaleType="fitXY" />
+
+                            <ProgressBar
+                                android:id="@+id/pgrImage"
+                                android:layout_width="@dimen/sticker_progress_loader_size"
+                                android:layout_height="@dimen/sticker_progress_loader_size"
+                                android:layout_centerInParent="true" />
+
+
+                        </RelativeLayout>
+
+                        <!--   <RelativeLayout
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:layout_marginTop="@dimen/dp_10">
+
+                               <TextView
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:id="@+id/tv_add_product_title"
+                                   fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                                   android:layout_alignParentTop="true"
+                                   android:layout_marginEnd="5dp"
+                                   android:layout_toLeftOf="@+id/imvBtnEditRemove"
+                                   android:layout_toStartOf="@+id/imvBtnEditRemove"
+                                   android:ellipsize="end"
+                                   android:maxLines="1"
+                                   android:gravity="end"
+                                   android:textColor="@android:color/black"
+                                   android:textSize="@dimen/txt_size_home_12sp" />
+
+                               <RelativeLayout
+                                   android:layout_width="match_parent"
+                                   android:layout_height="wrap_content">
+                                   <TextView
+                                       android:id="@+id/tv_name"
+                                       fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                                       android:layout_width="wrap_content"
+                                       android:layout_height="wrap_content"
+                                       android:layout_alignParentEnd="true"
+                                       android:layout_centerInParent="true"
+                                       android:gravity="end"
+                                       android:maxLines="1"
+                                       android:text="Vivek Singh"
+                                       android:textColor="@color/colorFanText"
+                                       android:textSize="@dimen/txt_size_home_12sp" />
+
+
+                               </RelativeLayout>
+                           </RelativeLayout>
+    -->  <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/tv_add_product_title"
+                            fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginEnd="5dp"
+                            android:layout_toLeftOf="@+id/tv_name"
+                            android:layout_toStartOf="@+id/tv_name"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text=""
+                            android:textAlignment="viewStart"
+                            android:textColor="@android:color/black"
+                            android:textDirection="locale"
+                            android:textSize="@dimen/txt_size_home_12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_name"
+                            fontPath="fonts/SanFranciscoText-Semibold_0.ttf"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:maxWidth="100dp"
+                            android:textAlignment="viewEnd"
+                            android:textColor="@color/colorFanText"
+                            android:textDirection="locale"
+                            android:textSize="@dimen/txt_size_home_12sp" />
+
+
+                    </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/tv_add_product_item_description"
+                            fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:clickable="false"
+                            android:ellipsize="end"
+                            android:gravity="start"
+                            android:maxLines="2"
+                            android:textSize="12sp" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <CheckBox
+                                android:id="@+id/checkboxLike"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:button="@drawable/like_selector"
+                                android:padding="@dimen/padding_like_8dp"
+                                android:textSize="@dimen/txt_size_home_12sp" />
+
+                            <CheckBox
+                                android:id="@+id/checkboxShare"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:layout_toEndOf="@+id/checkboxLike"
+                                android:layout_toRightOf="@+id/checkboxLike"
+
+                                android:button="@drawable/share_selector"
+                                android:padding="@dimen/padding_like_8dp"
+                                android:textSize="@dimen/txt_size_home_12sp" />
+
+                            <TextView
+                                android:id="@+id/tvTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginLeft="8dp"
+                                android:layout_toEndOf="@+id/checkboxShare"
+                                android:layout_toRightOf="@+id/checkboxShare"
+                                android:drawableLeft="@drawable/tv_svg_time"
+                                android:drawablePadding="8dp"
+                                android:drawableStart="@drawable/tv_svg_time"
+                                android:gravity="center"
+                                android:text=""
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/txt_size_home_12sp" />
+
+                            <TextView
+                                android:id="@+id/tvDownloads"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginLeft="16dp"
+                                android:layout_toEndOf="@+id/tvTime"
+                                android:layout_toRightOf="@+id/tvTime"
+                                android:drawableLeft="@drawable/ic_svg_drawable_download"
+                                android:drawablePadding="8dp"
+
+                                android:drawableStart="@drawable/ic_svg_drawable_download"
+                                android:gravity="center"
+                                android:text=""
+                                android:textColor="@android:color/black"
+                                android:textSize="@dimen/txt_size_home_12sp" />
+
+                            <TextView
+                                android:id="@+id/tv_add_product_status"
+                                style="@style/tvHome"
+                                fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                                android:layout_width="match_parent"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toEndOf="@id/tvDownloads"
+                                android:layout_toRightOf="@id/tvDownloads"
+
+                                android:gravity="end"
+                                android:textColor="@android:color/holo_green_light"
+                                android:textSize="@dimen/txt_size_home_12sp" />
+
+                        </RelativeLayout>
+
+                        <Button
+                            android:id="@+id/act_select_visit_ad"
+                            fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                            android:layout_width="@dimen/signup_btn_next_width"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|bottom"
+                            android:background="@drawable/background_transparent"
+                            android:gravity="center"
+                            android:text="VISIT AD"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/txt_size_home_12sp" />
+                    </LinearLayout>
+
+
+                </android.support.v7.widget.CardView>
+
+
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
