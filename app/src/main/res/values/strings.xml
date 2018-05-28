@@ -295,6 +295,7 @@
     <string name="txt_saving_image">Saving image</string>
     <string name="txt_winner">Winner</string>
     <string name="txt_looser">Loose</string>
+    <string name="share_using">Share using</string>
     <string name="txt_share">This image shared with you from SportWidget, Download the mobile app and use hundreds of sport images for free</string>
     <string name="txt_all_ongoing_contest">All Ongoing Contest</string>
     <string name="txt_all_completed">All Completed Contest</string>

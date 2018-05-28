@@ -250,8 +250,6 @@ public class FanSaveCustomization extends BaseFragment implements SwipeRefreshLa
                         startActivityForResult(intent, 444);
                         getActivity().overridePendingTransition(R.anim.activity_animation_enter,
                                 R.anim.activity_animation_exit);
-
-
                     }
                 });
 
