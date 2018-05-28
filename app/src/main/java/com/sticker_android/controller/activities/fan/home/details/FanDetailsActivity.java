@@ -25,9 +25,11 @@ import com.google.gson.Gson;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
+import com.sticker_android.controller.activities.fan.home.fandownloadmage.FanDownloadedImageActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.enums.DesignType;
+import com.sticker_android.model.fandownload.Download;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
@@ -147,6 +149,25 @@ public class FanDetailsActivity extends AppBaseActivity {
                                 isSharedEnabled = false;
                                 setToolbarItem();
                                 setProductDetail();
+                            }
+                        }
+                    }
+                    else if(referringParams.has("property2")){
+                        String property2 = referringParams.optString("property2", "");
+                        if(property2 != null){
+                            Gson gson = new Gson();
+                            Download download = gson.fromJson(property2, Download.class);
+                            if(download != null){
+                                Intent intent = new Intent(mContext, FanDownloadedImageActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("image", download);
+                                bundle.putBoolean("no_delete_btn", true);
+                                intent.putExtra("image", download.imageUrl);
+                                intent.putExtras(bundle);
+                                startActivityForResult(intent, 444);
+                                getActivity().overridePendingTransition(R.anim.activity_animation_enter,
+                                        R.anim.activity_animation_exit);
+                                finish();
                             }
                         }
                     }

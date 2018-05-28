@@ -251,7 +251,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
                 .setCanonicalIdentifier("item/" + product.getProductid())
-                .setTitle(context.getString(R.string.app_name))
+                .setTitle(context.getResources().getString(R.string.app_name))
                 .setContentDescription(product.getProductname())
                 .setContentImageUrl(product.getImagePath())
                 .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
@@ -260,8 +260,6 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
         LinkProperties linkProperties = new LinkProperties()
                 .setChannel("facebook")
                 .setFeature("sharing");
-                /*.addControlParameter("$desktop_url", "http://www.google.com")
-                .addControlParameter("$ios_url", "http://example.com/ios");*/
 
         ShareSheetStyle shareSheetStyle = new ShareSheetStyle(context, "Check this out!", "")
                 .setCopyUrlStyle(context.getResources().getDrawable(android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
@@ -284,7 +282,6 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                     @Override
                     public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
-
                         Log.e(TAG, "Shared link => " + sharedLink);
                     }
                     @Override
@@ -296,13 +293,6 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             public void onLinkCreate(String url, BranchError error) {
                 if (error == null) {
-                    /*Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    sharingIntent.setType("text/plain");
-                    String shareBody = "Image url " + product.getImagePath();
-                    String shareSub = "Share data";
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody + "\n" + url);
-                    context.startActivity(Intent.createChooser(sharingIntent, context.getString(R.string.txt_share) + " :" + mUserdata.getEmail()));*/
                 }
             }
         });

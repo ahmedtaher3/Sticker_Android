@@ -64,6 +64,7 @@
                                 android:id="@+id/pgrImage"
                                 android:layout_width="@dimen/sticker_progress_loader_size"
                                 android:layout_height="@dimen/sticker_progress_loader_size"
+                                android:visibility="invisible"
                                 android:layout_centerInParent="true" />
 
                             <TextView

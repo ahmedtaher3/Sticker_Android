@@ -1,12 +1,19 @@
 package com.sticker_android.controller.activities.fan.home.fandownloadmage;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +43,7 @@ import com.sticker_android.utils.DownloadImage;
 import com.sticker_android.utils.FileUtil;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
+import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import java.io.File;
@@ -48,6 +56,8 @@ import io.branch.referral.util.LinkProperties;
 import io.branch.referral.util.ShareSheetStyle;
 import retrofit2.Call;
 
+import static com.sticker_android.utils.helper.PermissionManager.Constant.WRITE_STORAGE_ACCESS_RQ;
+
 public class FanDownloadedImageActivity extends AppBaseActivity implements View.OnClickListener {
 
     private ImageView imvProductImage;
@@ -57,6 +67,10 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
     private User user;
     private Download downloadImageObj;
     private Button btnDelete, btnSave;
+    private RelativeLayout rlDelete;
+    private Context mContext = this;
+
+    private final String TAG = FanDownloadedImageActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +97,21 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
         // getWindow().setLayout(LinearLayoutCompat.LayoutParams.FILL_PARENT, LinearLayoutCompat.LayoutParams.FILL_PARENT);
         if (getIntent().getExtras() != null) {
             downloadImageObj = getIntent().getExtras().getParcelable("image");
+            boolean noDeleteButton = getIntent().getExtras().getBoolean("no_delete_btn");
+
+            if(noDeleteButton){
+                rlDelete.setVisibility(View.GONE);
+
+                TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
+                textView.setText("");
+                toolbar.setTitle("");
+            }
+
             if (downloadImageObj != null)
                 setImage(downloadImageObj.imageUrl);
         }
 
-       // setImageHeight();
+        // setImageHeight();
     }
 
     private void init() {
@@ -157,7 +181,7 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
 
     private void deleteProductApi() {
 
-    final    ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
         progressDialogHandler.show();
         if (downloadImageObj != null) {
             Call<ApiResponse> apiResponseCall = RestClient.getService().deleteCustomizeImage(user.getLanguageId(), user.getAuthrizedKey(), user.getId(), "" + downloadImageObj.user_my_id);
@@ -189,6 +213,7 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
         pgrImage = (ProgressBar) findViewById(R.id.pgrImage);
         btnDelete = (Button) findViewById(R.id.btnDelete);
         btnSave = (Button) findViewById(R.id.btnSave);
+        rlDelete = (RelativeLayout) findViewById(R.id.rlDelete);
     }
 
     @Override
@@ -206,8 +231,9 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.share:
-                shareItem();
+                /*shareItem();*/
                 //  showDeleteDialog();
+                createDeepLink(downloadImageObj);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -232,59 +258,103 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
                 showDeleteDialog();
                 break;
             case R.id.btnSave:
-                final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
-                progressDialogHandler.show();
                 if (Utils.isConnectedToInternet(getActivity())) {
-                    new DownloadImage(new DownloadImage.ISaveImageToLocal() {
-                        @Override
-                        public void imageResult(Bitmap result) {
-                            progressDialogHandler.hide();
-                            Uri tempUri = Utils.getImageUri(getApplicationContext(), result);
-
-                            // CALL THIS METHOD TO GET THE ACTUAL PATH
-                            File finalFile = new File(Utils.getRealPathFromURI(getApplicationContext(), tempUri));
-                            if (finalFile != null) {
-                                FileUtil.albumUpdate(getApplicationContext(), finalFile.getAbsolutePath());
-                                MediaScannerConnection.scanFile(getActivity(), new String[] { finalFile.getPath() }, new String[] { "image/jpeg" }, null);
-                            }
-                                Utils.showToast(getActivity(), getString(R.string.txt_image_saved_successfully));
-                            AppLogger.debug(FanDownloadedImageActivity.class.getSimpleName(), "called here" + finalFile);
-                        }
-                    }).execute(downloadImageObj.imageUrl);
+                    if(PermissionManager.checkWriteStoragePermission(this, PermissionManager.Constant.WRITE_STORAGE_ACCESS_RQ)){
+                        downloadImageIntoLocalStorage();
+                    }
+                }
+                else{
+                    Utils.showToastMessage(getActivity(), getString(R.string.pls_check_ur_internet_connection));
                 }
                 break;
         }
     }
 
+    private void downloadImageIntoLocalStorage(){
 
+        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+        new DownloadImage(new DownloadImage.ISaveImageToLocal() {
+            @Override
+            public void imageResult(Bitmap result) {
+                progressDialogHandler.hide();
+                Uri tempUri = Utils.getImageUri(getApplicationContext(), result);
 
-    private void createDeepLink(final Product product){
+                // CALL THIS METHOD TO GET THE ACTUAL PATH
+                File finalFile = new File(Utils.getRealPathFromURI(getApplicationContext(), tempUri));
+                if (finalFile != null) {
+                    FileUtil.albumUpdate(getApplicationContext(), finalFile.getAbsolutePath());
+                    MediaScannerConnection.scanFile(getActivity(), new String[] { finalFile.getPath() }, new String[] { "image/jpeg" }, null);
+                }
+                Utils.showToast(getActivity(), getString(R.string.txt_image_saved_successfully));
+                AppLogger.debug(FanDownloadedImageActivity.class.getSimpleName(), "called here" + finalFile);
+            }
+        }).execute(downloadImageObj.imageUrl);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case WRITE_STORAGE_ACCESS_RQ:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    downloadImageIntoLocalStorage();
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    boolean isDenied = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+                    if (!isDenied) {
+                        //If the user turned down the permission request in the past and chose the Don't ask again option in the permission request system dialog
+
+                        PermissionManager.showCustomPermissionDialog(this, getString(R.string.external_storage_permission_msg), new PermissionManager.CustomPermissionDialogCallback() {
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+
+                            @Override
+                            public void onOpenSettingClick() {
+
+                            }
+                        });
+                    }
+                }
+                break;
+        }
+    }
+
+    private void createDeepLink(final Download downloadImageObj){
+
         Gson gson = new Gson();
 
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
-                .setCanonicalIdentifier("item/" + product.getProductid())
-                .setTitle(getString(R.string.app_name))
-                .setContentDescription(product.getProductname())
-                .setContentImageUrl(product.getImagePath())
+                .setCanonicalIdentifier("item/" + downloadImageObj.user_my_id)
+                .setTitle(mContext.getResources().getString(R.string.app_name))
+                .setContentDescription("")
+                .setContentImageUrl(downloadImageObj.imageUrl)
                 .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
-                .addContentMetadata("property1", gson.toJson(product));
+                .addContentMetadata("property2", gson.toJson(downloadImageObj));
 
         LinkProperties linkProperties = new LinkProperties()
                 .setChannel("facebook")
                 .setFeature("sharing");
-                /*.addControlParameter("$desktop_url", "http://www.google.com")
-                .addControlParameter("$ios_url", "http://example.com/ios");*/
 
-        ShareSheetStyle shareSheetStyle = new ShareSheetStyle(this, "Check this out!", "")
-                .setCopyUrlStyle(getResources().getDrawable(android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
-                .setMoreOptionStyle(getResources().getDrawable(android.R.drawable.ic_menu_search), "Show more")
+        ShareSheetStyle shareSheetStyle = new ShareSheetStyle(mContext, "Check this out!", "")
+                .setCopyUrlStyle(mContext.getResources().getDrawable(android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
+                .setMoreOptionStyle(mContext.getResources().getDrawable(android.R.drawable.ic_menu_search), "Show more")
                 .addPreferredSharingOption(SharingHelper.SHARE_WITH.FACEBOOK)
                 .addPreferredSharingOption(SharingHelper.SHARE_WITH.TWITTER)
                 .addPreferredSharingOption(SharingHelper.SHARE_WITH.EMAIL)
                 .setAsFullWidthStyle(true)
-                .setSharingTitle("Share With");
+                .setSharingTitle(mContext.getResources().getString(R.string.txt_share));
 
-        branchUniversalObject.showShareSheet(this,
+        branchUniversalObject.showShareSheet((Activity) mContext,
                 linkProperties,
                 shareSheetStyle,
                 new Branch.BranchLinkShareListener() {
@@ -296,33 +366,19 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
                     }
                     @Override
                     public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
-
-                      //  Log.e(TAG, "Shared link => " + sharedLink);
+                        Log.e(TAG, "Shared link => " + sharedLink);
                     }
                     @Override
                     public void onChannelSelected(String channelName) {
                     }
                 });
 
-        branchUniversalObject.generateShortUrl(this, linkProperties, new Branch.BranchLinkCreateListener() {
+        branchUniversalObject.generateShortUrl(mContext, linkProperties, new Branch.BranchLinkCreateListener() {
             @Override
             public void onLinkCreate(String url, BranchError error) {
                 if (error == null) {
-                    /*Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    sharingIntent.setType("text/plain");
-                    String shareBody = "Image url " + product.getImagePath();
-                    String shareSub = "Share data";
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody + "\n" + url);
-                    context.startActivity(Intent.createChooser(sharingIntent, context.getString(R.string.txt_share) + " :" + mUserdata.getEmail()));*/
                 }
             }
         });
-
-
     }
-
-
-
-
 }

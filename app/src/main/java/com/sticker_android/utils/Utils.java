@@ -424,7 +424,13 @@ public class Utils {
     }
 
     public static String capitlizeText(String name) {
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
+        try {
+            return name.substring(0, 1).toUpperCase() + name.substring(1);
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return "";
     }
 
     public static String convertToCurrentTimeZone(String Date) {
