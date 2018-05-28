@@ -1,5 +1,7 @@
 package com.sticker_android.controller.activities.fan.home.FanAdShare;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,14 +15,23 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.fan.home.details.FanDetailsActivity;
 import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
+import com.sticker_android.model.fandownload.Download;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.sharedpref.AppPref;
+
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.SharingHelper;
+import io.branch.referral.util.LinkProperties;
+import io.branch.referral.util.ShareSheetStyle;
 
 public class FanAdShareActivity extends AppBaseActivity implements View.OnClickListener {
     private Toolbar toolbar;
@@ -33,6 +44,8 @@ public class FanAdShareActivity extends AppBaseActivity implements View.OnClickL
     private Product mProduct;
     private String link = null;
     private Button btnVisit;
+
+    private Context mContext = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +122,7 @@ public class FanAdShareActivity extends AppBaseActivity implements View.OnClickL
         setToolbarBackground();
         setSupportActionBar(toolbar);
 
-        toolbar.setNavigationIcon(R.drawable.back_arrow_small);
+        toolbar.setNavigationIcon(R.drawable.close_search);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,7 +140,7 @@ public class FanAdShareActivity extends AppBaseActivity implements View.OnClickL
         toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_hdpi));
 
         TextView textView = (TextView) toolbar.findViewById(R.id.tvToolbar);
-        textView.setText("Ads");
+        textView.setText("");
         toolbar.setTitle(" ");
     }
 
@@ -144,6 +157,7 @@ public class FanAdShareActivity extends AppBaseActivity implements View.OnClickL
     @Override
     protected void setViewListeners() {
         btnVisit.setOnClickListener(this);
+        imvShare.setOnClickListener(this);
     }
 
     @Override
@@ -176,6 +190,66 @@ public class FanAdShareActivity extends AppBaseActivity implements View.OnClickL
                         R.anim.activity_animation_exit);
 
                 break;
+            case R.id.imvShare:
+                createDeepLink(link);
+                break;
         }
+    }
+
+    private void createDeepLink(final String customizedImageLink){
+
+        Gson gson = new Gson();
+        Download download = new Download();
+        download.imageUrl = link;
+        download.userId = Long.parseLong(userdata.getId());
+        download.user_my_id = Long.parseLong(userdata.getId() + 5);
+
+        BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
+                .setCanonicalIdentifier("item/" + download.user_my_id)
+                .setTitle(mContext.getResources().getString(R.string.app_name))
+                .setContentDescription("")
+                .setContentImageUrl(customizedImageLink)
+                .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+                .addContentMetadata("property2", gson.toJson(download));
+
+        LinkProperties linkProperties = new LinkProperties()
+                .setChannel("facebook")
+                .setFeature("sharing");
+
+        ShareSheetStyle shareSheetStyle = new ShareSheetStyle(mContext, "Check this out!", "")
+                .setCopyUrlStyle(mContext.getResources().getDrawable(android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
+                .setMoreOptionStyle(mContext.getResources().getDrawable(android.R.drawable.ic_menu_search), "Show more")
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.FACEBOOK)
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.TWITTER)
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.EMAIL)
+                .setAsFullWidthStyle(true)
+                .setSharingTitle(mContext.getResources().getString(R.string.txt_share));
+
+        branchUniversalObject.showShareSheet((Activity) mContext,
+                linkProperties,
+                shareSheetStyle,
+                new Branch.BranchLinkShareListener() {
+                    @Override
+                    public void onShareLinkDialogLaunched() {
+                    }
+                    @Override
+                    public void onShareLinkDialogDismissed() {
+                    }
+                    @Override
+                    public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
+
+                    }
+                    @Override
+                    public void onChannelSelected(String channelName) {
+                    }
+                });
+
+        branchUniversalObject.generateShortUrl(mContext, linkProperties, new Branch.BranchLinkCreateListener() {
+            @Override
+            public void onLinkCreate(String url, BranchError error) {
+                if (error == null) {
+                }
+            }
+        });
     }
 }

@@ -24,7 +24,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/dimen_image_my_cus">
 
@@ -46,7 +46,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true" />
 
-                        <ImageView
+                        <com.sticker_android.view.SquareImageView
                             android:id="@+id/image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"

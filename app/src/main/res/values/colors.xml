@@ -30,6 +30,6 @@
     <color name="colorHomeGreen">#06c85d</color>
     <color name="icon_color">#FF5d5d5f</color>
     <color name="image_background_color">#e9eef1</color>
-    <color name="icon_color_forground">#2d5d5d5f</color>
+    <color name="icon_color_forground">#445d5d5f</color>
 
 </resources>
