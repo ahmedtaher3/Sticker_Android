@@ -18,7 +18,6 @@ import com.sticker_android.controller.activities.designer.home.DesignerHomeActiv
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
-import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.Utils;
@@ -28,6 +27,8 @@ import com.sticker_android.view.BadgeUtils;
 import java.util.Locale;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SplashActivity extends AppBaseActivity {
 
@@ -161,7 +162,22 @@ public class SplashActivity extends AppBaseActivity {
            User adObj= appPref.getUserInfo();
             Call<ApiResponse> apiResponseCall = RestClient.getService().getRandomFeaturedProduct(adObj.getLanguageId(), adObj.getAuthrizedKey(), adObj.getId(), "product");
 
-            apiResponseCall.enqueue(new ApiCall(getActivity()) {
+            apiResponseCall.enqueue(new Callback<ApiResponse>() {
+                @Override
+                public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                    if(response.isSuccessful()){
+                     if(response.body().status){
+                         appPref.saveAds(response.body().paylpad.product);
+                     }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ApiResponse> call, Throwable t) {
+
+                }
+            });
+       /*    apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
                     if (apiResponse.status) {
@@ -174,7 +190,7 @@ public class SplashActivity extends AppBaseActivity {
 
                 }
             });
-        }
+        */}
 
     }
 

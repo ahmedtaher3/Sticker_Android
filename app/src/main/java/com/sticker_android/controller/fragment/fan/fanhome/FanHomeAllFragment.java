@@ -303,7 +303,7 @@ public class FanHomeAllFragment extends BaseFragment implements SwipeRefreshLayo
                                         if (searchKeyword.length() != 0) {
                                             txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                         } else {
-                                            txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                            txtNoDataFoundContent.setText(R.string.no_data_found);
                                         }
                                         showNoDataFound();
                                     }
@@ -324,7 +324,7 @@ public class FanHomeAllFragment extends BaseFragment implements SwipeRefreshLayo
                                             if (searchKeyword.length() != 0) {
                                                 txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                             } else {
-                                                txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                                txtNoDataFoundContent.setText(R.string.no_data_found);
                                             }
                                             rcDesignList.setVisibility(View.GONE);
                                         }
@@ -347,7 +347,7 @@ public class FanHomeAllFragment extends BaseFragment implements SwipeRefreshLayo
                                 if (searchKeyword.length() != 0) {
                                     txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                 } else {
-                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                    txtNoDataFoundContent.setText(R.string.no_data_found);
                                 }
                                 showNoDataFound();
                             }

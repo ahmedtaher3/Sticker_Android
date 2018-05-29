@@ -136,7 +136,7 @@
                                     android:background="@android:color/transparent"
                                     android:button="@android:color/transparent"
                                     android:drawablePadding="10dp"
-                                    android:drawableTop="@drawable/corporate_xhdpi"
+                                    android:drawableTop="@drawable/corporate_hdpi"
                                     android:gravity="center"
                                     android:text="@string/text_corporate" />
                             </RadioGroup>

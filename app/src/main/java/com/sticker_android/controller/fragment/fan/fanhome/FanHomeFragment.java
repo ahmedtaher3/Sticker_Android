@@ -274,20 +274,25 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         } else if (tabLayout.getSelectedTabPosition() == 1) {
             searchView.setQueryHint(getString(R.string.txt_search_contest_by_name));
 
-        } else if (tabLayout.getSelectedTabPosition() == 2) {
+        }else if (tabLayout.getSelectedTabPosition() == 2) {
+            searchView.setQueryHint(getString(R.string.search));
+
+        }
+
+        else if (tabLayout.getSelectedTabPosition() == 3) {
             searchView.setQueryHint(getString(R.string.txt_search_stickers_by_name));
 
-        } else if (tabLayout.getSelectedTabPosition() == 3) {
+        } else if (tabLayout.getSelectedTabPosition() == 4) {
             //type = DesignType.gif.getType().toUpperCase(Locale.US);
             searchView.setQueryHint(getString(R.string.txt_search_gif_by_name));
 
-        } else if (tabLayout.getSelectedTabPosition() == 4) {
+        } else if (tabLayout.getSelectedTabPosition() == 5) {
             searchView.setQueryHint(getString(R.string.txt_search_emoji_by_name));
 
-        } else if (tabLayout.getSelectedTabPosition() == 5) {
+        } else if (tabLayout.getSelectedTabPosition() == 6) {
             searchView.setQueryHint(getString(R.string.txt_search_ad_by_name));
 
-        } else if (tabLayout.getSelectedTabPosition() == 6) {
+        } else if (tabLayout.getSelectedTabPosition() == 7) {
             searchView.setQueryHint(getString(R.string.search_product_by_name));
 
         }
@@ -315,6 +320,12 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                 if (fragment instanceof FanContestFragment) {
                     if (itemFilter != null)
                         itemFilter.setVisible(false);
+                }
+                if (fragment instanceof FanHomeAllFragment) {
+                    if (itemFilter != null)
+                        itemFilter.setVisible(false);
+                    ((FanHomeAllFragment) fragment).refreshApi();
+
                 }
 
                 if (fragment instanceof FanHomeStickerFragment) {
