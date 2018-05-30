@@ -11,7 +11,9 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -38,6 +40,7 @@ import com.sticker_android.utils.helper.PermissionManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -554,4 +557,47 @@ public class Utils {
         return cursor.getString(idx);
     }
 
+    public static void shareImageOnSocialMedia(Context context, String imagePath, String userEmail){
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/jpeg");
+        share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(imagePath)));
+        share.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.txt_share) + " : " + userEmail);
+        if(share.resolveActivity(context.getPackageManager()) != null){
+            context.startActivity(Intent.createChooser(share, "Share Image"));
+        }
+        else{
+            Utils.showToast(context, context.getString(R.string.no_app_available_for_sharing));
+        }
+    }
+
+    public static Bitmap getBitmapFromView(View view) {
+        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        Drawable bgDrawable =view.getBackground();
+        if(bgDrawable != null) {
+            //has background drawable, then draw it on the canvas
+            bgDrawable.draw(canvas);
+        }else{
+            //does not have background drawable, then draw white background on the canvas
+            canvas.drawColor(Color.WHITE);
+        }
+        view.draw(canvas);
+        return returnedBitmap;
+    }
+
+    public static File getFileFromBitmap(Context context, Bitmap bitmap){
+
+        try {
+            File file = new File(context.getExternalCacheDir(),"img.png");
+            FileOutputStream fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            file.setReadable(true, false);
+            return file;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

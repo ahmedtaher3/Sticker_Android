@@ -306,5 +306,6 @@
     <string name="txt_all_fan_home">All</string>
     <string name="txt_give_your_vote">Give your vote in the current contests</string>
     <string name="txt_paricipate_in_contest">"Participate now in this contest and win prizes and trophies "</string>
+    <string name="no_app_available_for_sharing">No application is available for sharing.</string>
 
 </resources>

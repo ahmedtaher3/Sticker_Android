@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -206,7 +207,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             adDialog();*/
 
         getRandomAdApi();
-     //   startActivity(new Intent(getActivity(), FanAdShareActivity.class));
+        //   startActivity(new Intent(getActivity(), FanAdShareActivity.class));
         return inflatedView;
     }
 
@@ -498,10 +499,17 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
      * @param bmp3 filter
      * @return Merged bitmap
      */
-    public static Bitmap mergeBitmap(Bitmap bmp1, Bitmap bmp2, Bitmap bmp3) {
+    public Bitmap mergeBitmap(Bitmap bmp1, Bitmap bmp2, Bitmap bmp3) {
         Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(bmp1, new Matrix(), null);
+
+        Resources resources = getActivity().getResources();
+        Bitmap waterMark = BitmapFactory.decodeResource(resources, R.drawable.watermark);
+
+        if(waterMark != null){
+            canvas.drawBitmap(waterMark, bmp1.getWidth() - waterMark.getWidth() - 10, 0, null);
+        }
 
         if (bmp3 != null) {
             canvas.drawBitmap(bmp3, 0, bmp1.getHeight() - bmp3.getHeight(), null);
@@ -744,7 +752,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     /*
        * Begins to upload the file specified by the file path.
        */
-    private void beginUpload(String filePath) {
+    private void beginUpload(final String filePath) {
 
         final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
         progressDialogHandler.show();
@@ -767,7 +775,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                     if(progressDialogHandler!=null)
                         progressDialogHandler.hide();
                     String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
-                    saveImageApi(imagePath);
+                    saveImageApi(imagePath, filePath);
                 }
             }
 
@@ -787,7 +795,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void saveImageApi(final String imagePath) {
+    private void saveImageApi(final String imagePath, final String localFilePath) {
         final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
         progressDialogHandler.show();
 
@@ -800,10 +808,11 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
                     Toast.makeText(mHostActivity, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
-                   Intent intent=new Intent(getActivity(),FanAdShareActivity.class);
+                    Intent intent=new Intent(getActivity(),FanAdShareActivity.class);
                     intent.putExtra("link",imagePath);
+                    intent.putExtra("local_file_path", localFilePath);
                     startActivity(intent);
-                   // adDialog();
+                    // adDialog();
                     if (rlFilterOptionContainer.getVisibility() == View.INVISIBLE) {
                         mHostActivity.onBackPressed();
                     }

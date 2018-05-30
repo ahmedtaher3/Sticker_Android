@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -233,7 +234,8 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
             case R.id.share:
                 /*shareItem();*/
                 //  showDeleteDialog();
-                createDeepLink(downloadImageObj);
+                /*createDeepLink(downloadImageObj);*/
+                shareItem();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -241,14 +243,41 @@ public class FanDownloadedImageActivity extends AppBaseActivity implements View.
     }
 
     public void shareItem() {
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-        String shareBody = "Image url " + downloadImageObj.imageUrl;
-        String shareSub = "Share data";
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-        startActivity(Intent.createChooser(sharingIntent, getString(R.string.txt_share) + " :" + user.getEmail()));
 
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(this);
+        progressDialogHandler.show();
+        new AsyncTask<Void, Void, File>(){
+
+            @Override
+            protected File doInBackground(Void... params) {
+                try{
+                    Bitmap bitmap = Utils.getBitmapFromView(imvProductImage);
+                    if(bitmap != null){
+                        File file = Utils.getFileFromBitmap(FanDownloadedImageActivity.this, bitmap);
+                        return file;
+                    }
+                    else{
+                        return null;
+                    }
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(File file) {
+                super.onPostExecute(file);
+                if(progressDialogHandler != null){
+                    progressDialogHandler.hide();
+                }
+
+                if(file != null){
+                    Utils.shareImageOnSocialMedia(FanDownloadedImageActivity.this, file.getAbsolutePath(), user.getEmail());
+                }
+            }
+        }.execute();
     }
 
     @Override
