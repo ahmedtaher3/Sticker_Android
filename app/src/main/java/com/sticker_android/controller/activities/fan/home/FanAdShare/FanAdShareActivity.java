@@ -24,6 +24,7 @@ import com.sticker_android.model.User;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.fandownload.Download;
 import com.sticker_android.utils.AppLogger;
+import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import io.branch.indexing.BranchUniversalObject;
@@ -43,6 +44,7 @@ public class FanAdShareActivity extends AppBaseActivity implements View.OnClickL
     private TextView tvname, tvDescription;
     private Product mProduct;
     private String link = null;
+    private String localFilePath = "";
     private Button btnVisit;
 
     private Context mContext = this;
@@ -66,6 +68,7 @@ public class FanAdShareActivity extends AppBaseActivity implements View.OnClickL
         if (getIntent().getExtras() != null) {
             if (getIntent().getExtras().getString("link") != null) {
                 link = getIntent().getExtras().getString("link");
+                localFilePath = getIntent().getExtras().getString("local_file_path");
                 AppLogger.debug(FanAdShareActivity.class.getSimpleName(), "link" + link);
             }
         }
@@ -162,16 +165,16 @@ public class FanAdShareActivity extends AppBaseActivity implements View.OnClickL
 
     @Override
     protected void setViewReferences() {
-        imvOfCustomization = findViewById(R.id.imvOfCustomization);
-        imvProductImage = findViewById(R.id.imvProductImage);
-        pgrImage1 = findViewById(R.id.pgrImage1);
-        imvShare = findViewById(R.id.imvShare);
-        imvOfAds = findViewById(R.id.imvOfAds);
-        pgrImage = findViewById(R.id.pgrImage);
-        tvTitle = findViewById(R.id.tv_add_product_title);
-        tvname = findViewById(R.id.tv_name);
-        tvDescription = findViewById(R.id.tv_add_product_item_description);
-        btnVisit = findViewById(R.id.act_select_visit_ad);
+        imvOfCustomization = (ImageView) findViewById(R.id.imvOfCustomization);
+        imvProductImage = (ImageView) findViewById(R.id.imvProductImage);
+        pgrImage1 = (ProgressBar) findViewById(R.id.pgrImage1);
+        imvShare = (ImageView) findViewById(R.id.imvShare);
+        imvOfAds = (ImageView) findViewById(R.id.imvOfAds);
+        pgrImage = (ProgressBar) findViewById(R.id.pgrImage);
+        tvTitle = (TextView) findViewById(R.id.tv_add_product_title);
+        tvname = (TextView) findViewById(R.id.tv_name);
+        tvDescription = (TextView) findViewById(R.id.tv_add_product_item_description);
+        btnVisit = (Button) findViewById(R.id.act_select_visit_ad);
     }
 
     @Override
@@ -191,7 +194,8 @@ public class FanAdShareActivity extends AppBaseActivity implements View.OnClickL
 
                 break;
             case R.id.imvShare:
-                createDeepLink(link);
+                /*createDeepLink(link);*/
+                Utils.shareImageOnSocialMedia(this, localFilePath, userdata.getEmail());
                 break;
         }
     }

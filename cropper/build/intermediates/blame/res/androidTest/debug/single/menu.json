@@ -2,5 +2,9 @@
     {
         "merged": "/home/user/Sticker_Android/cropper/build/intermediates/res/merged/androidTest/debug/menu/crop_image_menu.xml",
         "source": "/home/user/Sticker_Android/cropper/build/intermediates/bundles/debug/res/menu/crop_image_menu.xml"
+    },
+    {
+        "merged": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/res/merged/androidTest/debug/menu/crop_image_menu.xml",
+        "source": "/home/satyendra/AndroidStudioProjects/sticker_android/cropper/build/intermediates/bundles/debug/res/menu/crop_image_menu.xml"
     }
 ]
