@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
@@ -552,6 +553,38 @@ public class Utils {
         cursor.moveToFirst();
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
+    }
+
+
+
+    public static String getDropboxIMGSize(Uri uri){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(new File(uri.getPath()).getAbsolutePath(), options);
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+
+        return imageHeight+"height"+imageWidth+"width";
+    }
+
+    public static String getFileSize(File file) {
+        String modifiedFileSize = null;
+        double fileSize = 0.0;
+        if (file.isFile()) {
+            fileSize = (double) file.length();//in Bytes
+
+            if (fileSize < 1024) {
+                modifiedFileSize = String.valueOf(fileSize).concat("B");
+            } else if (fileSize > 1024 && fileSize < (1024 * 1024)) {
+                modifiedFileSize = String.valueOf(Math.round((fileSize / 1024 * 100.0)) / 100.0).concat("KB");
+            } else {
+                modifiedFileSize = String.valueOf(Math.round((fileSize / (1024 * 1204) * 100.0)) / 100.0).concat("MB");
+            }
+        } else {
+            modifiedFileSize = "Unknown";
+        }
+
+        return modifiedFileSize;
     }
 
 }

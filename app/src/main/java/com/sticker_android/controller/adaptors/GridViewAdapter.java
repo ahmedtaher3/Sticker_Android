@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
@@ -71,11 +72,12 @@ public class GridViewAdapter extends BaseAdapter {
         if (fanFilter.imageUrl != null && !fanFilter.imageUrl.isEmpty()) {
             Glide.with(context)
                     .load(fanFilter.imageUrl)
-                    .listener(new Request(viewHolder))
+                    .listener(new Request(viewHolder)) .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(viewHolder.image);
             viewHolder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                   // StickerApp.getInstance().setBitmap(Utils.getBitmapFromView(viewHolder.image));
                     itemClickListener.onItemClick(fanFilter);
                 }
             });

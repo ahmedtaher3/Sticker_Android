@@ -5,7 +5,6 @@ import android.app.Application;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
 
-
 import com.google.firebase.FirebaseApp;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -25,6 +24,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class StickerApp extends Application {
     private AppBaseActivity mCurrentActivity=null;
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }

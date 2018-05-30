@@ -1,14 +1,20 @@
 package com.sticker_android.controller.adaptors;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -18,18 +24,33 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.fan.home.fandownloadmage.FanDownloadedImageActivity;
 import com.sticker_android.model.User;
-import com.sticker_android.model.contest.FanContest;
 import com.sticker_android.model.contest.FanContestDownload;
 import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.interfaces.DesignerActionListener;
+import com.sticker_android.network.ApiCall;
+import com.sticker_android.network.ApiResponse;
+import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
+import com.sticker_android.utils.DownloadImage;
+import com.sticker_android.utils.FileUtil;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.SharingHelper;
+import io.branch.referral.util.LinkProperties;
+import io.branch.referral.util.ShareSheetStyle;
+import retrofit2.Call;
 
 /**
  * Created by user on 24/4/18.
@@ -206,7 +227,9 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
                     }
                 }
             });
-
+            likeListener(vh);
+          //  downloadListener(vh);
+            share(vh);
             return vh;
         }
     }
@@ -284,7 +307,113 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
                        productItemClickListener.onProductItemClick(productItem.productInfo);
                 }
             });
+
+
         }
+
+    }
+
+    private void share(final ViewHolder vh) {
+
+        vh.checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int position = vh.getAdapterPosition();
+                final Product product = mItems.get(position).productInfo;
+                createDeepLink(product);
+
+                shareApi(product, 1, position);
+            }
+        });
+    }
+    private void downloadListener(final ViewHolder vh) {
+
+        vh.tvDownloads.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = vh.getAdapterPosition();
+                Product product = mItems.get(position).productInfo;
+                downloadApi(product, 1, position);
+                //  if(product.statics.downloadCount==0)
+                saveToLocal(product);
+            }
+        });
+
+
+    }
+
+
+    private void saveToLocal(Product product) {
+        if (Utils.isConnectedToInternet(context)) {
+            new DownloadImage(new DownloadImage.ISaveImageToLocal() {
+                @Override
+                public void imageResult(Bitmap result) {
+                    Uri tempUri = Utils.getImageUri(context, result);
+
+                    // CALL THIS METHOD TO GET THE ACTUAL PATH
+                    File finalFile = new File(Utils.getRealPathFromURI(context, tempUri));
+                    if (finalFile != null) {
+                        FileUtil.albumUpdate(context, finalFile.getAbsolutePath());
+                        MediaScannerConnection.scanFile(context, new String[] { finalFile.getPath() }, new String[] { "image/jpeg" }, null);
+
+                        Utils.showToast(context, "Image Saved Successfully.");
+                    } AppLogger.debug(FanDownloadedImageActivity.class.getSimpleName(), "called here" + finalFile);
+                }
+            }).execute(product.getImagePath());
+        }
+    }
+
+    private void likeListener(final ViewHolder vh) {
+
+        vh.checkboxLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int position = vh.getAdapterPosition();
+                Product product = mItems.get(position).productInfo;
+                boolean checked = isChecked;
+                if (buttonView.isPressed())
+                    if (product.isLike > 0) {
+                        likeApi(vh, product, 0, position);
+                        vh.checkboxLike.setEnabled(false);
+                    } else {
+                        likeApi(vh, product, 1, position);
+                        viewCountApi(product);
+                        vh.checkboxLike.setEnabled(false);
+                    }
+              /*  if (product.isLike==1) {
+                    likeApi(product, 0, position);
+                } else if(product.isLike==0){
+                    likeApi(product, 1, position);
+
+                }*/
+
+            }
+        });
+    }
+
+
+    private void likeApi(final ViewHolder vh, final Product product, final int i, final int position) {
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
+                , "", product.getProductid(), "" + i, "statics", "like_count");
+        apiResponseCall.enqueue(new ApiCall((Activity) context) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if (apiResponse.status) {
+                    product.isLike = i;
+                    mItems.get(position).productInfo.statics.likeCount = apiResponse.paylpad.statics.likeCount;
+                    vh.checkboxLike.setEnabled(true);
+                    notifyDataSetChanged();
+
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+                vh.checkboxLike.setEnabled(true);
+            }
+        });
+
 
     }
 
@@ -301,6 +430,129 @@ public class FanDownloadListAdaptor extends RecyclerView.Adapter<RecyclerView.Vi
         } else {
             return ITEM_PRODUCT;
         }
+    }
+
+
+
+    private void createDeepLink(final Product product){
+        Gson gson = new Gson();
+
+        BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
+                .setCanonicalIdentifier("item/" + product.getProductid())
+                .setTitle(context.getResources().getString(R.string.app_name))
+                .setContentDescription(product.getProductname())
+                .setContentImageUrl(product.getImagePath())
+                .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+                .addContentMetadata("property1", gson.toJson(product));
+
+        LinkProperties linkProperties = new LinkProperties()
+                .setChannel("facebook")
+                .setFeature("sharing");
+
+        ShareSheetStyle shareSheetStyle = new ShareSheetStyle(context, "Check this out!", "")
+                .setCopyUrlStyle(context.getResources().getDrawable(android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
+                .setMoreOptionStyle(context.getResources().getDrawable(android.R.drawable.ic_menu_search), "Show more")
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.FACEBOOK)
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.TWITTER)
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.EMAIL)
+                .setAsFullWidthStyle(true)
+                .setSharingTitle(context.getResources().getString(R.string.txt_share));
+
+        branchUniversalObject.showShareSheet((Activity) context,
+                linkProperties,
+                shareSheetStyle,
+                new Branch.BranchLinkShareListener() {
+                    @Override
+                    public void onShareLinkDialogLaunched() {
+                    }
+                    @Override
+                    public void onShareLinkDialogDismissed() {
+                    }
+                    @Override
+                    public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
+                        Log.e(TAG, "Shared link => " + sharedLink);
+                    }
+                    @Override
+                    public void onChannelSelected(String channelName) {
+                    }
+                });
+
+        branchUniversalObject.generateShortUrl(context, linkProperties, new Branch.BranchLinkCreateListener() {
+            @Override
+            public void onLinkCreate(String url, BranchError error) {
+                if (error == null) {
+                }
+            }
+        });
+
+    }
+    private void downloadApi(final Product product, int i, final int position) {
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
+                , "", product.getProductid(), "" + i, "statics", "download_count");
+        apiResponseCall.enqueue(new ApiCall((Activity) context) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if (apiResponse.status) {
+                    mItems.get(position).productInfo.statics.downloadCount = apiResponse.paylpad.statics.downloadCount;
+                    //  mItems.get(position).statics.downloadCount++;
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
+
+    private void shareApi(final Product product, int i, final int position) {
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
+                , "", product.getProductid(), "" + i, "statics", "share_count");
+        apiResponseCall.enqueue(new ApiCall((Activity) context) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if (apiResponse.status) {
+                    mItems.get(position).productInfo.statics.shareCount = apiResponse.paylpad.statics.shareCount;
+                    //  mItems.get(position).statics.downloadCount++;
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
+
+    private void viewCountApi(final Product product) {
+
+        Call<ApiResponse> apiResponseCall = RestClient.getService().apiSaveProductLike(mUserdata.getLanguageId(), mUserdata.getAuthrizedKey(), mUserdata.getId()
+                , "", product.getProductid(), "1", "statics", "view_count");
+        apiResponseCall.enqueue(new ApiCall((Activity) context) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+                if (apiResponse.status) {
+
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+
+
     }
 
 }

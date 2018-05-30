@@ -73,6 +73,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import id.zelory.compressor.Compressor;
 import retrofit2.Call;
 
 import static com.sticker_android.utils.helper.PermissionManager.Constant.READ_STORAGE_ACCESS_RQ;
@@ -109,6 +110,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
     private Product mProduct;
     private boolean isDesignedImageChanges;
     private boolean comingFromDetailActivity;
+    private File compressedImageFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,38 +173,38 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
             });
         }
         if (mProduct != null)
-        manageStatus();
+            manageStatus();
     }
 
     private void manageStatus() {
 
 
-            if (mProduct.productStatus == 3) {
-                rlJustificationHolder.setVisibility(View.VISIBLE);
-                setAdminCommentData();
-                btnPost.setText(getResources().getString(R.string.txt_resubmit));
-                imvProductImage.setOnClickListener(this);
-            } else {
-                rlJustificationHolder.setVisibility(View.GONE);
-                btnPost.setText(R.string.act_txt_update_add_new_design);
-                imvProductImage.setOnClickListener(null);
-            }
+        if (mProduct.productStatus == 3) {
+            rlJustificationHolder.setVisibility(View.VISIBLE);
+            setAdminCommentData();
+            btnPost.setText(getResources().getString(R.string.txt_resubmit));
+            imvProductImage.setOnClickListener(this);
+        } else {
+            rlJustificationHolder.setVisibility(View.GONE);
+            btnPost.setText(R.string.act_txt_update_add_new_design);
+            imvProductImage.setOnClickListener(null);
+        }
     }
 
     private void setAdminCommentData() {
-            if (mProduct.rejectionList != null) {
-                if (mProduct.rejectionList.size() > 0) {
+        if (mProduct.rejectionList != null) {
+            if (mProduct.rejectionList.size() > 0) {
 
-                    txtRecentComments.setText("" + mProduct.rejectionList.get(mProduct.rejectionList.size() - 1).description);
-                }
-                if (mProduct.rejectionList.size() > 1) {
-                    txtViewMoreComment.setVisibility(View.VISIBLE);
-                    txtViewMoreComment.setTextColor(getResources().getColor(R.color.colorDesignerText));
-                } else {
-                    txtViewMoreComment.setVisibility(View.GONE);
-
-                }
+                txtRecentComments.setText("" + mProduct.rejectionList.get(mProduct.rejectionList.size() - 1).description);
             }
+            if (mProduct.rejectionList.size() > 1) {
+                txtViewMoreComment.setVisibility(View.VISIBLE);
+                txtViewMoreComment.setTextColor(getResources().getColor(R.color.colorDesignerText));
+            } else {
+                txtViewMoreComment.setVisibility(View.GONE);
+
+            }
+        }
     }
 
 
@@ -334,7 +336,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                     final boolean isLeftToRight;
                     isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
                     if (isLeftToRight) {
-                    }else{
+                    } else {
                         txtView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                     }
 
@@ -367,11 +369,11 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
                 if (isLeftToRight) {
                     tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-                }else{
+                } else {
 
                 }
 
-              //  tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                //  tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
 
                 Object object = dataSource.get(position);
 
@@ -533,8 +535,9 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                             }
                         }
 
-                    }else{
-                    beginUpload(mCapturedImageUrl);}
+                    } else {
+                        beginUpload(mCapturedImageUrl);
+                    }
                 }
                 break;
             case R.id.imvProductImage:
@@ -619,14 +622,14 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                             Utils.showToast(getApplicationContext(), getString(R.string.txt_data_updated_successfully));
                         } else {
 
-                            if(type.equalsIgnoreCase("stickers")){
-                                Utils.showToast(getApplicationContext(), getResources().getString(R.string.stickers)+" "+getString(R.string.txt_added_successfully));
+                            if (type.equalsIgnoreCase("stickers")) {
+                                Utils.showToast(getApplicationContext(), getResources().getString(R.string.stickers) + " " + getString(R.string.txt_added_successfully));
 
-                            }else if(type.equalsIgnoreCase("emoji")){
-                                Utils.showToast(getApplicationContext(), getResources().getString(R.string.emoji)+" "+getString(R.string.txt_added_successfully));
+                            } else if (type.equalsIgnoreCase("emoji")) {
+                                Utils.showToast(getApplicationContext(), getResources().getString(R.string.emoji) + " " + getString(R.string.txt_added_successfully));
 
-                            }else{
-                                Utils.showToast(getApplicationContext(), getResources().getString(R.string.gif)+" "+getString(R.string.txt_added_successfully));
+                            } else {
+                                Utils.showToast(getApplicationContext(), getResources().getString(R.string.gif) + " " + getString(R.string.txt_added_successfully));
 
                             }
                         }
@@ -700,29 +703,29 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
                     if (mProduct != null) {
-                        if(type.equalsIgnoreCase("stickers")){
-                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.stickers)+" "+getString(R.string.txt_data_updated_successfully));
+                        if (type.equalsIgnoreCase("stickers")) {
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.stickers) + " " + getString(R.string.txt_data_updated_successfully));
 
-                        }else if(type.equalsIgnoreCase("emoji")){
-                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.emoji)+" "+getString(R.string.txt_data_updated_successfully));
+                        } else if (type.equalsIgnoreCase("emoji")) {
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.emoji) + " " + getString(R.string.txt_data_updated_successfully));
 
-                        }else{
-                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.gif)+" "+getString(R.string.txt_data_updated_successfully));
+                        } else {
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.gif) + " " + getString(R.string.txt_data_updated_successfully));
 
                         }
                         //Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " updated successfully.");
                     } else {
-                        if(type.equalsIgnoreCase("stickers")){
-                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.stickers)+" "+getString(R.string.txt_added_successfully));
+                        if (type.equalsIgnoreCase("stickers")) {
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.stickers) + " " + getString(R.string.txt_added_successfully));
 
-                        }else if(type.equalsIgnoreCase("emoji")){
-                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.emoji)+" "+getString(R.string.txt_added_successfully));
+                        } else if (type.equalsIgnoreCase("emoji")) {
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.emoji) + " " + getString(R.string.txt_added_successfully));
 
-                        }else{
-                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.gif)+" "+getString(R.string.txt_added_successfully));
+                        } else {
+                            Utils.showToast(getApplicationContext(), getResources().getString(R.string.gif) + " " + getString(R.string.txt_added_successfully));
 
                         }
-                      //  Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " added successfully.");
+                        //  Utils.showToast(getApplicationContext(), Utils.capitlizeText(type) + " added successfully.");
                     }
 
 
@@ -737,6 +740,9 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                         setResult(RESULT_OK, intent);
                         finish();
                     }
+                } else {
+                    Utils.showToast(getApplicationContext(), "" + apiResponse.error.message);
+
                 }
             }
 
@@ -801,8 +807,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                         openCropActivity(mCapturedImageUrl);
                         //uploadImage();
                     }
-                }
-                else{
+                } else {
                     mCapturedImageUrl = null;
                 }
                 break;
@@ -850,7 +855,22 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
-                    mCapturedImageUrl = resultUri.getPath();
+                    try {
+/*     File file = new File(getRealPathFromURI(resultUri));
+                   */
+                        AppLogger.debug(TAG, "Size is befor compress " + resultUri.getPath().length());
+                        File file = new File(resultUri.getPath());
+                        AppLogger.debug(TAG, "Size is before compress in unit " + Utils.getFileSize(file));
+                        compressedImageFile = new Compressor(this).compressToFile(file);
+                        AppLogger.debug(TAG, "Size is after compress " + Integer.parseInt(String.valueOf(compressedImageFile.length() / 1024)));
+                        AppLogger.debug(TAG, "Size is after compress in unit " + Utils.getFileSize(compressedImageFile));
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mCapturedImageUrl = compressedImageFile.getAbsolutePath();
+
+                    //mCapturedImageUrl = resultUri.getPath();
                     imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
                     imgPlaceHolder.setVisibility(View.GONE);
                     isDesignedImageChanges = true;
@@ -1011,6 +1031,7 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
             public void onError(int id, Exception ex) {
                 progressDialogHandler.hide();
                 Log.e(TAG, "Error during upload: " + id, ex);
+                Utils.showToast(AddNewDesignActivity.this, "Please upload again.");
             }
         });
     }

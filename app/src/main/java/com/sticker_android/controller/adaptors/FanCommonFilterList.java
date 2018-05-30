@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
@@ -192,7 +193,7 @@ public class FanCommonFilterList extends RecyclerView.Adapter<RecyclerView.ViewH
             if (fanFilter.imageUrl != null && !fanFilter.imageUrl.isEmpty()) {
                 Glide.with(context)
                         .load(fanFilter.imageUrl)
-                        .listener(new Request(itemHolder))
+                        .listener(new Request(itemHolder)).diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(itemHolder.image);
                 itemHolder.image.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -200,6 +201,7 @@ public class FanCommonFilterList extends RecyclerView.Adapter<RecyclerView.ViewH
                         fanFilter.type=type;
                         Intent intent = new Intent();
                         intent.putExtra(SELECTED_FILTER, fanFilter);
+                      //  StickerApp.getInstance().setBitmap(Utils.getBitmapFromView(itemHolder.image));
                         ((Activity)context).setResult(Activity.RESULT_OK, intent);
                         ((Activity)context).finish();
                     }

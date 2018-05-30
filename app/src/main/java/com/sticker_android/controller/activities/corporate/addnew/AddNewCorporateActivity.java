@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,8 +50,10 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import id.zelory.compressor.Compressor;
 import retrofit2.Call;
 
 import static com.sticker_android.utils.helper.PermissionManager.Constant.READ_STORAGE_ACCESS_RQ;
@@ -81,6 +84,7 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
     private ImageView imvProductImage2;
     private TextView txtViewMoreComment, txtRecentComments, edtJustification;
     private TextView imgPlaceHolder;
+    private File compressedImageFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -398,9 +402,9 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
 
-            if(tab.getPosition()==0){
+            if (tab.getPosition() == 0) {
                 imgPlaceHolder.setText(getResources().getString(R.string.txt_upload_ad));
-            }else {
+            } else {
                 imgPlaceHolder.setText(R.string.txt_upload_product);
             }
         }
@@ -450,7 +454,21 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == RESULT_OK) {
                     Uri resultUri = result.getUri();
-                    mCapturedImageUrl = resultUri.getPath();
+                    String path = result.getUri().getPath(); // "/mnt/sdcard/FileName.mp3"
+                    try {
+/*     File file = new File(getRealPathFromURI(resultUri));
+                   */
+                        AppLogger.debug(TAG,"Size is befor compress "+resultUri.getPath().length());
+                        File file = new File(resultUri.getPath());
+                        compressedImageFile = new Compressor(this).compressToFile(file);
+                        AppLogger.debug(TAG,"Size is after compress "+Integer.parseInt(String.valueOf(file.length()/1024)));
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mCapturedImageUrl = compressedImageFile.getAbsolutePath();
+
+                    //mCapturedImageUrl = resultUri.getPath();
                     imvProductImage2.setVisibility(View.GONE);
                     imgPlaceHolder.setVisibility(View.GONE);
                     imageLoader.displayImage(resultUri.toString(), imvProductImage, displayImageOptions);
@@ -578,4 +596,13 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
 
         });
     }
+
+    String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
 }

@@ -74,7 +74,9 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import id.zelory.compressor.Compressor;
 import retrofit2.Call;
 
 import static android.app.Activity.RESULT_OK;
@@ -118,9 +120,11 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     public static final String IMAGE_PATH = "image_path";
     public static final String STICKER_IMAGE_PATH = "sticker_image_path";
     private Product adObj = null;
+    private File compressedImageFile;
 
-    public interface OnImageLoadingListener{
+    public interface OnImageLoadingListener {
         void onImageLoadCompletion();
+
         void onImageLoadFailure();
     }
 
@@ -159,7 +163,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 mSelectedFilter.type = "sticker";
                 mSelectedFilter.imageUrl = stickerPath;
 
-                if(mLoadImageTask != null){
+                if (mLoadImageTask != null) {
                     mLoadImageTask.setImageLoadingListener(new OnImageLoadingListener() {
                         @Override
                         public void onImageLoadCompletion() {
@@ -206,7 +210,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             adDialog();*/
 
         getRandomAdApi();
-     //   startActivity(new Intent(getActivity(), FanAdShareActivity.class));
+        //   startActivity(new Intent(getActivity(), FanAdShareActivity.class));
         return inflatedView;
     }
 
@@ -371,14 +375,13 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                             imgFilterMask.setVisibility(View.VISIBLE);
 
                             int width = imgFilterMask.getWidth();
-                            if(width != 0){
+                            if (width != 0) {
                                 int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
                                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
                                 params.height = imgHeight;
                                 imgFilterMask.setLayoutParams(params);
                                 imgFilterMask.setImageBitmap(bitmap);
-                            }
-                            else {
+                            } else {
                                 imgFilterMask.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                                     @Override
                                     public void onGlobalLayout() {
@@ -402,6 +405,8 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 });
+
+
     }
 
     private void openCropActivity(String url) {
@@ -493,6 +498,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
     /**
      * will merge the filter bitmap and sticker or emoji bitmap with original image bitmap
+     *
      * @param bmp1 original image
      * @param bmp2 sticker or emoji
      * @param bmp3 filter
@@ -507,7 +513,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             canvas.drawBitmap(bmp3, 0, bmp1.getHeight() - bmp3.getHeight(), null);
         }
 
-        if(bmp2 != null){
+        if (bmp2 != null) {
             canvas.drawBitmap(bmp2, 0, 0, null);
         }
         return bmOverlay;
@@ -626,7 +632,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
         public OnImageLoadingListener imageLoadingListener;
 
-        public void setImageLoadingListener(OnImageLoadingListener listener){
+        public void setImageLoadingListener(OnImageLoadingListener listener) {
             imageLoadingListener = listener;
         }
 
@@ -668,7 +674,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             mStickerView.setVisibility(View.VISIBLE);
             mWorkSpaceFrame.requestLayout();
 
-            if(imageLoadingListener != null){
+            if (imageLoadingListener != null) {
                 imageLoadingListener.onImageLoadCompletion();
             }
         }
@@ -716,7 +722,28 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
             if (result) {
                 FileUtil.albumUpdate(mHostActivity, saveFilePath);
-                beginUpload(saveFilePath);
+
+/*Compress code added*/
+                try {
+/*     File file = new File(getRealPathFromURI(resultUri));
+                   */
+                    AppLogger.debug(TAG, "Size is befor compress " + saveFilePath.length());
+                    File file = new File(saveFilePath);
+                    AppLogger.debug(TAG, "Size is before compress in unit " + Utils.getFileSize(file));
+                    compressedImageFile = new Compressor(getActivity()).compressToFile(file);
+                    AppLogger.debug(TAG, "Size is after compress " + Integer.parseInt(String.valueOf(compressedImageFile.length() / 1024)));
+                    AppLogger.debug(TAG, "Size is after compress in unit " + Utils.getFileSize(compressedImageFile));
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mCapturedImageUrl = compressedImageFile.getAbsolutePath();
+                beginUpload(mCapturedImageUrl);
+
+                /* Compress code end
+                * */
+
+                //beginUpload(saveFilePath); /*Upload image without compress old code*/
                 mStickerView.clear();
                 mCapturedImageUrl = null;
                 mainImage.clear();
@@ -764,7 +791,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             public void onStateChanged(int id, TransferState state) {
                 Log.d(TAG, "onStateChanged: " + id + ", " + state);
                 if (TransferState.COMPLETED == state) {
-                    if(progressDialogHandler!=null)
+                    if (progressDialogHandler != null)
                         progressDialogHandler.hide();
                     String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
                     saveImageApi(imagePath);
@@ -779,7 +806,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onError(int id, Exception ex) {
-                if(progressDialogHandler!=null)
+                if (progressDialogHandler != null)
                     progressDialogHandler.hide();
                 Log.e(TAG, "Error during upload: " + id, ex);
             }
@@ -800,10 +827,10 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 progressDialogHandler.hide();
                 if (apiResponse.status) {
                     Toast.makeText(mHostActivity, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
-                   Intent intent=new Intent(getActivity(),FanAdShareActivity.class);
-                    intent.putExtra("link",imagePath);
+                    Intent intent = new Intent(getActivity(), FanAdShareActivity.class);
+                    intent.putExtra("link", imagePath);
                     startActivity(intent);
-                   // adDialog();
+                    // adDialog();
                     if (rlFilterOptionContainer.getVisibility() == View.INVISIBLE) {
                         mHostActivity.onBackPressed();
                     }
@@ -857,9 +884,9 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
 
     private void getRandomAdApi() {
-        final AppPref appPref=new AppPref(getActivity());
+        final AppPref appPref = new AppPref(getActivity());
         if (appPref.getLoginFlag(false)) {
-            User adObj= appPref.getUserInfo();
+            User adObj = appPref.getUserInfo();
             Call<ApiResponse> apiResponseCall = RestClient.getService().getRandomFeaturedProduct(adObj.getLanguageId(), adObj.getAuthrizedKey(), adObj.getId(), "product");
 
             apiResponseCall.enqueue(new ApiCall(getActivity()) {

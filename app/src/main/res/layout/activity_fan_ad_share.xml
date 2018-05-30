@@ -52,7 +52,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
-                                android:text="SPONCERED "
+                                android:text="SPONSERED "
                                 android:textColor="@color/colorFanText" />
 
                         </RelativeLayout>
