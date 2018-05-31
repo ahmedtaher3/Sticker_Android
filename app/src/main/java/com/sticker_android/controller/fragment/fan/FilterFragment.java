@@ -15,6 +15,7 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -797,12 +798,33 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onStateChanged(int id, TransferState state) {
                 Log.d(TAG, "onStateChanged: " + id + ", " + state);
-                if (TransferState.COMPLETED == state) {
+               /* if (TransferState.COMPLETED == state) {
                     if (progressDialogHandler != null)
                         progressDialogHandler.hide();
                     String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
                     saveImageApi(imagePath, filePath);
+                }*/
+
+
+                Log.d(TAG, "onStateChanged: " + id + ", " + state);
+                if (TransferState.COMPLETED == state) {
+                    if (progressDialogHandler != null)
+                        progressDialogHandler.hide();
+                    String imagePath = AppConstant.BUCKET_IMAGE_BASE_URL + fileName;
+                    Toast.makeText(mHostActivity, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
+
+                    saveImageApi(imagePath, filePath);
+
+                    Intent intent=new Intent(getActivity(),FanAdShareActivity.class);
+                    intent.putExtra("link", imagePath);
+                    intent.putExtra("local_file_path", saveFilePath);
+                    startActivity(intent);
+
+                    if (rlFilterOptionContainer.getVisibility() == View.INVISIBLE) {
+                        mHostActivity.onBackPressed();
+                    }
                 }
+
             }
 
             @Override
@@ -822,7 +844,32 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     }
 
     private void saveImageApi(final String imagePath, final String localFilePath) {
-        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
+
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+
+                Call<ApiResponse> apiResponseCall = RestClient.getService().saveCustomizeImage(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey()
+                        , mLoggedUser.getId(), imagePath);
+
+                apiResponseCall.enqueue(new ApiCall(getActivity()) {
+                    @Override
+                    public void onSuccess(ApiResponse apiResponse) {
+
+                        if (apiResponse.status) {
+
+                        }
+                    }
+
+                    @Override
+                    public void onFail(Call<ApiResponse> call, Throwable t) {
+                    }
+                });
+            }
+        });
+
+       /* final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
         progressDialogHandler.show();
 
         Call<ApiResponse> apiResponseCall = RestClient.getService().saveCustomizeImage(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey()
@@ -852,7 +899,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 progressDialogHandler.hide();
             }
         });
-
+*/
     }
 
 
