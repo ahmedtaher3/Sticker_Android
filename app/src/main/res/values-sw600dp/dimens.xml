@@ -149,5 +149,5 @@
     <dimen name="dimen_image_my_cus">25dp</dimen>
     <dimen name="dimen_image_size">90dp</dimen>
     <dimen name="rk_contest_height">100dp</dimen>
-
+    <dimen name="spacing">10dp</dimen>
 </resources>

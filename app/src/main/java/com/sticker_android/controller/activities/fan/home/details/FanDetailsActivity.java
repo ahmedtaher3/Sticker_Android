@@ -2,6 +2,9 @@ package com.sticker_android.controller.activities.fan.home.details;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -33,11 +36,16 @@ import com.sticker_android.model.fandownload.Download;
 import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppLogger;
+import com.sticker_android.utils.DownloadImage;
+import com.sticker_android.utils.FileUtil;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.TimeUtility;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import org.json.JSONObject;
+
+import java.io.File;
 
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
@@ -528,12 +536,34 @@ public class FanDetailsActivity extends AppBaseActivity {
 
                 if(isSharedEnabled){
                     downloadApi(1);
+                    if(mProduct!=null)
+                    saveToLocal(mProduct);
                 }
             }
         });
 
     }
 
+
+    private void saveToLocal(Product product) {
+        if (Utils.isConnectedToInternet(this)) {
+            new DownloadImage(new DownloadImage.ISaveImageToLocal() {
+                @Override
+                public void imageResult(Bitmap result) {
+                    Uri tempUri = Utils.getImageUri(FanDetailsActivity.this, result);
+
+                    // CALL THIS METHOD TO GET THE ACTUAL PATH
+                    File finalFile = new File(Utils.getRealPathFromURI(FanDetailsActivity.this, tempUri));
+                    if (finalFile != null) {
+                        FileUtil.albumUpdate(FanDetailsActivity.this, finalFile.getAbsolutePath());
+                        MediaScannerConnection.scanFile(FanDetailsActivity.this, new String[] { finalFile.getPath() }, new String[] { "image/jpeg" }, null);
+
+                        Utils.showToast(FanDetailsActivity.this, getResources().getString(R.string.txt_image_saved_successfully));
+                    } AppLogger.debug(FanDownloadedImageActivity.class.getSimpleName(), "called here" + finalFile);
+                }
+            }).execute(product.getImagePath());
+        }
+    }
 
     private void downloadApi(int i) {
 

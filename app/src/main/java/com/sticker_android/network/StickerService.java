@@ -238,4 +238,13 @@ public interface StickerService {
                                                        @Field("user_id") String userId, @Field("key_name") String name);
 
 
+
+
+    @FormUrlEncoded
+    @POST(ApiConstant.API_UPDATE_LATEST_VERSION)
+    public Call<ApiResponse> checkVersion(@Field("key_name")String keyName);
+
+
+
+
 }

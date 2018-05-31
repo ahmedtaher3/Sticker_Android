@@ -328,7 +328,7 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         FileUtil.albumUpdate(context, finalFile.getAbsolutePath());
                         MediaScannerConnection.scanFile(context, new String[] { finalFile.getPath() }, new String[] { "image/jpeg" }, null);
 
-                        Utils.showToast(context, "Image Saved Successfully.");
+                        Utils.showToast(context, context.getResources().getString(R.string.txt_image_saved_successfully));
                     } AppLogger.debug(FanDownloadedImageActivity.class.getSimpleName(), "called here" + finalFile);
                 }
             }).execute(product.getImagePath());

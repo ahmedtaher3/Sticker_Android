@@ -73,4 +73,6 @@ public class StickerApp extends Application {
     {
         this.mCurrentActivity= (AppBaseActivity) currentActivity;
     }
+
+
 }

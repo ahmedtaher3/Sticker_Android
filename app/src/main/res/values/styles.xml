@@ -227,4 +227,15 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="AppTheme.NoActionBarWithTransparentThemeNew">
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:backgroundDimEnabled">false</item>
+    <item name="windowActionBar">false</item>
+    <!--<item name="android:windowFullscreen">true</item>-->
+    <!-- <item name="windowNoTitle">true</item>
+     -->
+    </style>
+
 </resources>

@@ -561,6 +561,11 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             mProfileFragment.onActivityResult(requestCode, resultCode, data);
+        } else if(requestCode == ProfileFragment.PROFILE_CAMERA_IMAGE
+                || requestCode == ProfileFragment.PROFILE_GALLERY_IMAGE){
+            if (mProfileFragment != null) {
+                mProfileFragment.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
 

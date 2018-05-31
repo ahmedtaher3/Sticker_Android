@@ -263,10 +263,10 @@ public class FanFilterDesignerStickerFragment extends BaseFragment implements Sw
                     if (apiResponse.paylpad.fanFilterArrayList != null) {
                         rcItemStickers.setVisibility(View.VISIBLE);
                         mAdapter.setData(apiResponse.paylpad.fanFilterArrayList);
-                    }else if(apiResponse.paylpad.fanFilterArrayList != null&&apiResponse.paylpad.fanFilterArrayList.size()==0) {
+                    }
+                    if(apiResponse.paylpad.fanFilterArrayList != null&&apiResponse.paylpad.fanFilterArrayList.size()==0) {
                         txtNoDataFoundContent.setText(getString(R.string.no_data_found));
                         rcItemStickers.setVisibility(View.GONE);
-
                         showNoDataFound();
                     }
                 }

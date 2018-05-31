@@ -22,6 +22,7 @@ import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
+import com.sticker_android.utils.version.GetLatestVersion;
 import com.sticker_android.view.BadgeUtils;
 
 import java.util.Locale;
@@ -39,11 +40,20 @@ public class SplashActivity extends AppBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         init();
-        waitForFewSecond();
+
         changeStatusBarColor(Color.BLACK);
-        BadgeUtils.setBadge(this,0);
+        BadgeUtils.setBadge(this, 0);
         LocalNotification.clearNotifications(this);
         getRandomAdApi();
+
+        new GetLatestVersion(this).setVersionListener(new GetLatestVersion.VersionListener() {
+            @Override
+            public void versionCheck(boolean updated) {
+                if(!updated){
+                    waitForFewSecond();
+                }
+            }
+        }).execute();
     }
 
     private void init() {
@@ -53,16 +63,16 @@ public class SplashActivity extends AppBaseActivity {
 
     private void setSelectedLangage(Class<?> cls) {
 
-       int language= appPref.getLanguage(1);
-       // setLocale(language,cls);
-        if (language ==2) {
-            Utils.changeLanguage("ar",this,cls);
+        int language = appPref.getLanguage(1);
+        // setLocale(language,cls);
+        if (language == 2) {
+            Utils.changeLanguage("ar", this, cls);
 
-        }else{
-            Utils.changeLanguage("en",this,cls);
+        } else {
+            Utils.changeLanguage("en", this, cls);
 
         }
-        }
+    }
 
     /**
      * Method is used for waiting  few second to start Main App
@@ -86,29 +96,26 @@ public class SplashActivity extends AppBaseActivity {
         return false;
     }
 
-
     /**
      * Class is used as a seperate thread  for waiting few seconds
      */
     class SplashRunnable implements Runnable {
         @Override
         public void run() {
-            if(appPref.getLoginFlag(false))
-            {
+
+            if (appPref.getLoginFlag(false)) {
                 moveToActivity();
                 finish();
-            }else if(!appPref.getLanguageStatus(false)){
-               setSelectedLangage(ChangeLanguageActivity.class);
-               // startNewActivity(ChangeLanguageActivity.class);
+            } else if (!appPref.getLanguageStatus(false)) {
+                setSelectedLangage(ChangeLanguageActivity.class);
+                // startNewActivity(ChangeLanguageActivity.class);
                 finish();
-            }else {
-               setSelectedLangage(SigninActivity.class);
-              //  startNewActivity(SigninActivity.class);
+            } else {
+                setSelectedLangage(SigninActivity.class);
+                //  startNewActivity(SigninActivity.class);
                 finish();
 
             }
-
-
         }
     }
 
@@ -120,12 +127,12 @@ public class SplashActivity extends AppBaseActivity {
      */
 
     public void setLocale(int lang, Class<?> cls) {
-        Locale myLocale=null;
-         if (lang ==2) {
-             myLocale  = new Locale("ar");
-         }else{
-             myLocale  = new Locale("en");
-         }
+        Locale myLocale = null;
+        if (lang == 2) {
+            myLocale = new Locale("ar");
+        } else {
+            myLocale = new Locale("en");
+        }
         Resources res = getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
         Configuration conf = res.getConfiguration();
@@ -134,41 +141,40 @@ public class SplashActivity extends AppBaseActivity {
         startNewActivity(cls);
     }
 
-  public void  moveToActivity() {
-      User user = appPref.getUserInfo();
-      if (user.getUserType().equals("corporate")) {
-          if (user.getCompanyName() != null&& !user.getCompanyName().isEmpty()){
-           //   startNewActivity(CorporateHomeActivity.class);
-              setSelectedLangage(CorporateHomeActivity.class);
-      } else {
-         // startNewActivity(CorporateProfileActivity.class);
-              setSelectedLangage(CorporateProfileActivity.class);
-      }
-    }
-      else if (user.getUserType().equals("fan")) {
-         // startNewActivity(FanHomeActivity.class);
-          setSelectedLangage(FanHomeActivity.class);
-      } else if (user.getUserType().equals("designer")) {
-         // startNewActivity(DesignerHomeActivity.class);
-          setSelectedLangage(DesignerHomeActivity.class);
-      }
+    public void moveToActivity() {
+        User user = appPref.getUserInfo();
+        if (user.getUserType().equals("corporate")) {
+            if (user.getCompanyName() != null && !user.getCompanyName().isEmpty()) {
+                //   startNewActivity(CorporateHomeActivity.class);
+                setSelectedLangage(CorporateHomeActivity.class);
+            } else {
+                // startNewActivity(CorporateProfileActivity.class);
+                setSelectedLangage(CorporateProfileActivity.class);
+            }
+        } else if (user.getUserType().equals("fan")) {
+            // startNewActivity(FanHomeActivity.class);
+            setSelectedLangage(FanHomeActivity.class);
+        } else if (user.getUserType().equals("designer")) {
+            // startNewActivity(DesignerHomeActivity.class);
+            setSelectedLangage(DesignerHomeActivity.class);
+        }
 
-  }
+    }
 
 
     private void getRandomAdApi() {
 
         if (appPref.getLoginFlag(false)) {
-           User adObj= appPref.getUserInfo();
+            User adObj = appPref.getUserInfo();
             Call<ApiResponse> apiResponseCall = RestClient.getService().getRandomFeaturedProduct(adObj.getLanguageId(), adObj.getAuthrizedKey(), adObj.getId(), "product");
 
             apiResponseCall.enqueue(new Callback<ApiResponse>() {
                 @Override
                 public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                    if(response.isSuccessful()){
-                     if(response.body().status){
-                         appPref.saveAds(response.body().paylpad.product);
-                     }
+                    if (response.isSuccessful()) {
+                        if (response.body().status) {
+                            appPref.saveAds(response.body().paylpad.product);
+                        }
                     }
                 }
 
@@ -177,6 +183,10 @@ public class SplashActivity extends AppBaseActivity {
 
                 }
             });
+
+
+
+
        /*    apiResponseCall.enqueue(new ApiCall(getActivity()) {
                 @Override
                 public void onSuccess(ApiResponse apiResponse) {
@@ -190,8 +200,8 @@ public class SplashActivity extends AppBaseActivity {
 
                 }
             });
-        */}
-
+        */
+        }
     }
 
 }

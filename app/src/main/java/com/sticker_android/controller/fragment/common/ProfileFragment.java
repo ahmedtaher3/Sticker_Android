@@ -17,10 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.sticker_android.R;
-import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.corporate.home.CorporateHomeActivity;
+import com.sticker_android.controller.activities.designer.home.DesignerHomeActivity;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.model.User;
@@ -29,6 +31,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
@@ -37,7 +40,9 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.io.IOException;
 
+import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -55,22 +60,24 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private String mParam1;
     private String mParam2;
 
-    private EditText firstName,lastName;
+    private EditText firstName, lastName;
     private RelativeLayout rlBgProfile;
     private LinearLayout llCorporate;
     private AppPref appPref;
-    private EditText edtCompanyName,edtCompanyAddress,edtProfileFirstName;
-    private EditText edtProfileLastName,edtProfileEmail;
+    private EditText edtCompanyName, edtCompanyAddress, edtProfileFirstName;
+    private EditText edtProfileLastName, edtProfileEmail;
     private Button btnSubmit;
     private User user;
     private ImageView imvProfile;
     private String mCapturedImageUrl;
-    private final int PROFILE_CAMERA_IMAGE = 0;
-    private final int PROFILE_GALLERY_IMAGE = 1;
+    public static final int PROFILE_CAMERA_IMAGE = 0;
+    public static final int PROFILE_GALLERY_IMAGE = 1;
     private TextView personalProfile;
     private TextView tvCompanyDetails;
     private DisplayImageOptions mDisplayImageOptions;
     private OnFragmentProfileListener mListener;
+    private File compressedImageFile;
+    private String TAG=ProfileFragment.class.getSimpleName();
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -88,17 +95,17 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-   if(context instanceof FanHomeActivity) {
-    FanHomeActivity profileActivity = (FanHomeActivity) context;
-       profileActivity.setProfileFragmentReference(this);
-   }else if(context instanceof CorporateHomeActivity){
-       CorporateHomeActivity profileActivity = (CorporateHomeActivity) context;
-       profileActivity.setProfileFragmentReference(this);
+        if (context instanceof FanHomeActivity) {
+            FanHomeActivity profileActivity = (FanHomeActivity) context;
+            profileActivity.setProfileFragmentReference(this);
+        } else if (context instanceof CorporateHomeActivity) {
+            CorporateHomeActivity profileActivity = (CorporateHomeActivity) context;
+            profileActivity.setProfileFragmentReference(this);
 
-   }else {
-       DesignerHomeActivity profileActivity = (DesignerHomeActivity) context;
-       profileActivity.setProfileFragmentReference(this);
-   }
+        } else {
+            DesignerHomeActivity profileActivity = (DesignerHomeActivity) context;
+            profileActivity.setProfileFragmentReference(this);
+        }
 
         mDisplayImageOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
@@ -128,29 +135,60 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=  inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
         init();
         setViewReferences(view);
         setViewListeners();
-        setUserData();
         setUserBackground();
+        setUserData();
         return view;
     }
 
     private void setUserData() {
+        /*ApiConstant.IMAGE_URl + user.getCompanyLogo()*/
         edtProfileFirstName.setText(user.getFirstName());
         edtProfileLastName.setText(user.getLastName());
         edtProfileEmail.setText(user.getEmail());
         edtProfileFirstName.setSelection(edtProfileFirstName.getText().length());
         edtProfileLastName.setSelection(edtProfileLastName.getText().length());
         edtProfileEmail.setSelection(edtProfileEmail.getText().length());
-        imageLoader.displayImage(ApiConstant.IMAGE_URl+ user.getCompanyLogo(), imvProfile, mDisplayImageOptions);
+        AppLogger.debug("Profile", "Url is " + ApiConstant.IMAGE_URl + user.getCompanyLogo());
+        if (user.getCompanyLogo() != null && !user.getCompanyLogo().isEmpty()) {
+
+            imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imvProfile, mDisplayImageOptions);
+        }
+
+       // imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imvProfile, mDisplayImageOptions);
 
     }
 
-    private void setUserBackground() {
-        if(user.getUserType()!=null) {
-            UserTypeEnum userTypeEnum=Enum.valueOf(UserTypeEnum.class,user.getUserType().toUpperCase());
+
+    class Request implements RequestListener {
+
+        public Request() {
+
+        }
+
+        @Override
+        public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+            AppLogger.debug("Profile", "Url is hsefcbjm");
+            if (e != null)
+                e.printStackTrace();
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+            AppLogger.debug("Profile", "Url is hsefcbjm nvdfjv");
+
+            return false;
+        }
+
+    }
+
+        private void setUserBackground() {
+        if (user.getUserType() != null) {
+            UserTypeEnum userTypeEnum = Enum.valueOf(UserTypeEnum.class, user.getUserType().toUpperCase());
 
             switch (userTypeEnum) {
                 case FAN:
@@ -167,7 +205,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.designer_btn_background));
                     personalProfile.setTextColor(getResources().getColor(R.color.colorDesignerText));
                     tvCompanyDetails.setVisibility(View.GONE);
-                    imvProfile.setImageResource(R.drawable.corporate_hdpi);
+                    imvProfile.setImageResource(R.drawable.designer_hdpi);
                     break;
                 case CORPORATE:
                     rlBgProfile.setBackground(getResources().getDrawable(R.drawable.profile_bg_hdpi));
@@ -180,15 +218,15 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     btnSubmit.setBackground(getResources().getDrawable(R.drawable.corporate_btn_background));
                     personalProfile.setTextColor(getResources().getColor(R.color.corporateBtnBackground));
                     tvCompanyDetails.setVisibility(View.VISIBLE);
-                    imvProfile.setImageResource(R.drawable.designer_hdpi);
+                    imvProfile.setImageResource(R.drawable.corporate_hdpi);
                     break;
             }
         }
     }
 
     private void init() {
-        appPref=new AppPref(getActivity());
-        user =appPref.getUserInfo();
+        appPref = new AppPref(getActivity());
+        user = appPref.getUserInfo();
 
     }
 
@@ -200,30 +238,29 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     protected void setViewReferences(View view) {
-        rlBgProfile= (RelativeLayout) view.findViewById(R.id.bgProfile);
-        llCorporate= (LinearLayout) view.findViewById(R.id.llCorporate);
-        edtCompanyName= (EditText) view.findViewById(R.id.act_profile_edt_company_name);
-        edtCompanyAddress= (EditText) view.findViewById(R.id.act_profile_edt_company_address);
-        edtProfileFirstName= (EditText) view.findViewById(R.id.act_profile_edt_first_name);
-        edtProfileLastName= (EditText) view.findViewById(R.id.act_profile_edt_last_name);
-        edtProfileEmail= (EditText) view.findViewById(R.id.act_profile_edt_email);
-        btnSubmit= (Button) view.findViewById(R.id.act_profile_btn_register);
-        imvProfile= (ImageView) view.findViewById(R.id.imvProfile);
-        personalProfile= (TextView) view.findViewById(R.id.frag_profile_tv_personal);
-        tvCompanyDetails= (TextView) view.findViewById(R.id.tvCompanyDetails);
+        rlBgProfile = (RelativeLayout) view.findViewById(R.id.bgProfile);
+        llCorporate = (LinearLayout) view.findViewById(R.id.llCorporate);
+        edtCompanyName = (EditText) view.findViewById(R.id.act_profile_edt_company_name);
+        edtCompanyAddress = (EditText) view.findViewById(R.id.act_profile_edt_company_address);
+        edtProfileFirstName = (EditText) view.findViewById(R.id.act_profile_edt_first_name);
+        edtProfileLastName = (EditText) view.findViewById(R.id.act_profile_edt_last_name);
+        edtProfileEmail = (EditText) view.findViewById(R.id.act_profile_edt_email);
+        btnSubmit = (Button) view.findViewById(R.id.act_profile_btn_register);
+        imvProfile = (ImageView) view.findViewById(R.id.imvProfile);
+        personalProfile = (TextView) view.findViewById(R.id.frag_profile_tv_personal);
+        tvCompanyDetails = (TextView) view.findViewById(R.id.tvCompanyDetails);
     }
 
     @Override
     protected boolean isValidData() {
-        if(user.getUserType().equals("corporate")){
-            if(edtCompanyName.getText().toString().trim().isEmpty())
-            {
-                Utils.showToast(getActivity(),getResources().getString(R.string.txt_enter_company_name));
+        if (user.getUserType().equals("corporate")) {
+            if (edtCompanyName.getText().toString().trim().isEmpty()) {
+                Utils.showToast(getActivity(), getResources().getString(R.string.txt_enter_company_name));
 
                 //   CommonSnackBar.show(edtCompanyName, "Company name cannot be empty", Snackbar.LENGTH_SHORT);
                 this.edtCompanyName.requestFocus();
                 return false;
-            }else if(edtCompanyAddress.getText().toString().trim().isEmpty()){
+            } else if (edtCompanyAddress.getText().toString().trim().isEmpty()) {
                 Utils.showToast(getActivity(), getResources().getString(R.string.txt_please_enter_company_address));
 
                 //   CommonSnackBar.show(edtCompanyAddress, "Company address cannot be empty", Snackbar.LENGTH_SHORT);
@@ -236,39 +273,37 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         String lastName = this.edtProfileLastName.getText().toString().trim();
         String email = this.edtProfileEmail.getText().toString().trim();
         if (firstName.isEmpty()) {
-            Utils.showToast(getActivity(),getString(R.string.first_name_cannot_be_empty));
+            Utils.showToast(getActivity(), getString(R.string.first_name_cannot_be_empty));
             this.edtProfileFirstName.requestFocus();
             return false;
-        }else if(firstName.length()<3){
-            Utils.showToast(getActivity(),getString(R.string.first_name_cannot_be_less_than));
+        } else if (firstName.length() < 3) {
+            Utils.showToast(getActivity(), getString(R.string.first_name_cannot_be_less_than));
 
             //  CommonSnackBar.show(edtFirstName, getString(R.string.first_name_cannot_be_less_than), Snackbar.LENGTH_SHORT);
             this.edtProfileFirstName.requestFocus();
             return false;
 
-        }
-        else if (lastName.isEmpty()) {
-            Utils.showToast(getActivity(),getString(R.string.last_name_cannot_be_empty));
+        } else if (lastName.isEmpty()) {
+            Utils.showToast(getActivity(), getString(R.string.last_name_cannot_be_empty));
             this.edtProfileLastName.requestFocus();
             return false;
 
-        }else if(lastName.length()<3){
-            Utils.showToast(getActivity(),getString(R.string.last_name_cannot_be_less_than));
+        } else if (lastName.length() < 3) {
+            Utils.showToast(getActivity(), getString(R.string.last_name_cannot_be_less_than));
 
             //  CommonSnackBar.show(edtFirstName, getString(R.string.first_name_cannot_be_less_than), Snackbar.LENGTH_SHORT);
             this.edtProfileLastName.requestFocus();
             return false;
 
         } else if (email.isEmpty()) {
-            Utils.showToast(getActivity(),getString(R.string.msg_email_cannot_be_empty));
+            Utils.showToast(getActivity(), getString(R.string.msg_email_cannot_be_empty));
             this.edtProfileEmail.requestFocus();
             return false;
-        }
-        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Utils.showToast(getActivity(), getString(R.string.msg_email_not_valid));
             this.edtProfileEmail.requestFocus();
             return false;
-        }else
+        } else
             return true;
     }
 
@@ -276,9 +311,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         Utils.hideKeyboard(getActivity());
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.act_profile_btn_register:
-                if(isValidData()){
+                if (isValidData()) {
                     updateProfileApi();
                 }
                 break;
@@ -308,17 +343,17 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         File file = Utils.getCustomImagePath(getActivity(), System.currentTimeMillis() + "");
         mCapturedImageUrl = file.getAbsolutePath();
         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-        startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
+        getActivity().startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
     }
 
     private void pickGalleryImage() {
         Intent openGallery = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(openGallery, PROFILE_GALLERY_IMAGE);
+        getActivity().startActivityForResult(openGallery, PROFILE_GALLERY_IMAGE);
     }
 
     private void updateProfileApi() {
         if (user.getId() != null) {
-            final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
+            final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
             progressDialogHandler.show();
             Call<ApiResponse> apiResponseCall = RestClient.getService().updateProfile(user.getId(), edtCompanyName.getText().toString(),
                     user.getAuthrizedKey(), edtCompanyAddress.getText().toString(), edtProfileFirstName.getText().toString(), edtProfileLastName.getText().toString(),
@@ -331,12 +366,14 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         appPref.saveUserObject(null);
                         appPref.saveUserObject(apiResponse.paylpad.getData());
                         appPref.setLoginFlag(true);
-                        Utils.showToast(getActivity(),getString(R.string.txt_profile_updated_successfully));
+                        if (mListener != null)
+                            mListener.updatedata();
+                        Utils.showToast(getActivity(), getString(R.string.txt_profile_updated_successfully));
                         getActivity().onBackPressed();
                         //  CommonSnackBar.show(edtCompanyAddress, "Data updated successfully", Snackbar.LENGTH_SHORT);
 
                     } else {
-                        Utils.showToast(getActivity(),apiResponse.error.message);
+                        Utils.showToast(getActivity(), apiResponse.error.message);
                         // CommonSnackBar.show(edtCompanyAddress, apiResponse.error.message, Snackbar.LENGTH_SHORT);
                     }
                 }
@@ -351,11 +388,10 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     }
 
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("Profile fragment","on activity");
+        Log.e("Profile fragment", "on activity");
         switch (requestCode) {
 
             case PROFILE_CAMERA_IMAGE:
@@ -373,7 +409,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     String sourceUrl = Utils.getGalleryImagePath(getActivity(), selectedImage);
                     File file = Utils.getCustomImagePath(getActivity(), "temp");
                     mCapturedImageUrl = file.getAbsolutePath();
-                    mCapturedImageUrl=sourceUrl;
+                    mCapturedImageUrl = sourceUrl;
                     openCropActivity(sourceUrl);
                     //uploadImage();
                 }
@@ -384,6 +420,21 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                     Uri resultUri = result.getUri();
                     imageLoader.displayImage(resultUri.toString(), imvProfile, mDisplayImageOptions);
                     mCapturedImageUrl = resultUri.getPath();
+
+                  /*Compress code added*/
+                    try {
+/*     File file = new File(getRealPathFromURI(resultUri));
+                   */
+                        File file = new File(mCapturedImageUrl);
+                        AppLogger.debug(TAG, "Size is before compress in unit " + Utils.getFileSize(file));
+                        compressedImageFile = new Compressor(getActivity()).compressToFile(file);
+                        AppLogger.debug(TAG, "Size is after compress " + Integer.parseInt(String.valueOf(compressedImageFile.length() / 1024)));
+                        AppLogger.debug(TAG, "Size is after compress in unit " + Utils.getFileSize(compressedImageFile));
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mCapturedImageUrl = compressedImageFile.getAbsolutePath();
                     uploadImage();
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
@@ -401,8 +452,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 .start(getActivity());
     }
 
-    public void uploadImage(){
-        final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(getActivity());
+    public void uploadImage() {
+        final ProgressDialogHandler progressDialogHandler = new ProgressDialogHandler(getActivity());
         progressDialogHandler.show();
         File file = new File(mCapturedImageUrl);
         MultipartBody.Part body = MultipartBody.Part.createFormData("company_logo", file.getName(),
@@ -410,24 +461,24 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
 
         RequestBody userId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(user.getId()));
         RequestBody languageId = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(user.getLanguageId()));
-        RequestBody authKey = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf( user.getAuthrizedKey()));
+        RequestBody authKey = RequestBody.create(MediaType.parse("multipart/form-data"), String.valueOf(user.getAuthrizedKey()));
 
-        Call<ApiResponse> apiResponseCall=  RestClient.getService().profileImage(userId,languageId,authKey,body);
+        Call<ApiResponse> apiResponseCall = RestClient.getService().profileImage(userId, languageId, authKey, body);
         apiResponseCall.enqueue(new ApiCall(getActivity()) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
                 progressDialogHandler.hide();
-                if(apiResponse.status){
-                    Utils.showToast(getActivity(),getString(R.string.txt_data_save_successfully));
+                if (apiResponse.status) {
+                    Utils.showToast(getActivity(), getString(R.string.txt_data_save_successfully));
                     user.setImageUrl(apiResponse.paylpad.getData().getCompanyLogo());
-                    User userNew =new User();
+                    User userNew = new User();
                     userNew = user;
                     userNew.setCompanyLogo(apiResponse.paylpad.getData().getCompanyLogo());
                     appPref.saveUserObject(null);
                     appPref.saveUserObject(userNew);
                     imageLoader.displayImage("file://" + mCapturedImageUrl, imvProfile, mDisplayImageOptions);
-                    if(mListener!=null)
-                    mListener.updatedata();
+                    if (mListener != null)
+                        mListener.updatedata();
 
                 }
             }
@@ -438,9 +489,10 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             }
         });
     }
-   public interface  OnFragmentProfileListener{
-    public void updatedata();
-}
+
+    public interface OnFragmentProfileListener {
+        public void updatedata();
+    }
 
     @Override
     public void onDetach() {

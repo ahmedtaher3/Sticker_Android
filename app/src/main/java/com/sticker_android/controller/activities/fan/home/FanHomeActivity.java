@@ -16,7 +16,6 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -26,13 +25,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.fan.home.contest.FanContestListActivity;
-import com.sticker_android.controller.activities.fan.home.details.FanDetailsActivity;
 import com.sticker_android.controller.fragment.common.AccountSettingFragment;
 import com.sticker_android.controller.fragment.common.ProfileFragment;
 import com.sticker_android.controller.fragment.designer.contentapproval.DesignerContentApprovalFragment;
@@ -42,7 +39,6 @@ import com.sticker_android.controller.fragment.fan.fansavecustomization.FanSaveC
 import com.sticker_android.controller.fragment.fan.notification.FanNotification;
 import com.sticker_android.controller.notification.LocalNotification;
 import com.sticker_android.model.User;
-import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.notification.Acme;
 import com.sticker_android.model.notification.AppNotification;
 import com.sticker_android.model.notification.ContestObj;
@@ -58,10 +54,6 @@ import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import org.json.JSONObject;
-
-import io.branch.referral.Branch;
-import io.branch.referral.BranchError;
 import retrofit2.Call;
 
 public class FanHomeActivity extends AppBaseActivity
@@ -133,10 +125,12 @@ public class FanHomeActivity extends AppBaseActivity
         tvUserName.setText(user.getFirstName() + " " + user.getLastName());
         tvEmail.setText(user.getEmail());
         ImageView imageProfile = (ImageView) header.findViewById(R.id.imageViewProfile);
-        imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imageProfile, displayImageOptions);
         LinearLayout linearLayout = (LinearLayout) header.findViewById(R.id.nav_header_common);
         linearLayout.setBackground(getResources().getDrawable(R.drawable.fan_profile_bg_hdpi));
         imageProfile.setImageResource(R.drawable.fan_xhdpi);
+        if(user.getCompanyLogo()!=null &&!user.getCompanyLogo().isEmpty())
+        imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imageProfile, displayImageOptions);
+
     }
 
     private void setBackground(Toolbar toolbar) {
@@ -489,8 +483,12 @@ public class FanHomeActivity extends AppBaseActivity
                 ((DesignerContentApprovalFragment) f).onActivityResult(requestCode, resultCode, data);
             }
         }
-
-
+        else if(requestCode == ProfileFragment.PROFILE_CAMERA_IMAGE
+                || requestCode == ProfileFragment.PROFILE_GALLERY_IMAGE){
+            if (mProfileFragment != null) {
+                mProfileFragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
     }
 
     @Override

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView tools:ignore="MissingPrefix"
+    android:textDirection="rtl"
+    android:textAlignment="viewStart"
     android:id="@+id/tvSpinnerMainItem"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -8,6 +10,5 @@
     android:textColor="@android:color/black"
     android:paddingRight="@dimen/dp_5"
     android:textSize="15sp"
-    android:textAlignment="gravity"
     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
     xmlns:tools="http://schemas.android.com/tools" />

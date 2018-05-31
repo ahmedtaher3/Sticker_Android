@@ -58,8 +58,8 @@ public abstract class AppBaseActivity extends AppCompatActivity {
                 .build();
         StickerApp.getInstance().setCurrentActivity(this);
         initApp();
-    }
 
+    }
 
     /**
      * App Local

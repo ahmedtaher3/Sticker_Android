@@ -16,9 +16,9 @@ import com.sticker_android.model.corporateproduct.Product;
 import com.sticker_android.model.corporateproduct.Statics;
 import com.sticker_android.model.fandownload.Download;
 import com.sticker_android.model.filter.FanFilter;
-import com.sticker_android.model.notification.Acme;
 import com.sticker_android.model.notification.AcmeNoti;
 import com.sticker_android.model.notification.NotificationApp;
+import com.sticker_android.model.version.AppVersion;
 
 import java.util.ArrayList;
 
@@ -91,6 +91,9 @@ public class Payload implements Parcelable {
     public ArrayList<Download> downloadArrayList;
 
 
+    @SerializedName("app_version")
+    public AppVersion appVersion;
+
     @SerializedName("acme1")
 
     public AcmeNoti acmeObj;
@@ -109,8 +112,8 @@ public class Payload implements Parcelable {
         dest.writeParcelable(this.product, flags);
         dest.writeTypedList(this.corporateCategories);
         dest.writeTypedList(this.notificationArrayList);
-        dest.writeList(this.ongoingContests);
-        dest.writeList(this.completedArrayList);
+        dest.writeTypedList(this.ongoingContests);
+        dest.writeTypedList(this.completedArrayList);
         dest.writeTypedList(this.productListAll);
         dest.writeParcelable(this.statics, flags);
         dest.writeTypedList(this.fanContestList);
@@ -121,6 +124,7 @@ public class Payload implements Parcelable {
         dest.writeString(this.title);
         dest.writeString(this.infoText);
         dest.writeTypedList(this.downloadArrayList);
+        dest.writeParcelable(this.appVersion, flags);
         dest.writeParcelable(this.acmeObj, flags);
     }
 
@@ -130,10 +134,8 @@ public class Payload implements Parcelable {
         this.product = in.readParcelable(Product.class.getClassLoader());
         this.corporateCategories = in.createTypedArrayList(Category.CREATOR);
         this.notificationArrayList = in.createTypedArrayList(NotificationApp.CREATOR);
-        this.ongoingContests = new ArrayList<OngoingContest>();
-        in.readList(this.ongoingContests, OngoingContest.class.getClassLoader());
-        this.completedArrayList = new ArrayList<ContestCompleted>();
-        in.readList(this.completedArrayList, ContestCompleted.class.getClassLoader());
+        this.ongoingContests = in.createTypedArrayList(OngoingContest.CREATOR);
+        this.completedArrayList = in.createTypedArrayList(ContestCompleted.CREATOR);
         this.productListAll = in.createTypedArrayList(Product.CREATOR);
         this.statics = in.readParcelable(Statics.class.getClassLoader());
         this.fanContestList = in.createTypedArrayList(FanContest.CREATOR);
@@ -146,6 +148,7 @@ public class Payload implements Parcelable {
         this.title = in.readString();
         this.infoText = in.readString();
         this.downloadArrayList = in.createTypedArrayList(Download.CREATOR);
+        this.appVersion = in.readParcelable(AppVersion.class.getClassLoader());
         this.acmeObj = in.readParcelable(AcmeNoti.class.getClassLoader());
     }
 

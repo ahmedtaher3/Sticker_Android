@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -638,5 +639,18 @@ public class Utils {
             return null;
         }
     }
-
+    //get the current version number and name
+    public static String getVersionInfo(Context context) {
+        String versionName = "";
+        int versionCode = -1;
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            versionName = packageInfo.versionName;
+            versionCode = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        AppLogger.debug("version",versionName);
+        return String.valueOf(versionName);
+    }
 }

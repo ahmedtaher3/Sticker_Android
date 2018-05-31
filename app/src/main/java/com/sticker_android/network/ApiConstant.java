@@ -9,7 +9,7 @@ public class ApiConstant {
     // public static final String BASE_API_URL = "http://localhost/vivek/index.php/";
     // public static final String BASE_API_URL = "http://18.188.13.98/web/index.php/mobile/";
     public static final String BASE_API_URL = "http://sportwidget.app/v3/index.php/mobile/";
-   public static final String IMAGE_URl = " http://sportwidget.app";
+   public static final String IMAGE_URl = "http://sportwidget.app/v3/";
 /* public static final String BASE_API_URL = "http://sportwidget.app/v3/index.php/mobile/";
    public static final String IMAGE_URl = " http://sportwidget.app";
 */
@@ -57,5 +57,6 @@ public class ApiConstant {
  public static final String API_GET_FAN_PRODUCT_LIST_ALL = "getAllProductWithFeatureProduct/";
  public static final String API_FILTER_LIST__FAN_All = "getDesignerCoporateProduct/";
  public static final String API_GET_RANDOM_FEATURED_PRODUCT = "getRandomFeatureProduct/";
+ public static final String API_UPDATE_LATEST_VERSION = "getLatestAppVersion/";
 
 }

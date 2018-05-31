@@ -189,10 +189,7 @@
         <activity
             android:name=".controller.activities.common.comments.CommentsActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".controller.activities.common.exit.ExitActivity"
-            android:autoRemoveFromRecents="true"
-            android:theme="@style/NoDisplay" />
+
         <activity
             android:name=".controller.activities.fan.home.fandownloadmage.FanDownloadedImageActivity"
             android:screenOrientation="portrait" />
@@ -235,6 +232,17 @@
             android:name=".controller.activities.fan.home.imagealbum.ImageAlbumStickers.ImageAlbumStickers"
             android:screenOrientation="portrait" />
         <activity   android:screenOrientation="portrait"  android:name=".controller.activities.fan.home.FanAdShare.FanAdShareActivity"></activity>
+
+        <activity
+            android:name=".utils.version.GooglePlayUpdateActivity"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBarWithTransparentThemeNew" />
+        <activity
+            android:name=".utils.version.ExitActivity"
+            android:autoRemoveFromRecents="true"
+            android:theme="@android:style/Theme.NoDisplay" />
+
     </application>
 
 </manifest>
