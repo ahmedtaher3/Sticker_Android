@@ -72,7 +72,7 @@ public class GridViewAdapter extends BaseAdapter {
         if (fanFilter.imageUrl != null && !fanFilter.imageUrl.isEmpty()) {
             Glide.with(context)
                     .load(fanFilter.imageUrl)
-                    .listener(new Request(viewHolder)) .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .listener(new Request(viewHolder)).diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(viewHolder.image);
             viewHolder.image.setOnClickListener(new View.OnClickListener() {
                 @Override

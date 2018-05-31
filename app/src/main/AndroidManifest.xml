@@ -17,6 +17,9 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.sticker_android.application.LimitCacheSizeGlideModule"
+            android:value="GlideModule" />
         <activity android:name=".controller.activities.common.main.MainActivity" />
         <activity
             android:name=".controller.activities.common.splash.SplashActivity"

@@ -747,7 +747,6 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 }
                 mCapturedImageUrl = compressedImageFile.getAbsolutePath();
                 beginUpload(mCapturedImageUrl);
-
                 /* Compress code end
                 * */
 
@@ -837,7 +836,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(mHostActivity, getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(getActivity(),FanAdShareActivity.class);
                     intent.putExtra("link",imagePath);
-                    intent.putExtra("local_file_path", localFilePath);
+                    intent.putExtra("local_file_path", saveFilePath);
 
                     startActivity(intent);
                     // adDialog();

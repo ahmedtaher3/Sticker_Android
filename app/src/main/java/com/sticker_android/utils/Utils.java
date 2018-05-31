@@ -593,6 +593,9 @@ public class Utils {
 
 
     public static void shareImageOnSocialMedia(Context context, String imagePath, String userEmail){
+        AppLogger.debug(Utils.class.getSimpleName(),"link  is "+imagePath);
+
+        AppLogger.debug(Utils.class.getSimpleName(),"link  is "+Uri.fromFile(new File(imagePath)));
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
         share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(imagePath)));

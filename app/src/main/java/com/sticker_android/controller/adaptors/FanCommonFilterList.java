@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class FanCommonFilterList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final String TAG = FanCommonFilterList.class.getSimpleName();
-    private  String type="";
+    private String type = "";
     private ArrayList<FanFilter> mItems;
     private Context context;
     public boolean isLoaderVisible;
@@ -65,12 +65,12 @@ public class FanCommonFilterList extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public FanCommonFilterList(Context cnxt,String type) {
+    public FanCommonFilterList(Context cnxt, String type) {
         mItems = new ArrayList<>();
         context = cnxt;
         appPref = new AppPref(context);
         mUserdata = appPref.getUserInfo();
-        this.type=type;
+        this.type = type;
     }
 
     public void setData(ArrayList<FanFilter> data) {
@@ -193,17 +193,17 @@ public class FanCommonFilterList extends RecyclerView.Adapter<RecyclerView.ViewH
             if (fanFilter.imageUrl != null && !fanFilter.imageUrl.isEmpty()) {
                 Glide.with(context)
                         .load(fanFilter.imageUrl)
-                        .listener(new Request(itemHolder)).diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .listener(new Request(itemHolder)).diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(itemHolder.image);
                 itemHolder.image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        fanFilter.type=type;
+                        fanFilter.type = type;
                         Intent intent = new Intent();
                         intent.putExtra(SELECTED_FILTER, fanFilter);
-                      //  StickerApp.getInstance().setBitmap(Utils.getBitmapFromView(itemHolder.image));
-                        ((Activity)context).setResult(Activity.RESULT_OK, intent);
-                        ((Activity)context).finish();
+                        //  StickerApp.getInstance().setBitmap(Utils.getBitmapFromView(itemHolder.image));
+                        ((Activity) context).setResult(Activity.RESULT_OK, intent);
+                        ((Activity) context).finish();
                     }
                 });
 
@@ -226,6 +226,7 @@ public class FanCommonFilterList extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 }
+
 class Request implements RequestListener {
 
     private final FanCommonFilterList.ViewHolder viewHolder;
@@ -237,8 +238,8 @@ class Request implements RequestListener {
     @Override
     public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
         viewHolder.progressImage.setVisibility(View.GONE);
-
-        e.printStackTrace();
+        if (e != null)
+            e.printStackTrace();
         return false;
     }
 
