@@ -41,6 +41,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -352,6 +353,47 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         progressDialogHandler.show();
 
         DrawableTypeRequest request = Glide.with(this).load(mSelectedFilter.imageUrl);
+        SimpleTarget<Bitmap> bitmapSimpleTarget = new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(final Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+                progressDialogHandler.hide();
+
+                if (mSelectedFilter.type.contains("filter")) {
+                            /* mStickerView.setVisibility(View.GONE);*/
+                    imgFilterMask.setVisibility(View.VISIBLE);
+
+                    int width = imgFilterMask.getWidth();
+                    if (width != 0) {
+                        int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
+                        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
+                        params.height = imgHeight;
+                        imgFilterMask.setLayoutParams(params);
+                        imgFilterMask.setImageBitmap(bitmap);
+                    } else {
+                        imgFilterMask.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                imgFilterMask.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                int width = imgFilterMask.getWidth();
+                                int height = imgFilterMask.getHeight();
+
+                                int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
+                                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
+                                params.height = imgHeight;
+                                imgFilterMask.setLayoutParams(params);
+                                imgFilterMask.setImageBitmap(bitmap);
+                            }
+                        });
+                    }
+
+                } else {
+                    mStickerView.setVisibility(View.VISIBLE);
+                            /*imgFilterMask.setVisibility(View.GONE);*/
+                    setSelectedStickerItem(bitmap);
+                }
+            }
+        };
+
         request.listener(new RequestListener<String, GlideDrawable>() {
             @Override
             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -364,49 +406,9 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 return false;
             }
         });
+        request.diskCacheStrategy(DiskCacheStrategy.SOURCE);
         request.asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(final Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                        progressDialogHandler.hide();
-
-                        if (mSelectedFilter.type.contains("filter")) {
-                            /* mStickerView.setVisibility(View.GONE);*/
-                            imgFilterMask.setVisibility(View.VISIBLE);
-
-                            int width = imgFilterMask.getWidth();
-                            if (width != 0) {
-                                int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
-                                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
-                                params.height = imgHeight;
-                                imgFilterMask.setLayoutParams(params);
-                                imgFilterMask.setImageBitmap(bitmap);
-                            } else {
-                                imgFilterMask.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                    @Override
-                                    public void onGlobalLayout() {
-                                        imgFilterMask.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                                        int width = imgFilterMask.getWidth();
-                                        int height = imgFilterMask.getHeight();
-
-                                        int imgHeight = (width * bitmap.getHeight()) / bitmap.getWidth();
-                                        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imgFilterMask.getLayoutParams();
-                                        params.height = imgHeight;
-                                        imgFilterMask.setLayoutParams(params);
-                                        imgFilterMask.setImageBitmap(bitmap);
-                                    }
-                                });
-                            }
-
-                        } else {
-                            mStickerView.setVisibility(View.VISIBLE);
-                            /*imgFilterMask.setVisibility(View.GONE);*/
-                            setSelectedStickerItem(bitmap);
-                        }
-                    }
-                });
-
-
+                .into(bitmapSimpleTarget);
     }
 
     private void openCropActivity(String url) {
@@ -616,10 +618,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
             Intent intent = new Intent(getActivity(), ImageAlbumStickers.class);
             intent.putExtra(ImageAlbumActivity.FILTER_IMAGE_TYPE, type);
             startActivityForResult(intent, CHOOSE_GALLERY_FILTER);
-
         }
-
-
     }
 
     private void pickGalleryImage() {
