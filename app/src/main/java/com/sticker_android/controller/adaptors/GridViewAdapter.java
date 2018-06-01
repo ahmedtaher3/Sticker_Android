@@ -98,7 +98,9 @@ public class GridViewAdapter extends BaseAdapter {
         public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
             viewHolder.progressImage.setVisibility(View.GONE);
 
-            e.printStackTrace();
+            if(e != null){
+                e.printStackTrace();
+            }
             return false;
         }
 

@@ -10,8 +10,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.sticker_android.view.imagezoom.ImageViewTouch;
+import android.widget.ImageView;
 
 import java.util.LinkedHashMap;
 
@@ -39,7 +38,7 @@ public class StickerView extends View {
     private Paint boxPaint = new Paint();
 
     public Bitmap mainBitmap;
-    public ImageViewTouch mainImage;
+    public ImageView mainImage;
     private float leftX, rightX, topY, bottomY;
 
     private LinkedHashMap<Integer, StickerItem> bank = new LinkedHashMap<Integer, StickerItem>();//Storing each data map

@@ -40,7 +40,7 @@ import java.util.List;
 
 public class BottomSheetFragment extends BottomSheetDialogFragment {
 
-    private final Context context;
+    private Context context = null;
     private ArrayList<Category> categoryArrayList = new ArrayList<>();
     private View contentView;
     private ImageView imageClose;
@@ -51,6 +51,8 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     private ArrayAdapter<String> adapter;
     private RadioGroup radioGroup;
     private CheckBox chkSelectAll;
+
+    public BottomSheetFragment(){}
 
     public BottomSheetFragment(ArrayList<Category> categoryArrayList, IFilter iFilter, Context context) {
         // Required empty public constructor

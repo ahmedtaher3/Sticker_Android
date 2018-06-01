@@ -3,6 +3,7 @@ package com.sticker_android.controller.activities.fan.home.FanAdShare;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -26,6 +27,8 @@ import com.sticker_android.model.fandownload.Download;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
+
+import java.io.File;
 
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
@@ -97,22 +100,9 @@ public class FanAdShareActivity extends AppBaseActivity implements View.OnClickL
                     })
                     .into(imvOfAds);
 
-        if (link != null) {
+        if (localFilePath != null) {
             Glide.with(this)
-                    .load(link)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            pgrImage1.setVisibility(View.GONE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            pgrImage1.setVisibility(View.GONE);
-                            return false;
-                        }
-                    })
+                    .load(Uri.fromFile(new File(localFilePath)))
                     .into(imvOfCustomization);
         }
     }

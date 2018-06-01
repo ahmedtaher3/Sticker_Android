@@ -68,8 +68,6 @@ import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.sticker_android.view.StickerView;
-import com.sticker_android.view.imagezoom.ImageViewTouch;
-import com.sticker_android.view.imagezoom.ImageViewTouchBase;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -98,7 +96,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     private User mLoggedUser;
     public Bitmap mainBitmap;
     private Bitmap originalBitmap;
-    public ImageViewTouch mainImage;
+    public ImageView mainImage;
     private ImageView imgFilterMask;
     private RelativeLayout rlImageContainer, rlPlaceHolderClick, rlResetButtonHolder;
     private LinearLayout rlFilterOptionContainer, llFilter, llSticker, llEmoji;
@@ -270,7 +268,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
     private void setViewReferences() {
         mStickerView = (StickerView) inflatedView.findViewById(R.id.sticker_panel);
-        mainImage = (ImageViewTouch) inflatedView.findViewById(R.id.main_image);
+        mainImage = (ImageView) inflatedView.findViewById(R.id.main_image);
         rlImageContainer = (RelativeLayout) inflatedView.findViewById(R.id.rlImageContainer);
         rlFilterOptionContainer = (LinearLayout) inflatedView.findViewById(R.id.rlFilterOptionContainer);
         llSticker = (LinearLayout) inflatedView.findViewById(R.id.llSticker);
@@ -533,7 +531,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btnReset:
                 mStickerView.clear();
-                mainImage.clear();
+                mainImage.setImageBitmap(null);
                 imgFilterMask.setImageBitmap(null);
                 rlPlaceHolderClick.setVisibility(View.VISIBLE);
                 mCapturedImageUrl = null;
@@ -626,7 +624,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
     private void pickGalleryImage() {
         Intent openGallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(openGallery, PROFILE_GALLERY_IMAGE);
+        getActivity().startActivityForResult(openGallery, PROFILE_GALLERY_IMAGE);
     }
 
     private void captureImage() {
@@ -634,7 +632,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         File file = Utils.getCustomImagePath(mHostActivity, System.currentTimeMillis() + "");
         mCapturedImageUrl = file.getAbsolutePath();
         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-        startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
+        getActivity().startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
     }
 
     private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -676,7 +674,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
             mainBitmap = result;
             mainImage.setImageBitmap(result);
-            mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+            //mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
             originalBitmap = mainBitmap.copy(mainBitmap.getConfig(), true);
             mStickerView.mainBitmap = mainBitmap;
             mStickerView.mainImage = mainImage;
@@ -754,7 +752,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 //beginUpload(saveFilePath); /*Upload image without compress old code*/
                 mStickerView.clear();
                 mCapturedImageUrl = null;
-                mainImage.clear();
+                mainImage.setImageBitmap(null);
                 imgFilterMask.setImageBitmap(null);
                 rlPlaceHolderClick.setVisibility(View.VISIBLE);
                 makeSaveButtonEnable(false);

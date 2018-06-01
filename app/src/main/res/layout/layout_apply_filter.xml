@@ -207,11 +207,12 @@
             android:layout_alignParentTop="true"
             android:background="@android:color/white">
 
-            <com.sticker_android.view.imagezoom.ImageViewTouch
+            <ImageView
                 android:id="@+id/main_image"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:scaleType="fitXY"/>
 
             <com.sticker_android.view.StickerView
                 android:id="@+id/sticker_panel"

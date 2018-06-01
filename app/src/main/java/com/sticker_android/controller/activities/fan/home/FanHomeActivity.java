@@ -465,8 +465,6 @@ public class FanHomeActivity extends AppBaseActivity
                     break;
 
             }
-
-
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -487,6 +485,11 @@ public class FanHomeActivity extends AppBaseActivity
                 || requestCode == ProfileFragment.PROFILE_GALLERY_IMAGE){
             if (mProfileFragment != null) {
                 mProfileFragment.onActivityResult(requestCode, resultCode, data);
+            }
+
+            Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
+            if (f instanceof FanHomeFragment) {
+                ((FanHomeFragment) f).onActivityResult(requestCode, resultCode, data);
             }
         }
     }
