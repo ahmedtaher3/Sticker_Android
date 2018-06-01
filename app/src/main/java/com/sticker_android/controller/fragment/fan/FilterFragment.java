@@ -129,6 +129,10 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         void onImageLoadFailure();
     }
 
+    public FilterFragment(){
+        AppLogger.debug(TAG, "FilterFragment new instance created");
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -295,7 +299,8 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        AppLogger.error(TAG, "Inside onActivityResult()");
+        AppLogger.error(TAG, "Inside onActivityResult() " + requestCode+"result"+resultCode + " picked url => " + mCapturedImageUrl);
+
         switch (requestCode) {
 
             case PROFILE_CAMERA_IMAGE:
@@ -631,6 +636,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         File file = Utils.getCustomImagePath(mHostActivity, System.currentTimeMillis() + "");
         mCapturedImageUrl = file.getAbsolutePath();
         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+        AppLogger.error(TAG, "capture url = > " + mCapturedImageUrl);
         getActivity().startActivityForResult(takePicture, PROFILE_CAMERA_IMAGE);
     }
 

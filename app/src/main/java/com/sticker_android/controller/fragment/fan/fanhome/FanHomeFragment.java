@@ -48,6 +48,7 @@ import retrofit2.Call;
  */
 public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryTextListener {
 
+    private final String TAG = FanHomeFragment.class.getSimpleName();
     private TabLayout tabLayout;
     private AppPref appPref;
     private User mUserdata;
@@ -60,16 +61,17 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
     private MenuItem itemFilter;
     private ArrayList<Category> categoryList = new ArrayList<>();
 
+    private FilterFragment mFilterFragment = new FilterFragment();;
+
 
     public FanHomeFragment() {
         // Required empty public constructor
+        AppLogger.debug(TAG, "FanHomeFragment new instance created");
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-
     }
 
     @Override
@@ -96,7 +98,8 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setHasOptionsMenu(true);
-        replaceFragment(new FilterFragment());
+
+        replaceFragment(mFilterFragment);
         fetchCategoryApi();
         return view;
     }
@@ -149,7 +152,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                 switch (tab.getPosition()) {
 
                     case 0:
-                        replaceFragment(new FilterFragment());
+                        replaceFragment(mFilterFragment);
                         if (itemFilter != null) {
                             itemFilter.setVisible(false);
                         }

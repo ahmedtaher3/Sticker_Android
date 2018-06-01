@@ -73,6 +73,8 @@ public class FanHomeActivity extends AppBaseActivity
     private MenuItem mSelectedMenu;
     boolean doubleBackToExitPressedOnce = false;
 
+    private FanHomeFragment mFanHomeFragment = new FanHomeFragment();;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +91,7 @@ public class FanHomeActivity extends AppBaseActivity
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
         setUserDataIntoNaviagtion();
         // showFragmentManually();
-        replaceFragment(new FanHomeFragment());
+        replaceFragment(mFanHomeFragment);
         setBadgeCount();
         initializeCountDrawer(appPref.getNewMessagesCount(0));
     }
@@ -129,7 +131,7 @@ public class FanHomeActivity extends AppBaseActivity
         linearLayout.setBackground(getResources().getDrawable(R.drawable.fan_profile_bg_hdpi));
         imageProfile.setImageResource(R.drawable.fan_xhdpi);
         if(user.getCompanyLogo()!=null &&!user.getCompanyLogo().isEmpty())
-        imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imageProfile, displayImageOptions);
+            imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imageProfile, displayImageOptions);
 
     }
 
@@ -280,7 +282,7 @@ public class FanHomeActivity extends AppBaseActivity
         Fragment fragmentClass = null;
         if (id == R.id.nav_home && !(f instanceof FanHomeFragment)) {
             textView.setText(getResources().getString(R.string.txt_home));
-            fragmentClass = new FanHomeFragment();
+            fragmentClass = mFanHomeFragment;//new FanHomeFragment();
         } else if (id == R.id.nav_downloads && !(f instanceof FanCustomizationFragment)) {
             textView.setText(R.string.txt_downloads);
             fragmentClass = new FanCustomizationFragment();
