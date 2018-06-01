@@ -61,7 +61,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
     private MenuItem itemFilter;
     private ArrayList<Category> categoryList = new ArrayList<>();
 
-    private FilterFragment mFilterFragment = new FilterFragment();;
+    private FilterFragment mFilterFragment = new FilterFragment();
 
 
     public FanHomeFragment() {
@@ -98,7 +98,6 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setHasOptionsMenu(true);
-
         replaceFragment(mFilterFragment);
         fetchCategoryApi();
         return view;

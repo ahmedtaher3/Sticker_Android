@@ -111,9 +111,9 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     public String filePath;
     public String saveFilePath;
 
-    private final int PROFILE_CAMERA_IMAGE = 0;
-    private final int PROFILE_GALLERY_IMAGE = 1;
-    private final int CHOOSE_GALLERY_FILTER = 2;
+    public static final int PROFILE_CAMERA_IMAGE = 30;
+    public static final int PROFILE_GALLERY_IMAGE = 31;
+    public static final int CHOOSE_GALLERY_FILTER = 32;
     private int mImageSource = -1;
     private String mCapturedImageUrl;
     private android.app.AlertDialog mPermissionDialog;
@@ -422,7 +422,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 .setFixAspectRatio(true)
                 .setAspectRatio(1, 1)
                 .setAutoZoomEnabled(true)
-                .start(mHostActivity);
+                .start(mContext, this);
     }
 
     @Override

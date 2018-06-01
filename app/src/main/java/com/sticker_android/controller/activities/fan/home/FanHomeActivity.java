@@ -33,6 +33,7 @@ import com.sticker_android.controller.activities.fan.home.contest.FanContestList
 import com.sticker_android.controller.fragment.common.AccountSettingFragment;
 import com.sticker_android.controller.fragment.common.ProfileFragment;
 import com.sticker_android.controller.fragment.designer.contentapproval.DesignerContentApprovalFragment;
+import com.sticker_android.controller.fragment.fan.FilterFragment;
 import com.sticker_android.controller.fragment.fan.fancustomization.FanCustomizationFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeFragment;
 import com.sticker_android.controller.fragment.fan.fansavecustomization.FanSaveCustomization;
@@ -73,7 +74,7 @@ public class FanHomeActivity extends AppBaseActivity
     private MenuItem mSelectedMenu;
     boolean doubleBackToExitPressedOnce = false;
 
-    private FanHomeFragment mFanHomeFragment = new FanHomeFragment();;
+    private FanHomeFragment mFanHomeFragment = new FanHomeFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -489,6 +490,13 @@ public class FanHomeActivity extends AppBaseActivity
                 mProfileFragment.onActivityResult(requestCode, resultCode, data);
             }
 
+            Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
+            if (f instanceof FanHomeFragment) {
+                ((FanHomeFragment) f).onActivityResult(requestCode, resultCode, data);
+            }
+        }
+        else if(requestCode == FilterFragment.PROFILE_CAMERA_IMAGE
+                || requestCode == FilterFragment.PROFILE_GALLERY_IMAGE){
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
             if (f instanceof FanHomeFragment) {
                 ((FanHomeFragment) f).onActivityResult(requestCode, resultCode, data);

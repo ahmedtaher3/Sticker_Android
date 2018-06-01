@@ -6,7 +6,7 @@ package com.sticker_android.utils;
 
 public class AppConstants {
 
-    public static final boolean DEBUG_MODE = true;
+    public static final boolean DEBUG_MODE = false;
 
     public static final int FAN = 0;
 
