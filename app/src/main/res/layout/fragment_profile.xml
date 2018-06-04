@@ -1,192 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:descendantFocusability="blocksDescendants"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
     android:fillViewport="true"
     android:orientation="vertical"
     android:scrollbarThumbVertical="@android:color/transparent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:ignore="MissingPrefix"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    tools:ignore="MissingPrefix">
+
     <LinearLayout
-        android:layout_marginBottom="@dimen/dp_10"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:paddingBottom="1dp"
-            android:clipToPadding="false"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/width_my_profile_imag">
+            android:layout_height="@dimen/width_my_profile_imag"
+            android:clipToPadding="false"
+            android:paddingBottom="1dp">
+
             <RelativeLayout
                 android:id="@+id/bgProfile"
-                android:background="@drawable/gradient_bg_fan_hdpi"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/profile_rl_height">
+                android:layout_height="@dimen/profile_rl_height"
+                android:background="@drawable/gradient_bg_fan_hdpi">
+
                 <TextView
-                    android:visibility="gone"
                     android:id="@+id/tvCompanyDetails"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:textSize="15sp"
-                    android:textColor="@android:color/white"
-                    android:text="@string/txt_company_details"
-                    android:gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:gravity="center"
+                    android:text="@string/txt_company_details"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
             </RelativeLayout>
+
             <com.sticker_android.view.CircularImageView
-                android:elevation="3dp"
-                android:background="@drawable/image_shadow"
-                app:civ_app_border_color="@android:color/white"
-                app:civ_app_border_width="3dp"
                 android:id="@+id/imvProfile"
-                android:layout_alignParentBottom="true"
-                android:src="@drawable/football"
-                android:layout_centerInParent="true"
-                android:layout_centerHorizontal="true"
                 android:layout_width="@dimen/profile_image_height"
-                android:layout_height="@dimen/profile_image_width"  />
-            <ImageView
-                android:visibility="gone"
-                android:paddingStart="@dimen/dp_50"
-                android:layout_marginStart="@dimen/dp_30"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_menu_camera"
+                android:layout_height="@dimen/profile_image_width"
                 android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:background="@drawable/image_shadow"
+                android:elevation="3dp"
+                android:src="@drawable/football"
+                app:civ_app_border_color="@android:color/white"
+                app:civ_app_border_width="3dp" />
+
+            <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="@dimen/dp_30"
+                android:paddingStart="@dimen/dp_50"
+                android:src="@drawable/ic_menu_camera"
+                android:visibility="gone" />
         </RelativeLayout>
+
         <LinearLayout
-            android:layout_marginTop="@dimen/activit_margin_top_edit"
-            android:paddingEnd="@dimen/profile_padding_end"
-            android:paddingStart="@dimen/profile_padding_start"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/activit_margin_top_edit"
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/profile_padding_end"
+            android:paddingStart="@dimen/profile_padding_start">
+
             <LinearLayout
                 android:id="@+id/llCorporate"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
                 <android.support.design.widget.TextInputLayout
-                    android:layout_marginTop="@dimen/dp_20"
                     android:id="@+id/act_profile_txt_company_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    >
+                    android:layout_marginTop="@dimen/dp_20">
+
                     <android.support.design.widget.TextInputEditText
-                        android:textDirection="locale"
-                        android:textAlignment="viewStart"
-                        style="@style/EditText"
-                        android:backgroundTint="@color/edt_background_tint"
                         android:id="@+id/act_profile_edt_company_name"
+                        style="@style/EditText"
                         fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                        android:maxLines="1"
-                        android:maxLength="100"
-                        android:inputType="text|textNoSuggestions|textCapWords"
+                        android:backgroundTint="@color/edt_background_tint"
                         android:hint="@string/txt_company_name"
-                        />
+                        android:inputType="text|textNoSuggestions|textCapWords"
+                        android:maxLength="100"
+                        android:maxLines="1"
+                        android:textAlignment="viewStart"
+                        android:textDirection="locale" />
                 </android.support.design.widget.TextInputLayout>
+
                 <android.support.design.widget.TextInputLayout
-                    android:layout_marginTop="@dimen/activit_margin_top_edit"
                     android:id="@+id/act_profile_txt_input_company_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    >
+                    android:layout_marginTop="@dimen/activit_margin_top_edit">
 
                     <android.support.design.widget.TextInputEditText
-                        android:textDirection="locale"
-                        android:textAlignment="viewStart"
-                        android:backgroundTint="@color/edt_background_tint"
                         android:id="@+id/act_profile_edt_company_address"
-                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                        android:inputType="text|textNoSuggestions|textCapWords|textMultiLine"
                         style="@style/EditText"
+                        fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                        android:backgroundTint="@color/edt_background_tint"
                         android:hint="@string/txt_company_address"
-                        android:maxLength="100" />
+                        android:inputType="text|textNoSuggestions|textCapWords|textMultiLine"
+                        android:maxLength="100"
+                        android:textAlignment="viewStart"
+                        android:textDirection="locale" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/frag_profile_tv_personal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_top_profile"
                 android:gravity="center"
-                android:text="@string/txt_personal_details"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:text="@string/txt_personal_details" />
+
             <android.support.design.widget.TextInputLayout
-                android:layout_marginTop="@dimen/margin_top_profile"
                 android:id="@+id/act_signup_txt_input_first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
+                android:layout_marginTop="@dimen/margin_top_profile">
+
                 <android.support.design.widget.TextInputEditText
-                    android:textDirection="locale"
-                    android:textAlignment="viewStart"
-                    style="@style/EditText"
-                    android:backgroundTint="@color/edt_background_tint"
                     android:id="@+id/act_profile_edt_first_name"
+                    style="@style/EditText"
                     fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                    android:maxLines="1"
-                    android:maxLength="100"
-                    android:inputType="text|textNoSuggestions|textCapWords"
+                    android:backgroundTint="@color/edt_background_tint"
                     android:hint="@string/txt_hint_first_name"
-                    />
+                    android:inputType="text|textNoSuggestions|textCapWords"
+                    android:maxLength="100"
+                    android:maxLines="1"
+                    android:textAlignment="viewStart"
+                    android:textDirection="locale" />
             </android.support.design.widget.TextInputLayout>
+
             <android.support.design.widget.TextInputLayout
-                android:layout_marginTop="@dimen/margin_top_profile"
                 android:id="@+id/act_signup_txt_input_userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
+                android:layout_marginTop="@dimen/margin_top_profile">
 
                 <android.support.design.widget.TextInputEditText
-                    android:textDirection="locale"
-                    android:textAlignment="viewStart"
-                    android:backgroundTint="@color/edt_background_tint"
                     android:id="@+id/act_profile_edt_last_name"
-                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                    android:inputType="text|textNoSuggestions|textCapWords"
                     style="@style/EditText"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:backgroundTint="@color/edt_background_tint"
                     android:hint="@string/txt_hint_last_name"
+                    android:inputType="text|textNoSuggestions|textCapWords"
                     android:maxLength="100"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textAlignment="viewStart"
+                    android:textDirection="locale" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:layout_marginTop="@dimen/margin_top_profile"
-
                 android:id="@+id/act_signup_txt_input_email"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/frag_register_txt_input_userName"
-                >
+                android:layout_marginTop="@dimen/margin_top_profile">
 
                 <android.support.design.widget.TextInputEditText
-                    android:textDirection="locale"
-                    android:textAlignment="viewStart"
-                    android:backgroundTint="@color/edt_background_tint"
                     android:id="@+id/act_profile_edt_email"
-                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
-                    android:maxLines="1"
-                    android:maxLength="100"
-                    android:inputType="textEmailAddress|textNoSuggestions"
                     style="@style/EditText"
+                    fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+                    android:backgroundTint="@color/edt_background_tint"
                     android:hint="@string/txt_hint_email"
-                    />
+                    android:inputType="textEmailAddress|textNoSuggestions"
+                    android:maxLength="100"
+                    android:maxLines="1"
+                    android:textAlignment="viewStart"
+                    android:textDirection="locale" />
             </android.support.design.widget.TextInputLayout>
+
             <Button
-                android:layout_marginBottom="@dimen/dp_10"
-                android:elevation="@dimen/dp_5"
-                android:background="@drawable/fan_btn_background"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_top_profile"
                 android:id="@+id/act_profile_btn_register"
                 android:layout_width="@dimen/signup_btn_next_width"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginTop="@dimen/margin_top_profile"
+                android:background="@drawable/fan_btn_background"
+                android:elevation="@dimen/dp_5"
                 android:gravity="center"
                 android:text="@string/txt_btn_update"
                 android:textAllCaps="false"
