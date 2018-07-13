@@ -31,7 +31,6 @@ import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
-
 /**
  * Created by user on 22/3/18.
  */

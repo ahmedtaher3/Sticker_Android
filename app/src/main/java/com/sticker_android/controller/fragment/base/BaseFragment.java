@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sticker_android.utils.Utils;
-
 /**
  * Created by user on 23/3/18.
  */

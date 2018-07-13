@@ -33,7 +33,7 @@ public final class RestClient {
     private static Retrofit getInstance() {
         if (instance == null) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
             httpClient.addInterceptor(logging);
