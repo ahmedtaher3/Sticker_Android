@@ -5,11 +5,11 @@ apply plugin: 'maven-publish'
 
 android {
 
-    compileSdkVersion 24
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -40,8 +40,8 @@ publishing {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:24.2.1"
-    compile("com.android.support:exifinterface:25.1.0") {
+    implementation "com.android.support:appcompat-v7:28.0.0"
+    implementation("com.android.support:exifinterface:25.1.0") {
         transitive = false
     }
 }
