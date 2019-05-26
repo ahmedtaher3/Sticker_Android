@@ -5,6 +5,7 @@
     <group >
         <item
             android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_grey600_24dp"
             android:title="@string/txt_home" />
         <item
             android:visible="false"
@@ -12,23 +13,39 @@
             android:title="Report" />
         <item
             android:id="@+id/nav_corp_contest"
+            android:icon="@drawable/ic_podium_gold_grey600_24dp"
             android:title="@string/txt_contest" />
         <item
             android:id="@+id/nav_content_for_approval"
+            android:icon="@drawable/ic_check_decagram_grey600_24dp"
             android:title="@string/txt_content_approval" />
         <item android:id="@+id/nav_notification"
             app:actionLayout="@layout/menu_counter"
+            android:icon="@drawable/ic_bell_grey600_24dp"
             android:title="@string/txt_notifications">
         </item>
-        <item
-            android:id="@+id/nav_profile"
-            android:title="@string/txt_myprofile" />
-        <item
-            android:id="@+id/nav_account_setting"
-            android:title="@string/txt_account_setting" />
-        <item
-            android:id="@+id/nav_logout"
-            android:title="@string/txt_log_out" />
+
 
     </group>
+    <item android:title="@string/more"
+        android:id="@+id/languageGroup">
+        <menu>
+
+            <item
+                android:id="@+id/nav_profile"
+                android:icon="@drawable/ic_account_badge_grey600_24dp"
+                android:title="@string/txt_myprofile" />
+
+            <item
+                android:id="@+id/nav_account_setting"
+                android:icon="@drawable/ic_settings_grey600_24dp"
+                android:title="@string/txt_account_setting" />
+
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_logout_grey600_24dp"
+                android:title="@string/txt_log_out" />
+
+        </menu>
+    </item>
 </menu>

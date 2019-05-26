@@ -237,6 +237,7 @@
     <string name="txt_change_password">Change Password</string>
     <string name="txt_contact_us">"Contact Us "</string>
     <string name="txt_log_out">Log Out</string>
+    <string name="txt_log_in">Log In</string>
     <string name="txt_my_downloads">My Downloads</string>
     <string name="txt_please_upload_a_image">Please upload a image.</string>
     <string name="act_add_new_corp_category">Category</string>
@@ -307,5 +308,19 @@
     <string name="txt_give_your_vote">Give your vote in the current contests</string>
     <string name="txt_paricipate_in_contest">"Participate now in this contest and win prizes and trophies "</string>
     <string name="no_app_available_for_sharing">No application is available for sharing.</string>
+    <string name="login_required">you have to login first</string>
+    <string name="guest">guest</string>
+    <string name="Votes">votes</string>
+    <string name="add_new_vote">Add New Vote</string>
+    <string name="vote_description">Vote Description</string>
+    <string name="pls_add_vote_desc">Please add vote description</string>
+    <string name="description">Description</string>
+    <string name="add_first_desc">add first description</string>
+    <string name="add_secound_desc">add second description</string>
+    <string name="error">Error</string>
+    <string name="vote">Vote</string>
+    <string name="user">مستخدم</string>
+    <string name="my_votes">my votes</string>
+    <string name="more">more</string>
 
 </resources>

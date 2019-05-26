@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".controller.activities.fan.home.AddNewVote">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        android:elevation="3dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:collapseIcon="@drawable/back_arrow_small">
+
+        <TextView
+            android:id="@+id/tvToolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/sp_19.2"
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imv_nav_drawer_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
+
+        </FrameLayout>
+    </android.support.v7.widget.Toolbar>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/act_add_corp_write_des_margin_top_10dp">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/add_corp_tv_margin_top">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/vote_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/edt_background_tint"
+                android:hint="@string/vote_description"
+                android:imeOptions="actionDone"
+                android:inputType="text|textCapSentences|textNoSuggestions"
+                android:maxLength="100"
+                android:maxLines="1"
+                android:textAlignment="viewStart" />
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/add_corp_tv_margin_top"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/act_add_new_corp_category"
+                android:textColor="@color/edt_background_tint" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/edt_background_tint" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/imgDown2"
+                    android:layout_width="15dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    app:srcCompat="@drawable/ic_expand_more_black_24dp" />
+
+                <Spinner
+                    android:id="@+id/spnrCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toStartOf="@+id/imgDown2"
+                    android:layout_toLeftOf="@+id/imgDown2"
+                    android:background="@null"
+                    android:dropDownVerticalOffset="35dp"
+                    android:gravity="start|center"
+                    android:layoutDirection="rtl"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="viewStart"
+                    android:textSize="@dimen/text_size_contact_us" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:weightSum="2"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/act_add_corp_write_des_margin_top_10dp"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="150dp"
+                            android:layout_height="150dp">
+
+                            <ImageView
+                                android:id="@+id/first_choice_img"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/act_add_new_corp_imv_height"
+                                android:adjustViewBounds="true"
+                                android:background="@color/image_background_color"
+                                android:scaleType="fitXY" />
+
+                            <com.sticker_android.view.CustomAppCompatTextView
+                                android:id="@+id/first_imgPlaceHolder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:clickable="false"
+                                android:gravity="center_horizontal"
+                                android:longClickable="false"
+                                android:text="@string/pls_upload_image"
+                                android:textColor="#babec1"
+                                android:textSize="15sp"
+                                app:drawableTopCompat="@drawable/upload_sticker_placeholder" />
+
+                        </RelativeLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/add_corp_tv_margin_top">
+
+                            <android.support.design.widget.TextInputEditText
+                                android:id="@+id/first_description"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/edt_background_tint"
+                                android:hint="@string/description"
+                                android:imeOptions="actionDone"
+                                android:inputType="text|textCapSentences|textNoSuggestions"
+                                android:maxLength="100"
+                                android:maxLines="1"
+                                android:textAlignment="viewStart" />
+                        </android.support.design.widget.TextInputLayout>
+
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="150dp"
+                            android:layout_height="150dp">
+
+                            <ImageView
+                                android:id="@+id/second_choice_img"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/act_add_new_corp_imv_height"
+                                android:adjustViewBounds="true"
+                                android:background="@color/image_background_color"
+                                android:scaleType="fitXY" />
+
+                            <com.sticker_android.view.CustomAppCompatTextView
+                                android:id="@+id/second_imgPlaceHolder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:clickable="false"
+                                android:gravity="center_horizontal"
+                                android:longClickable="false"
+                                android:text="@string/pls_upload_image"
+                                android:textColor="#babec1"
+                                android:textSize="15sp"
+                                app:drawableTopCompat="@drawable/upload_sticker_placeholder" />
+
+                        </RelativeLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/add_corp_tv_margin_top">
+
+                            <android.support.design.widget.TextInputEditText
+                                android:id="@+id/second_description"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/edt_background_tint"
+                                android:hint="@string/description"
+                                android:imeOptions="actionDone"
+                                android:inputType="text|textCapSentences|textNoSuggestions"
+                                android:maxLength="100"
+                                android:maxLines="1"
+                                android:textAlignment="viewStart" />
+                        </android.support.design.widget.TextInputLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+
+            </LinearLayout>
+
+
+
+            <Button
+                android:id="@+id/uploadVote"
+                android:layout_width="@dimen/signup_btn_next_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/act_add_new_margin_top_30dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/designer_btn_background"
+                android:elevation="@dimen/dp_5"
+                android:gravity="center"
+                android:text="@string/add_new_vote"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_contact_us" />
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

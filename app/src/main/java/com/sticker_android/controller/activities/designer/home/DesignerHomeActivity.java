@@ -300,7 +300,7 @@ public class DesignerHomeActivity extends AppBaseActivity implements
         if (id == R.id.nav_home) {
             fragmentClass = new DesignerHomeFragment();
             textView.setText(getResources().getString(R.string.txt_home));
-        } else if (id == R.id.nav_content_for_appproval) {
+        } else if (id == R.id.nav_content_for_approval) {
             fragmentClass = new DesignerContentApprovalFragment();
             //  textView.setText("Content Approval");
         } else if (id == R.id.nav_report) {

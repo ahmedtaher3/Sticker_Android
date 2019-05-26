@@ -17,9 +17,12 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".controller.activities.fan.home.AddNewVote"/>
+
         <meta-data
             android:name="com.sticker_android.application.LimitCacheSizeGlideModule"
             android:value="GlideModule" />
+
         <activity android:name=".controller.activities.common.main.MainActivity" />
         <activity
             android:name=".controller.activities.common.splash.SplashActivity"
@@ -189,7 +192,6 @@
         <activity
             android:name=".controller.activities.common.comments.CommentsActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".controller.activities.fan.home.fandownloadmage.FanDownloadedImageActivity"
             android:screenOrientation="portrait" />
@@ -204,22 +206,16 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".controller.activities.common.contestlist.ContestCompletedAllUserActivity"
-            android:screenOrientation="portrait" />
-
-        <!-- Branch init -->
+            android:screenOrientation="portrait" /> <!-- Branch init -->
         <meta-data
             android:name="io.branch.sdk.BranchKey"
             android:value="key_live_dmB5svfQ33SmlJbbGnTYwdcfvAlDKjLO" />
         <meta-data
             android:name="io.branch.sdk.BranchKey.test"
-            android:value="key_test_mcw7DwiR47UebJogVgP5tcloAAfsReHZ" />
-
-        <!-- Branch testing (TestMode "true" to simulate fresh installs on dev environment) -->
+            android:value="key_test_mcw7DwiR47UebJogVgP5tcloAAfsReHZ" /> <!-- Branch testing (TestMode "true" to simulate fresh installs on dev environment) -->
         <meta-data
             android:name="io.branch.sdk.TestMode"
-            android:value="false" />
-
-        <!-- Branch install referrer tracking -->
+            android:value="false" /> <!-- Branch install referrer tracking -->
         <receiver
             android:name="io.branch.referral.InstallListener"
             android:exported="true">
@@ -231,8 +227,9 @@
         <activity
             android:name=".controller.activities.fan.home.imagealbum.ImageAlbumStickers.ImageAlbumStickers"
             android:screenOrientation="portrait" />
-        <activity   android:screenOrientation="portrait"  android:name=".controller.activities.fan.home.FanAdShare.FanAdShareActivity"></activity>
-
+        <activity
+            android:name=".controller.activities.fan.home.FanAdShare.FanAdShareActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".utils.version.GooglePlayUpdateActivity"
             android:excludeFromRecents="true"
@@ -242,7 +239,6 @@
             android:name=".utils.version.ExitActivity"
             android:autoRemoveFromRecents="true"
             android:theme="@android:style/Theme.NoDisplay" />
-
     </application>
 
 </manifest>

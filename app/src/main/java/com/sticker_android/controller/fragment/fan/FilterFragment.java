@@ -110,7 +110,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
 
     public String filePath;
     public String saveFilePath;
-
+    private AppPref appPref;
     public static final int PROFILE_CAMERA_IMAGE = 30;
     public static final int PROFILE_GALLERY_IMAGE = 31;
     public static final int CHOOSE_GALLERY_FILTER = 32;
@@ -151,7 +151,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         AppLogger.error(TAG, "Inside onCreateView() method");
-
+        appPref = new AppPref(getActivity());
         if (inflatedView == null) {
             inflatedView = LayoutInflater.from(mContext).inflate(R.layout.layout_apply_filter, container, false);
 
@@ -328,7 +328,7 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                     Uri resultUri = result.getUri();
                     mCapturedImageUrl = resultUri.getPath();
                     rlPlaceHolderClick.setVisibility(View.GONE);
-                    Log.e(TAG, "Path => " + mCapturedImageUrl);
+                    Log.i(TAG, "Path => " + mCapturedImageUrl);
                     makeFilterOptionEnable(true);
                     loadImage(mCapturedImageUrl);
 
@@ -466,6 +466,8 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+
+
     private void setSelectedStickerItem(Bitmap bitmap) {
         mStickerView.addBitImage(bitmap);
     }
@@ -487,6 +489,8 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         if (mSaveImageTask != null) {
             mSaveImageTask.cancel(true);
         }
+
+
 
         saveFilePath = Utils.getCustomImagePath(mHostActivity, null).getAbsolutePath();
         //  beginUpload(saveFilePath);
@@ -538,20 +542,28 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btnReset:
                 mStickerView.clear();
-                mainImage.setImageBitmap(null);
-                imgFilterMask.setImageBitmap(null);
+                mStickerView.destroyDrawingCache();
+                mainImage.destroyDrawingCache();
+                imgFilterMask.destroyDrawingCache();
                 rlPlaceHolderClick.setVisibility(View.VISIBLE);
                 mCapturedImageUrl = null;
                 makeSaveButtonEnable(false);
                 makeFilterOptionEnable(false);
                 break;
             case R.id.btnSave:
-                if (mSelectedFilter.type.contains("filter")
-                        || mStickerView.getBank().size() != 0) {
-                    mStickerView.hideHelpBoxTool();
-                    doSaveImage();
-                } else {
-                    Toast.makeText(mHostActivity, R.string.no_customization_alert, Toast.LENGTH_SHORT).show();
+                if (appPref.getLoginFlag(false))
+                {
+                    if (mSelectedFilter.type.contains("filter")
+                            || mStickerView.getBank().size() != 0) {
+                        mStickerView.hideHelpBoxTool();
+                        doSaveImage();
+                    } else {
+                        Toast.makeText(mHostActivity, R.string.no_customization_alert, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Utils.Login_required((Activity) getContext());
+
                 }
                 break;
             case R.id.llFilter:
@@ -632,8 +644,10 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
     }
 
     private void captureImage() {
+
+
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = Utils.getCustomImagePath(mHostActivity, System.currentTimeMillis() + "");
+        File file =Utils.getCustomImagePath(mHostActivity, System.currentTimeMillis() + "");
         mCapturedImageUrl = file.getAbsolutePath();
         takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         AppLogger.error(TAG, "capture url = > " + mCapturedImageUrl);

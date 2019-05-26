@@ -162,8 +162,7 @@ public class ImageAlbumStickers extends AppBaseActivity {
     }
 
     @Override
-    protected void setViewReferences() {
-        tabLayout = (TabLayout) findViewById(R.id.act_landing_tab);
+    protected void setViewReferences() { tabLayout = (TabLayout) findViewById(R.id.act_landing_tab);
 
 
     }

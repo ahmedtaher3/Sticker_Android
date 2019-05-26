@@ -236,6 +236,7 @@
     <string name="txt_change_password">تغيير كلمة المرور</string>
     <string name="txt_contact_us">تواصل معنا</string>
     <string name="txt_log_out">خروج</string>
+    <string name="txt_log_in">تسجيل دخول</string>
     <string name="txt_my_downloads">تحميلاتي</string>
     <string name="txt_please_upload_a_image">فضلا ارفع صورة</string>
     <string name="act_add_new_corp_category">بطولة</string>
@@ -305,6 +306,7 @@
     <string name="txt_give_your_vote">يمكنك المشاركة في المسابقات الحالية</string>
     <string name="txt_paricipate_in_contest">شارك الان في هذه المسابقة واربح جوائز وكأس المسابقة</string>
     <string name="no_app_available_for_sharing">No application is available for sharing.</string>
+    <string name="login_required">عليك تسجيل الدخول اولا</string>
 
     <!---->
 

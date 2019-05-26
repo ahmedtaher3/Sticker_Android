@@ -73,10 +73,10 @@
                         android:backgroundTint="@color/edt_background_tint"
                         android:hint="@string/act_add_corp_txt_name"
                         android:imeOptions="actionDone"
-                        android:textAlignment="viewStart"
                         android:inputType="text|textCapSentences|textNoSuggestions"
                         android:maxLength="100"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:textAlignment="viewStart" />
                 </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
@@ -94,10 +94,11 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <TextView
-                            android:layout_alignParentBottom="true"
                             android:layout_width="match_parent"
                             android:layout_height="2dp"
+                            android:layout_alignParentBottom="true"
                             android:background="@color/edt_background_tint" />
 
                         <android.support.v7.widget.AppCompatImageView
@@ -111,20 +112,20 @@
                             app:srcCompat="@drawable/ic_expand_more_black_24dp" />
 
                         <Spinner
-                            android:layout_toStartOf="@+id/imgDown2"
-                            android:layout_toLeftOf="@+id/imgDown2"
                             android:id="@+id/spnrCategory"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_toStartOf="@+id/imgDown2"
+                            android:layout_toLeftOf="@+id/imgDown2"
                             android:background="@null"
-                            android:layoutDirection="rtl"
-                            android:textAlignment="viewStart"
                             android:dropDownVerticalOffset="35dp"
                             android:gravity="start|center"
+                            android:layoutDirection="rtl"
                             android:spinnerMode="dropdown"
+                            android:textAlignment="viewStart"
                             android:textSize="@dimen/text_size_contact_us" />
 
-                        </RelativeLayout>
+                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -134,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone">
 
-                    <include layout="@layout/layout_justification_content"/>
+                    <include layout="@layout/layout_justification_content" />
                 </RelativeLayout>
 
                 <Button
@@ -143,8 +144,8 @@
                     android:layout_width="@dimen/signup_btn_next_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="20dp"
                     android:layout_marginTop="@dimen/act_add_new_margin_top_30dp"
+                    android:layout_marginBottom="20dp"
                     android:background="@drawable/designer_btn_background"
                     android:elevation="@dimen/dp_5"
                     android:gravity="center"

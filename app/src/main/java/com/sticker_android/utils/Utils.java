@@ -28,6 +28,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -36,6 +37,7 @@ import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.constant.AppConstant;
+import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.model.interfaces.ImagePickerListener;
 import com.sticker_android.model.interfaces.MessageEventListener;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -84,6 +86,42 @@ public class Utils {
                 Settings.Secure.ANDROID_ID);
         // LogUtils.error("Unique generated id  : " + android_id);
         return android_id;
+    }
+
+    //get number percentage
+    public static int getPercentage(int num , int total) {
+
+
+        if(total==0)
+        {
+            return 0;
+        }
+        else
+        {
+            int percent = (int)((num * 100.0f) / total);
+            return percent;
+        }
+
+
+    }
+
+
+    public static String get_Time(String myDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = sdf.parse(myDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return DateUtils.getRelativeTimeSpanString(date.getTime(),
+                System.currentTimeMillis(),
+                DateUtils.SECOND_IN_MILLIS).toString();
+
+
+
     }
 
     /**
@@ -269,7 +307,7 @@ public class Utils {
      */
     public static boolean isConnectedToInternet(Context context) {
 
-        ConnectivityManager mManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+      /*  ConnectivityManager mManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (mManager != null) {
             NetworkInfo activeNetworkInfo = mManager.getActiveNetworkInfo();
@@ -278,8 +316,8 @@ public class Utils {
             } else {
                 return false;
             }
-        }
-        return false;
+        }*/
+        return true;
     }
 
     public static void changeLanguage(String lang, Activity activity, Class<?> cls) {
@@ -652,5 +690,26 @@ public class Utils {
         }
         AppLogger.debug("version",versionName);
         return String.valueOf(versionName);
+    }
+
+    public static void Login_required(final Activity context)
+    {
+        android.app.AlertDialog.Builder deleteDialog = new android.app.AlertDialog.Builder(context);
+        deleteDialog.setTitle(R.string.login_required);
+        deleteDialog.setPositiveButton(R.string.ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+
+                        context.startActivity(new Intent(context , SigninActivity.class));
+                        context.finish();
+
+                    }
+                });
+        deleteDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        });
+        deleteDialog.show();
     }
 }

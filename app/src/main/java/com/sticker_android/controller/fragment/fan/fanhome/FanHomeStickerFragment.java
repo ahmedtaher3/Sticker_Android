@@ -71,7 +71,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
     private String categories="";
     String filterData = "";
     private EndlessRecyclerViewScrollListener scrollListener2;
-
+    private AppPref appPref;
 
     public FanHomeStickerFragment() {
         // Required empty public constructor
@@ -131,6 +131,7 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
 
     private void init() {
         mLoggedUser = new AppPref(getActivity()).getUserInfo();
+        appPref = new AppPref(getActivity());
     }
 
 
@@ -261,149 +262,299 @@ public class FanHomeStickerFragment extends BaseFragment implements SwipeRefresh
         if (PAGE_LIMIT != -1) {
             limit = PAGE_LIMIT;
         }
-        Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword, categories, filterData);
+
+        if(appPref.getLoginFlag(false))
+        {
+            Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
+                    index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword, categories, filterData);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
         */
-        apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
-            @Override
-            public void onSuccess(ApiResponse apiResponse) {
+            apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
 
-                if (isAdded() && getActivity() != null) {
-                    llLoaderView.setVisibility(View.GONE);
-                    rlContent.setVisibility(View.VISIBLE);
-                    swipeRefresh.setRefreshing(false);
+                    if (isAdded() && getActivity() != null) {
+                        llLoaderView.setVisibility(View.GONE);
+                        rlContent.setVisibility(View.VISIBLE);
+                        swipeRefresh.setRefreshing(false);
 
-                    //remove wi-fi symbol when response got
-                    if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
-                        rlConnectionContainer.removeAllViews();
-                    }
+                        //remove wi-fi symbol when response got
+                        if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
+                            rlConnectionContainer.removeAllViews();
+                        }
 
-                    try {
-                        if (apiResponse.status) {
-                            Payload payload = apiResponse.paylpad;
+                        try {
+                            if (apiResponse.status) {
+                                Payload payload = apiResponse.paylpad;
 
-                            if (payload != null) {
+                                if (payload != null) {
 
-                                if (isRefreshing) {
+                                    if (isRefreshing) {
 
-                                    if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                        mStickerList.clear();
-                                        mStickerList.addAll(payload.productListAll);
-
-                                        llNoDataFound.setVisibility(View.GONE);
-                                        rcDesignList.setVisibility(View.VISIBLE);
-                                        mAdapter.setData(mStickerList);
-
-                                        mCurrentPage = 0;
-                                        mCurrentPage++;
-                                    } else {
-                                        mStickerList.clear();
-                                        mAdapter.setData(mStickerList);
-                                        if (searchKeyword.length() != 0) {
-                                            txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                        } else {
-                                            txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
-                                        }
-                                        showNoDataFound();
-                                    }
-                                } else {
-
-                                    if (mCurrentPage == 0) {
-                                        mStickerList.clear();
-                                        if (payload.productListAll != null) {
+                                        if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                            mStickerList.clear();
                                             mStickerList.addAll(payload.productListAll);
-                                        }
 
-                                        if (mStickerList.size() != 0) {
                                             llNoDataFound.setVisibility(View.GONE);
                                             rcDesignList.setVisibility(View.VISIBLE);
                                             mAdapter.setData(mStickerList);
+
+                                            mCurrentPage = 0;
+                                            mCurrentPage++;
                                         } else {
-                                            showNoDataFound();
+                                            mStickerList.clear();
+                                            mAdapter.setData(mStickerList);
                                             if (searchKeyword.length() != 0) {
                                                 txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                             } else {
                                                 txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
                                             }
-                                            rcDesignList.setVisibility(View.GONE);
+                                            showNoDataFound();
                                         }
                                     } else {
-                                        AppLogger.error(TAG, "Remove loader...");
-                                        mAdapter.removeLoader();
+
+                                        if (mCurrentPage == 0) {
+                                            mStickerList.clear();
+                                            if (payload.productListAll != null) {
+                                                mStickerList.addAll(payload.productListAll);
+                                            }
+
+                                            if (mStickerList.size() != 0) {
+                                                llNoDataFound.setVisibility(View.GONE);
+                                                rcDesignList.setVisibility(View.VISIBLE);
+                                                mAdapter.setData(mStickerList);
+                                            } else {
+                                                showNoDataFound();
+                                                if (searchKeyword.length() != 0) {
+                                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                                } else {
+                                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                                }
+                                                rcDesignList.setVisibility(View.GONE);
+                                            }
+                                        } else {
+                                            AppLogger.error(TAG, "Remove loader...");
+                                            mAdapter.removeLoader();
+                                            if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                                mStickerList.addAll(payload.productListAll);
+                                                mAdapter.setData(mStickerList);
+                                            }
+                                        }
+
                                         if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                            mStickerList.addAll(payload.productListAll);
-                                            mAdapter.setData(mStickerList);
+                                            mCurrentPage++;
                                         }
                                     }
+                                    AppLogger.error(TAG, "item list size => " + mStickerList.size());
 
-                                    if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                        mCurrentPage++;
+                                } else if (mStickerList == null || (mStickerList != null && mStickerList.size() == 0)) {
+                                    if (searchKeyword.length() != 0) {
+                                        txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                    } else {
+                                        txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
                                     }
+                                    showNoDataFound();
                                 }
-                                AppLogger.error(TAG, "item list size => " + mStickerList.size());
-
-                            } else if (mStickerList == null || (mStickerList != null && mStickerList.size() == 0)) {
-                                if (searchKeyword.length() != 0) {
-                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                } else {
-                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
-                                }
-                                showNoDataFound();
                             }
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        Utils.showAlertMessage(mContext, new MessageEventListener() {
-                            @Override
-                            public void onOkClickListener(int reqCode) {
-
-                            }
-                        }, getString(R.string.server_unreachable), getString(R.string.oops), 0);
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFail(final Call<ApiResponse> call, Throwable t) {
-
-                if (isAdded() && getActivity() != null) {
-                    llLoaderView.setVisibility(View.GONE);
-                    mAdapter.removeLoader();
-                    swipeRefresh.setRefreshing(false);
-
-                    if (mCurrentPage == 0) {
-                        rlContent.setVisibility(View.GONE);
-                    } else {
-                        rlContent.setVisibility(View.VISIBLE);
-                    }
-                    if (!call.isCanceled() && (t instanceof java.net.ConnectException ||
-                            t instanceof java.net.SocketTimeoutException ||
-                            t instanceof java.net.SocketException ||
-                            t instanceof java.net.UnknownHostException)) {
-
-                        if (mCurrentPage == 0) {
-                            mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            Utils.showAlertMessage(mContext, new MessageEventListener() {
                                 @Override
                                 public void onOkClickListener(int reqCode) {
-                                    rlContent.setVisibility(View.VISIBLE);
-                                }
 
-                                @Override
-                                public void onRetryClickListener(int reqCode) {
-                                    getDesignFromServer(isRefreshing, searchKeyword, categories);
                                 }
-                            }, 0);
+                            }, getString(R.string.server_unreachable), getString(R.string.oops), 0);
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFail(final Call<ApiResponse> call, Throwable t) {
+
+                    if (isAdded() && getActivity() != null) {
+                        llLoaderView.setVisibility(View.GONE);
+                        mAdapter.removeLoader();
+                        swipeRefresh.setRefreshing(false);
+
+                        if (mCurrentPage == 0) {
+                            rlContent.setVisibility(View.GONE);
                         } else {
-                            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                            rlContent.setVisibility(View.VISIBLE);
+                        }
+                        if (!call.isCanceled() && (t instanceof java.net.ConnectException ||
+                                t instanceof java.net.SocketTimeoutException ||
+                                t instanceof java.net.SocketException ||
+                                t instanceof java.net.UnknownHostException)) {
+
+                            if (mCurrentPage == 0) {
+                                mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
+                                    @Override
+                                    public void onOkClickListener(int reqCode) {
+                                        rlContent.setVisibility(View.VISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onRetryClickListener(int reqCode) {
+                                        getDesignFromServer(isRefreshing, searchKeyword, categories);
+                                    }
+                                }, 0);
+                            } else {
+                                Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
+        else
+        {
+            Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList_new(mLoggedUser.getLanguageId(),
+                    index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword, categories, filterData);
+
+        /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
+                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
+        */
+            apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
+
+                    if (isAdded() && getActivity() != null) {
+                        llLoaderView.setVisibility(View.GONE);
+                        rlContent.setVisibility(View.VISIBLE);
+                        swipeRefresh.setRefreshing(false);
+
+                        //remove wi-fi symbol when response got
+                        if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
+                            rlConnectionContainer.removeAllViews();
+                        }
+
+                        try {
+                            if (apiResponse.status) {
+                                Payload payload = apiResponse.paylpad;
+
+                                if (payload != null) {
+
+                                    if (isRefreshing) {
+
+                                        if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                            mStickerList.clear();
+                                            mStickerList.addAll(payload.productListAll);
+
+                                            llNoDataFound.setVisibility(View.GONE);
+                                            rcDesignList.setVisibility(View.VISIBLE);
+                                            mAdapter.setData(mStickerList);
+
+                                            mCurrentPage = 0;
+                                            mCurrentPage++;
+                                        } else {
+                                            mStickerList.clear();
+                                            mAdapter.setData(mStickerList);
+                                            if (searchKeyword.length() != 0) {
+                                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                            } else {
+                                                txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                            }
+                                            showNoDataFound();
+                                        }
+                                    } else {
+
+                                        if (mCurrentPage == 0) {
+                                            mStickerList.clear();
+                                            if (payload.productListAll != null) {
+                                                mStickerList.addAll(payload.productListAll);
+                                            }
+
+                                            if (mStickerList.size() != 0) {
+                                                llNoDataFound.setVisibility(View.GONE);
+                                                rcDesignList.setVisibility(View.VISIBLE);
+                                                mAdapter.setData(mStickerList);
+                                            } else {
+                                                showNoDataFound();
+                                                if (searchKeyword.length() != 0) {
+                                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                                } else {
+                                                    txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                                }
+                                                rcDesignList.setVisibility(View.GONE);
+                                            }
+                                        } else {
+                                            AppLogger.error(TAG, "Remove loader...");
+                                            mAdapter.removeLoader();
+                                            if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                                mStickerList.addAll(payload.productListAll);
+                                                mAdapter.setData(mStickerList);
+                                            }
+                                        }
+
+                                        if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                            mCurrentPage++;
+                                        }
+                                    }
+                                    AppLogger.error(TAG, "item list size => " + mStickerList.size());
+
+                                } else if (mStickerList == null || (mStickerList != null && mStickerList.size() == 0)) {
+                                    if (searchKeyword.length() != 0) {
+                                        txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                    } else {
+                                        txtNoDataFoundContent.setText(R.string.no_stickers_uploaded_yet);
+                                    }
+                                    showNoDataFound();
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            Utils.showAlertMessage(mContext, new MessageEventListener() {
+                                @Override
+                                public void onOkClickListener(int reqCode) {
+
+                                }
+                            }, getString(R.string.server_unreachable), getString(R.string.oops), 0);
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFail(final Call<ApiResponse> call, Throwable t) {
+
+                    if (isAdded() && getActivity() != null) {
+                        llLoaderView.setVisibility(View.GONE);
+                        mAdapter.removeLoader();
+                        swipeRefresh.setRefreshing(false);
+
+                        if (mCurrentPage == 0) {
+                            rlContent.setVisibility(View.GONE);
+                        } else {
+                            rlContent.setVisibility(View.VISIBLE);
+                        }
+                        if (!call.isCanceled() && (t instanceof java.net.ConnectException ||
+                                t instanceof java.net.SocketTimeoutException ||
+                                t instanceof java.net.SocketException ||
+                                t instanceof java.net.UnknownHostException)) {
+
+                            if (mCurrentPage == 0) {
+                                mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
+                                    @Override
+                                    public void onOkClickListener(int reqCode) {
+                                        rlContent.setVisibility(View.VISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onRetryClickListener(int reqCode) {
+                                        getDesignFromServer(isRefreshing, searchKeyword, categories);
+                                    }
+                                }, 0);
+                            } else {
+                                Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override

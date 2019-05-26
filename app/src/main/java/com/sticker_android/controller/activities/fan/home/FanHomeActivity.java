@@ -91,10 +91,18 @@ public class FanHomeActivity extends AppBaseActivity
         actionBarToggle(toolbar);
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
         setUserDataIntoNaviagtion();
-        // showFragmentManually();
+        showFragmentManually();
         replaceFragment(mFanHomeFragment);
-        setBadgeCount();
-        initializeCountDrawer(appPref.getNewMessagesCount(0));
+
+        if (appPref.getLoginFlag(false))
+        {
+            setBadgeCount();
+            initializeCountDrawer(appPref.getNewMessagesCount(0));
+        }
+        else {
+
+        }
+
     }
 
     /**
@@ -125,33 +133,62 @@ public class FanHomeActivity extends AppBaseActivity
         View header = navigationView.getHeaderView(0);
         TextView tvUserName = (TextView) header.findViewById(R.id.tvUserName);
         TextView tvEmail = (TextView) header.findViewById(R.id.tvEmail);
-        tvUserName.setText(user.getFirstName() + " " + user.getLastName());
-        tvEmail.setText(user.getEmail());
-        ImageView imageProfile = (ImageView) header.findViewById(R.id.imageViewProfile);
-        LinearLayout linearLayout = (LinearLayout) header.findViewById(R.id.nav_header_common);
-        linearLayout.setBackground(getResources().getDrawable(R.drawable.fan_profile_bg_hdpi));
-        imageProfile.setImageResource(R.drawable.fan_xhdpi);
-        if(user.getCompanyLogo()!=null &&!user.getCompanyLogo().isEmpty())
-            imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imageProfile, displayImageOptions);
+
+        if (appPref.getLoginFlag(false))
+        {
+            tvUserName.setText(user.getFirstName() + " " + user.getLastName());
+            tvEmail.setText(user.getEmail());
+            ImageView imageProfile = (ImageView) header.findViewById(R.id.imageViewProfile);
+            LinearLayout linearLayout = (LinearLayout) header.findViewById(R.id.nav_header_common);
+
+            imageProfile.setImageResource(R.drawable.fan_xhdpi);
+            if(user.getCompanyLogo()!=null &&!user.getCompanyLogo().isEmpty())
+                imageLoader.displayImage(ApiConstant.IMAGE_URl + user.getCompanyLogo(), imageProfile, displayImageOptions);
+
+        }
+        else {
+            tvUserName.setText(R.string.guest);
+
+            ImageView imageProfile = (ImageView) header.findViewById(R.id.imageViewProfile);
+            LinearLayout linearLayout = (LinearLayout) header.findViewById(R.id.nav_header_common);
+
+            imageProfile.setImageResource(R.drawable.fan_xhdpi);
+
+        }
+
+
 
     }
 
-    private void setBackground(Toolbar toolbar) {
-        UserTypeEnum userTypeEnum = Enum.valueOf(UserTypeEnum.class, user.getUserType().toUpperCase());
+    private void setToolbarBackground(Toolbar toolbar) {
 
-        switch (userTypeEnum) {
-            case FAN:
-                toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_xhdpi));
-                break;
-            case DESIGNER:
-                toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
 
-                break;
-            case CORPORATE:
-                toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
+        if (appPref.getLoginFlag(false))
+        {
+            UserTypeEnum userTypeEnum = Enum.valueOf(UserTypeEnum.class, user.getUserType().toUpperCase());
 
-                break;
+            switch (userTypeEnum) {
+                case FAN:
+                    toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_xhdpi));
+                    break;
+                case DESIGNER:
+                    toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_des_hdpi));
+
+                    break;
+                case CORPORATE:
+                    toolbar.setBackground(getResources().getDrawable(R.drawable.gradient_bg_hdpi));
+
+                    break;
+            }
         }
+        else
+        {
+            toolbar.setBackground(getResources().getDrawable(R.drawable.fan_header_xhdpi));
+
+        }
+
+
+
     }
 
     private void init() {
@@ -196,10 +233,6 @@ public class FanHomeActivity extends AppBaseActivity
                 }
             }
         }, 0);
-    }
-
-    private void setToolbarBackground(Toolbar toolbar) {
-        setBackground(toolbar);
     }
 
     private void actionBarToggle(Toolbar toolbar) {
@@ -284,7 +317,13 @@ public class FanHomeActivity extends AppBaseActivity
         if (id == R.id.nav_home && !(f instanceof FanHomeFragment)) {
             textView.setText(getResources().getString(R.string.txt_home));
             fragmentClass = mFanHomeFragment;//new FanHomeFragment();
-        } else if (id == R.id.nav_downloads && !(f instanceof FanCustomizationFragment)) {
+        }
+        else if (id == R.id.nav_login) {
+
+            startActivity(new Intent(FanHomeActivity.this , SigninActivity.class));
+            finish();
+
+        }   if (id == R.id.nav_downloads && !(f instanceof FanCustomizationFragment)) {
             textView.setText(R.string.txt_downloads);
             fragmentClass = new FanCustomizationFragment();
         } else if (id == R.id.nav_customization && !(f instanceof FanSaveCustomization)) {
@@ -329,6 +368,19 @@ public class FanHomeActivity extends AppBaseActivity
         mainView = (CoordinatorLayout) findViewById(R.id.mainView);
         //   tvUserName=(TextView)findViewById(R.id.tvUserName);
         // tvEmail=(TextView)findViewById(R.id.tvEmail);
+
+if (appPref.getLoginFlag(false))
+{
+    navigationView.getMenu().clear();
+    navigationView.inflateMenu(R.menu.activity_fan_home_drawer);
+}
+else
+{
+    navigationView.getMenu().clear();
+    navigationView.inflateMenu(R.menu.activity_guest_home_drawer);
+
+}
+      /*  */
 
     }
 

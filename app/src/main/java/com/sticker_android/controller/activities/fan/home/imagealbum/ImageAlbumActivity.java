@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
@@ -51,6 +53,8 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         init();
         getuserInfo();
         setContentView(R.layout.activity_image_album);
@@ -71,6 +75,8 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
 
         setAdaptor();
         getFilterApi(false);
+
+
     }
 
     private void getIntentData() {
@@ -172,52 +178,109 @@ public class ImageAlbumActivity extends AppBaseActivity implements SwipeRefreshL
         } else {
             llLoaderView.setVisibility(View.VISIBLE);
         }
-        Call<ApiResponse> apiResponseCall = RestClient.getService().apiFilterList(userdata.getLanguageId(), userdata.getAuthrizedKey(),
-                userdata.getId(), 0, 1000000, "", "filter_list", mFilterImageType);
 
-        apiResponseCall.enqueue(new ApiCall(this) {
-            @Override
-            public void onSuccess(ApiResponse apiResponse) {
-                if (isRefresh) {
-                    swipeRefresh.setRefreshing(false);
-                } else {
-                    llLoaderView.setVisibility(View.GONE);
-                }
-                if (apiResponse.status) {
-                    if (apiResponse.paylpad.fanFilterArrayList != null) {
 
-                        gridViewAdapter.setData(apiResponse.paylpad.fanFilterArrayList);
+        Log.i("TAAAAAAG" , String.valueOf(userdata.getId()));
+        Log.i("TAAAAAAG" , String.valueOf(userdata.getAuthrizedKey()));
+
+        if (appPref.getLoginFlag(false))
+        {
+            Call<ApiResponse> apiResponseCall = RestClient.getService().apiFilterList(userdata.getLanguageId(), userdata.getAuthrizedKey(),
+                    userdata.getId(), 0, 1000000, "", "filter_list", mFilterImageType);
+            apiResponseCall.enqueue(new ApiCall(this) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
+                    if (isRefresh) {
+                        swipeRefresh.setRefreshing(false);
+                    } else {
+                        llLoaderView.setVisibility(View.GONE);
                     }
-                    if (apiResponse.paylpad.fanFilterArrayList == null && apiResponse.paylpad.fanFilterArrayList.size() == 0) {
-                     String filterType = "";
+                    if (apiResponse.status) {
+                        if (apiResponse.paylpad.fanFilterArrayList != null) {
 
-                        if (mFilterImageType.contains("stickers")) {
-                            filterType= getString(R.string.txt_choose_stickers);
-                            txtNoDataFoundContent.setText(filterType);
-                        } else if (mFilterImageType.contains("filter")) {
-                            filterType= getString(R.string.txt_choose_filter);
-                            txtNoDataFoundContent.setText(filterType);
-                        } else if (mFilterImageType.contains("emoji")) {
-                            filterType= getString(R.string.txt_choose_emoji);
-                            txtNoDataFoundContent.setText(filterType);
+                            gridViewAdapter.setData(apiResponse.paylpad.fanFilterArrayList);
                         }
+                        if (apiResponse.paylpad.fanFilterArrayList == null && apiResponse.paylpad.fanFilterArrayList.size() == 0) {
+                            String filterType = "";
 
-                        showNoDataFound();
+                            if (mFilterImageType.contains("stickers")) {
+                                filterType= getString(R.string.txt_choose_stickers);
+                                txtNoDataFoundContent.setText(filterType);
+                            } else if (mFilterImageType.contains("filter")) {
+                                filterType= getString(R.string.txt_choose_filter);
+                                txtNoDataFoundContent.setText(filterType);
+                            } else if (mFilterImageType.contains("emoji")) {
+                                filterType= getString(R.string.txt_choose_emoji);
+                                txtNoDataFoundContent.setText(filterType);
+                            }
 
+                            showNoDataFound();
+
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFail(Call<ApiResponse> call, Throwable t) {
+                    if (isRefresh) {
+                        swipeRefresh.setRefreshing(false);
+                    } else {
+                        llLoaderView.setVisibility(View.GONE);
                     }
                 }
+            });
+        }
+        else
+        {
+            Call<ApiResponse> apiResponseCall = RestClient.getService().apiFilterList_new("1", 0, 1000000, "", "filter_list", mFilterImageType);
+            apiResponseCall.enqueue(new ApiCall(this) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
+                    if (isRefresh) {
+                        swipeRefresh.setRefreshing(false);
+                    } else {
+                        llLoaderView.setVisibility(View.GONE);
+                    }
+                    if (apiResponse.status) {
+                        if (apiResponse.paylpad.fanFilterArrayList != null) {
 
-            }
+                            gridViewAdapter.setData(apiResponse.paylpad.fanFilterArrayList);
+                        }
+                        if (apiResponse.paylpad.fanFilterArrayList == null && apiResponse.paylpad.fanFilterArrayList.size() == 0) {
+                            String filterType = "";
 
-            @Override
-            public void onFail(Call<ApiResponse> call, Throwable t) {
-                if (isRefresh) {
-                    swipeRefresh.setRefreshing(false);
-                } else {
-                    llLoaderView.setVisibility(View.GONE);
+                            if (mFilterImageType.contains("stickers")) {
+                                filterType= getString(R.string.txt_choose_stickers);
+                                txtNoDataFoundContent.setText(filterType);
+                            } else if (mFilterImageType.contains("filter")) {
+                                filterType= getString(R.string.txt_choose_filter);
+                                txtNoDataFoundContent.setText(filterType);
+                            } else if (mFilterImageType.contains("emoji")) {
+                                filterType= getString(R.string.txt_choose_emoji);
+                                txtNoDataFoundContent.setText(filterType);
+                            }
+
+                            showNoDataFound();
+
+                        }
+                    }
+
                 }
-            }
-        });
+
+                @Override
+                public void onFail(Call<ApiResponse> call, Throwable t) {
+                    if (isRefresh) {
+                        swipeRefresh.setRefreshing(false);
+                    } else {
+                        llLoaderView.setVisibility(View.GONE);
+                    }
+                }
+            });
+
+        }
+
+
     }
 
     private void showNoDataFound() {

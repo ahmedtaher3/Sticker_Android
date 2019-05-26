@@ -20,9 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.filter.FanFilterActivity;
 import com.sticker_android.controller.fragment.base.BaseFragment;
 import com.sticker_android.controller.fragment.fan.FilterFragment;
@@ -159,37 +161,41 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
                             item.setVisible(false);
                         break;
                     case 1:
-                        if (itemFilter != null) {
-                            itemFilter.setVisible(false);
-                        }
+
                         setItemVisible();
-                        replaceFragment(new FanContestFragment());
+                        replaceFragment(new VotesFragment());
                         break;
                     case 2:
                         if (itemFilter != null) {
                             itemFilter.setVisible(false);
                         }
                         setItemVisible();
-                        replaceFragment(new FanHomeAllFragment());
+                        replaceFragment(new FanContestFragment());
                         break;
-
                     case 3:
+                        if (itemFilter != null) {
+                            itemFilter.setVisible(false);
+                        }
                         setItemVisible();
-                        replaceFragment(new FanHomeStickerFragment());
+                        replaceFragment(new FanHomeAllFragment());
                         break;
                     case 4:
                         setItemVisible();
-                        replaceFragment(new FanHomeGifFragment());
+                        replaceFragment(new FanHomeStickerFragment());
                         break;
                     case 5:
                         setItemVisible();
-                        replaceFragment(new FanHomeEmojiFragment());
+                        replaceFragment(new FanHomeGifFragment());
                         break;
                     case 6:
                         setItemVisible();
-                        replaceFragment(new FanHomeAdsFragment());
+                        replaceFragment(new FanHomeEmojiFragment());
                         break;
                     case 7:
+                        setItemVisible();
+                        replaceFragment(new FanHomeAdsFragment());
+                        break;
+                    case 8:
                         setItemVisible();
                         replaceFragment(new FanHomeProductsFragment());
                         break;
@@ -231,41 +237,52 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        inflater.inflate(R.menu.fan_home_screen, menu);
-        item = menu.findItem(R.id.search);
-        itemFilter = menu.findItem(R.id.filter);
-        itemFilter.setVisible(false);
-        item.setVisible(false);
-        searchView = (SearchView) MenuItemCompat.getActionView(item);
-        //  setSearchTextColour(searchView);
-        setSearchIcons(searchView);
-        searchView.setOnQueryTextListener(this);
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        Configuration config = getResources().getConfiguration();
-        final boolean isLeftToRight;
-        isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
-        if (!isLeftToRight) {
-            View xIcon = ((ViewGroup) searchView.getChildAt(0)).getChildAt(2);
-            xIcon.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+
+        if (appPref.getLoginFlag(false))
+        {
+            inflater.inflate(R.menu.fan_home_screen, menu);
+            item = menu.findItem(R.id.search);
+            itemFilter = menu.findItem(R.id.filter);
+            itemFilter.setVisible(false);
+            item.setVisible(false);
+            searchView = (SearchView) MenuItemCompat.getActionView(item);
+            //  setSearchTextColour(searchView);
+            setSearchIcons(searchView);
+            searchView.setOnQueryTextListener(this);
+            searchView.setMaxWidth(Integer.MAX_VALUE);
+            Configuration config = getResources().getConfiguration();
+            final boolean isLeftToRight;
+            isLeftToRight = config.getLayoutDirection() != View.LAYOUT_DIRECTION_RTL;
+            if (!isLeftToRight) {
+                View xIcon = ((ViewGroup) searchView.getChildAt(0)).getChildAt(2);
+                xIcon.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            }
+            searchView.setOnSearchClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    setQueryHintText(searchView);
+                    //searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
+
+                }
+            });
+            searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+
+                    return false;
+                }
+            });
+
+            searchViewExpandListener(item);
         }
-        searchView.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        else
+        {
+            inflater.inflate(R.menu.fan_home_guest, menu);
 
-                setQueryHintText(searchView);
-                //searchView.setQueryHint("Search " + Utils.capitlizeText(getSelectedType()) + " by name");
 
-            }
-        });
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
+        }
 
-                return false;
-            }
-        });
-
-        searchViewExpandListener(item);
 
     }
 
@@ -393,6 +410,11 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
             case R.id.search:
 
                 break;
+            case R.id.toolbar_login:
+
+                getActivity().startActivity(new Intent(getActivity() , SigninActivity.class));
+                getActivity().finish();
+                break;
             case R.id.filter:
                 Intent intent = new Intent(getActivity(), FanFilterActivity.class);
                 intent.putExtra("type", "" + tabLayout.getSelectedTabPosition());
@@ -465,6 +487,10 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         TabLayout.Tab filterTab = tabLayout.newTab();
         filterTab.setText(R.string.txt_filter); // set the Text for the first Tab
         tabLayout.addTab(filterTab);
+
+        TabLayout.Tab votesTab = tabLayout.newTab();
+        votesTab.setText(R.string.Votes); // set the Text for the first Tab
+        tabLayout.addTab(votesTab);
 
         TabLayout.Tab contestTab = tabLayout.newTab();
         contestTab.setText(R.string.txt_contest); // set the Text for the first Tab

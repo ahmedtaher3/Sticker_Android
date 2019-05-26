@@ -3,6 +3,7 @@ package com.sticker_android.controller.activities.common.signup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -153,6 +154,13 @@ public class SignUpActivity extends AppBaseActivity {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         String deviceId = Utils.getDeviceId(this);
         int language = getSelectedLanguage();
+
+
+
+
+
+
+
 
         final ProgressDialogHandler progressDialogHandler=new ProgressDialogHandler(this);
         progressDialogHandler.show();

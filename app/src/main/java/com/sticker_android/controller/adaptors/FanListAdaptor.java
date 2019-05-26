@@ -219,10 +219,18 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
             vh.cardItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int position = vh.getAdapterPosition();
-                    Product product = mItems.get(position);
-                    if (productItemClickListener != null)
-                        productItemClickListener.onProductItemClick(product);
+
+                    if (appPref.getLoginFlag(false))
+                    {
+                        int position = vh.getAdapterPosition();
+                        Product product = mItems.get(position);
+                        if (productItemClickListener != null)
+                            productItemClickListener.onProductItemClick(product);
+                    }
+                    else {
+                        Utils.Login_required((Activity) context);
+                    }
+
                 }
             });
             likeListener(vh);
@@ -234,19 +242,30 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private void share(final ViewHolder vh) {
 
+
+
         vh.checkboxShare.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int position = vh.getAdapterPosition();
-                final Product product = mItems.get(position);
-                createDeepLink(product);
 
-                shareApi(product, 1, position);
+                if (appPref.getLoginFlag(false))
+                {
+                    int position = vh.getAdapterPosition();
+                    final Product product = mItems.get(position);
+                    createDeepLink(product);
+
+                    shareApi(product, 1, position);
+                }
+                else {
+                    Utils.Login_required((Activity) context);
+
+                }
+
             }
         });
     }
 
-    private void createDeepLink(final Product product){
+    private void createDeepLink(final Product product) {
         Gson gson = new Gson();
 
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
@@ -277,13 +296,16 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     @Override
                     public void onShareLinkDialogLaunched() {
                     }
+
                     @Override
                     public void onShareLinkDialogDismissed() {
                     }
+
                     @Override
                     public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
                         Log.e(TAG, "Shared link => " + sharedLink);
                     }
+
                     @Override
                     public void onChannelSelected(String channelName) {
                     }
@@ -316,48 +338,66 @@ public class FanListAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void saveToLocal(Product product) {
-        if (Utils.isConnectedToInternet(context)) {
-            new DownloadImage(new DownloadImage.ISaveImageToLocal() {
-                @Override
-                public void imageResult(Bitmap result) {
-                    Uri tempUri = Utils.getImageUri(context, result);
 
-                    // CALL THIS METHOD TO GET THE ACTUAL PATH
-                    File finalFile = new File(Utils.getRealPathFromURI(context, tempUri));
-                    if (finalFile != null) {
-                        FileUtil.albumUpdate(context, finalFile.getAbsolutePath());
-                        MediaScannerConnection.scanFile(context, new String[] { finalFile.getPath() }, new String[] { "image/jpeg" }, null);
 
-                        Utils.showToast(context, context.getResources().getString(R.string.txt_image_saved_successfully));
-                    } AppLogger.debug(FanDownloadedImageActivity.class.getSimpleName(), "called here" + finalFile);
-                }
-            }).execute(product.getImagePath());
+        if (appPref.getLoginFlag(false))
+        {
+            if (Utils.isConnectedToInternet(context)) {
+                new DownloadImage(new DownloadImage.ISaveImageToLocal() {
+                    @Override
+                    public void imageResult(Bitmap result) {
+                        Uri tempUri = Utils.getImageUri(context, result);
+
+                        // CALL THIS METHOD TO GET THE ACTUAL PATH
+                        File finalFile = new File(Utils.getRealPathFromURI(context, tempUri));
+                        if (finalFile != null) {
+                            FileUtil.albumUpdate(context, finalFile.getAbsolutePath());
+                            MediaScannerConnection.scanFile(context, new String[]{finalFile.getPath()}, new String[]{"image/jpeg"}, null);
+
+                            Utils.showToast(context, context.getResources().getString(R.string.txt_image_saved_successfully));
+                        }
+                        AppLogger.debug(FanDownloadedImageActivity.class.getSimpleName(), "called here" + finalFile);
+                    }
+                }).execute(product.getImagePath());
+            }
         }
+        else {
+            Utils.Login_required((Activity) context);
+        }
+
     }
 
     private void likeListener(final ViewHolder vh) {
 
+
         vh.checkboxLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int position = vh.getAdapterPosition();
-                Product product = mItems.get(position);
-                boolean checked = isChecked;
-                if (buttonView.isPressed())
-                    if (product.isLike > 0) {
-                        likeApi(vh, product, 0, position);
-                        vh.checkboxLike.setEnabled(false);
-                    } else {
-                        likeApi(vh, product, 1, position);
-                        viewCountApi(product);
-                        vh.checkboxLike.setEnabled(false);
-                    }
+
+
+                if (appPref.getLoginFlag(false)) {
+                    int position = vh.getAdapterPosition();
+                    Product product = mItems.get(position);
+                    boolean checked = isChecked;
+                    if (buttonView.isPressed())
+                        if (product.isLike > 0) {
+                            likeApi(vh, product, 0, position);
+                            vh.checkboxLike.setEnabled(false);
+                        } else {
+                            likeApi(vh, product, 1, position);
+                            viewCountApi(product);
+                            vh.checkboxLike.setEnabled(false);
+                        }
               /*  if (product.isLike==1) {
                     likeApi(product, 0, position);
                 } else if(product.isLike==0){
                     likeApi(product, 1, position);
 
                 }*/
+                } else {
+                    Utils.Login_required((Activity) context);
+                }
+
 
             }
         });

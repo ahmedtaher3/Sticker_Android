@@ -55,7 +55,10 @@ public abstract class ApiCall implements Callback<ApiResponse> {
                 mProgressDialog.dismiss();
         }
         if (response.isSuccessful()) {
+
             ApiResponse apiResponse = response.body();
+
+
             if (apiResponse.responseCode == 1001) {
                 //session expire
                 //redirect to login screen
@@ -71,7 +74,7 @@ public abstract class ApiCall implements Callback<ApiResponse> {
 
             }
         }
-        }
+    }
 
     public abstract void onSuccess(ApiResponse apiResponse);
 
@@ -87,7 +90,7 @@ public abstract class ApiCall implements Callback<ApiResponse> {
         //  LogUtils.error("Request Cancel by user Manually");
     }
 
-   /* */
+    /* */
 
     /***
      * user token is expire then user will automatically redirect to home screen
@@ -96,7 +99,7 @@ public abstract class ApiCall implements Callback<ApiResponse> {
      */
     private void expireSession(ApiResponse apiResponse) {
 
-  /* *//***
+        /* *//***
          * user token is expire then user will automatically redirect to home screen
          * @param apiResponse response
          */

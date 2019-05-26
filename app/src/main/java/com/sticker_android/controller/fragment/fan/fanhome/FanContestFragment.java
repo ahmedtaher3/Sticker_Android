@@ -49,6 +49,7 @@ public class FanContestFragment extends BaseFragment implements SwipeRefreshLayo
     private final String TAG = FanContestFragment.class.getSimpleName();
     private Context mContext;
     private FanHomeActivity mHostActivity;
+    private AppPref appPref;
 
     private View inflatedView;
     private LinearLayoutManager mLinearLayoutManager;
@@ -62,20 +63,30 @@ public class FanContestFragment extends BaseFragment implements SwipeRefreshLayo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_fan_home_common, container, false);
-        init();
-        // PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
-        setViewReferences(view);
-        setViewListeners();
-        initRecyclerView();
-        mAdapter = new ContestListAdaptor(getActivity());
-        rcDesignList.setAdapter(mAdapter);
-        llNoDataFound.setVisibility(View.GONE);
-        mStickerList = new ArrayList<>();
-        mCurrentPage = 0;
-        getContestListApi(false);
-        return view;
+
+        if (appPref.getLoginFlag(false))
+        {
+// Inflate the layout for this fragment
+            View view = inflater.inflate(R.layout.fragment_fan_home_common, container, false);
+            init();
+            // PAGE_LIMIT = getActivity().getResources().getInteger(R.integer.designed_item_page_limit);
+            setViewReferences(view);
+            setViewListeners();
+            initRecyclerView();
+            mAdapter = new ContestListAdaptor(getActivity());
+            rcDesignList.setAdapter(mAdapter);
+            llNoDataFound.setVisibility(View.GONE);
+            mStickerList = new ArrayList<>();
+            mCurrentPage = 0;
+            getContestListApi(false);
+            return view;
+        }
+        else {
+            // Inflate the layout for this fragment
+            View view = inflater.inflate(R.layout.fragment_fan_home_common_empty, container, false);
+            return view;
+        }
+
     }
 
     private void getContestListApi(final boolean isRefresh) {
@@ -141,6 +152,7 @@ public class FanContestFragment extends BaseFragment implements SwipeRefreshLayo
 
     private void init() {
         mLoggedUser = new AppPref(getActivity()).getUserInfo();
+
     }
 
 
@@ -211,6 +223,8 @@ public class FanContestFragment extends BaseFragment implements SwipeRefreshLayo
         super.onAttach(context);
         mContext = context;
         mHostActivity = (FanHomeActivity) context;
+        appPref = new AppPref(getActivity());
+
     }
 
     public void searchData(String trim) {

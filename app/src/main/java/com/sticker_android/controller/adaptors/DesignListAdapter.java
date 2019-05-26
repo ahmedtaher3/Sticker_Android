@@ -217,6 +217,9 @@ public class DesignListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             vh.cardItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+
+
                     int position = vh.getAdapterPosition();
                     Product product = mItems.get(position);
                     productItemClickListener.onProductItemClick(product);

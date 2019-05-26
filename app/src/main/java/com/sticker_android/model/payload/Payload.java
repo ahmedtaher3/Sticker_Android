@@ -3,9 +3,11 @@ package com.sticker_android.model.payload;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.sticker_android.constant.AppConstant;
 import com.sticker_android.model.User;
+import com.sticker_android.model.Votes;
 import com.sticker_android.model.contest.ContestCompleted;
 import com.sticker_android.model.contest.FanContest;
 import com.sticker_android.model.contest.FanContestAll;
@@ -21,6 +23,7 @@ import com.sticker_android.model.notification.NotificationApp;
 import com.sticker_android.model.version.AppVersion;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by user on 26/3/18.
@@ -51,6 +54,10 @@ public class Payload implements Parcelable {
     @SerializedName("notification_list")
     public ArrayList<NotificationApp> notificationArrayList;
 
+    @SerializedName("votes")
+    @Expose
+    public ArrayList<Votes> votes ;
+
     @SerializedName("contest_list")
     public ArrayList<OngoingContest> ongoingContests;
 
@@ -69,6 +76,7 @@ public class Payload implements Parcelable {
 
     @SerializedName("fan_contest_list_all")
     public ArrayList<FanContestAll> fanContestAllArrayList;
+
 
 
     @SerializedName("fan_download_list")
@@ -163,6 +171,8 @@ public class Payload implements Parcelable {
             return new Payload[size];
         }
     };
+
+
 }
 
 

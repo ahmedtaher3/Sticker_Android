@@ -9,9 +9,9 @@ public class ApiConstant {
     // public static final String BASE_API_URL = "http://localhost/vivek/index.php/";
     // public static final String BASE_API_URL = "http://18.188.13.98/web/index.php/mobile/";
     public static final String BASE_API_URL = "http://sportwidget.app/v3/index.php/mobile/";
-   public static final String IMAGE_URl = "http://sportwidget.app/v3/";
-/* public static final String BASE_API_URL = "http://sportwidget.app/v3/index.php/mobile/";
-   public static final String IMAGE_URl = " http://sportwidget.app";
+    public static final String IMAGE_URl = "http://sportwidget.app/v3/";
+/*  public static final String BASE_API_URL = "http://sportwidget.app/v3/index.php/mobile/";
+    public static final String IMAGE_URl = " http://sportwidget.app";
 */
   //  public static final String IMAGE_URl = "http://18.188.13.98/v3/";
 
@@ -35,6 +35,7 @@ public class ApiConstant {
     public static final String API_SAVE_USER_CONTEST = "SaveUserContest/";
     public static final String API_GET_USER_CONTEST_LIST = "getUserContestList/";
     public static final String API_GET_FAN_PRODUCT_LIST = "getFanHomeProductList/";
+    public static final String API_GET_FAN_PRODUCT_LIST_new = "getFanHomeProductList_new/";
     public static final String API_SAVE_PRODUCT_LIKE = "SaveContestProductLike/";
     public static final String API_GET_FAN_CONTEST_LIST = "getContestList/";
     public static final String API_GET_FAN_ALL_CONTEST_LIST = "getContestProductList/";
@@ -43,6 +44,7 @@ public class ApiConstant {
 
     public static final String API_GET_USER_COMPLETED_LIST = "getUserCompleteContestList/";
     public static final String API_FILTER_LIST = "filterList/";
+    public static final String API_FILTER_LIST_new = "filterList_new/";
     public static final String API_SAVE_PROJECT_REJECTION = "SaveProductRejection/";
     public static final String API_DELETE_NOTIFICATION = "deleteNotifcation/";
     public static final String API_USER_LOGOUT = "userLogout/";
@@ -55,8 +57,16 @@ public class ApiConstant {
 
  public static final String API_GET_USER_PRODUCT_CONTEST_LIST = "getUserContestProductList/";
  public static final String API_GET_FAN_PRODUCT_LIST_ALL = "getAllProductWithFeatureProduct/";
+ public static final String API_GET_FAN_PRODUCT_LIST_ALL_new = "getAllProductWithFeatureProduct_new/";
  public static final String API_FILTER_LIST__FAN_All = "getDesignerCoporateProduct/";
+ public static final String API_FILTER_LIST__FAN_All_new = "getDesignerCoporateProduct_new/";
  public static final String API_GET_RANDOM_FEATURED_PRODUCT = "getRandomFeatureProduct/";
  public static final String API_UPDATE_LATEST_VERSION = "getLatestAppVersion/";
+
+
+ public static final String API_CREATE_NEW_VOTE = "createVote/";
+ public static final String API_CREATE_NEW_VOTE_2 = "createVote_2/";
+ public static final String API_GET_VOTES = "getVoteList/";
+ public static final String API_VOTE = "userVote/";
 
 }

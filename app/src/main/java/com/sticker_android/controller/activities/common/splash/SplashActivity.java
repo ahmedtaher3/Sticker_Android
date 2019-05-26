@@ -45,7 +45,7 @@ public class SplashActivity extends AppBaseActivity {
         BadgeUtils.setBadge(this, 0);
         LocalNotification.clearNotifications(this);
         getRandomAdApi();
-
+        waitForFewSecond();
         new GetLatestVersion(this).setVersionListener(new GetLatestVersion.VersionListener() {
             @Override
             public void versionCheck(boolean updated) {
@@ -111,7 +111,8 @@ public class SplashActivity extends AppBaseActivity {
                 // startNewActivity(ChangeLanguageActivity.class);
                 finish();
             } else {
-                setSelectedLangage(SigninActivity.class);
+                setSelectedLangage(FanHomeActivity.class);
+                //setSelectedLangage(SigninActivity.class);
                 //  startNewActivity(SigninActivity.class);
                 finish();
 

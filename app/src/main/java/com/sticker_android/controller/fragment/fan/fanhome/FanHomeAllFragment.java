@@ -62,7 +62,7 @@ public class FanHomeAllFragment extends BaseFragment implements SwipeRefreshLayo
     private LinearLayoutManager mLinearLayoutManager;
     private ArrayList<Product> mAllList;
     private User mLoggedUser;
-
+    private AppPref appPref;
     private int mCurrentPage = 0;
     private int PAGE_LIMIT;
     private FanListAdaptor mAdapter;
@@ -129,6 +129,8 @@ public class FanHomeAllFragment extends BaseFragment implements SwipeRefreshLayo
 
     private void init() {
         mLoggedUser = new AppPref(getActivity()).getUserInfo();
+        appPref = new AppPref(getActivity());
+
     }
 
 
@@ -259,149 +261,300 @@ public class FanHomeAllFragment extends BaseFragment implements SwipeRefreshLayo
         if (PAGE_LIMIT != -1) {
             limit = PAGE_LIMIT;
         }
-        Call<ApiResponse> apiResponseCall = RestClient.getService().getAllProductWithFeature(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
-                index, limit, "", "all_product_list", searchKeyword, categories, filterData);
+
+
+        if (appPref.getLoginFlag(false))
+        {
+            Call<ApiResponse> apiResponseCall = RestClient.getService().getAllProductWithFeature(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
+                    index, limit, "", "all_product_list", searchKeyword, categories, filterData);
 
         /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
                 index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
         */
-        apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
-            @Override
-            public void onSuccess(ApiResponse apiResponse) {
+            apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
 
-                if (isAdded() && getActivity() != null) {
-                    llLoaderView.setVisibility(View.GONE);
-                    rlContent.setVisibility(View.VISIBLE);
-                    swipeRefresh.setRefreshing(false);
+                    if (isAdded() && getActivity() != null) {
+                        llLoaderView.setVisibility(View.GONE);
+                        rlContent.setVisibility(View.VISIBLE);
+                        swipeRefresh.setRefreshing(false);
 
-                    //remove wi-fi symbol when response got
-                    if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
-                        rlConnectionContainer.removeAllViews();
-                    }
+                        //remove wi-fi symbol when response got
+                        if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
+                            rlConnectionContainer.removeAllViews();
+                        }
 
-                    try {
-                        if (apiResponse.status) {
-                            Payload payload = apiResponse.paylpad;
+                        try {
+                            if (apiResponse.status) {
+                                Payload payload = apiResponse.paylpad;
 
-                            if (payload != null) {
+                                if (payload != null) {
 
-                                if (isRefreshing) {
+                                    if (isRefreshing) {
 
-                                    if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                        mAllList.clear();
-                                        mAllList.addAll(payload.productListAll);
-
-                                        llNoDataFound.setVisibility(View.GONE);
-                                        rcDesignList.setVisibility(View.VISIBLE);
-                                        mAdapter.setData(mAllList);
-
-                                        mCurrentPage = 0;
-                                        mCurrentPage++;
-                                    } else {
-                                        mAllList.clear();
-                                        mAdapter.setData(mAllList);
-                                        if (searchKeyword.length() != 0) {
-                                            txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                        } else {
-                                            txtNoDataFoundContent.setText(R.string.no_data_found);
-                                        }
-                                        showNoDataFound();
-                                    }
-                                } else {
-
-                                    if (mCurrentPage == 0) {
-                                        mAllList.clear();
-                                        if (payload.productListAll != null) {
+                                        if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                            mAllList.clear();
                                             mAllList.addAll(payload.productListAll);
-                                        }
 
-                                        if (mAllList.size() != 0) {
                                             llNoDataFound.setVisibility(View.GONE);
                                             rcDesignList.setVisibility(View.VISIBLE);
                                             mAdapter.setData(mAllList);
+
+                                            mCurrentPage = 0;
+                                            mCurrentPage++;
                                         } else {
-                                            showNoDataFound();
+                                            mAllList.clear();
+                                            mAdapter.setData(mAllList);
                                             if (searchKeyword.length() != 0) {
                                                 txtNoDataFoundContent.setText(getString(R.string.no_search_found));
                                             } else {
                                                 txtNoDataFoundContent.setText(R.string.no_data_found);
                                             }
-                                            rcDesignList.setVisibility(View.GONE);
+                                            showNoDataFound();
                                         }
                                     } else {
-                                        AppLogger.error(TAG, "Remove loader...");
-                                        mAdapter.removeLoader();
+
+                                        if (mCurrentPage == 0) {
+                                            mAllList.clear();
+                                            if (payload.productListAll != null) {
+                                                mAllList.addAll(payload.productListAll);
+                                            }
+
+                                            if (mAllList.size() != 0) {
+                                                llNoDataFound.setVisibility(View.GONE);
+                                                rcDesignList.setVisibility(View.VISIBLE);
+                                                mAdapter.setData(mAllList);
+                                            } else {
+                                                showNoDataFound();
+                                                if (searchKeyword.length() != 0) {
+                                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                                } else {
+                                                    txtNoDataFoundContent.setText(R.string.no_data_found);
+                                                }
+                                                rcDesignList.setVisibility(View.GONE);
+                                            }
+                                        } else {
+                                            AppLogger.error(TAG, "Remove loader...");
+                                            mAdapter.removeLoader();
+                                            if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                                mAllList.addAll(payload.productListAll);
+                                                mAdapter.setData(mAllList);
+                                            }
+                                        }
+
                                         if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                            mAllList.addAll(payload.productListAll);
-                                            mAdapter.setData(mAllList);
+                                            mCurrentPage++;
                                         }
                                     }
+                                    AppLogger.error(TAG, "item list size => " + mAllList.size());
 
-                                    if (payload.productListAll != null && payload.productListAll.size() != 0) {
-                                        mCurrentPage++;
+                                } else if (mAllList == null || (mAllList != null && mAllList.size() == 0)) {
+                                    if (searchKeyword.length() != 0) {
+                                        txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                    } else {
+                                        txtNoDataFoundContent.setText(R.string.no_data_found);
                                     }
+                                    showNoDataFound();
                                 }
-                                AppLogger.error(TAG, "item list size => " + mAllList.size());
-
-                            } else if (mAllList == null || (mAllList != null && mAllList.size() == 0)) {
-                                if (searchKeyword.length() != 0) {
-                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
-                                } else {
-                                    txtNoDataFoundContent.setText(R.string.no_data_found);
-                                }
-                                showNoDataFound();
                             }
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        Utils.showAlertMessage(mContext, new MessageEventListener() {
-                            @Override
-                            public void onOkClickListener(int reqCode) {
-
-                            }
-                        }, getString(R.string.server_unreachable), getString(R.string.oops), 0);
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFail(final Call<ApiResponse> call, Throwable t) {
-t.printStackTrace();
-                if (isAdded() && getActivity() != null) {
-                    llLoaderView.setVisibility(View.GONE);
-                    mAdapter.removeLoader();
-                    swipeRefresh.setRefreshing(false);
-
-                    if (mCurrentPage == 0) {
-                        rlContent.setVisibility(View.GONE);
-                    } else {
-                        rlContent.setVisibility(View.VISIBLE);
-                    }
-                    if (!call.isCanceled() && (t instanceof java.net.ConnectException ||
-                            t instanceof java.net.SocketTimeoutException ||
-                            t instanceof java.net.SocketException ||
-                            t instanceof java.net.UnknownHostException)) {
-
-                        if (mCurrentPage == 0) {
-                            mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            Utils.showAlertMessage(mContext, new MessageEventListener() {
                                 @Override
                                 public void onOkClickListener(int reqCode) {
-                                    rlContent.setVisibility(View.VISIBLE);
-                                }
 
-                                @Override
-                                public void onRetryClickListener(int reqCode) {
-                                    getDesignFromServer(isRefreshing, searchKeyword, categories);
                                 }
-                            }, 0);
+                            }, getString(R.string.server_unreachable), getString(R.string.oops), 0);
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFail(final Call<ApiResponse> call, Throwable t) {
+                    t.printStackTrace();
+                    if (isAdded() && getActivity() != null) {
+                        llLoaderView.setVisibility(View.GONE);
+                        mAdapter.removeLoader();
+                        swipeRefresh.setRefreshing(false);
+
+                        if (mCurrentPage == 0) {
+                            rlContent.setVisibility(View.GONE);
                         } else {
-                            Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                            rlContent.setVisibility(View.VISIBLE);
+                        }
+                        if (!call.isCanceled() && (t instanceof java.net.ConnectException ||
+                                t instanceof java.net.SocketTimeoutException ||
+                                t instanceof java.net.SocketException ||
+                                t instanceof java.net.UnknownHostException)) {
+
+                            if (mCurrentPage == 0) {
+                                mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
+                                    @Override
+                                    public void onOkClickListener(int reqCode) {
+                                        rlContent.setVisibility(View.VISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onRetryClickListener(int reqCode) {
+                                        getDesignFromServer(isRefreshing, searchKeyword, categories);
+                                    }
+                                }, 0);
+                            } else {
+                                Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
+        else {
+            Call<ApiResponse> apiResponseCall = RestClient.getService().getAllProductWithFeature_new(mLoggedUser.getLanguageId(),
+                    index, limit, "", "all_product_list", searchKeyword, categories, filterData);
+
+        /*Call<ApiResponse> apiResponseCall = RestClient.getService().getFanHomeProductList(mLoggedUser.getLanguageId(), mLoggedUser.getAuthrizedKey(), mLoggedUser.getId(),
+                index, limit, DesignType.stickers.getType().toLowerCase(Locale.ENGLISH), "all_product_list", searchKeyword);
+        */
+            apiResponseCall.enqueue(new ApiCall(getActivity(), 1) {
+                @Override
+                public void onSuccess(ApiResponse apiResponse) {
+
+                    if (isAdded() && getActivity() != null) {
+                        llLoaderView.setVisibility(View.GONE);
+                        rlContent.setVisibility(View.VISIBLE);
+                        swipeRefresh.setRefreshing(false);
+
+                        //remove wi-fi symbol when response got
+                        if (rlConnectionContainer != null && rlConnectionContainer.getChildCount() > 0) {
+                            rlConnectionContainer.removeAllViews();
+                        }
+
+                        try {
+                            if (apiResponse.status) {
+                                Payload payload = apiResponse.paylpad;
+
+                                if (payload != null) {
+
+                                    if (isRefreshing) {
+
+                                        if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                            mAllList.clear();
+                                            mAllList.addAll(payload.productListAll);
+
+                                            llNoDataFound.setVisibility(View.GONE);
+                                            rcDesignList.setVisibility(View.VISIBLE);
+                                            mAdapter.setData(mAllList);
+
+                                            mCurrentPage = 0;
+                                            mCurrentPage++;
+                                        } else {
+                                            mAllList.clear();
+                                            mAdapter.setData(mAllList);
+                                            if (searchKeyword.length() != 0) {
+                                                txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                            } else {
+                                                txtNoDataFoundContent.setText(R.string.no_data_found);
+                                            }
+                                            showNoDataFound();
+                                        }
+                                    } else {
+
+                                        if (mCurrentPage == 0) {
+                                            mAllList.clear();
+                                            if (payload.productListAll != null) {
+                                                mAllList.addAll(payload.productListAll);
+                                            }
+
+                                            if (mAllList.size() != 0) {
+                                                llNoDataFound.setVisibility(View.GONE);
+                                                rcDesignList.setVisibility(View.VISIBLE);
+                                                mAdapter.setData(mAllList);
+                                            } else {
+                                                showNoDataFound();
+                                                if (searchKeyword.length() != 0) {
+                                                    txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                                } else {
+                                                    txtNoDataFoundContent.setText(R.string.no_data_found);
+                                                }
+                                                rcDesignList.setVisibility(View.GONE);
+                                            }
+                                        } else {
+                                            AppLogger.error(TAG, "Remove loader...");
+                                            mAdapter.removeLoader();
+                                            if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                                mAllList.addAll(payload.productListAll);
+                                                mAdapter.setData(mAllList);
+                                            }
+                                        }
+
+                                        if (payload.productListAll != null && payload.productListAll.size() != 0) {
+                                            mCurrentPage++;
+                                        }
+                                    }
+                                    AppLogger.error(TAG, "item list size => " + mAllList.size());
+
+                                } else if (mAllList == null || (mAllList != null && mAllList.size() == 0)) {
+                                    if (searchKeyword.length() != 0) {
+                                        txtNoDataFoundContent.setText(getString(R.string.no_search_found));
+                                    } else {
+                                        txtNoDataFoundContent.setText(R.string.no_data_found);
+                                    }
+                                    showNoDataFound();
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            Utils.showAlertMessage(mContext, new MessageEventListener() {
+                                @Override
+                                public void onOkClickListener(int reqCode) {
+
+                                }
+                            }, getString(R.string.server_unreachable), getString(R.string.oops), 0);
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFail(final Call<ApiResponse> call, Throwable t) {
+                    t.printStackTrace();
+                    if (isAdded() && getActivity() != null) {
+                        llLoaderView.setVisibility(View.GONE);
+                        mAdapter.removeLoader();
+                        swipeRefresh.setRefreshing(false);
+
+                        if (mCurrentPage == 0) {
+                            rlContent.setVisibility(View.GONE);
+                        } else {
+                            rlContent.setVisibility(View.VISIBLE);
+                        }
+                        if (!call.isCanceled() && (t instanceof java.net.ConnectException ||
+                                t instanceof java.net.SocketTimeoutException ||
+                                t instanceof java.net.SocketException ||
+                                t instanceof java.net.UnknownHostException)) {
+
+                            if (mCurrentPage == 0) {
+                                mHostActivity.manageNoInternetConnectionLayout(mContext, rlConnectionContainer, new NetworkPopupEventListener() {
+                                    @Override
+                                    public void onOkClickListener(int reqCode) {
+                                        rlContent.setVisibility(View.VISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onRetryClickListener(int reqCode) {
+                                        getDesignFromServer(isRefreshing, searchKeyword, categories);
+                                    }
+                                }, 0);
+                            } else {
+                                Utils.showToastMessage(mHostActivity, getString(R.string.pls_check_ur_internet_connection));
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
     }
 
     @Override
