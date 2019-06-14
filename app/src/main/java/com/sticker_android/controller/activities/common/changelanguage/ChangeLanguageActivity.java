@@ -14,6 +14,7 @@ import android.widget.RadioGroup;
 import com.sticker_android.R;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
+import com.sticker_android.controller.activities.common.welcome.WelcomeScreen;
 import com.sticker_android.controller.activities.fan.home.FanHomeActivity;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
@@ -38,6 +39,11 @@ public class ChangeLanguageActivity extends AppBaseActivity implements View.OnCl
         setViewReferences();
         setViewListeners();
         appPref();
+
+        if (appPref.getLanguageStatus(false)) {
+            startActivity(new Intent(this, WelcomeScreen.class));
+            finish();
+        }
 
     }
 
@@ -91,13 +97,13 @@ public class ChangeLanguageActivity extends AppBaseActivity implements View.OnCl
             case R.id.act_change_lang_btn_english:
                 appPref.setLanguage(1);
                 appPref.setLanguageStatus(true);
-                Utils.changeLanguage("en",this,FanHomeActivity.class);
+                Utils.changeLanguage("en",this, WelcomeScreen.class);
                 //setLocale("en");
                 break;
             case R.id.act_change_lang_btn_arabic:
                 appPref.setLanguage(2);
                 appPref.setLanguageStatus(true);
-                Utils.changeLanguage("ar",this, FanHomeActivity.class);
+                Utils.changeLanguage("ar",this, WelcomeScreen.class);
                // setLocale("ar");
                 break;
         }

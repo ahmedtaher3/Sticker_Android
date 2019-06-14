@@ -307,7 +307,19 @@
     <string name="txt_paricipate_in_contest">شارك الان في هذه المسابقة واربح جوائز وكأس المسابقة</string>
     <string name="no_app_available_for_sharing">No application is available for sharing.</string>
     <string name="login_required">عليك تسجيل الدخول اولا</string>
-
+    <string name="guest">ضيف</string>
+    <string name="Votes">التصويتات</string>
+    <string name="add_new_vote">أضف تصويت جديد</string>
+    <string name="vote_description">وصف التصويت</string>
+    <string name="pls_add_vote_desc">من فضلك أضف وصف التصويت</string>
+    <string name="description">الوصف</string>
+    <string name="add_first_desc">اضف وصف التصويت الأول</string>
+    <string name="add_secound_desc">اضف وصف التصويت الثانى</string>
+    <string name="error">خطأ</string>
+    <string name="vote">تصويت</string>
+    <string name="user">مستخدم</string>
+    <string name="my_votes">تصويتاتى</string>
+    <string name="more">المزيد</string>
     <!---->
 
 </resources>

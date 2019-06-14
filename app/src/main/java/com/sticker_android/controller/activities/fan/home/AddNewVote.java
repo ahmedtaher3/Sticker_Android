@@ -34,6 +34,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
+import com.sticker_android.utils.ImagesBottomSheet;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
@@ -425,42 +426,54 @@ public class AddNewVote extends AppBaseActivity implements View.OnClickListener 
         switch (view.getId()) {
             case R.id.first_choice_img:
                 image_1 = true;
-                Utils.showAlertDialogToGetPic(getActivity(), new ImagePickerListener() {
-                    @Override
-                    public void pickFromGallery() {
-                        pickGalleryImage(PROFILE_GALLERY_IMAGE);
-                    }
 
-                    @Override
-                    public void captureFromCamera() {
-                        captureImage(PROFILE_CAMERA_IMAGE);
-                    }
 
-                    @Override
-                    public void selectedItemPosition(int position) {
 
-                    }
-                });
+                ImagesBottomSheet addPhotoBottomDialogFragment =
+                        new ImagesBottomSheet(new ImagesBottomSheet.DialogListener() {
+                            @Override
+                            public void camera() {
+
+                                captureImage(PROFILE_CAMERA_IMAGE);
+
+                            }
+
+                            @Override
+                            public void gallery() {
+
+
+                                pickGalleryImage(PROFILE_GALLERY_IMAGE);
+                            }
+                        });
+                addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
+                        "add_photo_dialog_fragment");
+
+
                 break;
 
             case R.id.second_choice_img:
                 image_1 = false;
-                Utils.showAlertDialogToGetPic(getActivity(), new ImagePickerListener() {
-                    @Override
-                    public void pickFromGallery() {
-                        pickGalleryImage(PROFILE_GALLERY_IMAGE_2);
-                    }
 
-                    @Override
-                    public void captureFromCamera() {
-                        captureImage_2(PROFILE_CAMERA_IMAGE_2);
-                    }
+                ImagesBottomSheet addPhotoBottomDialogFragment2 =
+                        new ImagesBottomSheet(new ImagesBottomSheet.DialogListener() {
+                            @Override
+                            public void camera() {
 
-                    @Override
-                    public void selectedItemPosition(int position) {
+                                captureImage_2(PROFILE_CAMERA_IMAGE_2);
 
-                    }
-                });
+                            }
+
+                            @Override
+                            public void gallery() {
+
+
+                                pickGalleryImage(PROFILE_GALLERY_IMAGE_2);
+                            }
+                        });
+                addPhotoBottomDialogFragment2.show(getSupportFragmentManager(),
+                        "add_photo_dialog_fragment");
+
+
 
                 break;
 

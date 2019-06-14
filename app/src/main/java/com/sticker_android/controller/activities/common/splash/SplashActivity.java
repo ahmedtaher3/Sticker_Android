@@ -106,16 +106,9 @@ public class SplashActivity extends AppBaseActivity {
             if (appPref.getLoginFlag(false)) {
                 moveToActivity();
                 finish();
-            } else if (!appPref.getLanguageStatus(false)) {
-                setSelectedLangage(ChangeLanguageActivity.class);
-                // startNewActivity(ChangeLanguageActivity.class);
-                finish();
             } else {
-                setSelectedLangage(FanHomeActivity.class);
-                //setSelectedLangage(SigninActivity.class);
-                //  startNewActivity(SigninActivity.class);
+                setSelectedLangage(ChangeLanguageActivity.class);
                 finish();
-
             }
         }
     }

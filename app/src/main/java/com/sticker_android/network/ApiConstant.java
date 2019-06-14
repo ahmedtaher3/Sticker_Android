@@ -67,6 +67,8 @@ public class ApiConstant {
  public static final String API_CREATE_NEW_VOTE = "createVote/";
  public static final String API_CREATE_NEW_VOTE_2 = "createVote_2/";
  public static final String API_GET_VOTES = "getVoteList/";
+ public static final String API_GET_MY_VOTES = "getUserVotesList/";
  public static final String API_VOTE = "userVote/";
+ public static final String API_DELETE_VOTE = "deleteVote/";
 
 }

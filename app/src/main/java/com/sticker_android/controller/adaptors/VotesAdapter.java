@@ -18,6 +18,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.sticker_android.R;
+import com.sticker_android.controller.activities.common.Refresh;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.model.Votes;
 import com.sticker_android.network.ApiCall;
@@ -37,12 +38,14 @@ public class VotesAdapter extends RecyclerView.Adapter<VotesAdapter.ViewHolder> 
     private Context context;
     private List<Votes> my_data;
     private AppPref appPref;
+    private String Flag;
 
 
-    public VotesAdapter(Context context, List<Votes> my_data, AppPref appPref) {
+    public VotesAdapter(Context context, List<Votes> my_data, AppPref appPref , String Flag) {
         this.context = context;
         this.my_data = my_data;
         this.appPref = appPref;
+        this.Flag = Flag;
 
 
     }
@@ -181,6 +184,13 @@ public class VotesAdapter extends RecyclerView.Adapter<VotesAdapter.ViewHolder> 
             }
         });
 
+        holder.delete_vote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteVote(model.getUserId() , model.getId());
+            }
+        });
+
 
     }
 
@@ -194,7 +204,7 @@ public class VotesAdapter extends RecyclerView.Adapter<VotesAdapter.ViewHolder> 
         View view;
         TextView vote_user_name, vote_time, vote_description, vote_category_name, first_desc, second_desc, first_percentage, second_percentage, first_count, second_count;
         CircularImageView vote_user_image;
-        ImageView first_vote_image, second_vote_image, first_check, second_check;
+        ImageView first_vote_image, second_vote_image, first_check, second_check , delete_vote;
         Button first_btn, second_btn;
         ProgressBar first_progress_bar, second_progress_bar;
 
@@ -216,10 +226,15 @@ public class VotesAdapter extends RecyclerView.Adapter<VotesAdapter.ViewHolder> 
             second_vote_image = (ImageView) view.findViewById(R.id.second_choice_img);
             first_check = (ImageView) view.findViewById(R.id.first_check_circle);
             second_check = (ImageView) view.findViewById(R.id.second_check_circle);
+            delete_vote = (ImageView) view.findViewById(R.id.delete_vote);
             first_btn = (Button) view.findViewById(R.id.first_btn_vote);
             second_btn = (Button) view.findViewById(R.id.second_btn_vote);
             first_progress_bar = (ProgressBar) view.findViewById(R.id.first_pgrImage);
             second_progress_bar = (ProgressBar) view.findViewById(R.id.second_pgrImage);
+            if (Flag.equals("MY_VOTES"))
+            {
+                delete_vote.setVisibility(View.VISIBLE);
+            }
 
         }
     }
@@ -241,6 +256,32 @@ public class VotesAdapter extends RecyclerView.Adapter<VotesAdapter.ViewHolder> 
         apiResponseCall.enqueue(new ApiCall((Activity) context) {
             @Override
             public void onSuccess(ApiResponse apiResponse) {
+
+                if(context instanceof Refresh){
+                    ((Refresh)context).refresh();
+                }
+            }
+
+            @Override
+            public void onFail(Call<ApiResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    void deleteVote(String user_id , String vote_id)
+    {
+
+        Call<ApiResponse> apiResponseCall= RestClient.getService().deleteVote(user_id , vote_id);
+
+        apiResponseCall.enqueue(new ApiCall((Activity) context) {
+            @Override
+            public void onSuccess(ApiResponse apiResponse) {
+
+                if(context instanceof Refresh){
+                    ((Refresh)context).refresh();
+                }
             }
 
             @Override

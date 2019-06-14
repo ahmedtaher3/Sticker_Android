@@ -57,6 +57,7 @@ import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AWSUtil;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.ImageFileFilter;
+import com.sticker_android.utils.ImagesBottomSheet;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -559,22 +560,25 @@ public class AddNewDesignActivity extends AppBaseActivity implements View.OnClic
                         }
                     });
                 } else {
-                    Utils.showAlertDialogToGetPic(this, new ImagePickerListener() {
-                        @Override
-                        public void pickFromGallery() {
-                            pickGalleryImage();
-                        }
 
-                        @Override
-                        public void captureFromCamera() {
-                            captureImage();
-                        }
+                    ImagesBottomSheet addPhotoBottomDialogFragment =
+                            new ImagesBottomSheet(new ImagesBottomSheet.DialogListener() {
+                                @Override
+                                public void camera() {
 
-                        @Override
-                        public void selectedItemPosition(int position) {
+                                    captureImage();
 
-                        }
-                    });
+                                }
+
+                                @Override
+                                public void gallery() {
+                                    pickGalleryImage();
+
+
+                                }
+                            });
+                    addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
+                            "add_photo_dialog_fragment");
                 }
                 break;
             case R.id.imgDown2:

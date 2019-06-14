@@ -69,6 +69,10 @@ public interface StickerService {
     @POST(ApiConstant.API_VOTE)
     public Call<ApiResponse> userVote (@Field("user_id") String user_id, @Field("vote_id") String vote_id, @Field("vote") String vote);
 
+    @FormUrlEncoded
+    @POST(ApiConstant.API_DELETE_VOTE)
+    public Call<ApiResponse> deleteVote (@Field("user_id") String user_id, @Field("vote_id") String vote_id);
+
 
     @FormUrlEncoded
     @POST(ApiConstant.API_CHANGE_LANGUAGE)
@@ -210,6 +214,9 @@ public interface StickerService {
     @POST(ApiConstant.API_GET_VOTES)
     public Call<NewResponse> getvotes(@Field("user_id") String user_id);
 
+    @FormUrlEncoded
+    @POST(ApiConstant.API_GET_MY_VOTES)
+    public Call<NewResponse> getMyVotes(@Field("user_id") String user_id);
 
 
 

@@ -41,6 +41,7 @@ import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AWSUtil;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.CategorySpinnerAdaptor;
+import com.sticker_android.utils.ImagesBottomSheet;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -297,22 +298,25 @@ public class AddNewCorporateActivity extends AppBaseActivity implements View.OnC
                 }
                 break;
             case R.id.imvProductImage:
-                Utils.showAlertDialogToGetPic(this, new ImagePickerListener() {
-                    @Override
-                    public void pickFromGallery() {
-                        pickGalleryImage();
-                    }
 
-                    @Override
-                    public void captureFromCamera() {
-                        captureImage();
-                    }
+                ImagesBottomSheet addPhotoBottomDialogFragment =
+                        new ImagesBottomSheet(new ImagesBottomSheet.DialogListener() {
+                            @Override
+                            public void camera() {
 
-                    @Override
-                    public void selectedItemPosition(int position) {
+                                captureImage();
 
-                    }
-                });
+                            }
+
+                            @Override
+                            public void gallery() {
+                                pickGalleryImage();
+
+
+                            }
+                        });
+                addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
+                        "add_photo_dialog_fragment");
                 break;
         }
     }

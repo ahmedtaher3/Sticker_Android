@@ -38,6 +38,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
+import com.sticker_android.utils.ImagesBottomSheet;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PaginationScrollListener;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -104,26 +105,25 @@ public class FanCustomizationStickersFragment extends BaseFragment implements Sw
             @Override
             public void onProductItemClick(Product product) {
                 mSelectedItem = product;
-                Utils.showAlertDialogToGetPicFromFragment(mHostActivity, new ImagePickerListener() {
-                    @Override
-                    public void pickFromGallery() {
-                        pickGalleryImage();
-                    }
+                ImagesBottomSheet addPhotoBottomDialogFragment2 =
+                        new ImagesBottomSheet(new ImagesBottomSheet.DialogListener() {
+                            @Override
+                            public void camera() {
 
-                    @Override
-                    public void captureFromCamera() {
-                        captureImage();
-                    }
+                                captureImage();
+                                mImageSource = PROFILE_CAMERA_IMAGE;
+                            }
 
-                    @Override
-                    public void selectedItemPosition(int position) {
-                        if (position == 0) {
-                            mImageSource = PROFILE_CAMERA_IMAGE;
-                        } else if (position == 1) {
-                            mImageSource = PROFILE_GALLERY_IMAGE;
-                        }
-                    }
-                }, FanCustomizationStickersFragment.this);
+                            @Override
+                            public void gallery() {
+
+
+                                pickGalleryImage();
+                                mImageSource = PROFILE_GALLERY_IMAGE;
+                            }
+                        });
+                addPhotoBottomDialogFragment2.show(getFragmentManager(),
+                        "add_photo_dialog_fragment");
             }
         });
 

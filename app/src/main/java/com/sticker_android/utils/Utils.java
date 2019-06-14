@@ -127,7 +127,7 @@ public class Utils {
     /**
      * This method prompt the dialog in order to provide option for selecting image
      */
-    public static void showAlertDialogToGetPic(final Activity activity, final ImagePickerListener pickerListener) {
+   /* public static void showAlertDialogToGetPic(final Activity activity, final ImagePickerListener pickerListener) {
 
         final String[] items = new String[]{activity.getString(R.string.pick_gallery), activity.getString(R.string.take_photo)};
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -150,7 +150,7 @@ public class Utils {
         AlertDialog alertDialog = builder.show();
         alertDialog.setCanceledOnTouchOutside(true);
     }
-
+*/
     /**
      * This method prompt the dialog in order to provide option for selecting image
      */

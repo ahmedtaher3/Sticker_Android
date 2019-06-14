@@ -319,8 +319,17 @@
     <string name="add_secound_desc">add second description</string>
     <string name="error">Error</string>
     <string name="vote">Vote</string>
-    <string name="user">مستخدم</string>
+    <string name="user">user</string>
     <string name="my_votes">my votes</string>
     <string name="more">more</string>
+    <string name="skip">Skip</string>
+    <string name="next">next</string>
+    <string name="start">Start</string>
+    <string name="slide_1_title">التعديل على الصور</string>
+    <string name="slide_1_desc">بإمكانك استخدام الملصقات والرموز التعبريرية للتعديل على صورتك الشخصية</string>
+    <string name="slide_2_title">اجراء التصويت</string>
+    <string name="slide_2_desc">بإمكانك اجراء تصويت داخل التطبيق والوصول الى النتيجة النهائية لدى المستخدمين</string>
+    <string name="slide_3_title">تحميل صور رياضية</string>
+    <string name="slide_3_desc">بإمكانك تصفح وتحميل الصور الثابتة والمتحركة الرياضية للاندية او اللاعبين المفضلين لديك ومشاركتها على الفيس بوك</string>
 
 </resources>

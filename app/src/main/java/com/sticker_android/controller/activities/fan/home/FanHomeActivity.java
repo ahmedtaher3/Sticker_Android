@@ -67,10 +67,6 @@ public class FanHomeActivity extends AppBaseActivity
     private AppPref appPref;
     private User user;
     private CoordinatorLayout mainView;
-    private MenuItem item;
-    private TextView tvUserName;
-    private TextView tvEmail;
-    private AlertDialog languageDialog;
     private MenuItem mSelectedMenu;
     boolean doubleBackToExitPressedOnce = false;
 
@@ -323,7 +319,12 @@ public class FanHomeActivity extends AppBaseActivity
             startActivity(new Intent(FanHomeActivity.this , SigninActivity.class));
             finish();
 
-        }   if (id == R.id.nav_downloads && !(f instanceof FanCustomizationFragment)) {
+        }
+        else if (id == R.id.nav_my_votes) {
+
+            startActivity(new Intent(FanHomeActivity.this , MyVotes.class));
+
+        } if (id == R.id.nav_downloads && !(f instanceof FanCustomizationFragment)) {
             textView.setText(R.string.txt_downloads);
             fragmentClass = new FanCustomizationFragment();
         } else if (id == R.id.nav_customization && !(f instanceof FanSaveCustomization)) {

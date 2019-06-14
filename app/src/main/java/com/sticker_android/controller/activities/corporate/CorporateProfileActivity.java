@@ -31,6 +31,7 @@ import com.sticker_android.network.ApiCall;
 import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
+import com.sticker_android.utils.ImagesBottomSheet;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -177,22 +178,25 @@ public class CorporateProfileActivity extends AppBaseActivity implements View.On
                 }
                 break;
             case R.id.imgCompanyLogo:
-                Utils.showAlertDialogToGetPic(this, new ImagePickerListener() {
-                    @Override
-                    public void pickFromGallery() {
-                        pickGalleryImage();
-                    }
 
-                    @Override
-                    public void captureFromCamera() {
-                        captureImage();
-                    }
+                ImagesBottomSheet addPhotoBottomDialogFragment =
+                        new ImagesBottomSheet(new ImagesBottomSheet.DialogListener() {
+                            @Override
+                            public void camera() {
 
-                    @Override
-                    public void selectedItemPosition(int position) {
+                                captureImage();
 
-                    }
-                });
+                            }
+
+                            @Override
+                            public void gallery() {
+                                pickGalleryImage();
+
+
+                            }
+                        });
+                addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
+                        "add_photo_dialog_fragment");
                 break;
         }
     }

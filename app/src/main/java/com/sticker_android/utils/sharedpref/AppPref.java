@@ -138,6 +138,22 @@ public class AppPref {
     }
 
 
+    public void setFirstTimeStatus(boolean value) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("FIRST_TIME", value);
+        editor.commit();
+    }
+
+    /*
+     * getLoginFlag() method is used to get Login Flag value from SharedPreference.
+     * */
+
+    public boolean getFirstTimeStatus(boolean defVal) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean("FIRST_TIME", defVal);
+    }
+
     /**
      * This method is to save the new messages count
      *

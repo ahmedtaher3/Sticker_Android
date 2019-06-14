@@ -75,6 +75,22 @@
 
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/delete_vote"
+                        android:tint="#000"
+                        android:visibility="gone"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/ic_delete"/>
+                </RelativeLayout>
+
 
             </LinearLayout>
 

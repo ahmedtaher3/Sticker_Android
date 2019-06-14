@@ -64,6 +64,7 @@ import com.sticker_android.utils.AWSUtil;
 import com.sticker_android.utils.AppLogger;
 import com.sticker_android.utils.BitmapUtils;
 import com.sticker_android.utils.FileUtil;
+import com.sticker_android.utils.ImagesBottomSheet;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.helper.PermissionManager;
@@ -576,27 +577,29 @@ public class FilterFragment extends Fragment implements View.OnClickListener {
                 openFilterGallery("emoji");
                 break;
             case R.id.rlPlaceHolderClick:
-                Utils.showAlertDialogToGetPicFromFragment(mHostActivity, new ImagePickerListener() {
-                    @Override
-                    public void pickFromGallery() {
-                        pickGalleryImage();
-                    }
 
-                    @Override
-                    public void captureFromCamera() {
-                        captureImage();
-                    }
 
-                    @Override
-                    public void selectedItemPosition(int position) {
-                        if (position == 0) {
-                            mImageSource = PROFILE_CAMERA_IMAGE;
-                        } else if (position == 1) {
-                            mImageSource = PROFILE_GALLERY_IMAGE;
-                        }
-                    }
-                }, this);
-                break;
+                ImagesBottomSheet addPhotoBottomDialogFragment2 =
+                        new ImagesBottomSheet(new ImagesBottomSheet.DialogListener() {
+                            @Override
+                            public void camera() {
+
+                                captureImage();
+                                mImageSource = PROFILE_CAMERA_IMAGE;
+                            }
+
+                            @Override
+                            public void gallery() {
+
+
+                                pickGalleryImage();
+                                mImageSource = PROFILE_GALLERY_IMAGE;
+                            }
+                        });
+                addPhotoBottomDialogFragment2.show(getFragmentManager(),
+                        "add_photo_dialog_fragment");
+
+
         }
     }
 

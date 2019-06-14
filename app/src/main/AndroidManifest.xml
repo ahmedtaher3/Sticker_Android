@@ -16,8 +16,11 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".controller.activities.fan.home.AddNewVote"/>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".controller.activities.common.welcome.WelcomeScreen"></activity>
+        <activity android:name=".controller.activities.fan.home.MyVotes" />
+        <activity android:name=".controller.activities.fan.home.AddNewVote" />
 
         <meta-data
             android:name="com.sticker_android.application.LimitCacheSizeGlideModule"

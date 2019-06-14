@@ -164,6 +164,11 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
 
                         setItemVisible();
                         replaceFragment(new VotesFragment());
+                        if (itemFilter != null) {
+                            itemFilter.setVisible(false);
+                        }
+                        if (item != null)
+                            item.setVisible(false);
                         break;
                     case 2:
                         if (itemFilter != null) {

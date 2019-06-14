@@ -1,9 +1,11 @@
 package com.sticker_android.controller.fragment.fan.fanhome;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -36,7 +38,7 @@ public class VotesFragment extends BaseFragment {
     FloatingActionButton floatingActionButton;
     RecyclerView votes_recycler;
     VotesAdapter votesAdapter;
-
+    SwipeRefreshLayout pullToRefresh;
     RecyclerView.LayoutManager layoutManager;
 
     public VotesFragment() {
@@ -52,6 +54,7 @@ public class VotesFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_votes, container, false);
         init();
         setViewReferences(view);
+        pullToRefresh.setRefreshing(true);
         downloadApi();
         return view;
 
@@ -68,11 +71,19 @@ public class VotesFragment extends BaseFragment {
 
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void setViewReferences(View view) {
 
         floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fabAddNew);
         votes_recycler = (RecyclerView) view.findViewById(R.id.votes_recycler);
+        pullToRefresh = (SwipeRefreshLayout) view.findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                downloadApi();
+            }
+        });
         layoutManager = new LinearLayoutManager(getActivity());
         votes_recycler.setLayoutManager(layoutManager);
 
@@ -104,51 +115,53 @@ public class VotesFragment extends BaseFragment {
 
         if (appPref.getLoginFlag(false))
         {
-            Call<NewResponse> apiResponseCall = RestClient.getService().getvotes(appPref.getUserInfo().getId());
-            apiResponseCall.enqueue(new Callback<NewResponse>() {
-                @Override
-                public void onResponse(Call<NewResponse> call, Response<NewResponse> response) {
-                    votesAdapter = new VotesAdapter(getActivity(), response.body().getPaylpad().getData(),appPref);
-                    votes_recycler.setAdapter(votesAdapter);
-
-
-                }
-
-                @Override
-                public void onFailure(Call<NewResponse> call, Throwable t) {
-                    Toast.makeText(getActivity(), "ERROR = " + t.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    Log.i("ERRORRR", t.getMessage());
-
-                }
-            });
-
+            get_votes(mLoggedUser.getId());
         }
         else {
-            Call<NewResponse> apiResponseCall = RestClient.getService().getvotes("");
-            apiResponseCall.enqueue(new Callback<NewResponse>() {
-                @Override
-                public void onResponse(Call<NewResponse> call, Response<NewResponse> response) {
-                    votesAdapter = new VotesAdapter(getActivity(), response.body().getPaylpad().getData(),appPref);
-                    votes_recycler.setAdapter(votesAdapter);
 
-
-                }
-
-                @Override
-                public void onFailure(Call<NewResponse> call, Throwable t) {
-                    Toast.makeText(getActivity(), "ERROR = " + t.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    Log.i("ERRORRR", t.getMessage());
-
-                }
-            });
-
+            get_votes("");
 
         }
 
 
 
 
+    }
+
+
+    void get_votes(String user_id)
+    {
+        Call<NewResponse> apiResponseCall = RestClient.getService().getvotes( user_id);
+        apiResponseCall.enqueue(new Callback<NewResponse>() {
+            @Override
+            public void onResponse(Call<NewResponse> call, Response<NewResponse> response) {
+                votesAdapter = new VotesAdapter(getActivity(), response.body().getPaylpad().getData(),appPref , "Votes");
+                votes_recycler.setAdapter(votesAdapter);
+                try {
+                    pullToRefresh.setRefreshing(false);
+                } catch (Exception e) {
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<NewResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "ERROR = " + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                Log.i("ERRORRR", t.getMessage());
+
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 0:
+                pullToRefresh.setRefreshing(true);
+                downloadApi();
+                break;
+        }
     }
 }

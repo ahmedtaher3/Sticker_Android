@@ -32,6 +32,7 @@ import com.sticker_android.network.ApiConstant;
 import com.sticker_android.network.ApiResponse;
 import com.sticker_android.network.RestClient;
 import com.sticker_android.utils.AppLogger;
+import com.sticker_android.utils.ImagesBottomSheet;
 import com.sticker_android.utils.ProgressDialogHandler;
 import com.sticker_android.utils.UserTypeEnum;
 import com.sticker_android.utils.Utils;
@@ -318,22 +319,25 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 }
                 break;
             case R.id.imvProfile:
-                Utils.showAlertDialogToGetPic(getActivity(), new ImagePickerListener() {
-                    @Override
-                    public void pickFromGallery() {
-                        pickGalleryImage();
-                    }
 
-                    @Override
-                    public void captureFromCamera() {
-                        captureImage();
-                    }
+                ImagesBottomSheet addPhotoBottomDialogFragment =
+                        new ImagesBottomSheet(new ImagesBottomSheet.DialogListener() {
+                            @Override
+                            public void camera() {
 
-                    @Override
-                    public void selectedItemPosition(int position) {
+                                captureImage();
 
-                    }
-                });
+                            }
+
+                            @Override
+                            public void gallery() {
+                                pickGalleryImage();
+
+
+                            }
+                        });
+                addPhotoBottomDialogFragment.show(getFragmentManager(),
+                        "add_photo_dialog_fragment");
                 break;
         }
     }
