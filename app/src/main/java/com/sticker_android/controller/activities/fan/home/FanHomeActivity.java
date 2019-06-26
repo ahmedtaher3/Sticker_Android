@@ -422,6 +422,7 @@ public class FanHomeActivity extends AppBaseActivity
         contests.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 replaceFragment(new FanHomeFragment(),"CONTEST");
 
             }
@@ -431,6 +432,7 @@ public class FanHomeActivity extends AppBaseActivity
         all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 replaceFragment(new FanHomeFragment(),"ALL");
              }
         });
