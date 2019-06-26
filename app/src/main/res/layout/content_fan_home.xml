@@ -2,11 +2,815 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_fan_home">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/Fan_hom_layout"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/app_bar_fan_home">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+
+                    android:layout_height="300dp">
+
+                    <ss.com.bannerslider.Slider
+                        android:id="@+id/banner_slider1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/defualt"
+                        app:slider_animateIndicators="true"
+                        app:slider_interval="5000"
+                        app:slider_loopSlides="true" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_height="180dp"
+                        android:layout_weight="2">
+
+                        <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:id="@+id/fanHome_filters"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardBackgroundColor="#fff"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="7dp"
+                            app:cardPreventCornerOverlap="true"
+                            app:cardUseCompatPadding="true"
+                            tools:context="a.taher.mnaheg.add_new_dialog">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:paddingTop="20dp"
+                                android:layout_height="match_parent">
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:orientation="vertical">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+
+                                        <RelativeLayout
+                                            android:layout_width="70dp"
+                                            android:layout_height="70dp"
+                                            android:layout_centerHorizontal="true"
+                                            android:background="@drawable/circle_shape">
+
+                                            <ImageView
+                                                android:layout_width="50dp"
+                                                android:layout_height="50dp"
+                                                android:layout_centerInParent="true"
+                                                android:src="@drawable/logo_hdpi" />
+
+                                        </RelativeLayout>
+
+                                    </RelativeLayout>
+
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:paddingTop="10dp"
+                                        android:layout_height="wrap_content">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_centerInParent="true"
+                                            android:text="@string/txt_filter"
+                                            android:textAlignment="center"
+                                            android:textSize="25dp" />
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                        </android.support.v7.widget.CardView>
+
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_height="170dp"
+                        android:layout_weight="1">
+
+                        <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/fanHome_votes"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardBackgroundColor="#fff"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="7dp"
+                            app:cardPreventCornerOverlap="true"
+                            app:cardUseCompatPadding="true"
+                            tools:context="a.taher.mnaheg.add_new_dialog">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:paddingTop="20dp"
+                                android:layout_height="match_parent">
+
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:orientation="vertical">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+
+                                        <RelativeLayout
+                                            android:layout_width="70dp"
+                                            android:layout_height="70dp"
+                                            android:layout_centerHorizontal="true"
+                                            android:background="@drawable/circle_shape">
+
+                                            <ImageView
+                                                android:layout_width="50dp"
+                                                android:layout_height="50dp"
+                                                android:layout_centerInParent="true"
+                                                android:src="@drawable/logo_hdpi" />
+
+                                        </RelativeLayout>
+
+                                    </RelativeLayout>
+
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:paddingTop="10dp"
+                                        android:layout_height="wrap_content">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_centerInParent="true"
+                                            android:text="@string/Votes"
+                                            android:textAlignment="center"
+                                            android:textSize="25dp" />
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                        </android.support.v7.widget.CardView>
+
+
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_height="170dp"
+                        android:layout_weight="1">
+
+                        <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:id="@+id/fanHome_contest"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardBackgroundColor="#fff"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="7dp"
+                            app:cardPreventCornerOverlap="true"
+                            app:cardUseCompatPadding="true"
+                            tools:context="a.taher.mnaheg.add_new_dialog">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:paddingTop="20dp"
+                                android:layout_height="match_parent">
+
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:orientation="vertical">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+
+                                        <RelativeLayout
+                                            android:layout_width="70dp"
+                                            android:layout_height="70dp"
+                                            android:layout_centerHorizontal="true"
+                                            android:background="@drawable/circle_shape">
+
+                                            <ImageView
+                                                android:layout_width="50dp"
+                                                android:layout_height="50dp"
+                                                android:layout_centerInParent="true"
+                                                android:src="@drawable/logo_hdpi" />
+
+                                        </RelativeLayout>
+
+                                    </RelativeLayout>
+
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:paddingTop="10dp"
+                                        android:layout_height="wrap_content">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_centerInParent="true"
+                                            android:text="@string/txt_contest"
+                                            android:textAlignment="center"
+                                            android:textSize="25dp" />
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                        </android.support.v7.widget.CardView>
+
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_height="170dp"
+                        android:layout_weight="1">
+
+                        <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:id="@+id/fanHome_all"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardBackgroundColor="#fff"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="7dp"
+                            app:cardPreventCornerOverlap="true"
+                            app:cardUseCompatPadding="true"
+                            tools:context="a.taher.mnaheg.add_new_dialog">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:paddingTop="20dp"
+                                android:layout_height="match_parent">
+
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:orientation="vertical">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+
+                                        <RelativeLayout
+                                            android:layout_width="70dp"
+                                            android:layout_height="70dp"
+                                            android:layout_centerHorizontal="true"
+                                            android:background="@drawable/circle_shape">
+
+                                            <ImageView
+                                                android:layout_width="50dp"
+                                                android:layout_height="50dp"
+                                                android:layout_centerInParent="true"
+                                                android:src="@drawable/logo_hdpi" />
+
+                                        </RelativeLayout>
+
+                                    </RelativeLayout>
+
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:paddingTop="10dp"
+                                        android:layout_height="wrap_content">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_centerInParent="true"
+                                            android:text="@string/txt_all_fan_home"
+                                            android:textAlignment="center"
+                                            android:textSize="25dp" />
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                        </android.support.v7.widget.CardView>
+
+
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_height="170dp"
+                        android:layout_weight="1">
+
+                        <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:id="@+id/fanHome_stickers"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardBackgroundColor="#fff"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="7dp"
+                            app:cardPreventCornerOverlap="true"
+                            app:cardUseCompatPadding="true"
+                            tools:context="a.taher.mnaheg.add_new_dialog">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:paddingTop="20dp"
+                                android:layout_height="match_parent">
+
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:orientation="vertical">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+
+                                        <RelativeLayout
+                                            android:layout_width="70dp"
+                                            android:layout_height="70dp"
+                                            android:layout_centerHorizontal="true"
+                                            android:background="@drawable/circle_shape">
+
+                                            <ImageView
+                                                android:layout_width="50dp"
+                                                android:layout_height="50dp"
+                                                android:layout_centerInParent="true"
+                                                android:src="@drawable/logo_hdpi" />
+
+                                        </RelativeLayout>
+
+                                    </RelativeLayout>
+
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:paddingTop="10dp"
+                                        android:layout_height="wrap_content">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_centerInParent="true"
+                                            android:text="@string/stickers"
+                                            android:textAlignment="center"
+                                            android:textSize="25dp" />
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                        </android.support.v7.widget.CardView>
+
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_height="170dp"
+                        android:layout_weight="1">
+
+                        <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:id="@+id/fanHome_gif"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardBackgroundColor="#fff"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="7dp"
+                            app:cardPreventCornerOverlap="true"
+                            app:cardUseCompatPadding="true"
+                            tools:context="a.taher.mnaheg.add_new_dialog">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:paddingTop="20dp"
+                                android:layout_height="match_parent">
+
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:orientation="vertical">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+
+                                        <RelativeLayout
+                                            android:layout_width="70dp"
+                                            android:layout_height="70dp"
+                                            android:layout_centerHorizontal="true"
+                                            android:background="@drawable/circle_shape">
+
+                                            <ImageView
+                                                android:layout_width="50dp"
+                                                android:layout_height="50dp"
+                                                android:layout_centerInParent="true"
+                                                android:src="@drawable/logo_hdpi" />
+
+                                        </RelativeLayout>
+
+                                    </RelativeLayout>
+
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:paddingTop="10dp"
+                                        android:layout_height="wrap_content">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_centerInParent="true"
+                                            android:text="@string/gif"
+                                            android:textAlignment="center"
+                                            android:textSize="25dp" />
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                        </android.support.v7.widget.CardView>
+
+
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_height="170dp"
+                        android:layout_weight="1">
+
+                        <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardBackgroundColor="#fff"
+                            android:id="@+id/fanHome_emoji"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="7dp"
+                            app:cardPreventCornerOverlap="true"
+                            app:cardUseCompatPadding="true"
+                            tools:context="a.taher.mnaheg.add_new_dialog">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:paddingTop="20dp"
+                                android:layout_height="match_parent">
+
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:orientation="vertical">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+
+                                        <RelativeLayout
+                                            android:layout_width="70dp"
+                                            android:layout_height="70dp"
+                                            android:layout_centerHorizontal="true"
+                                            android:background="@drawable/circle_shape">
+
+                                            <ImageView
+                                                android:layout_width="50dp"
+                                                android:layout_height="50dp"
+                                                android:layout_centerInParent="true"
+                                                android:src="@drawable/logo_hdpi" />
+
+                                        </RelativeLayout>
+
+                                    </RelativeLayout>
+
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:paddingTop="10dp"
+                                        android:layout_height="wrap_content">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_centerInParent="true"
+                                            android:text="@string/emoji"
+                                            android:textAlignment="center"
+                                            android:textSize="25dp" />
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                        </android.support.v7.widget.CardView>
+
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_height="170dp"
+                        android:layout_weight="1">
+
+                        <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:id="@+id/fanHome_ads"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardBackgroundColor="#fff"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="7dp"
+                            app:cardPreventCornerOverlap="true"
+                            app:cardUseCompatPadding="true"
+                            tools:context="a.taher.mnaheg.add_new_dialog">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:paddingTop="20dp"
+                                android:layout_height="match_parent">
+
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:orientation="vertical">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+
+                                        <RelativeLayout
+                                            android:layout_width="70dp"
+                                            android:layout_height="70dp"
+                                            android:layout_centerHorizontal="true"
+                                            android:background="@drawable/circle_shape">
+
+                                            <ImageView
+                                                android:layout_width="50dp"
+                                                android:layout_height="50dp"
+                                                android:layout_centerInParent="true"
+                                                android:src="@drawable/logo_hdpi" />
+
+                                        </RelativeLayout>
+
+                                    </RelativeLayout>
+
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:paddingTop="10dp"
+                                        android:layout_height="wrap_content">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_centerInParent="true"
+                                            android:text="@string/txt_ads_frag"
+                                            android:textAlignment="center"
+                                            android:textSize="25dp" />
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                        </android.support.v7.widget.CardView>
+
+
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_height="170dp"
+                        android:layout_weight="1">
+
+                        <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:id="@+id/fanHome_products"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardBackgroundColor="#fff"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="7dp"
+                            app:cardPreventCornerOverlap="true"
+                            app:cardUseCompatPadding="true"
+                            tools:context="a.taher.mnaheg.add_new_dialog">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:paddingTop="20dp"
+                                android:layout_height="match_parent">
+
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:orientation="vertical">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+
+                                        <RelativeLayout
+                                            android:layout_width="70dp"
+                                            android:layout_height="70dp"
+                                            android:layout_centerHorizontal="true"
+                                            android:background="@drawable/circle_shape">
+
+                                            <ImageView
+                                                android:layout_width="50dp"
+                                                android:layout_height="50dp"
+                                                android:layout_centerInParent="true"
+                                                android:src="@drawable/logo_hdpi" />
+
+                                        </RelativeLayout>
+
+                                    </RelativeLayout>
+
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:paddingTop="10dp"
+                                        android:layout_height="wrap_content">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_centerInParent="true"
+                                            android:text="@string/txt_products_frag"
+                                            android:textAlignment="center"
+                                            android:textSize="25dp" />
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                        </android.support.v7.widget.CardView>
+
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/container_home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/app_bar_fan_home">
+
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

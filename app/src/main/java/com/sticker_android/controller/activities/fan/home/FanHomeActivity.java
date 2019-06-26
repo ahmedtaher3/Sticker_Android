@@ -10,18 +10,23 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,15 +35,26 @@ import com.sticker_android.constant.AppConstant;
 import com.sticker_android.controller.activities.base.AppBaseActivity;
 import com.sticker_android.controller.activities.common.signin.SigninActivity;
 import com.sticker_android.controller.activities.fan.home.contest.FanContestListActivity;
+import com.sticker_android.controller.adaptors.MainSliderAdapter;
+import com.sticker_android.controller.adaptors.PicassoImageLoadingService;
 import com.sticker_android.controller.fragment.common.AccountSettingFragment;
 import com.sticker_android.controller.fragment.common.ProfileFragment;
 import com.sticker_android.controller.fragment.designer.contentapproval.DesignerContentApprovalFragment;
 import com.sticker_android.controller.fragment.fan.FilterFragment;
 import com.sticker_android.controller.fragment.fan.fancustomization.FanCustomizationFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.FanContestFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.FanHomeAdsFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.FanHomeAllFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.FanHomeEmojiFragment;
 import com.sticker_android.controller.fragment.fan.fanhome.FanHomeFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.FanHomeGifFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.FanHomeProductsFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.FanHomeStickerFragment;
+import com.sticker_android.controller.fragment.fan.fanhome.VotesFragment;
 import com.sticker_android.controller.fragment.fan.fansavecustomization.FanSaveCustomization;
 import com.sticker_android.controller.fragment.fan.notification.FanNotification;
 import com.sticker_android.controller.notification.LocalNotification;
+import com.sticker_android.model.Ads;
 import com.sticker_android.model.User;
 import com.sticker_android.model.notification.Acme;
 import com.sticker_android.model.notification.AppNotification;
@@ -55,10 +71,14 @@ import com.sticker_android.utils.Utils;
 import com.sticker_android.utils.sharedpref.AppPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
+import ss.com.bannerslider.Slider;
 
 public class FanHomeActivity extends AppBaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener, AccountSettingFragment.ILanguageUpdate {
+        implements NavigationView.OnNavigationItemSelectedListener, ProfileFragment.OnFragmentProfileListener, AccountSettingFragment.ILanguageUpdate , View.OnClickListener {
 
     private static final String TAG = FanHomeActivity.class.getSimpleName();
     private DrawerLayout drawer;
@@ -67,11 +87,12 @@ public class FanHomeActivity extends AppBaseActivity
     private AppPref appPref;
     private User user;
     private CoordinatorLayout mainView;
+    Slider slider;
     private MenuItem mSelectedMenu;
     boolean doubleBackToExitPressedOnce = false;
-
-    private FanHomeFragment mFanHomeFragment = new FanHomeFragment();
-
+    CardView filters , votes , contests , all , stickers , gif , products , emoji , ads ;
+    private List<Ads> my_data = new ArrayList<>();
+    RelativeLayout Fan_hom_layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,8 +108,7 @@ public class FanHomeActivity extends AppBaseActivity
         actionBarToggle(toolbar);
         changeStatusBarColor(getResources().getColor(R.color.colorstatusBarFan));
         setUserDataIntoNaviagtion();
-        showFragmentManually();
-        replaceFragment(mFanHomeFragment);
+
 
         if (appPref.getLoginFlag(false))
         {
@@ -190,6 +210,7 @@ public class FanHomeActivity extends AppBaseActivity
     private void init() {
         appPref = new AppPref(this);
         user = appPref.getUserInfo();
+        Slider.init(new PicassoImageLoadingService(this));
     }
 
     @Override
@@ -310,11 +331,8 @@ public class FanHomeActivity extends AppBaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragmentClass = null;
-        if (id == R.id.nav_home && !(f instanceof FanHomeFragment)) {
-            textView.setText(getResources().getString(R.string.txt_home));
-            fragmentClass = mFanHomeFragment;//new FanHomeFragment();
-        }
-        else if (id == R.id.nav_login) {
+
+        if (id == R.id.nav_login) {
 
             startActivity(new Intent(FanHomeActivity.this , SigninActivity.class));
             finish();
@@ -350,7 +368,7 @@ public class FanHomeActivity extends AppBaseActivity
 
         // Insert the fragment by replacing any existing fragment
         if (fragmentClass != null) {
-            replaceFragment(fragmentClass);
+            replaceFragment(fragmentClass , "");
         }
         drawer.closeDrawer(GravityCompat.START);
 
@@ -367,8 +385,100 @@ public class FanHomeActivity extends AppBaseActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mainView = (CoordinatorLayout) findViewById(R.id.mainView);
-        //   tvUserName=(TextView)findViewById(R.id.tvUserName);
-        // tvEmail=(TextView)findViewById(R.id.tvEmail);
+        slider = (Slider) findViewById(R.id.banner_slider1);
+        Fan_hom_layout = (RelativeLayout) findViewById(R.id.Fan_hom_layout);
+
+
+
+        filters = (CardView) findViewById(R.id.fanHome_filters);
+        votes = (CardView) findViewById(R.id.fanHome_votes);
+        contests = (CardView) findViewById(R.id.fanHome_contest);
+        all = (CardView) findViewById(R.id.fanHome_all);
+        ads = (CardView) findViewById(R.id.fanHome_ads);
+        emoji = (CardView) findViewById(R.id.fanHome_emoji);
+        stickers = (CardView) findViewById(R.id.fanHome_stickers);
+        gif = (CardView) findViewById(R.id.fanHome_gif);
+        products = (CardView) findViewById(R.id.fanHome_products);
+
+
+        filters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(new FanHomeFragment() , "FILTER");
+
+            }
+        });
+
+
+        votes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(new FanHomeFragment() , "VOTES");
+
+            }
+        });
+
+
+        contests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(new FanHomeFragment(),"CONTEST");
+
+            }
+        });
+
+
+        all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(new FanHomeFragment(),"ALL");
+             }
+        });
+
+
+        ads.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(new FanHomeFragment(),"ADS");
+             }
+        });
+
+
+        emoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(new FanHomeFragment(),"EMOJI");
+             }
+        });
+
+
+        stickers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(new FanHomeFragment(),"STICkER");
+             }
+        });
+
+
+        gif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(new FanHomeFragment(),"GIF");
+             }
+        });
+
+
+        products.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replaceFragment(new FanHomeFragment(),"PRODUCT");
+             }
+        });
+
+        my_data.add(new Ads(1, "https://res.cloudinary.com/dcpvhccpi/image/upload/v1560681325/SSP_FB_Template_Sport_1.jpg", "test", "test", "test", "test", "test"));
+        my_data.add(new Ads(1, "https://res.cloudinary.com/dcpvhccpi/image/upload/v1560681324/Hot-Sale-personalized-sport-equipment-fighting-kick.jpg", "test", "test", "test", "test", "test"));
+        slider.setAdapter(new MainSliderAdapter(this, my_data));
+
 
 if (appPref.getLoginFlag(false))
 {
@@ -396,16 +506,14 @@ else
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (f instanceof FanHomeFragment) {
-            exitOnBack();
-        } else {
-            setToolBarTitle();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.container_home, new FanHomeFragment(), getResources().getString(R.string.txt_home));
-            transaction.setCustomAnimations(R.anim.activity_animation_enter, R.anim.activity_animation_exit,
-                    R.anim.activity_animation_enter, R.anim.activity_animation_exit);
-            transaction.addToBackStack(null);
-            transaction.commit();
+        } else if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            getSupportFragmentManager().popBackStack();
+            Fan_hom_layout.setVisibility(View.VISIBLE);
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        }
+        else{
+            Toast.makeText(this, "done", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -475,27 +583,31 @@ else
 
     }
 
-    public void replaceFragment(final Fragment fragmentClass) {
+    public void replaceFragment(final Fragment fragmentClass , String NAME) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString("FragmentName", NAME);
+        fragmentClass.setArguments(bundle);
         final String tag = fragmentClass.getClass().getSimpleName();
-        FragmentTransaction fragmentTransaction =
+      /*  FragmentTransaction fragmentTransaction =
                 getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container_home,
                 fragmentClass, tag);
         int count = getFragmentManager().getBackStackEntryCount();
         fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
 
 
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.addToBackStack(tag);
+        ft.add(R.id.container_home, fragmentClass);
+        ft.commit();
+       Fan_hom_layout.setVisibility(View.GONE);
     }
 
 
-    private void showFragmentManually() {
-        //Manually displaying the first fragment - one time only
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment fragment = new FanHomeFragment();
-        transaction.replace(R.id.container_home, fragment);
-        transaction.commit();
-    }
+
 
     public void setProfileFragmentReference(ProfileFragment profileFragmentReference) {
         this.mProfileFragment = profileFragmentReference;
@@ -638,6 +750,11 @@ else
     }
 
 
+    @Override
+    public void onClick(View v) {
+
+
+    }
 }
 
 

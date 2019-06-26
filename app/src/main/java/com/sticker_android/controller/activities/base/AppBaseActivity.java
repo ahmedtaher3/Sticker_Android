@@ -40,7 +40,7 @@ public abstract class AppBaseActivity extends AppCompatActivity {
     public ImageLoader imageLoader = ImageLoader.getInstance();
     public DisplayImageOptions displayImageOptions;
     public ProfileFragment mProfileFragment;
-    public FanHomeFragment mFanHomeFragment;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

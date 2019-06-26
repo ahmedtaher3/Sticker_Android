@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -62,10 +63,10 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
     private FragmentManager mFragmentManager;
     private MenuItem itemFilter;
     private ArrayList<Category> categoryList = new ArrayList<>();
-
+    String strtext;
     private FilterFragment mFilterFragment = new FilterFragment();
 
-
+    TabLayout.Tab votesTab , contestTab ,contestTabAll , stickerTab , gifTab ,  emojiTab , AdsTab , productsTab ;
     public FanHomeFragment() {
         // Required empty public constructor
         AppLogger.debug(TAG, "FanHomeFragment new instance created");
@@ -86,6 +87,7 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        strtext = getArguments().getString("FragmentName");
         View view = inflater.inflate(R.layout.fragment_fan_home, container, false);
         init();
         getuserInfo();
@@ -100,7 +102,96 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
         tabLayout.setSelectedTabIndicatorColor(Color.TRANSPARENT);
         setHasOptionsMenu(true);
-        replaceFragment(mFilterFragment);
+
+        switch(strtext) {
+            case "FILTER":
+                replaceFragment(mFilterFragment);
+                break;
+            case "VOTES":
+                replaceFragment(new VotesFragment());
+                votesTab.select();
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override public void run() {
+                                tabLayout.getTabAt(1).select();
+                            }
+                        }, 100);
+                break;
+            case "CONTEST":
+                replaceFragment(new FanContestFragment());
+                contestTab.select();
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override public void run() {
+                                tabLayout.getTabAt(2).select();
+                            }
+                        }, 100);
+                break;
+            case "ALL":
+                replaceFragment(new FanHomeAllFragment());
+                contestTabAll.select();
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override public void run() {
+                                tabLayout.getTabAt(3).select();
+                            }
+                        }, 100);
+                break;
+            case "ADS":
+                replaceFragment(new FanHomeAdsFragment());
+                AdsTab.select();
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override public void run() {
+                                tabLayout.getTabAt(7).select();
+                            }
+                        }, 100);
+                break;
+            case "EMOJI":
+                replaceFragment(new FanHomeEmojiFragment());
+                emojiTab.select();
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override public void run() {
+                                tabLayout.getTabAt(6).select();
+                            }
+                        }, 100);
+                break;
+            case "STICkER":
+                replaceFragment(new FanHomeStickerFragment());
+                stickerTab.select();
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override public void run() {
+                                tabLayout.getTabAt(4).select();
+                            }
+                        }, 100);
+                break;
+            case "GIF":
+                replaceFragment(new FanHomeGifFragment());
+                gifTab.select();
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override public void run() {
+                                tabLayout.getTabAt(5).select();
+                            }
+                        }, 100);
+                break;
+            case "PRODUCT":
+                replaceFragment(new FanHomeProductsFragment());
+                productsTab.select();
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override public void run() {
+                                tabLayout.getTabAt(8).select();
+                            }
+                        }, 100);
+                break;
+            default:
+                // code block
+        }
+
+
         fetchCategoryApi();
         return view;
     }
@@ -493,35 +584,35 @@ public class FanHomeFragment extends BaseFragment implements SearchView.OnQueryT
         filterTab.setText(R.string.txt_filter); // set the Text for the first Tab
         tabLayout.addTab(filterTab);
 
-        TabLayout.Tab votesTab = tabLayout.newTab();
+        votesTab = tabLayout.newTab();
         votesTab.setText(R.string.Votes); // set the Text for the first Tab
         tabLayout.addTab(votesTab);
 
-        TabLayout.Tab contestTab = tabLayout.newTab();
+        contestTab = tabLayout.newTab();
         contestTab.setText(R.string.txt_contest); // set the Text for the first Tab
         tabLayout.addTab(contestTab);
 
-        TabLayout.Tab contestTabAll = tabLayout.newTab();
+        contestTabAll = tabLayout.newTab();
         contestTabAll.setText(R.string.txt_all_fan_home); // set the Text for the first Tab
         tabLayout.addTab(contestTabAll);
 
-        TabLayout.Tab stickerTab = tabLayout.newTab();
+        stickerTab = tabLayout.newTab();
         stickerTab.setText(getString(R.string.stickers)); // set the Text for the first Tab
         tabLayout.addTab(stickerTab);
 
-        TabLayout.Tab gifTab = tabLayout.newTab();
+        gifTab = tabLayout.newTab();
         gifTab.setText(getString(R.string.gif)); // set the Text for the first Tab
         tabLayout.addTab(gifTab);
 
-        TabLayout.Tab emojiTab = tabLayout.newTab();
+        emojiTab = tabLayout.newTab();
         emojiTab.setText(getString(R.string.emoji)); // set the Text for the first Tab
         tabLayout.addTab(emojiTab);
 
-        TabLayout.Tab AdsTab = tabLayout.newTab();
+        AdsTab = tabLayout.newTab();
         AdsTab.setText(getString(R.string.txt_ads_frag)); // set the Text for the first Tab
         tabLayout.addTab(AdsTab);
 
-        TabLayout.Tab productsTab = tabLayout.newTab();
+        productsTab = tabLayout.newTab();
         productsTab.setText(getString(R.string.txt_products_frag)); // set the Text for the first Tab
         tabLayout.addTab(productsTab);
 

@@ -56,5 +56,8 @@ dependencies {
     implementation 'io.branch.sdk.android:library:2.19.5'
     implementation 'id.zelory:compressor:2.1.0'
 
+    implementation 'com.ss.bannerslider:bannerslider:2.0.0'
+
+
 }
 apply plugin: 'com.google.gms.google-services'
